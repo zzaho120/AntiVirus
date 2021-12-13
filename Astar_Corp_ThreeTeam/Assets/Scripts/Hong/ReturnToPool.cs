@@ -14,6 +14,7 @@ public class ReturnToPool : MonoBehaviour
     void Update()
     {
         // Pool에 Return 해줄 타이밍 체크
+        // Release 해서 돌려주면 됨
         if (Input.GetKeyDown(KeyCode.Space))
         {
             m_pool.Release(gameObject);

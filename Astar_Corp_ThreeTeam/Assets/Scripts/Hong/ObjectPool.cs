@@ -3,21 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
+public enum PoolName
+{
+    Particle,
+    Object,
+    Sound,
+}
+
 public class ObjectPool : MonoBehaviour
 {
-    //public static ObjectPool Instance;
-    public DictionaryPool<ObjectType, IObjectPool<GameObject>> testPool = 
-        new DictionaryPool<ObjectType, IObjectPool<GameObject>>();
-
+    public PoolName objectType;
+    
+    // public int poolCount;
     public IObjectPool<GameObject> pool;
 
     // 실험용
     public GameObject poolingObject;
-    
+
+    [HideInInspector]
     public bool collectionChecks = true;
     public int maxPoolSize = 100;
 
-    public DictionaryPool<ObjectType, IObjectPool<GameObject>> TestPool
+    public IObjectPool<GameObject> Pool
     {
         get
         {
@@ -34,29 +41,31 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
-    // public IObjectPool<GameObject> Pool
-    // {
-    //     get
-    //     {
-    //         if (pool == null)
-    //         {
-    //             pool = new ObjectPool<GameObject>(
-    //                 CreateNewObject,
-    //                 OnTakeFromPool,
-    //                 OnReturnedToPool,
-    //                 OnDestroyObject,
-    //                 collectionChecks, 10, maxPoolSize);
-    //         }
-    //         return pool;
-    //     }
-    // }
+    private void Awake()
+    {
+        CreatePools();
+    }
+
+    private Transform temp; // 부모 트랜스폼 임시 저장용 -> 나중에 수정하기
+
+    private void CreatePools()
+    {
+        GameObject poolTr = new GameObject(objectType.ToString() + " Pool");
+        poolTr.transform.SetParent(this.transform);
+        temp = poolTr.transform;
+        // return poolTr;
+    }
 
     private GameObject CreateNewObject()
     {
-        var newObj = Instantiate(poolingObject, transform);
-        var returnToPool = newObj.AddComponent<ReturnToPool>();
-        returnToPool.m_pool = Pool;
-        return newObj;
+        if (objectType == PoolName.Object)
+        {
+            var newObj = Instantiate(poolingObject, temp);
+            var returnToPool = newObj.AddComponent<ReturnToPool>();
+            returnToPool.m_pool = Pool;
+            return newObj;
+        }
+        else return null;
     }
 
     public void OnReturnedToPool(GameObject obj)
