@@ -11,7 +11,7 @@ public class PlayerControllerTest : MonoBehaviour
 
     void Start()
     {
-        EventBusMgr.Subscribe(EventType.Move, Move);
+        EventBusMgr.Subscribe(EventType.Move, Mov e);
         EventBusMgr.Subscribe(EventType.Gameover, Gameover);
         cmdMgr = GameMgr.Instance.commandMgr;
     }
