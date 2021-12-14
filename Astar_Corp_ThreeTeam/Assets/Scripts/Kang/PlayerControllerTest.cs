@@ -7,11 +7,13 @@ public class PlayerControllerTest : MonoBehaviour
 {
     private float startTime;
     private bool isGameover;
+    private CommandMgr cmdMgr;
 
     void Start()
     {
         EventBusMgr.Subscribe(EventType.Move, Move);
         EventBusMgr.Subscribe(EventType.Gameover, Gameover);
+        cmdMgr = GameMgr.Instance.commandMgr;
     }
 
     void Update()
@@ -21,6 +23,24 @@ public class PlayerControllerTest : MonoBehaviour
             if (startTime + 3f < Time.time)
                 EventBusMgr.Publish(EventType.Gameover);
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            var cmd = new JumpCommand(gameObject);
+            cmdMgr.ExecuteCommand(cmd);
+        }
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            var cmd = new MoveForwardCommand(gameObject);
+            cmdMgr.ExecuteCommand(cmd);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Backspace))
+            cmdMgr.UndoCommand();
+
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+            cmdMgr.RedoCommand();
     }
 
     public void Move(params object[] paramArr)
@@ -45,4 +65,6 @@ public class PlayerControllerTest : MonoBehaviour
         startTime = Time.time;
         isGameover = true;
     }
+
+    
 }
