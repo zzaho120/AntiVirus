@@ -16,6 +16,7 @@ public class EquippableSO
             //Debug.Log($"{file} is deleted.");
         }
 
+        int equippableNum = 0;
         using (FileStream fs = new FileStream(Application.dataPath + equippableCSVPath, FileMode.Open, FileAccess.Read))
         {
             using (StreamReader sr = new StreamReader(fs))
@@ -50,11 +51,14 @@ public class EquippableSO
                     equippable.luck = int.Parse(splitData[14]);
 
                     AssetDatabase.CreateAsset(equippable, $"Assets//Resources/Choi/Equippables/{equippable.name}.asset");
+                    equippableNum++;
                 }
                 sr.Close();
             }
             fs.Close();
             AssetDatabase.SaveAssets();
+            Debug.Log($"장비SO가 {equippableNum}개 생성되었습니다.");
+
         }
     }
 }
