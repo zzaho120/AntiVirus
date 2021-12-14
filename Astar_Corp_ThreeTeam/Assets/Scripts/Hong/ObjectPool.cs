@@ -19,6 +19,8 @@ public class ObjectPool : MonoBehaviour
 
     // ½ÇÇè¿ë
     public GameObject poolingObject;
+    public GameObject poolingObject2;
+    public GameObject poolingObject3;
 
     [HideInInspector]
     public bool collectionChecks = true;
@@ -65,7 +67,15 @@ public class ObjectPool : MonoBehaviour
             returnToPool.m_pool = Pool;
             return newObj;
         }
+        if (objectType == PoolName.Particle)
+        {
+            var newObj = Instantiate(poolingObject2, temp);
+            var returnToPool = newObj.AddComponent<ReturnToPool>();
+            returnToPool.m_pool = Pool;
+            return newObj;
+        }
         else return null;
+        Debug.Log(temp);
     }
 
     public void OnReturnedToPool(GameObject obj)
