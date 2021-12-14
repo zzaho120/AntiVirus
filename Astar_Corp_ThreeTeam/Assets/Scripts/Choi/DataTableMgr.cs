@@ -2,46 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum DataTableTypes
-{
-    Weapon,
-    Armor,
-    Equippable,
-    Consumable,
-    Character
-}
 public static class DataTableMgr
 {
-    public static Dictionary<DataTableTypes, DataTableBase> tables =
-        new Dictionary<DataTableTypes, DataTableBase>();
+    public static Dictionary<System.Type, DataTableBase> tables =
+        new Dictionary<System.Type, DataTableBase>();
+
+    private static bool inited = false;
 
     public static void Init()
     {
-        tables.Clear();
-        var weaponTable = new WeaponTable();
-        weaponTable.Load();
-        tables.Add(DataTableTypes.Weapon, weaponTable);
-
-        var armorTable = new ArmorTable();
-        armorTable.Load();
-        tables.Add(DataTableTypes.Armor, armorTable);
+        var itemTable = new ItemTable();
+        itemTable.Load();
+        tables.Add(typeof(ItemTable), itemTable);
 
         var equippableTable = new EquippableTable();
         equippableTable.Load();
-        tables.Add(DataTableTypes.Equippable, equippableTable);
+        tables.Add(typeof(EquippableTable), equippableTable);
 
+        var charTable = new CharacterTable();
+        charTable.Load();
+        tables.Add(typeof(CharacterTable), charTable);
 
-        var itemTable = new ItemTable();
-        itemTable.Load();
-        tables.Add(DataTableTypes.Consumable, itemTable);
+        //var levelTable = new LevelTable();
+        //levelTable.Load();
+        //tables.Add(typeof(LevelTable), levelTable);
 
-        var characterTable = new CharacterTable();
-        characterTable.Load();
-        tables.Add(DataTableTypes.Character, characterTable);
+        inited = true;
     }
 
-    public static T GetTable<T>(DataTableTypes dataTableTypes) where T : DataTableBase
+    public static T GetTable<T>() where T : DataTableBase
     {
-        return (T)tables[dataTableTypes];
+        if (!inited)
+            Init();
+        var t = typeof(T);
+        if (!tables.ContainsKey(t))
+            return null;
+        return tables[t] as T;
     }
 }

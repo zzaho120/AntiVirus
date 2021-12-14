@@ -17,6 +17,7 @@ public class CharacterSO
             //Debug.Log($"{file} is deleted.");
         }
 
+        int characterNum = 0;
         using (FileStream fs = new FileStream(Application.dataPath + characterCSVPath, FileMode.Open, FileAccess.Read))
         {
             using (StreamReader sr = new StreamReader(fs))
@@ -51,11 +52,13 @@ public class CharacterSO
                     character.statLuk = int.Parse(splitData[14]);
 
                     AssetDatabase.CreateAsset(character, $"Assets//Resources/Choi/Characters/{character.name}.asset");
+                    characterNum++;
                 }
                 sr.Close();
             }
             fs.Close();
             AssetDatabase.SaveAssets();
+            Debug.Log($"캐릭터SO가 {characterNum}개 생성되었습니다.");
         }
     }
 }

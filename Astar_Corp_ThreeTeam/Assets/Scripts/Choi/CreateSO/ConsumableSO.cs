@@ -16,6 +16,7 @@ public class ConsumableSO
             //Debug.Log($"{file} is deleted.");
         }
 
+        int itemNum = 0;
         using (FileStream fs = new FileStream(Application.dataPath + consumableCSVPath, FileMode.Open, FileAccess.Read))
         {
             using (StreamReader sr = new StreamReader(fs))
@@ -47,11 +48,13 @@ public class ConsumableSO
                     consumable.duration = int.Parse(splitData[11]);
 
                     AssetDatabase.CreateAsset(consumable, $"Assets//Resources/Choi/Consumables/{consumable.name}.asset");
+                    itemNum++;
                 }
                 sr.Close();
             }
             fs.Close();
             AssetDatabase.SaveAssets();
+            Debug.Log($"아이템SO가 {itemNum}개 생성되었습니다.");
         }
     }
 }
