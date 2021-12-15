@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleGameMgr : Singleton<BattleGameMgr>
+public class BattleMgr : Singleton<BattleMgr>
 {
     public CommandMgr commandMgr;
+    public TileMgr tileMgr;
 
     public override void Awake()
     {
