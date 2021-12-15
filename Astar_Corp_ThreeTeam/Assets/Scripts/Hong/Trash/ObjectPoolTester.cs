@@ -10,7 +10,7 @@ public enum PoolName
     Sound,
 }
 
-public class ObjectPool : MonoBehaviour
+public class ObjectPoolTester : MonoBehaviour
 {
     public PoolName objectType;
     
@@ -75,7 +75,7 @@ public class ObjectPool : MonoBehaviour
             return newObj;
         }
         else return null;
-        Debug.Log(temp);
+        //Debug.Log(temp);
     }
 
     public void OnReturnedToPool(GameObject obj)

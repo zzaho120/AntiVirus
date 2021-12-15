@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.Pool;
 
 [System.Serializable]
-public class ObjectPool3
+public class ObjectPool
 {
+    // public int quantity;
     public PoolName poolName;
-    public int quantity;
     public GameObject prefab;
 
     [HideInInspector]

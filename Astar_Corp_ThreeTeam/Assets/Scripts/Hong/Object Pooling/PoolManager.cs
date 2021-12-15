@@ -5,17 +5,13 @@ using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
-    public ObjectPool3[] pools;
+    public ObjectPool[] pools;
     private GameObject newPool;
-
-    //public List<Transform> trList;      // 트랜스폼 저장용
 
     private void Start()
     {
         CreatePoolsTr();
     }
-
-    // private List<GameObject> goList = new List<GameObject>();
 
     // 풀 생성
     private void CreatePoolsTr()
@@ -29,9 +25,6 @@ public class PoolManager : MonoBehaviour
             newPool = new GameObject(pools[i].poolName.ToString());
             newPool.transform.SetParent(this.transform);
             pools[i].poolTr = newPool.transform;
-
-
-            // goList = poolTr.GetComponentsInChildren<GameObject>();
         }
     }
 
@@ -51,8 +44,9 @@ public class PoolManager : MonoBehaviour
         // 두번째 풀 실험용
         if (GUILayout.Button("Create Objects"))
         {
-            // var amount = UnityEngine.Random.Range(1, 5);
-            for (int i = 0; i < pools[i].quantity; ++i)
+            var amount = UnityEngine.Random.Range(1, 5);
+            //for (int i = 0; i < pools[i].quantity; ++i)
+            for (int i = 0; i < amount; ++i)
             {
                 var ps = pools[1].Pool.Get();
                 ps.transform.position = UnityEngine.Random.insideUnitSphere * 10;
