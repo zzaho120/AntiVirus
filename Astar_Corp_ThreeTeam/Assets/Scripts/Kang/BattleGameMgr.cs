@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameMgr : Singleton<GameMgr>
+public class BattleGameMgr : Singleton<BattleGameMgr>
 {
     public CommandMgr commandMgr;
 

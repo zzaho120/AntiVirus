@@ -13,7 +13,7 @@ public class PlayerControllerTest : MonoBehaviour
     {
         EventBusMgr.Subscribe(EventType.Move, Move);
         EventBusMgr.Subscribe(EventType.Gameover, Gameover);
-        cmdMgr = GameMgr.Instance.commandMgr;
+        cmdMgr = BattleGameMgr.Instance.commandMgr;
     }
 
     void Update()
