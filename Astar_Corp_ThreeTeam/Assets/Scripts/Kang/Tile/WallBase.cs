@@ -18,8 +18,17 @@ public class WallBase : MonoBehaviour
     public WallType type;
 
     [Header("References")]
-    public TileBase parentTile;
+    public TileBase parentFloor;
+    public TileBase parentSeiling;
 
-    [Header("Lists")]
-    public List<GameObject> wallList;
+    public void Init()
+    {
+        InitIdx();
+    }
+
+    private void InitIdx()
+    {
+        tileIdx = transform.position;
+        gameObject.name = $"Wall ({tileIdx.x}, {tileIdx.y}, {tileIdx.z} / {type.ToString()})";
+    }
 }

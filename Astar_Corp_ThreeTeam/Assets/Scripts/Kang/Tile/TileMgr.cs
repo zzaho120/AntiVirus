@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum OtherTileDirection
+public enum TileDirection
 {
     None = 0,
     Top,
@@ -14,7 +14,6 @@ public enum OtherTileDirection
 public class TileMgr : MonoBehaviour
 {
     public GameObject tiles;
-    public GameObject walls;
 
     public List<TileBase> tileList = new List<TileBase>();
 
@@ -39,92 +38,40 @@ public class TileMgr : MonoBehaviour
             var go = tiles.transform.GetChild(idx);
             
             var tileBase = go.GetComponent<TileBase>();
-            tileBase.tileIdx = new Vector3(idx % MAX_X_IDX, 0, idx / MAX_Z_IDX);
-
-            var tileIdx = tileBase.tileIdx;
-            go.name = $"Tile ({tileIdx.x}, {tileIdx.y}, {tileIdx.z})";
+            tileBase.Init();
 
             tileList.Add(tileBase);
-        }
-
-        var wallCount = walls.transform.childCount;
-        for (int idx = 0; idx < wallCount; ++idx)
-        {
-            var go = walls.transform.GetChild(idx).gameObject;
-            var wallBase = go.GetComponent<WallBase>();
-
-            foreach (var tile in tileList)
-            {
-                if (tile.tileIdx == wallBase.tileIdx)
-                    tile.objList.Add(go);
-            }
         }
 
         for (int idx = 0; idx < tileList.Count; ++idx)
         {
             var tile = tileList[idx];
-            tile.Init();
-
-            if (idx % MAX_X_IDX > 0) CheckAdjTile(idx - 1, tile, OtherTileDirection.Left);
-            if (idx % MAX_X_IDX < 9) CheckAdjTile(idx + 1, tile, OtherTileDirection.Right);
-            if (idx / MAX_Z_IDX > 0) CheckAdjTile(idx - MAX_Z_IDX, tile, OtherTileDirection.Top);
-            if (idx / MAX_X_IDX < 9) CheckAdjTile(idx + MAX_Z_IDX, tile, OtherTileDirection.Bot);
+            if (idx % MAX_X_IDX > 0) CheckAdjTile(tile, tileList[idx - 1], WallType.Left, WallType.Right);
+            if (idx % MAX_X_IDX < 9) CheckAdjTile(tile, tileList[idx + 1], WallType.Right, WallType.Left);
+            if (idx / MAX_Z_IDX > 0) CheckAdjTile(tile, tileList[idx - MAX_Z_IDX], WallType.Bot, WallType.Top);
+            if (idx / MAX_X_IDX < 9) CheckAdjTile(tile, tileList[idx + MAX_Z_IDX], WallType.Top, WallType.Bot);
         }
     }
 
-    private void CheckAdjTile(int idx, TileBase tile, OtherTileDirection type)
+    private void CheckAdjTile(TileBase thisTile, TileBase otherTile, WallType thisType, WallType otherType)
     {
-        //bool isExistWall = false;
-        //var otherTile = tileList[idx];
-        //foreach(var obj in otherTile.objList)
-        //{
-        //    var wallBase = obj.GetComponent<WallBase>();
+        if (thisTile.tileIdx.y != otherTile.tileIdx.y)
+            return;
+        if (CheckWall(thisTile, thisType))
+            return;
+        if (CheckWall(otherTile, otherType))
+            return;
 
-        //    if (wallBase == null)
-        //        continue;
+        thisTile.adjNodes.Add(otherTile);
+    }
 
-        //    switch (type)
-        //    {
-        //        case OtherTileDirection.Top:
-        //            if (wallBase.type == WallType.Bot)
-        //                isExistWall = true;
-        //            break;
-        //        case OtherTileDirection.Bot:
-        //            if (wallBase.type == WallType.Top)
-        //                isExistWall = true;
-        //            break;
-        //        case OtherTileDirection.Left:
-        //            if (wallBase.type == WallType.Right)
-        //                isExistWall = true;
-        //            break;
-        //        case OtherTileDirection.Right:
-        //            if (wallBase.type == WallType.Left)
-        //                isExistWall = true;
-        //            break;
-        //    }
-
-        //    if (isExistWall)
-        //        return;
-        //}
-
-        //switch (type)
-        //{
-        //    case OtherTileDirection.Top:
-        //        if (tile.type == WallType.Bot)
-        //            isExistWall = true;
-        //        break;
-        //    case OtherTileDirection.Bot:
-        //        if (tile.type == WallType.Bot)
-        //            isExistWall = true;
-        //        break;
-        //    case OtherTileDirection.Left:
-        //        if (wallBase.type == WallType.Bot)
-        //            isExistWall = true;
-        //        break;
-        //    case OtherTileDirection.Right:
-        //        if (wallBase.type == WallType.Bot)
-        //            isExistWall = true;
-        //        break;
-        //}
+    private bool CheckWall(TileBase tile, WallType type)
+    {
+        foreach (var wall in tile.wallList)
+        {
+            if (type == wall.type)
+                return true;
+        }
+        return false;
     }
 }
