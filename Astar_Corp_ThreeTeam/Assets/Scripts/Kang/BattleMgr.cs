@@ -5,7 +5,9 @@ using UnityEngine;
 public class BattleMgr : Singleton<BattleMgr>
 {
     public CommandMgr commandMgr;
+    public PlayerTest player;
     public TileMgr tileMgr;
+    public AStar aStar;
 
     public override void Awake()
     {
@@ -13,13 +15,10 @@ public class BattleMgr : Singleton<BattleMgr>
         commandMgr = new CommandMgr();
     }
 
-    void Start()
+    public void Start()
     {
-        
-    }
-
-    void Update()
-    {
-        
+        tileMgr.Init();
+        player.Init();
+        aStar.Init();
     }
 }

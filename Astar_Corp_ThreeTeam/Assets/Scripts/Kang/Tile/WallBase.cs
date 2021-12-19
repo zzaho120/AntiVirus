@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum WallType
+public enum DirectionType
 {
     None = 0,
     Top = 1,
@@ -15,7 +15,8 @@ public class WallBase : MonoBehaviour
 {
     [Header("Values")]
     public Vector3 tileIdx;
-    public WallType type;
+    public DirectionType type;
+    public bool isPassable;
 
     [Header("References")]
     public TileBase parentFloor;

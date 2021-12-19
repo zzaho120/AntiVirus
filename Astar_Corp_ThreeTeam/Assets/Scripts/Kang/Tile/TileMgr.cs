@@ -15,7 +15,7 @@ public class TileMgr : MonoBehaviour
 {
     public GameObject tiles;
 
-    public List<TileBase> tileList = new List<TileBase>();
+    public Dictionary<Vector3, TileBase> tileDics = new Dictionary<Vector3, TileBase>();
 
     private int MAX_X_IDX = 10;
     private int MAX_Y_IDX = 2;
@@ -25,12 +25,7 @@ public class TileMgr : MonoBehaviour
     private int OFFSET_Y = 1;
     private int OFFSET_Z = 1;
 
-    void Start()
-    {
-        Init();
-    }
-
-    private void Init()
+    public void Init()
     {
         var tileCount = tiles.transform.childCount;
         for (int idx = 0; idx < tileCount; ++idx)
@@ -38,40 +33,72 @@ public class TileMgr : MonoBehaviour
             var go = tiles.transform.GetChild(idx);
             
             var tileBase = go.GetComponent<TileBase>();
-            tileBase.Init();
+            tileBase.Init(this);
 
-            tileList.Add(tileBase);
+            tileDics.Add(tileBase.tileIdx, tileBase);
         }
 
-        for (int idx = 0; idx < tileList.Count; ++idx)
+        InitAdjTile();
+    }
+
+    private void InitAdjTile()
+    {
+        foreach (var pair in tileDics)
         {
-            var tile = tileList[idx];
-            if (idx % MAX_X_IDX > 0) CheckAdjTile(tile, tileList[idx - 1], WallType.Left, WallType.Right);
-            if (idx % MAX_X_IDX < 9) CheckAdjTile(tile, tileList[idx + 1], WallType.Right, WallType.Left);
-            if (idx / MAX_Z_IDX > 0) CheckAdjTile(tile, tileList[idx - MAX_Z_IDX], WallType.Bot, WallType.Top);
-            if (idx / MAX_X_IDX < 9) CheckAdjTile(tile, tileList[idx + MAX_Z_IDX], WallType.Top, WallType.Bot);
+            var idx = pair.Key;
+            var tile = pair.Value;
+
+            if (idx.x > 0) CheckAdjTile(tile, new Vector3(idx.x - 1, idx.y, idx.z), DirectionType.Left, DirectionType.Right);
+            if (idx.x < MAX_X_IDX - 1) CheckAdjTile(tile, new Vector3(idx.x + 1, idx.y, idx.z), DirectionType.Right, DirectionType.Left);
+            if (idx.z > 0) CheckAdjTile(tile, new Vector3(idx.x, idx.y, idx.z - 1), DirectionType.Bot, DirectionType.Top);
+            if (idx.z < MAX_Z_IDX - 1) CheckAdjTile(tile, new Vector3(idx.x, idx.y, idx.z + 1), DirectionType.Top, DirectionType.Bot);
         }
     }
 
-    private void CheckAdjTile(TileBase thisTile, TileBase otherTile, WallType thisType, WallType otherType)
+    public void CheckAdjTile(TileBase thisTile, Vector3 otherIdx, DirectionType thisType, DirectionType otherType)
     {
-        if (thisTile.tileIdx.y != otherTile.tileIdx.y)
-            return;
-        if (CheckWall(thisTile, thisType))
-            return;
-        if (CheckWall(otherTile, otherType))
-            return;
-
-        thisTile.adjNodes.Add(otherTile);
-    }
-
-    private bool CheckWall(TileBase tile, WallType type)
-    {
-        foreach (var wall in tile.wallList)
+        if (tileDics.ContainsKey(otherIdx))
         {
-            if (type == wall.type)
-                return true;
+            var otherTile = tileDics[otherIdx];
+            var upStairIdx = new Vector3(otherIdx.x, otherIdx.y + 1, otherIdx.z);
+            if (!tileDics.ContainsKey(upStairIdx))
+            {
+                // 같은 층일 경우
+                if (thisTile.CheckObj(thisType))
+                    return;
+                if (otherTile.CheckObj(otherType))
+                    return;
+
+                thisTile.adjNodes.Add(otherTile);
+            }
+            else
+            {
+                // 상향 계단이 있을 경우
+                var stairTile = tileDics[upStairIdx];
+                if (thisTile.CheckObj(thisType))
+                    return;
+                if (otherTile.CheckObj(otherType))
+                    return;
+                if (stairTile.CheckObj(otherType))
+                    return;
+
+                thisTile.adjNodes.Add(stairTile);
+            }
         }
-        return false;
+        else
+        {
+            var downStairIdx = new Vector3(otherIdx.x, otherIdx.y - 1, otherIdx.z);
+            if (tileDics.ContainsKey(downStairIdx))
+            {
+                // 하향 계단이 있을 경우
+                var stairTile = tileDics[downStairIdx];
+                if (thisTile.CheckObj(thisType))
+                    return;
+                if (stairTile.CheckObj(otherType))
+                    return;
+
+                thisTile.adjNodes.Add(stairTile);
+            }
+        }
     }
 }

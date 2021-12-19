@@ -5,16 +5,20 @@ using UnityEngine;
 
 public class TileBase : MonoBehaviour
 {
+    private TileMgr mgr;
+
     [Header("Value")]
     public Vector3 tileIdx;
+    public bool isStair;
 
     [Header("List")]
     public List<TileBase> adjNodes;
-    public List<WallBase> wallList;
     public List<GameObject> objList;
 
-    public void Init()
+    public void Init(TileMgr tileMgr)
     {
+        mgr = tileMgr;
+
         InitIdx();
         InitWall();
     }
@@ -27,9 +31,10 @@ public class TileBase : MonoBehaviour
 
     private void InitWall()
     {
-        if (wallList.Count != 0)
+        foreach (var obj in objList)
         {
-            foreach (var wall in wallList)
+            var wall = obj.GetComponent<WallBase>();
+            if (wall != null)
             {
                 wall.Init();
 
@@ -38,6 +43,101 @@ public class TileBase : MonoBehaviour
                 else if (wall.tileIdx.y == tileIdx.y - 1) // À­ Ãþ
                     wall.parentSeiling = this;
             }
+        }
+    }
+
+    public bool CheckObj(DirectionType type)
+    {
+        foreach (var obj in objList)
+        {
+            var wall = obj.GetComponent<WallBase>();
+            if(wall != null)
+            {
+                if (type == wall.type)
+                    return true;
+            }
+
+            var door = obj.GetComponent<DoorBase>();
+            if(door != null)
+            {
+                if (type == door.type && !door.isOpenDoor)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public void OnClickTile()
+    {
+        Debug.Log($"Click {gameObject.name}");
+    }
+
+    public void OpenDoor(bool isContainAdjTile)
+    {
+        foreach (var obj in objList)
+        {
+            var door = obj.GetComponent<DoorBase>();
+
+            if (door != null)
+                door.OnOpenDoor();
+        }
+
+        if(isContainAdjTile)
+        {
+            OpenDoor4Dir(DirectionType.Top);
+            OpenDoor4Dir(DirectionType.Bot);
+            OpenDoor4Dir(DirectionType.Left);
+            OpenDoor4Dir(DirectionType.Right);
+        }
+    }
+
+    public void OpenDoor4Dir(DirectionType dir)
+    {
+        var tileDics = BattleMgr.Instance.tileMgr.tileDics;
+
+        Vector3 dirVector3 = Vector3.zero;
+        switch (dir)
+        {
+            case DirectionType.Top:
+                dirVector3 = new Vector3(tileIdx.x, tileIdx.y, tileIdx.z + 1);
+                break;
+            case DirectionType.Bot:
+                dirVector3 = new Vector3(tileIdx.x, tileIdx.y, tileIdx.z - 1);
+                break;
+            case DirectionType.Left:
+                dirVector3 = new Vector3(tileIdx.x - 1, tileIdx.y, tileIdx.z);
+                break;
+            case DirectionType.Right:
+                dirVector3 = new Vector3(tileIdx.x + 1, tileIdx.y, tileIdx.z);
+                break;
+        }
+
+
+        if (tileDics.ContainsKey(dirVector3))
+        {
+            var otherTile = tileDics[dirVector3];
+            otherTile.OpenDoor(false);
+
+            switch (dir)
+            {
+                case DirectionType.Top:
+                    BattleMgr.Instance.tileMgr.CheckAdjTile(this, dirVector3, DirectionType.Top, DirectionType.Bot);
+                    BattleMgr.Instance.tileMgr.CheckAdjTile(otherTile, tileIdx, DirectionType.Bot, DirectionType.Top);
+                    break;
+                case DirectionType.Bot:
+                    BattleMgr.Instance.tileMgr.CheckAdjTile(this, dirVector3, DirectionType.Bot, DirectionType.Top);
+                    BattleMgr.Instance.tileMgr.CheckAdjTile(otherTile, tileIdx, DirectionType.Top, DirectionType.Top);
+                    break;
+                case DirectionType.Left:
+                    BattleMgr.Instance.tileMgr.CheckAdjTile(this, dirVector3, DirectionType.Left, DirectionType.Right);
+                    BattleMgr.Instance.tileMgr.CheckAdjTile(otherTile, tileIdx, DirectionType.Right, DirectionType.Left);
+                    break;
+                case DirectionType.Right:
+                    BattleMgr.Instance.tileMgr.CheckAdjTile(this, dirVector3, DirectionType.Right, DirectionType.Left);
+                    BattleMgr.Instance.tileMgr.CheckAdjTile(otherTile, tileIdx, DirectionType.Left, DirectionType.Right);
+                    break;
+            }
+           
         }
     }
 }
