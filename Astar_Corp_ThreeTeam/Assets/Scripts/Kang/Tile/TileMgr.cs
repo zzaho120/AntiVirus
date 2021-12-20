@@ -57,6 +57,12 @@ public class TileMgr : MonoBehaviour
 
     public void CheckAdjTile(TileBase thisTile, Vector3 otherIdx, DirectionType thisType, DirectionType otherType)
     {
+        // 자기 위에 타일이 있을 경우
+        var upTile = new Vector3(thisTile.tileIdx.x, thisTile.tileIdx.y + 1, thisTile.tileIdx.z);
+        if (tileDics.ContainsKey(upTile))
+            return;
+
+
         if (tileDics.ContainsKey(otherIdx))
         {
             var otherTile = tileDics[otherIdx];

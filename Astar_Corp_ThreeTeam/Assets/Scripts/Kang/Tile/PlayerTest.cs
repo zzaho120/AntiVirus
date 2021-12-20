@@ -51,7 +51,8 @@ public class PlayerTest : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, new Vector3(3, 0, 1));
+            BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, new Vector3(4, 6, 1));
+            StartCoroutine(CoMove());
         }
     }
     
@@ -66,6 +67,18 @@ public class PlayerTest : MonoBehaviour
                 transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 1, tile.tileIdx.z);
             }
         }
-        Debug.Log(currentTile.tileIdx);
+    }
+
+    private IEnumerator CoMove()
+    {
+        var path = BattleMgr.Instance.aStar.pathList;
+        var idx = 0;
+        while (path.Count > 0)
+        {
+            var aStarTile = path.Pop();
+
+            MoveTile(aStarTile.tileBase.tileIdx);
+            yield return new WaitForSeconds(1f);
+        }
     }
 }

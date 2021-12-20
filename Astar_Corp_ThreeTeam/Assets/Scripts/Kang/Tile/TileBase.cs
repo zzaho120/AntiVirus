@@ -82,7 +82,7 @@ public class TileBase : MonoBehaviour
                 door.OnOpenDoor();
         }
 
-        if(isContainAdjTile)
+        if (isContainAdjTile)
         {
             OpenDoor4Dir(DirectionType.Top);
             OpenDoor4Dir(DirectionType.Bot);
@@ -118,6 +118,23 @@ public class TileBase : MonoBehaviour
             var otherTile = tileDics[dirVector3];
             otherTile.OpenDoor(false);
 
+            for (int idx = 0; idx < adjNodes.Count; ++idx)
+            {
+                if (adjNodes[idx].tileIdx == dirVector3)
+                {
+                    adjNodes.RemoveAt(idx);
+                    break;
+                }
+            }
+            for (int idx = 0; idx < otherTile.adjNodes.Count; ++idx)
+            {
+                if (otherTile.adjNodes[idx].tileIdx == tileIdx)
+                {
+                    otherTile.adjNodes.RemoveAt(idx);
+                    break;
+                }
+            }
+
             switch (dir)
             {
                 case DirectionType.Top:
@@ -137,7 +154,6 @@ public class TileBase : MonoBehaviour
                     BattleMgr.Instance.tileMgr.CheckAdjTile(otherTile, tileIdx, DirectionType.Left, DirectionType.Right);
                     break;
             }
-           
         }
     }
 }

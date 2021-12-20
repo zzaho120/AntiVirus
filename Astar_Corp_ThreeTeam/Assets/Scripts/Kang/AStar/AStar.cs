@@ -31,11 +31,13 @@ public class AStar : MonoBehaviour
 
     private List<AStarTile> closeList = new List<AStarTile>();
     private List<AStarTile> openList = new List<AStarTile>();
-    private List<AStarTile> pathList = new List<AStarTile>();
     private Dictionary<Vector3, AStarTile> aStarTiles = new Dictionary<Vector3, AStarTile>();
 
     private readonly int StraightWeight = 10;
     private readonly int DiagonalWeight = 14;
+
+    [HideInInspector]
+    public Stack<AStarTile> pathList = new Stack<AStarTile>();
 
     public void Init()
     {
@@ -63,8 +65,17 @@ public class AStar : MonoBehaviour
         startIdx = start;
         endIdx = end;
         isArrive = false;
+        isNotFound = false;
 
         closeList.Add(aStarTiles[start]);
+        foreach (var aStarTile in aStarTiles)
+        {
+            aStarTile.Value.listOn = false;
+            aStarTile.Value.F = 0;
+            aStarTile.Value.G = 0;
+            aStarTile.Value.H = 0;
+            aStarTile.Value.parent = null;
+        }
 
         while (!isArrive && !isNotFound)
         {
@@ -168,7 +179,7 @@ public class AStar : MonoBehaviour
 
     private void SetPath(AStarTile tile)
     {
-        pathList.Add(tile);
+        pathList.Push(tile);
 
         if (tile.tileBase.tileIdx == startIdx)
             return;
