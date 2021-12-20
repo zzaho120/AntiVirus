@@ -53,11 +53,6 @@ public class PlayerTest : MonoBehaviour
         {
             currentTile.OpenDoor(true);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, new Vector3(5, 6, 6));
-            StartCoroutine(CoMove());
-        }
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -65,6 +60,19 @@ public class PlayerTest : MonoBehaviour
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
+                if (isMove)
+                {
+                    if(hit.collider.tag == "Tile")
+                    {
+                        var tileBase = hit.collider.GetComponent<TileBase>();
+                        if (moveDics.ContainsKey(tileBase.tileIdx))
+                        {
+                            BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
+                            MoveMode();
+                            StartCoroutine(CoMove());
+                        }
+                    }
+                }
                 if (hit.collider.gameObject == gameObject)
                 {
                     MoveMode();
