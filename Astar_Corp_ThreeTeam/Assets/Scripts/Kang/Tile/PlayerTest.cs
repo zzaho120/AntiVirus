@@ -51,7 +51,7 @@ public class PlayerTest : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, new Vector3(5, 2, 3));
+            BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, new Vector3(3, 0, 1));
         }
     }
     

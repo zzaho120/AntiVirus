@@ -31,6 +31,7 @@ public class AStar : MonoBehaviour
 
     private List<AStarTile> closeList = new List<AStarTile>();
     private List<AStarTile> openList = new List<AStarTile>();
+    private List<AStarTile> pathList = new List<AStarTile>();
     private Dictionary<Vector3, AStarTile> aStarTiles = new Dictionary<Vector3, AStarTile>();
 
     private readonly int StraightWeight = 10;
@@ -72,6 +73,10 @@ public class AStar : MonoBehaviour
             CalculateF();
             AddCloseList();
             CheckArrive();
+        }
+        foreach (var node in pathList)
+        {
+            Debug.Log(node.tileBase.tileIdx);
         }
     }
 
@@ -156,6 +161,23 @@ public class AStar : MonoBehaviour
         {
             Debug.Log("도착했습니다.");
             isArrive = true;
+
+            SetPath(closeList[closeList.Count - 1]);
         }
+    }
+
+    private void SetPath(AStarTile tile)
+    {
+        pathList.Add(tile);
+
+        if (tile.tileBase.tileIdx == startIdx)
+            return;
+
+        tile = tile.parent;
+
+        if (tile == null)
+            return;
+        else
+            SetPath(tile);
     }
 }
