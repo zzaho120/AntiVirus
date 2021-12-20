@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,11 +9,18 @@ using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
+    //지은.
+    public NonBattleMgr manager;
+
     private NavMeshAgent agent;
     private CharacterController characterController;
 
     public GameObject panel;
+    public bool isMove;//지은.
+    bool isBattle;
+    float randomTimer;
 
+    float originAgentSpeed;
     //private Vector3 calcVelocity = Vector3.zero;
 
     // 더블점프 방지용 -> 나중에 써야할지도?
@@ -28,11 +36,18 @@ public class PlayerController : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         agent = GetComponent<NavMeshAgent>();
+        originAgentSpeed = agent.speed;
         //panel = GetComponent<FadeOutTest>().gameObject;
 
         // 캐릭터 컨트롤러 포지션 설정할 때 사용
         agent.updatePosition = false;
         agent.updateRotation = true;
+
+        isMove = false;
+        isBattle = false;
+
+
+
     }
 
     void Update()
@@ -46,7 +61,7 @@ public class PlayerController : MonoBehaviour
             RaycastHit raycastHit;
             if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
             {
-                Debug.Log("충돌체 이름 : " + raycastHit.collider.name + ", 좌표 : " + raycastHit.point);
+                //Debug.Log("충돌체 이름 : " + raycastHit.collider.name + ", 좌표 : " + raycastHit.point);
                 agent.SetDestination(raycastHit.point);
             }
         }
@@ -55,12 +70,14 @@ public class PlayerController : MonoBehaviour
         if (agent.remainingDistance > agent.stoppingDistance)
         {
             characterController.Move(agent.velocity * Time.deltaTime);
+            isMove = true;
             // Debug.Log(agent.stoppingDistance);
             // RemainingDistance : 현재 경로(path)에서 남아있는 거리
         }
         else
         {
             characterController.Move(Vector3.zero);
+            isMove = false;
         }
     }
 
@@ -72,14 +89,59 @@ public class PlayerController : MonoBehaviour
     // 충돌 판별
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        // Debug.Log(hit.collider.name);
-        
-        // 씬 전환 시? FadeOut 효과
-        panel.GetComponent<FadeOutTest>().StartFade();
+        if (hit.gameObject.CompareTag("RandomEvent")) return;
 
-        //if (agent.remainingDistance <= agent.stoppingDistance)
-        //{
-        //}
+        // 씬 전환 시? FadeOut 효과
+        //panel.GetComponent<FadeOutTest>().StartFade();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("RandomEvent")) //랜덤 이벤트 발생.
+        {
+            //Debug.Log($"{manager.currentMapType}");
+            agent.speed = 0;
+            agent.destination = transform.position;
+            agent.isStopped = true;
+
+            foreach (var element in manager.randomEvents)
+            {
+                if (!element.Value.Contains(other.gameObject)) continue;
+
+                manager.randomEvents[element.Key].Remove(other.gameObject);
+                Destroy(other.gameObject);
+            }
+
+            //Debug.Log("랜덤이벤트 종료");
+            agent.speed = originAgentSpeed;
+            agent.isStopped = false;
+        }
+        else if (other.gameObject.CompareTag("NonBattleMap")) //현재 맵 갱신.
+        {
+            //Debug.Log($"{other.gameObject.name}에 들어옴");
+
+            foreach (MapType element in Enum.GetValues(typeof(MapType)))
+            {
+                if (!element.ToString().Equals(other.gameObject.name)) continue;
+                manager.currentMapType = element;
+            }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("MonsterArea") && !isBattle) //몬스터와 전투.
+        {
+            randomTimer++;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("MonsterArea") && !isBattle) //몬스터와 전투.
+        {
+            randomTimer = 0;
+        }
     }
 }
 
