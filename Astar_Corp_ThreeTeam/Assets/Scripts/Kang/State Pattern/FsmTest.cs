@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class PlayerFSM : FSM
+
+//public class PlayerFSM : FSM
+public class FsmTest : FSM
 {
-    // Start is called before the first frame update
     void Start()
     {
-        //AddState(new IdleState(this));
-        AddState(new MoveState(this));
-        ChangeState(STATE.Idle);
+        AddState(new IdleState(this));      // State 1
+        AddState(new StateTest(this));      // State 2
+        ChangeState(STATE.State1);            // 상태설정
+
+        //ChangeState(STATE.Idle);
     }
 }

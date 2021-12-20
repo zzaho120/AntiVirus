@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveState : StateBase
+//public class MoveState : StateBase
+public class StateTest : StateBase
 {
     private float speed = 3f;
     private Rigidbody rigid;
     private float startTime;
-    public MoveState(FSM fsm)
+
+    //public MoveState(FSM fsm)
+    public StateTest(FSM fsm)
     {
         this.fsm = fsm;
 
@@ -32,6 +35,7 @@ public class MoveState : StateBase
             rigid.velocity = new Vector3(speed * 3f * Time.fixedDeltaTime, 0f, 0f);
 
         if (Time.time > startTime + 3f)
-            fsm.ChangeState(STATE.Idle);
+            fsm.ChangeState(STATE.State1);
+            //fsm.ChangeState(STATE.Idle);
     }
 }
