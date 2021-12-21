@@ -5,8 +5,8 @@ using UnityEngine;
 public class BattleMgr : Singleton<BattleMgr>
 {
     public CommandMgr commandMgr;
-    public PlayerTest player;
     public TileMgr tileMgr;
+    public BattlePlayer player;
     public AStar aStar;
 
     public override void Awake()
@@ -20,5 +20,11 @@ public class BattleMgr : Singleton<BattleMgr>
         tileMgr.Init();
         player.Init();
         aStar.Init();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+            player.StartTurn();
     }
 }

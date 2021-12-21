@@ -9,7 +9,6 @@ public class TileBase : MonoBehaviour
 
     [Header("Value")]
     public Vector3 tileIdx;
-    public bool isStair;
 
     [Header("List")]
     public List<TileBase> adjNodes;
@@ -65,11 +64,6 @@ public class TileBase : MonoBehaviour
             }
         }
         return false;
-    }
-
-    public void OnClickTile()
-    {
-        Debug.Log($"Click {gameObject.name}");
     }
 
     public void OpenDoor(bool isContainAdjTile)

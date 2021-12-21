@@ -2,15 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerTest : MonoBehaviour
+public class PlayerableChar : MonoBehaviour
 {
+    [Header("Tile")]
     public Vector3 tileIdx;
     public TileBase currentTile;
 
+    [Header("Value")]
     public int moveDistance;
     public bool isMove;
-    private Dictionary<Vector3, TileBase> moveDics =
-        new Dictionary<Vector3, TileBase>();
+    public bool isTurnOver;
+
+    private Dictionary<TileBase, int> moveDics =
+        new Dictionary<TileBase, int>();
+    private MeshRenderer ren;
     public void Init()
     {
         var dics = BattleMgr.Instance.tileMgr.tileDics;
@@ -25,60 +30,51 @@ public class PlayerTest : MonoBehaviour
                 break;
             }
         }
+
+        ren = GetComponent<MeshRenderer>();
     }
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (!isTurnOver)
         {
-            var nextIdx = new Vector3(tileIdx.x, tileIdx.y, tileIdx.z + 1);
-            MoveTile(nextIdx);
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            var nextIdx = new Vector3(tileIdx.x - 1, tileIdx.y, tileIdx.z);
-            MoveTile(nextIdx);
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            var nextIdx = new Vector3(tileIdx.x, tileIdx.y, tileIdx.z - 1);
-            MoveTile(nextIdx);
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            var nextIdx = new Vector3(tileIdx.x + 1, tileIdx.y, tileIdx.z);
-            MoveTile(nextIdx);
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            currentTile.OpenDoor(true);
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (isMove)
+                currentTile.OpenDoor(true);
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                RaycastHit hit;
+                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hit))
                 {
-                    if(hit.collider.tag == "Tile")
+                    if (isMove)
                     {
-                        var tileBase = hit.collider.GetComponent<TileBase>();
-                        if (moveDics.ContainsKey(tileBase.tileIdx))
+                        if (hit.collider.tag == "Tile")
                         {
-                            BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
-                            MoveMode();
-                            StartCoroutine(CoMove());
+                            var tileBase = hit.collider.GetComponent<TileBase>();
+                            if (moveDics.ContainsKey(tileBase))
+                            {
+                                BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
+                                MoveMode();
+                                StartCoroutine(CoMove());
+                            }
                         }
                     }
-                }
-                if (hit.collider.gameObject == gameObject)
-                {
-                    MoveMode();
+                    if (hit.collider.gameObject == gameObject)
+                    {
+                        MoveMode();
+                    }
                 }
             }
         }
+    }
+
+    public void StartTurn()
+    {
+        isTurnOver = false;
+        ren.material.color = Color.white;
     }
 
     private void MoveTile(Vector3 nextIdx)
@@ -102,14 +98,15 @@ public class PlayerTest : MonoBehaviour
             var aStarTile = path.Pop();
 
             MoveTile(aStarTile.tileBase.tileIdx);
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.1f);
         }
+        isTurnOver = true;
+        ren.material.color = Color.gray;
     }
 
     public void MoveMode()
     {
         isMove = !isMove;
-        var ren = GetComponent<MeshRenderer>();
 
         if (isMove)
         {
@@ -119,12 +116,13 @@ public class PlayerTest : MonoBehaviour
         else
         {
             ren.material.color = Color.white;
-            foreach (var tile in moveDics)
+            foreach (var pair in moveDics)
             {
-                var tileRen = tile.Value.GetComponent<MeshRenderer>();
+                var tile = pair.Key;
+                var tileRen = tile.GetComponent<MeshRenderer>();
                 if (tileRen == null)
                 {
-                    var obj = tile.Value.transform.GetChild(0);
+                    var obj = tile.transform.GetChild(0);
                     tileRen = obj.GetComponent<MeshRenderer>();
                 }
                 tileRen.material.color = Color.white;
@@ -135,7 +133,7 @@ public class PlayerTest : MonoBehaviour
     private void MoveFloodFill()
     {
         moveDics.Clear();
-        moveDics.Add(tileIdx, currentTile);
+        moveDics.Add(currentTile, 0);
 
         var cnt = 0;
         foreach (var adjNode in currentTile.adjNodes)
@@ -149,20 +147,22 @@ public class PlayerTest : MonoBehaviour
         if (cnt >= moveDistance)
             return;
 
-        if (!moveDics.ContainsKey(tile.tileIdx))
-            moveDics.Add(tile.tileIdx, tile);
+        cnt++;
+        if (!moveDics.ContainsKey(tile))
+            moveDics.Add(tile, cnt);
+        else if (moveDics[tile] > cnt)
+            moveDics[tile] = cnt;
         else
             return;
 
-        var ren = tile.GetComponent<MeshRenderer>();
-        if (ren == null)
+        var tileRen = tile.GetComponent<MeshRenderer>();
+        if (tileRen == null)
         {
             var obj = tile.transform.GetChild(0);
-            ren = obj.GetComponent<MeshRenderer>();
+            tileRen = obj.GetComponent<MeshRenderer>();
         }
-        ren.material.color = Color.blue;
+        tileRen.material.color = Color.blue;
 
-        cnt++;
         Debug.Log($"{tile.tileIdx}, {cnt}");
         foreach (var adjNode in tile.adjNodes)
             CheckMoveRange(adjNode, cnt);
