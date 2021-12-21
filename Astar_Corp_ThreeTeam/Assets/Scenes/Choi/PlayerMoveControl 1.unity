@@ -235,8 +235,8 @@ GameObject:
   - component: {fileID: 265384975}
   - component: {fileID: 265384974}
   m_Layer: 0
-  m_Name: NonGameMgr
-  m_TagString: Untagged
+  m_Name: NonBattleMgr
+  m_TagString: NonBattleMgr
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -259,6 +259,7 @@ MonoBehaviour:
   - {fileID: 874090574}
   - {fileID: 1579651472}
   randomEventPrefab: {fileID: 5960557702522919951, guid: 3d32fd81b60ebec44b09ba4080157366, type: 3}
+  markList: []
   currentMapType: 0
 --- !u!4 &265384975
 Transform:
@@ -1085,6 +1086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9242c7f035f9324c8265b66ff4d75c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mark: {fileID: 5644543529044199442, guid: 7b8dea2e7bc45114cb507228202f02d8, type: 3}
   isBattle: 0
 --- !u!1 &1000190524
 GameObject:
