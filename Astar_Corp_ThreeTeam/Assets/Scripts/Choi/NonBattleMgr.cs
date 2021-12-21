@@ -18,6 +18,9 @@ public class NonBattleMgr : MonoBehaviour
     public Dictionary<GameObject, List<GameObject>> randomEvents;
     public GameObject randomEventPrefab;
 
+    //付农 包府.
+    public List<Vector3> markList;
+
     PlayerController playerController;
     float timer;
     public MapType currentMapType;
@@ -33,7 +36,6 @@ public class NonBattleMgr : MonoBehaviour
 
         foreach (var element in maps)
         {
-            //Debug.Log($"{element.name}");
             randomEvents.Add(element, new List<GameObject>());
         }
 
@@ -51,15 +53,15 @@ public class NonBattleMgr : MonoBehaviour
                 randomEvents[element].Add(go);
             }
         }
-    }
 
-   
+        //付农 包府.
+        markList = new List<Vector3>();
+    }
 
     void CreateEvents()
     {
         foreach (var element in maps)
         {
-            //Debug.Log($"{element.name}");
             randomEvents.Add(element, new List<GameObject>());
         }
 

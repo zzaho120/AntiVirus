@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MonsterArea : MonoBehaviour
 {
+    public GameObject mark;
+
     public bool isBattle;
 
     int[] randomTime;
@@ -38,7 +40,7 @@ public class MonsterArea : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            timer+=Time.deltaTime;
+            timer += Time.deltaTime;
             if (timer > 1)
             {
                 timer = 0;
@@ -50,6 +52,14 @@ public class MonsterArea : MonoBehaviour
                 appearanceTimer = 0;
                 isBattle = true;
                 Debug.Log("급습!");
+                Debug.Log("전투종료");
+
+                var manager = GameObject.FindWithTag("NonBattleMgr").GetComponent<NonBattleMgr>();
+                if (!manager.markList.Contains(transform.position))
+                {
+                    Instantiate(mark, transform.position, Quaternion.Euler(90, 0, 0));
+                    manager.markList.Add(transform.position);
+                }
             }
         }
     }
