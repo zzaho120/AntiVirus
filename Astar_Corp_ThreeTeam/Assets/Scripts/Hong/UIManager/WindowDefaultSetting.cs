@@ -23,7 +23,7 @@ public class WindowDefaultSetting : GenericWindow
 
 	public void StartDoubleWindow()
 	{
-		var windowId = (int)Windows.Window6 - 1;
-		var openWindow = manager.Open(windowId, false) as WindowDefaultSetting;
+		//var windowId = (int)Windows.Window6 - 1;
+		//var openWindow = manager.Open(windowId, false) as WindowDefaultSetting;
 	}
 }

@@ -1,0 +1,186 @@
+{
+    "name": "MultiTouch",
+    "maps": [
+        {
+            "name": "Touch",
+            "id": "f0957e13-930b-4f07-ab1b-492ac64df2f5",
+            "actions": [
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "74fd0304-5428-49ed-9dea-86751dc42f52",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "PrimaryTouch",
+                    "type": "Button",
+                    "id": "2113997d-17c1-412d-9714-0e1511169397",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PrimaryTouch_ForSlide",
+                    "type": "Button",
+                    "id": "73e93abb-ac62-44c9-b6de-cacb564aa86b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TwoTouch_Position",
+                    "type": "Value",
+                    "id": "6c0ca234-db50-43f6-8324-33dc4a63256e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "TwoTouch_ForZoom",
+                    "type": "Button",
+                    "id": "f62a8ee0-88d8-4bbc-b787-20d10e524034",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TwoTouch_ForRotate",
+                    "type": "Button",
+                    "id": "0d5b5174-84b2-4dde-83e3-4b267db77e98",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PrimaryTouch_Delta",
+                    "type": "Value",
+                    "id": "a0cee4d2-5714-427a-a9cb-94d53fca0f8e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "TwoTouch_Delta",
+                    "type": "Value",
+                    "id": "f100161d-9ab3-48e1-8964-e3beb6c5b9a4",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "eeb13e33-6a85-49fb-a20b-c6656b580cc0",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "TouchScrren",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f2c99ae3-740d-4b19-bde6-4799ca4909fc",
+                    "path": "<Touchscreen>/primaryTouch/press",
+                    "interactions": "MultiTap(tapDelay=0.25),Tap,SlowTap",
+                    "processors": "",
+                    "groups": "TouchScrren",
+                    "action": "PrimaryTouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0cb70e5e-36e0-494f-b740-dcee5d1e0e5e",
+                    "path": "<Touchscreen>/primaryTouch/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "TouchScrren",
+                    "action": "PrimaryTouch_ForSlide",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "025a46c9-61a5-4796-9970-a53191f4312e",
+                    "path": "<Touchscreen>/touch1/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "TouchScrren",
+                    "action": "TwoTouch_Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8f995e21-d5b0-4558-8c9d-225195d0adc2",
+                    "path": "<Touchscreen>/touch1/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "TouchScrren",
+                    "action": "TwoTouch_ForZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f65d5b28-c65e-45bb-95cb-74c46e84df1d",
+                    "path": "<Touchscreen>/touch1/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "TouchScrren",
+                    "action": "TwoTouch_ForRotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "806c027e-de51-4396-ba24-3d44dc816d2a",
+                    "path": "<Touchscreen>/primaryTouch/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PrimaryTouch_Delta",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "daa3669e-4dee-4fa9-9f7a-9d17ed95db98",
+                    "path": "<Touchscreen>/touch1/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TwoTouch_Delta",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "TouchScrren",
+            "bindingGroup": "TouchScrren",
+            "devices": [
+                {
+                    "devicePath": "<Touchscreen>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

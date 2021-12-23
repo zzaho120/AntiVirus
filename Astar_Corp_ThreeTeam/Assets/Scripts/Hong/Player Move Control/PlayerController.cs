@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 // NavMeshAgent 매뉴얼
 // https://docs.unity3d.com/kr/530/ScriptReference/NavMeshAgent.html
@@ -10,6 +11,7 @@ using UnityEngine.AI;
 public class PlayerController : MonoBehaviour
 {
     //지은.
+    public MultiTouch multiTouch;
     public NonBattleMgr manager;
 
     private NavMeshAgent agent;
@@ -19,6 +21,11 @@ public class PlayerController : MonoBehaviour
     public bool isMove;//지은.
     bool isBattle;
     float randomTimer;
+
+    float pX;
+    float pY;
+    float pZ;
+    bool saveMode;
 
     float originAgentSpeed;
     //private Vector3 calcVelocity = Vector3.zero;
@@ -34,6 +41,20 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")))
+        {
+            pX = PlayerPrefs.GetFloat("p_x");
+            pY = PlayerPrefs.GetFloat("p_y");
+            pZ = PlayerPrefs.GetFloat("p_z");
+            transform.position = new Vector3(pX, pY, pZ);
+        }
+        else
+        {
+            int randomNum = UnityEngine.Random.Range(0, manager.bunkerPos.Count);
+            Vector3 pos = manager.bunkerPos[randomNum].transform.position;
+            transform.position = pos;
+        }
+
         characterController = GetComponent<CharacterController>();
         agent = GetComponent<NavMeshAgent>();
         originAgentSpeed = agent.speed;
@@ -45,24 +66,53 @@ public class PlayerController : MonoBehaviour
 
         isMove = false;
         isBattle = false;
-
-
-
+        saveMode = true;
     }
 
     void Update()
     {
+        if((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")) && saveMode)
+            PlayerPrefs.DeleteAll();
+        
+        if (agent.velocity.magnitude > 0.15f) //움직이고 있을 때.
+        {
+            PlayerPrefs.SetFloat("p_x", transform.position.x);
+            PlayerPrefs.SetFloat("p_y", transform.position.y);
+            PlayerPrefs.SetFloat("p_z", transform.position.z);
+        }
+
         // [수정] 현재 -> 마우스 클릭 방향으로 이동하게
         // 나중에 터치 포지션으로 이동하도록 수정
-        if (Input.GetMouseButtonDown(0))
+        if (multiTouch.DoubleTap)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
+            Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
             RaycastHit raycastHit;
+            groundLayerMask = LayerMask.GetMask("Ground");
             if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
             {
-                //Debug.Log("충돌체 이름 : " + raycastHit.collider.name + ", 좌표 : " + raycastHit.point);
                 agent.SetDestination(raycastHit.point);
+            }
+        }
+        else if (multiTouch.Tap)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
+            RaycastHit raycastHit;
+            if (Physics.Raycast(ray, out raycastHit, 100))
+            {
+                Debug.Log($"{raycastHit.collider.gameObject.name}");
+                if (raycastHit.collider.gameObject.name.Equals("Bunker"))
+                {
+                    pX = raycastHit.collider.gameObject.transform.position.x;
+                    pY = raycastHit.collider.gameObject.transform.position.y;
+                    pZ = raycastHit.collider.gameObject.transform.position.z;
+
+                    saveMode = false;
+                    PlayerPrefs.SetFloat("p_x", pX);
+                    PlayerPrefs.SetFloat("p_y", pY);
+                    PlayerPrefs.SetFloat("p_z", pZ);
+
+                    SceneManager.LoadScene("Bunker");
+                }
             }
         }
 
@@ -116,15 +166,17 @@ public class PlayerController : MonoBehaviour
             agent.speed = originAgentSpeed;
             agent.isStopped = false;
         }
-        else if (other.gameObject.CompareTag("NonBattleMap")) //현재 맵 갱신.
+        else if (other.gameObject.CompareTag("VirusZonePhase1"))
         {
-            //Debug.Log($"{other.gameObject.name}에 들어옴");
-
-            foreach (MapType element in Enum.GetValues(typeof(MapType)))
-            {
-                if (!element.ToString().Equals(other.gameObject.name)) continue;
-                manager.currentMapType = element;
-            }
+            Debug.Log("1단계 바이러스 영역");
+        }
+        else if (other.gameObject.CompareTag("VirusZonePhase2"))
+        {
+            Debug.Log("2단계 바이러스 영역");
+        }
+        else if (other.gameObject.CompareTag("VirusZonePhase3"))
+        {
+            Debug.Log("3단계 바이러스 영역");
         }
     }
 

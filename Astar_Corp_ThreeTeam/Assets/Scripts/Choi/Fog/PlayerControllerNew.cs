@@ -28,28 +28,28 @@ public class PlayerControllerNew : MonoBehaviour
         transform.Translate(x, 0, z);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        //Debug.Log($"{other.gameObject.name}");
-        if (other.gameObject.name.Equals("Seoul"))
-        {
-            manager.currentMapType = MapType.Seoul;
-            Debug.Log("I'm in Seoul!");
-        }
-        else if (other.gameObject.name.Equals("Suncheon"))
-        {
-            manager.currentMapType = MapType.Suncheon;
-            Debug.Log("I'm in Suncheon!");
-        }
-        else if (other.gameObject.name.Equals("Daegu"))
-        {
-            manager.currentMapType = MapType.Daegu;
-            Debug.Log("I'm in Daegu!");
-        }
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    //Debug.Log($"{other.gameObject.name}");
+    //    if (other.gameObject.name.Equals("Seoul"))
+    //    {
+    //        manager.currentMapType = MapType.Seoul;
+    //        Debug.Log("I'm in Seoul!");
+    //    }
+    //    else if (other.gameObject.name.Equals("Suncheon"))
+    //    {
+    //        manager.currentMapType = MapType.Suncheon;
+    //        Debug.Log("I'm in Suncheon!");
+    //    }
+    //    else if (other.gameObject.name.Equals("Daegu"))
+    //    {
+    //        manager.currentMapType = MapType.Daegu;
+    //        Debug.Log("I'm in Daegu!");
+    //    }
+    //}
 
-    private void OnTriggerExit(Collider other)
-    {
-        manager.currentMapType = MapType.None;
-    }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    manager.currentMapType = MapType.None;
+    //}
 }

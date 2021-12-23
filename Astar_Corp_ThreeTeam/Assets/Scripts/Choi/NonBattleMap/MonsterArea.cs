@@ -32,6 +32,15 @@ public class MonsterArea : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             int randomNum = Random.Range(0, 3);
+
+            if (randomTime == null)
+            {
+                randomTime = new int[3];
+                randomTime[0] = 5;
+                randomTime[1] = 10;
+                randomTime[2] = 15;
+            }
+
             AppearanceTime = randomTime[randomNum];
         }
     }
