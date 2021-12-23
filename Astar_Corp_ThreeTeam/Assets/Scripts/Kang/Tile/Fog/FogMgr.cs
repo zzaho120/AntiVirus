@@ -85,7 +85,7 @@ public class FogMgr : MonoBehaviour
         //UpdateEverFog();
         UpdateCurrentFog();
         InitPlayerSight();
-        InitObstalce();
+        InitObstacle();
         UpdateObj();
     }
 
@@ -150,9 +150,14 @@ public class FogMgr : MonoBehaviour
         CheckPlayerSight(new Vector2(tileIdx.x + 1, tileIdx.y), new Vector2(tileIdx.x + 0.5f, tileIdx.y), sightCnt, maxSight, playerIdx);
     }
 
-    private void InitObstalce()
+    private void InitObstacle()
     {
         var player = playerableChars[0];
+
+        for (int i = 0; i < TileMgr.MAX_Z_IDX; ++i)
+        {
+            for (int j )
+        }
     }
 
     private void UpdateObj()
