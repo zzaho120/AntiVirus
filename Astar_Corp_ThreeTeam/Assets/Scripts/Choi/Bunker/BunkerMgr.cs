@@ -25,17 +25,72 @@ public class BunkerMgr : MonoBehaviour
     public GameObject gardenPrefab;
     public GameObject operatingRoomPrefab;
     public GameObject storePrefab;
+    public List<GameObject> bunkerObjs;
+
+    int bunkerCount;
+    int currentBunkerIndex;
 
     private void Start()
     {
+        //PlayerPrefs.DeleteAll();
+
         currentWinId = -1;
         currentBunkerKind = BunkerKinds.None;
+
+        bunkerCount = bunkerObjs.Count;
+        currentBunkerIndex = -1;
+
+        if (!PlayerPrefs.HasKey("BunkerKind0"))
+        {
+            for (int i = 0; i < bunkerCount; i++)
+            {
+                string str = $"BunkerKind{i}";
+                PlayerPrefs.SetInt(str, (int)BunkerKinds.None);
+            }
+            Debug.Log("no key");
+        }
+        else
+        {
+            Debug.Log("has key");
+            for (int i = 0; i < bunkerCount; i++)
+            {
+                string str = $"BunkerKind{i}";
+                int kind = PlayerPrefs.GetInt(str);
+                BunkerKinds bunkerKinds = (BunkerKinds)kind;
+
+                Debug.Log($"kind : {kind}");
+
+                selectedBunker = bunkerObjs[i];
+                currentBunkerIndex = i;
+                currentBunkerKind = bunkerKinds;
+                switch (bunkerKinds)
+                {
+                    case BunkerKinds.None:
+                        break;
+                    case BunkerKinds.Garden:
+                        Debug.Log("Garden");
+                        CreateGarden();
+                        break;
+                    case BunkerKinds.OperatingRoom:
+                        Debug.Log("OperatingRoom");
+                        CreateOperatingRoom();
+                        break;
+                    case BunkerKinds.Store:
+                        Debug.Log("Store");
+                        CreateStore();
+                        break;
+                }
+                selectedBunker = null;
+                currentBunkerIndex = -1;
+                currentBunkerKind = BunkerKinds.None;
+            }
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log($"currentWinId : {currentWinId}");
+        //Debug.Log($"currentWinId : {currentWinId}");
 
         if (multiTouch.Tap)
         {
@@ -45,6 +100,9 @@ public class BunkerMgr : MonoBehaviour
             {
                 if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
                 {
+                    var script = hitInfo.collider.gameObject.GetComponent<BunkerBase>();
+                    currentBunkerIndex = script.bunkerId;
+
                     selectedBunker = hitInfo.collider.gameObject;
                 }
 
@@ -92,8 +150,18 @@ public class BunkerMgr : MonoBehaviour
     public void CreateGarden()
     {
         if (selectedBunker == null) return;
+        currentBunkerKind = BunkerKinds.Garden;
+
+        string str = $"BunkerKind{currentBunkerIndex}";
+        PlayerPrefs.SetInt(str, (int)currentBunkerKind);
+
+        Debug.Log($"currentBunkerIndex : {currentBunkerIndex}");
+        Debug.Log($"currentBunkerKind : {(int)currentBunkerKind}");
 
         var go = Instantiate(gardenPrefab, selectedBunker.transform.position, Quaternion.identity);
+        var script = go.GetComponent<GardenRoom>();
+        script.bunkerId = currentBunkerIndex;
+
         Destroy(selectedBunker);
         selectedBunker = go;
 
@@ -104,8 +172,18 @@ public class BunkerMgr : MonoBehaviour
     public void CreateOperatingRoom()
     {
         if (selectedBunker == null) return;
+        currentBunkerKind = BunkerKinds.OperatingRoom;
+
+        string str = $"BunkerKind{currentBunkerIndex}";
+        PlayerPrefs.SetInt(str, (int)currentBunkerKind);
+
+        Debug.Log($"currentBunkerIndex : {currentBunkerIndex}");
+        Debug.Log($"currentBunkerKind : {(int)currentBunkerKind}");
 
         var go = Instantiate(operatingRoomPrefab, selectedBunker.transform.position, Quaternion.identity);
+        var script = go.GetComponent<OperatingRoom>();
+        script.bunkerId = currentBunkerIndex;
+
         Destroy(selectedBunker);
         selectedBunker = go;
 
@@ -116,8 +194,18 @@ public class BunkerMgr : MonoBehaviour
     public void CreateStore()
     {
         if (selectedBunker == null) return;
+        currentBunkerKind = BunkerKinds.Store;
+
+        string str = $"BunkerKind{currentBunkerIndex}";
+        PlayerPrefs.SetInt(str, (int)currentBunkerKind);
+
+        Debug.Log($"currentBunkerIndex : {currentBunkerIndex}");
+        Debug.Log($"currentBunkerKind : {(int)currentBunkerKind}");
 
         var go = Instantiate(storePrefab, selectedBunker.transform.position, Quaternion.identity);
+        var script = go.GetComponent<StoreRoom>();
+        script.bunkerId = currentBunkerIndex;
+
         Destroy(selectedBunker);
         selectedBunker = go;
 

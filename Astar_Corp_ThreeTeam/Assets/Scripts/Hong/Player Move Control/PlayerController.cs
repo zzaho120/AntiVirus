@@ -71,9 +71,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")) && saveMode)
-            PlayerPrefs.DeleteAll();
-        
+        //if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")) && saveMode)
+        //    PlayerPrefs.DeleteAll();
+
         if (agent.velocity.magnitude > 0.15f) //움직이고 있을 때.
         {
             PlayerPrefs.SetFloat("p_x", transform.position.x);
@@ -147,26 +147,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("RandomEvent")) //랜덤 이벤트 발생.
-        {
-            //Debug.Log($"{manager.currentMapType}");
-            agent.speed = 0;
-            agent.destination = transform.position;
-            agent.isStopped = true;
-
-            foreach (var element in manager.randomEvents)
-            {
-                if (!element.Value.Contains(other.gameObject)) continue;
-
-                manager.randomEvents[element.Key].Remove(other.gameObject);
-                Destroy(other.gameObject);
-            }
-
-            //Debug.Log("랜덤이벤트 종료");
-            agent.speed = originAgentSpeed;
-            agent.isStopped = false;
-        }
-        else if (other.gameObject.CompareTag("VirusZonePhase1"))
+        if (other.gameObject.CompareTag("VirusZonePhase1"))
         {
             Debug.Log("1단계 바이러스 영역");
         }
@@ -196,4 +177,3 @@ public class PlayerController : MonoBehaviour
         }
     }
 }
-

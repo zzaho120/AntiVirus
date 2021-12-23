@@ -2,14 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//public enum MapType
-//{
-//    Seoul,
-//    Suncheon,
-//    Daegu,
-//    None
-//}
-
 public class NonBattleMgr : MonoBehaviour
 {
     public GameObject player;
@@ -17,26 +9,34 @@ public class NonBattleMgr : MonoBehaviour
     public List<Transform> bunkerPos;
     public List<GameObject> laboratoryObj;
 
-    public Dictionary<GameObject, List<GameObject>> randomEvents;
-    public GameObject randomEventPrefab;
-
     public GameObject monsterAreaPrefab;
+    public GameObject eliteMonsterPrefab;
+
+    //연구소 영역.
+    float Zoon2Magnifi = 2f;
+    float Zoon3Magnifi = 3f;
+    //몬스터 영역.
     int monsterAreaCount;
+    //엘리트 몬스터.
+    int eliteMonsterCount;
 
     //마크 관리.
     public List<Vector3> markList;
 
     PlayerController playerController;
     float timer;
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        PlayerPrefs.DeleteAll();
         monsterAreaCount = 5;
+        eliteMonsterCount = 5;
+
+        Zoon2Magnifi = 2f;
+        Zoon3Magnifi = 3f;
 
         //처음 시작할때.
-        if (!PlayerPrefs.HasKey("VirusCoverage0"))
+        if (!PlayerPrefs.HasKey("MonsterAreaX0"))
         {
             int i = 0;
             foreach (var element in laboratoryObj)
@@ -47,23 +47,21 @@ public class NonBattleMgr : MonoBehaviour
                 var virusZoon1 = element.transform.GetChild(3).gameObject;
 
                 int randomNum = UnityEngine.Random.Range(2, 7);
-                float Zoon2Magnifi = 2f;
-                float Zoon3Magnifi = 3f;
 
                 virusZoon3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
                 virusZoon2.transform.localScale = new Vector3(randomNum * Zoon2Magnifi, randomNum * Zoon2Magnifi, randomNum * Zoon2Magnifi);
                 virusZoon1.transform.localScale = new Vector3(randomNum * Zoon3Magnifi, randomNum * Zoon3Magnifi, randomNum * Zoon3Magnifi);
 
-                string str = $"VirusCoverage{i}";
+                string str = $"VirusZoneScale{i}";
                 PlayerPrefs.SetInt(str, randomNum);
                 i++;
             }
-
+            //MonsterArea 생성.
             for (int j = 0; j < monsterAreaCount; j++)
             {
                 int randX;
-                int randZ;
                 int randScale;
+                int randomIndex;
                 Vector3 position;
 
                 var radius = monsterAreaPrefab.GetComponent<SphereCollider>().radius;
@@ -73,39 +71,60 @@ public class NonBattleMgr : MonoBehaviour
                 var playerLayer = LayerMask.GetMask("Player");
                 do
                 {
-                    int randomIndex = UnityEngine.Random.Range(0, laboratoryObj.Count);
+                    randomIndex = UnityEngine.Random.Range(0, laboratoryObj.Count);
                     var randLaboratoryPos = laboratoryObj[randomIndex].transform.position;
 
-                    var secondChild = laboratoryObj[randomIndex].transform.GetChild(3).gameObject;
-                    var secondChildRadius = secondChild.GetComponent<SphereCollider>().radius;
-                    var secondChildScale = secondChild.transform.localScale.x;
-                    var range = secondChildRadius * secondChildScale;
-
-                    Debug.Log($"randLaboratoryPos : {randLaboratoryPos.x}");
-                    Debug.Log($"Random.onUnitSphere * range : {(Random.onUnitSphere * range).x}");
-                    var pos = Random.onUnitSphere * range + randLaboratoryPos;
-                    Debug.Log($"pos.x : {pos.x}");
-
-                    randX = UnityEngine.Random.Range(-5, 5);
-                    randZ = UnityEngine.Random.Range(-5, 5);
-
-                    //position = new Vector3((randLaboratoryPos.x ) + randX, 0, (randLaboratoryPos.z) + randZ);
-                    position = new Vector3(pos.x , 0, pos.z );
+                    randX = UnityEngine.Random.Range(10, 20);
+                    var pos = Random.onUnitSphere * randX + randLaboratoryPos;
+                    position = new Vector3(pos.x, 0, pos.z);
                     randScale = UnityEngine.Random.Range(6, 10);
 
-                } while (/*(Physics.OverlapSphere(position, radius * randScale, monsterAreaLayer).Length != 0)
-                ||*/ (Physics.OverlapSphere(position, radius * randScale, playerLayer).Length != 0)
-                /*|| (Physics.OverlapSphere(position, radius * randScale, virusZone).Length == 0)*/);
+                } while ((Physics.OverlapSphere(position, radius * randScale, monsterAreaLayer).Length != 0)
+                || (Physics.OverlapSphere(position, radius * randScale, playerLayer).Length != 0)
+                || (Physics.OverlapSphere(position, radius * randScale, virusZone).Length == 0));
 
                 string str = $"MonsterAreaX{j}";
-                PlayerPrefs.SetInt(str, randX);
+                PlayerPrefs.SetFloat(str, position.x);
                 str = $"MonsterAreaZ{j}";
-                PlayerPrefs.SetInt(str, randZ);
+                PlayerPrefs.SetFloat(str, position.z);
                 str = $"MonsterAreaScale{j}";
                 PlayerPrefs.SetInt(str, randScale);
 
                 var go = Instantiate(monsterAreaPrefab, position, Quaternion.identity);
                 go.transform.localScale = new Vector3(randScale, randScale, randScale);
+            }
+            //EliteMonster 생성.
+            for (int j = 0; j < eliteMonsterCount; j++)
+            {
+                int randX;
+                int randomIndex;
+                Vector3 position;
+
+                var radius = monsterAreaPrefab.GetComponent<SphereCollider>().radius;
+
+                var eliteMonsterLayer = LayerMask.GetMask("EliteMonster");
+                var facilitiesLayer = LayerMask.GetMask("facilities");
+                var virusZone = LayerMask.GetMask("VirusZone");
+                var playerLayer = LayerMask.GetMask("Player");
+                do
+                {
+                randomIndex = UnityEngine.Random.Range(0, laboratoryObj.Count);
+                var randLaboratoryPos = laboratoryObj[randomIndex].transform.position;
+
+                randX = UnityEngine.Random.Range(10, 20);
+                var pos = Random.onUnitSphere * randX + randLaboratoryPos;
+                position = new Vector3(pos.x, 0, pos.z);
+
+                } while ((Physics.OverlapSphere(position, radius, playerLayer).Length != 0)
+                || (Physics.OverlapSphere(position, radius, eliteMonsterLayer).Length != 0)
+                || (Physics.OverlapSphere(position, radius, virusZone).Length == 0));
+
+                string str = $"EliteMonsterX{j}";
+                PlayerPrefs.SetFloat(str, position.x);
+                str = $"EliteMonsterZ{j}";
+                PlayerPrefs.SetFloat(str, position.z);
+                
+                var go = Instantiate(eliteMonsterPrefab, position, Quaternion.identity);
             }
         }
         else
@@ -113,10 +132,15 @@ public class NonBattleMgr : MonoBehaviour
             int i = 0;
             foreach (var element in laboratoryObj)
             {
-                var coverage = element.transform.GetChild(1).gameObject;
-                string str = $"VirusCoverage{i}";
+                var virusZoon3 = element.transform.GetChild(1).gameObject;
+                var virusZoon2 = element.transform.GetChild(2).gameObject;
+                var virusZoon1 = element.transform.GetChild(3).gameObject;
+
+                string str = $"VirusZoneScale{i}";
                 int randomNum = PlayerPrefs.GetInt(str);
-                coverage.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
+                virusZoon3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
+                virusZoon2.transform.localScale = new Vector3(randomNum * Zoon2Magnifi, randomNum * Zoon2Magnifi, randomNum * Zoon2Magnifi);
+                virusZoon1.transform.localScale = new Vector3(randomNum * Zoon3Magnifi, randomNum * Zoon3Magnifi, randomNum * Zoon3Magnifi);
 
                 i++;
             }
@@ -124,66 +148,36 @@ public class NonBattleMgr : MonoBehaviour
             for (int j = 0; j < monsterAreaCount; j++)
             {
                 string str = $"MonsterAreaX{j}";
-                var randX = PlayerPrefs.GetInt(str);
+                var randX = PlayerPrefs.GetFloat(str);
 
                 str = $"MonsterAreaZ{j}";
-                var randZ = PlayerPrefs.GetInt(str);
+                var randZ = PlayerPrefs.GetFloat(str);
 
                 var go = Instantiate(monsterAreaPrefab, new Vector3(randX, 0, randZ), Quaternion.identity);
                 str = $"MonsterAreaScale{j}";
                 var randScale = PlayerPrefs.GetInt(str);
                 go.transform.localScale = new Vector3(randScale, randScale, randScale);
             }
+            for (int j = 0; j < eliteMonsterCount; j++)
+            {
+                string str = $"EliteMonsterX{j}";
+                var randX = PlayerPrefs.GetFloat(str);
+
+                str = $"EliteMonsterZ{j}";
+                var randZ = PlayerPrefs.GetFloat(str);
+
+                var go = Instantiate(eliteMonsterPrefab, new Vector3(randX, 0, randZ), Quaternion.identity);
+            }
         }
 
         playerController = player.GetComponent<PlayerController>();
-
-        randomEvents = new Dictionary<GameObject, List<GameObject>>();
-
-        foreach (var element in maps)
-        {
-            randomEvents.Add(element, new List<GameObject>());
-        }
-
-        foreach (var element in maps)
-        {
-            var randomNum = Random.Range(0, 4);
-            for (int i = 0; i < randomNum; i++)
-            {
-                var randomX = element.transform.position.x + Random.Range(0, 10);
-                var randomZ = element.transform.position.z + Random.Range(0, 10);
-
-                var go = Instantiate(randomEventPrefab, new Vector3(randomX, 0, randomZ), Quaternion.identity);
-                go.tag = "RandomEvent";
-
-                randomEvents[element].Add(go);
-            }
-        }
 
         //마크 관리.
         markList = new List<Vector3>();
     }
 
-    void CreateEvents()
+    public void Restart()
     {
-        foreach (var element in maps)
-        {
-            randomEvents.Add(element, new List<GameObject>());
-        }
-
-        foreach (var element in maps)
-        {
-            var randomNum = Random.Range(0, 4);
-            for (int i = 0; i < randomNum; i++)
-            {
-                var randomX = element.transform.position.x + Random.Range(0, 10);
-                var randomZ = element.transform.position.z + Random.Range(0, 10);
-
-                var go = Instantiate(randomEventPrefab, new Vector3(randomX, 0, randomZ), Quaternion.identity);
-                go.tag = "RandomEvent";
-
-                randomEvents[element].Add(go);
-            }
-        }
+        PlayerPrefs.DeleteAll();
     }
 }
