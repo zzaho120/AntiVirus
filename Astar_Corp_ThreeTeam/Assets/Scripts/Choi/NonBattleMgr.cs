@@ -52,6 +52,12 @@ public class NonBattleMgr : MonoBehaviour
                 virusZoon2.transform.localScale = new Vector3(randomNum * Zoon2Magnifi, randomNum * Zoon2Magnifi, randomNum * Zoon2Magnifi);
                 virusZoon1.transform.localScale = new Vector3(randomNum * Zoon3Magnifi, randomNum * Zoon3Magnifi, randomNum * Zoon3Magnifi);
 
+                var radius = virusZoon3.GetComponent<SphereCollider>().radius;
+                var script = virusZoon1.GetComponent<LaboratoryInfo>();
+                script.radiusZone3 = radius * virusZoon3.transform.lossyScale.x;
+                script.radiusZone2 = radius * virusZoon2.transform.lossyScale.x;
+                script.radiusZone1 = radius * virusZoon1.transform.lossyScale.x;
+
                 string str = $"VirusZoneScale{i}";
                 PlayerPrefs.SetInt(str, randomNum);
                 i++;
@@ -143,6 +149,12 @@ public class NonBattleMgr : MonoBehaviour
                 virusZoon1.transform.localScale = new Vector3(randomNum * Zoon3Magnifi, randomNum * Zoon3Magnifi, randomNum * Zoon3Magnifi);
 
                 i++;
+
+                var radius = virusZoon3.GetComponent<SphereCollider>().radius;
+                var script = virusZoon1.GetComponent<LaboratoryInfo>();
+                script.radiusZone3 = radius * virusZoon3.transform.lossyScale.x;
+                script.radiusZone2 = radius * virusZoon2.transform.lossyScale.x;
+                script.radiusZone1 = radius * virusZoon1.transform.lossyScale.x;
             }
 
             for (int j = 0; j < monsterAreaCount; j++)
@@ -176,7 +188,7 @@ public class NonBattleMgr : MonoBehaviour
         markList = new List<Vector3>();
     }
 
-    public void Restart()
+public void Restart()
     {
         PlayerPrefs.DeleteAll();
     }

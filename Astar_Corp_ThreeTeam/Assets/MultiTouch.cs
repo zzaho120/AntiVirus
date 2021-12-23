@@ -135,7 +135,7 @@ public class MultiTouch : MonoBehaviour
                 }
                 break;
         }
-        Debug.Log(SwipeDirection);
+        //Debug.Log(SwipeDirection);
     }
 
     public void OnZoomInOut(CallbackContext ctx)

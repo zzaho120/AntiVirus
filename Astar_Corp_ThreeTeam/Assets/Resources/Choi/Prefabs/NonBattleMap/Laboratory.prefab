@@ -189,7 +189,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4615540924802509228}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -286,7 +286,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6159586514272639279}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -303,6 +303,7 @@ GameObject:
   - component: {fileID: 1218978160559159751}
   - component: {fileID: 6707625502007538526}
   - component: {fileID: 4673872221935923096}
+  - component: {fileID: 8457564643269797898}
   m_Layer: 16
   m_Name: Sphere (2)
   m_TagString: VirusZonePhase1
@@ -383,11 +384,26 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7750952526694983911}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8457564643269797898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7750952526694983911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c701d4fa299cd9b49b2e5dc55c457f36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radiusZone1: 0
+  radiusZone2: 0
+  radiusZone3: 0
 --- !u!1 &8820048702211649788
 GameObject:
   m_ObjectHideFlags: 0

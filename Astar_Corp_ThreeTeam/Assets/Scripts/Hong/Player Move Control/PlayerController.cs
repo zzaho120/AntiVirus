@@ -27,6 +27,11 @@ public class PlayerController : MonoBehaviour
     float pZ;
     bool saveMode;
 
+    //바이러스 영역.
+    public bool isInVirusZone1;
+    public bool isInVirusZone2;
+    public bool isInVirusZone3;
+
     float originAgentSpeed;
     //private Vector3 calcVelocity = Vector3.zero;
 
@@ -73,6 +78,9 @@ public class PlayerController : MonoBehaviour
     {
         //if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")) && saveMode)
         //    PlayerPrefs.DeleteAll();
+        if (isInVirusZone1) Debug.Log("VirusZone1");
+        else if (isInVirusZone2) Debug.Log("VirusZone2");
+        else if (isInVirusZone3) Debug.Log("VirusZone3");
 
         if (agent.velocity.magnitude > 0.15f) //움직이고 있을 때.
         {
@@ -116,7 +124,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-
         if (agent.remainingDistance > agent.stoppingDistance)
         {
             characterController.Move(agent.velocity * Time.deltaTime);
@@ -144,23 +151,7 @@ public class PlayerController : MonoBehaviour
         // 씬 전환 시? FadeOut 효과
         //panel.GetComponent<FadeOutTest>().StartFade();
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("VirusZonePhase1"))
-        {
-            Debug.Log("1단계 바이러스 영역");
-        }
-        else if (other.gameObject.CompareTag("VirusZonePhase2"))
-        {
-            Debug.Log("2단계 바이러스 영역");
-        }
-        else if (other.gameObject.CompareTag("VirusZonePhase3"))
-        {
-            Debug.Log("3단계 바이러스 영역");
-        }
-    }
-
+   
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("MonsterArea") && !isBattle) //몬스터와 전투.

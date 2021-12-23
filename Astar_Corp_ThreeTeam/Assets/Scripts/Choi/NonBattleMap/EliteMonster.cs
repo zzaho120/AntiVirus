@@ -16,7 +16,8 @@ public class EliteMonster : MonoBehaviour
     {
         if (other.gameObject.CompareTag("PlayerSight"))
         {
-            if(render.enabled == false)
+            if(render == null) render = GetComponent<MeshRenderer>();
+            if (render.enabled == false)
                 render.enabled = true;
         }
     }
@@ -25,6 +26,7 @@ public class EliteMonster : MonoBehaviour
     {
         if (other.gameObject.CompareTag("PlayerSight"))
         {
+            if (render == null) render = GetComponent<MeshRenderer>();
             if (render.enabled == true)
                 render.enabled = false;
         }
