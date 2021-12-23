@@ -10,8 +10,10 @@ public class PlayerableChar : MonoBehaviour
 
     [Header("Value")]
     public int moveDistance;
+    public int sightDistance;
     public bool isMove;
     public bool isTurnOver;
+    
 
     private Dictionary<TileBase, int> moveDics =
         new Dictionary<TileBase, int>();
@@ -41,14 +43,18 @@ public class PlayerableChar : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 currentTile.OpenDoor(true);
+                // test
+                BattleMgr.Instance.fogMgr.UpdateFog();
             }
 
             if (Input.GetMouseButtonDown(0))
             {
                 RaycastHit hit;
                 var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                
                 if (Physics.Raycast(ray, out hit))
                 {
+                    Debug.Log(hit.collider.name);
                     if (isMove)
                     {
                         if (hit.collider.tag == "Tile")
@@ -98,6 +104,9 @@ public class PlayerableChar : MonoBehaviour
             var aStarTile = path.Pop();
 
             MoveTile(aStarTile.tileBase.tileIdx);
+
+            // test
+            BattleMgr.Instance.fogMgr.UpdateFog();
             yield return new WaitForSeconds(0.1f);
         }
         isTurnOver = true;
@@ -163,7 +172,6 @@ public class PlayerableChar : MonoBehaviour
         }
         tileRen.material.color = Color.blue;
 
-        Debug.Log($"{tile.tileIdx}, {cnt}");
         foreach (var adjNode in tile.adjNodes)
             CheckMoveRange(adjNode, cnt);
     }

@@ -9,6 +9,7 @@ public class TileBase : MonoBehaviour
 
     [Header("Value")]
     public Vector3 tileIdx;
+    public GameObject tileObj;
 
     [Header("List")]
     public List<TileBase> adjNodes;
@@ -149,5 +150,11 @@ public class TileBase : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public void EnableDisplay(bool isEnabled)
+    {
+        var ren = tileObj.GetComponent<MeshRenderer>();
+        ren.enabled = isEnabled;
     }
 }

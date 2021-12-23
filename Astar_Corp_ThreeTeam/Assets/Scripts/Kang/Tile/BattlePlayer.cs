@@ -12,14 +12,15 @@ public class BattlePlayer : MonoBehaviour
         {
             character.Init();
         }
+
+        EventBusMgr.Subscribe(EventType.TurnEnd, StartTurn);
     }
 
-    public void StartTurn()
+    public void StartTurn(object empty)
     {
         foreach (var character in playerableChars)
         {
             character.StartTurn();
         }
     }
-
 }

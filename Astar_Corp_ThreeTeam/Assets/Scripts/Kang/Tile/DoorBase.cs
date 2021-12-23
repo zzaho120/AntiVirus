@@ -4,22 +4,25 @@ using UnityEngine;
 
 public class DoorBase : MonoBehaviour
 {
-    public GameObject door;
+    public GameObject doorObj;
     public bool isOpenDoor;
     public DirectionType type;
 
-    private Renderer ren;
-    private void Start()
-    {
-        ren = door.GetComponent<Renderer>();
-    }
 
     public void OnOpenDoor()
     {
         isOpenDoor = !isOpenDoor;
-        if (isOpenDoor)
-            ren.enabled = false;
-        else
-            ren.enabled = true;
+    }
+
+    public void EnableDisplay(bool isEnabled)
+    {
+        var ren = doorObj.GetComponent<MeshRenderer>();
+        ren.enabled = isEnabled;
+    }
+
+    public void EnableDisplay()
+    {
+        var ren = doorObj.GetComponent<MeshRenderer>();
+        ren.enabled = !isOpenDoor;
     }
 }

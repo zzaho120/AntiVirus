@@ -7,6 +7,7 @@ public class BattleMgr : Singleton<BattleMgr>
     public CommandMgr commandMgr;
     public TileMgr tileMgr;
     public BattlePlayer player;
+    public FogMgr fogMgr;
     public AStar aStar;
 
     public override void Awake()
@@ -20,11 +21,12 @@ public class BattleMgr : Singleton<BattleMgr>
         tileMgr.Init();
         player.Init();
         aStar.Init();
+        fogMgr.Init();
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha0))
-            player.StartTurn();
+            EventBusMgr.Publish(EventType.TurnEnd);
     }
 }

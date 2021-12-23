@@ -17,13 +17,8 @@ public class TileMgr : MonoBehaviour
 
     public Dictionary<Vector3, TileBase> tileDics = new Dictionary<Vector3, TileBase>();
 
-    private int MAX_X_IDX = 16;
-    private int MAX_Y_IDX = 2;
-    private int MAX_Z_IDX = 16;
-
-    private int OFFSET_X = 1;
-    private int OFFSET_Y = 1;
-    private int OFFSET_Z = 1;
+    public static int MAX_X_IDX = 16;
+    public static int MAX_Z_IDX = 16;
 
     public void Init()
     {

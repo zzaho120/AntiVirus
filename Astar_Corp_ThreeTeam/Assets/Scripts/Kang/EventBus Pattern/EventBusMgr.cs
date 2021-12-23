@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public enum EventType
 {
-    Init, Move, Gameover
+    Init, TurnEnd
 }
 
 public static class EventBusMgr
