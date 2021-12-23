@@ -48,9 +48,7 @@ public class WindowManagerEditor : Editor
 				}
 
 			}
-
 			AssetDatabase.Refresh();
-
 		}
 	}
 

@@ -3,130 +3,133 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum BunkerKinds
-{ 
-    None,
-    Garden,
-    OperatingRoom,
-    Store,
-}
-
-public class BunkerMgr : MonoBehaviour
+namespace bunker
 {
-    public MultiTouch multiTouch;
-    public BunkerCamController camController;
-    public WindowManager windowManager;
-
-    public Camera camera;
-    GameObject selectedBunker;
-    BunkerKinds currentBunkerKind;
-    int currentWinId;
-
-    public GameObject gardenPrefab;
-    public GameObject operatingRoomPrefab;
-    public GameObject storePrefab;
-
-    private void Start()
+    public enum BunkerKinds
     {
-        currentWinId = -1;
-        currentBunkerKind = BunkerKinds.None;
+        None,
+        Garden,
+        OperatingRoom,
+        Store,
     }
 
-    // Update is called once per frame
-    void Update()
+    public class BunkerMgr : MonoBehaviour
     {
-        Debug.Log($"currentWinId : {currentWinId}");
+        public MultiTouch multiTouch;
+        public BunkerCamController camController;
+        public WindowManager windowManager;
 
-        if (multiTouch.Tap)
+        public Camera camera;
+        GameObject selectedBunker;
+        BunkerKinds currentBunkerKind;
+        int currentWinId;
+
+        public GameObject gardenPrefab;
+        public GameObject operatingRoomPrefab;
+        public GameObject storePrefab;
+
+        private void Start()
         {
-            Ray ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
+            currentWinId = -1;
+            currentBunkerKind = BunkerKinds.None;
+        }
 
-            if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        // Update is called once per frame
+        void Update()
+        {
+            Debug.Log($"currentWinId : {currentWinId}");
+
+            if (multiTouch.Tap)
             {
-                if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
-                {
-                    selectedBunker = hitInfo.collider.gameObject;
-                }
+                Ray ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
 
-                //현재 벙커 종류.
-                if (hitInfo.collider.gameObject.GetComponent<GardenRoom>() != null)
+                if (Physics.Raycast(ray, out RaycastHit hitInfo))
                 {
-                    currentBunkerKind = BunkerKinds.Garden;
+                    if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
+                    {
+                        selectedBunker = hitInfo.collider.gameObject;
+                    }
+
+                    //현재 벙커 종류.
+                    if (hitInfo.collider.gameObject.GetComponent<GardenRoom>() != null)
+                    {
+                        currentBunkerKind = BunkerKinds.Garden;
+                    }
+                    else if (hitInfo.collider.gameObject.GetComponent<OperatingRoom>() != null)
+                    {
+                        currentBunkerKind = BunkerKinds.OperatingRoom;
+                    }
+                    else if (hitInfo.collider.gameObject.GetComponent<StoreRoom>() != null)
+                    {
+                        currentBunkerKind = BunkerKinds.Store;
+                    }
+                    else currentBunkerKind = BunkerKinds.None;
                 }
-                else if (hitInfo.collider.gameObject.GetComponent<OperatingRoom>() != null)
-                {
-                    currentBunkerKind = BunkerKinds.OperatingRoom;
-                }
-                else if (hitInfo.collider.gameObject.GetComponent<StoreRoom>() != null)
-                {
-                    currentBunkerKind = BunkerKinds.Store;
-                }
-                else currentBunkerKind = BunkerKinds.None;
+            }
+
+            if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Store)
+            {
+                currentWinId = (int)Windows.StoreWindow - 1;
+                windowManager.Open(currentWinId);
+            }
+            else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.OperatingRoom)
+            {
+                currentWinId = (int)Windows.SquadWindow - 1;
+                windowManager.Open(currentWinId);
+            }
+            else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Garden)
+            {
+                currentWinId = (int)Windows.InventoryWindow - 1;
+                windowManager.Open(currentWinId);
+            }
+
+            if (!camController.isZoomIn && currentWinId != -1)
+            {
+                windowManager.windows[currentWinId].Close();
+                currentWinId = -1;
             }
         }
 
-        if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Store)
+
+        public void CreateGarden()
         {
-            currentWinId = (int)Windows.StoreWindow - 1;
-            windowManager.Open(currentWinId);
-        }
-        else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.OperatingRoom)
-        {
-            currentWinId = (int)Windows.SquadWindow - 1;
-            windowManager.Open(currentWinId);
-        }
-        else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Garden)
-        {
+            if (selectedBunker == null) return;
+
+            var go = Instantiate(gardenPrefab, selectedBunker.transform.position, Quaternion.identity);
+            Destroy(selectedBunker);
+            selectedBunker = go;
+
             currentWinId = (int)Windows.InventoryWindow - 1;
             windowManager.Open(currentWinId);
         }
 
-        if (!camController.isZoomIn && currentWinId != -1)
+        public void CreateOperatingRoom()
         {
-            windowManager.windows[currentWinId].Close();
-            currentWinId = -1;
+            if (selectedBunker == null) return;
+
+            var go = Instantiate(operatingRoomPrefab, selectedBunker.transform.position, Quaternion.identity);
+            Destroy(selectedBunker);
+            selectedBunker = go;
+
+            currentWinId = (int)Windows.SquadWindow - 1;
+            windowManager.Open(currentWinId);
         }
-    }
-    
 
-    public void CreateGarden()
-    {
-        if (selectedBunker == null) return;
+        public void CreateStore()
+        {
+            if (selectedBunker == null) return;
 
-        var go = Instantiate(gardenPrefab, selectedBunker.transform.position, Quaternion.identity);
-        Destroy(selectedBunker);
-        selectedBunker = go;
+            var go = Instantiate(storePrefab, selectedBunker.transform.position, Quaternion.identity);
+            Destroy(selectedBunker);
+            selectedBunker = go;
 
-        currentWinId = (int)Windows.InventoryWindow - 1;
-        windowManager.Open(currentWinId);
-    }
+            currentWinId = (int)Windows.StoreWindow - 1;
+            windowManager.Open(currentWinId);
+        }
 
-    public void CreateOperatingRoom()
-    {
-        if (selectedBunker == null) return;
-
-        var go = Instantiate(operatingRoomPrefab, selectedBunker.transform.position, Quaternion.identity);
-        Destroy(selectedBunker);
-        selectedBunker = go;
-
-        currentWinId = (int)Windows.SquadWindow - 1;
-        windowManager.Open(currentWinId);
-    }
-
-    public void CreateStore()
-    {
-        if (selectedBunker == null) return;
-
-        var go = Instantiate(storePrefab, selectedBunker.transform.position, Quaternion.identity);
-        Destroy(selectedBunker);
-        selectedBunker = go;
-
-        currentWinId = (int)Windows.StoreWindow - 1;
-        windowManager.Open(currentWinId);
-    }
-
-    public void ExitBunker()
-    {
-        SceneManager.LoadScene(0);
+        public void ExitBunker()
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }

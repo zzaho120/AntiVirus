@@ -1,1 +1,5 @@
-public enum Windows{None,StoreWindow,InventoryWindow,SquadWindow}
+
+namespace bunker
+{
+    public enum Windows { None, StoreWindow, InventoryWindow, SquadWindow }
+}

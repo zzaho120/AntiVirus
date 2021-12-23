@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class TestAttack : MonoBehaviour
 {
-    //private CharacterStats stats;     // Old version
-    private CharacterStats enemyStats;
+    private CharacterStats stats;     // Old version
+    private MonsterStats enemyStats;
 
-    public Character newStatTest;
+    //public Character newStatTest;
     public AttackDefinition attackStat;
 
     private void Awake()
     {
-        //stats = GetComponent<CharacterStats>();
+        stats = GetComponent<CharacterStats>();
     }
 
     private void Update()
@@ -25,13 +25,13 @@ public class TestAttack : MonoBehaviour
 
             if (Physics.Raycast(ray, out hitInfo))
             {
-                if (hitInfo.collider.name == "Enemy")
+                if (hitInfo.collider.CompareTag("Enemy"))
                 {
                     // Enemy 오브젝트의 CharacterStats 임시로 가져오기
-                    enemyStats = hitInfo.collider.gameObject.GetComponent<CharacterStats>();
+                    enemyStats = hitInfo.collider.gameObject.GetComponent<MonsterStats>();
                     
                     //var playerAttackStats = attackStat.CreateAttack(newStatTest.);
-                    var playerAttackStats = attackStat.CreateAttack(newStatTest);
+                    var playerAttackStats = attackStat.CreateAttack(stats);
                     OnAttack(hitInfo.collider.gameObject, playerAttackStats);
                 }
             }
@@ -41,12 +41,12 @@ public class TestAttack : MonoBehaviour
     public void OnAttack(GameObject attacker, AttackStats attack)
     {
         enemyStats.currentHp -= attack.Damage;
-
+        
         if (enemyStats.currentHp < 0)
         {
             enemyStats.currentHp = 0;
         }
-
+        
         Debug.Log("Enemy HP : " + enemyStats.currentHp);
     }
 }
