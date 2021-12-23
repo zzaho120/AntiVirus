@@ -6,7 +6,6 @@ public class DoorBase : MonoBehaviour
 {
     public GameObject doorObj;
     public bool isOpenDoor;
-    public DirectionType type;
 
 
     public void OnOpenDoor()

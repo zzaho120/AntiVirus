@@ -2,14 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TileDirection
-{
-    None = 0,
-    Top,
-    Bot,
-    Left,
-    Right,
-}
 
 public class TileMgr : MonoBehaviour
 {

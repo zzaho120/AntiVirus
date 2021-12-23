@@ -10,6 +10,7 @@ public class TileBase : MonoBehaviour
     [Header("Value")]
     public Vector3 tileIdx;
     public GameObject tileObj;
+    public List<Material> materials;
 
     [Header("List")]
     public List<TileBase> adjNodes;
@@ -30,6 +31,10 @@ public class TileBase : MonoBehaviour
     public void EnableDisplay(bool isEnabled)
     {
         var ren = tileObj.GetComponent<MeshRenderer>();
-        ren.enabled = isEnabled;
+
+        if (isEnabled)
+            ren.material = materials[0];
+        else
+            ren.material = materials[1];
     }
 }

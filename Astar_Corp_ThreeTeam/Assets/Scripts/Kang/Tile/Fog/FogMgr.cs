@@ -85,11 +85,8 @@ public class FogMgr : MonoBehaviour
         //UpdateEverFog();
         UpdateCurrentFog();
         InitPlayerSight();
+        InitObstalce();
         UpdateObj();
-    }
-    private void UpdateEverFog()
-    {
-        // 에버포그에 커런트 정보를 추가할것
     }
 
     private void UpdateCurrentFog()
@@ -151,6 +148,11 @@ public class FogMgr : MonoBehaviour
         CheckPlayerSight(new Vector2(tileIdx.x, tileIdx.y - 1), new Vector2(tileIdx.x, tileIdx.y - 0.5f), sightCnt, maxSight, playerIdx);
         CheckPlayerSight(new Vector2(tileIdx.x - 1, tileIdx.y), new Vector2(tileIdx.x - 0.5f, tileIdx.y), sightCnt, maxSight, playerIdx);
         CheckPlayerSight(new Vector2(tileIdx.x + 1, tileIdx.y), new Vector2(tileIdx.x + 0.5f, tileIdx.y), sightCnt, maxSight, playerIdx);
+    }
+
+    private void InitObstalce()
+    {
+        var player = playerableChars[0];
     }
 
     private void UpdateObj()
