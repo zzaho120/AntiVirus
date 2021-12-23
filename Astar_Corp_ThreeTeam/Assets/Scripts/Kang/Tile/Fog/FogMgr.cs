@@ -5,17 +5,22 @@ using UnityEngine;
 public class FogTileBase
 {
     public TileBase tileBase;
-    public bool isTileInSight;
-    public DirectionType enabledDirType;
+    public WallBase wallBase;
+    public bool isInSight;
 
     public FogTileBase(TileBase tileBase)
     {
         this.tileBase = tileBase;
     }
 
+    public FogTileBase(WallBase wallBase)
+    {
+        this.wallBase = wallBase;
+    }
+
     public void Init()
     {
-        isTileInSight = false;
+        isInSight = false;
     }
 }
 
@@ -46,6 +51,7 @@ public class FogMgr : MonoBehaviour
     private void InitFog()
     {
         var tileDics = BattleMgr.Instance.tileMgr.tileDics;
+        var wallDics = BattleMgr.Instance.tileMgr.wallDics;
 
         foreach (var pair in tileDics)
         {
@@ -59,6 +65,15 @@ public class FogMgr : MonoBehaviour
                 everFogDics.Add(pair.Key, false);
         }
 
+        foreach (var pair in wallDics)
+        {
+            var checkIdx = new Vector2(pair.Key.x, pair.Key.z);
+
+            if (!curFogDics.ContainsKey(checkIdx))
+                curFogDics.Add(checkIdx, new List<FogTileBase>());
+            curFogDics[checkIdx].Add(new FogTileBase(pair.Value));
+        }
+
         for (var idx = 0; idx < playerableChars.Count; ++idx)
         {
             playerSightDics.Add(new Dictionary<Vector2, List<FogTileBase>>());
@@ -70,7 +85,6 @@ public class FogMgr : MonoBehaviour
         //UpdateEverFog();
         UpdateCurrentFog();
         InitPlayerSight();
-        InitObstacleSight();
         UpdateObj();
     }
     private void UpdateEverFog()
@@ -102,14 +116,14 @@ public class FogMgr : MonoBehaviour
             var currentTile = new Vector2(player.currentTile.tileIdx.x, player.currentTile.tileIdx.z);
             var sightCnt = 0;
 
-            CheckPlayerSight(new Vector2(currentTile.x, currentTile.y + 1), sightCnt, sightDistance, idx);
-            CheckPlayerSight(new Vector2(currentTile.x, currentTile.y - 1), sightCnt, sightDistance, idx);
-            CheckPlayerSight(new Vector2(currentTile.x - 1, currentTile.y), sightCnt, sightDistance, idx);
-            CheckPlayerSight(new Vector2(currentTile.x + 1, currentTile.y), sightCnt, sightDistance, idx);
+            CheckPlayerSight(new Vector2(currentTile.x, currentTile.y + 1), new Vector2(currentTile.x, currentTile.y + 0.5f), sightCnt, sightDistance, idx);
+            CheckPlayerSight(new Vector2(currentTile.x, currentTile.y - 1), new Vector2(currentTile.x, currentTile.y - 0.5f), sightCnt, sightDistance, idx);
+            CheckPlayerSight(new Vector2(currentTile.x - 1, currentTile.y), new Vector2(currentTile.x - 0.5f, currentTile.y), sightCnt, sightDistance, idx);
+            CheckPlayerSight(new Vector2(currentTile.x + 1, currentTile.y), new Vector2(currentTile.x + 0.5f, currentTile.y), sightCnt, sightDistance, idx);
         }
     }
 
-    private void CheckPlayerSight(Vector2 tileIdx, int sightCnt, int maxSight, int playerIdx)
+    private void CheckPlayerSight(Vector2 tileIdx, Vector2 wallIdx, int sightCnt, int maxSight, int playerIdx)
     {
         if (!curFogDics.ContainsKey(tileIdx))
             return;
@@ -121,32 +135,39 @@ public class FogMgr : MonoBehaviour
 
         foreach (var tile in curFogDics[tileIdx])
         {
-            tile.isTileInSight = true;
+            tile.isInSight = true;
+        }
+
+        if (curFogDics.ContainsKey(wallIdx))
+        {
+            foreach (var wall in curFogDics[wallIdx])
+                wall.isInSight = true;
         }
 
         if (!playerSightDics[playerIdx].ContainsKey(tileIdx))
             playerSightDics[playerIdx].Add(tileIdx, curFogDics[tileIdx]);
 
-        CheckPlayerSight(new Vector2(tileIdx.x, tileIdx.y + 1), sightCnt, maxSight, playerIdx);
-        CheckPlayerSight(new Vector2(tileIdx.x, tileIdx.y - 1), sightCnt, maxSight, playerIdx);
-        CheckPlayerSight(new Vector2(tileIdx.x - 1, tileIdx.y), sightCnt, maxSight, playerIdx);
-        CheckPlayerSight(new Vector2(tileIdx.x + 1, tileIdx.y), sightCnt, maxSight, playerIdx);
+        CheckPlayerSight(new Vector2(tileIdx.x, tileIdx.y + 1), new Vector2(tileIdx.x, tileIdx.y + 0.5f), sightCnt, maxSight, playerIdx);
+        CheckPlayerSight(new Vector2(tileIdx.x, tileIdx.y - 1), new Vector2(tileIdx.x, tileIdx.y - 0.5f), sightCnt, maxSight, playerIdx);
+        CheckPlayerSight(new Vector2(tileIdx.x - 1, tileIdx.y), new Vector2(tileIdx.x - 0.5f, tileIdx.y), sightCnt, maxSight, playerIdx);
+        CheckPlayerSight(new Vector2(tileIdx.x + 1, tileIdx.y), new Vector2(tileIdx.x + 0.5f, tileIdx.y), sightCnt, maxSight, playerIdx);
     }
-
-    private void InitObstacleSight()
-    {
-        
-    }
-
 
     private void UpdateObj()
     {
         var tileDics = BattleMgr.Instance.tileMgr.tileDics;
+        var wallDics = BattleMgr.Instance.tileMgr.wallDics;
 
         foreach (var pair in tileDics)
         {
             var tile = pair.Value;
-            EnableTile(tile, false, DirectionType.None);
+            tile.EnableDisplay(false);
+        }
+
+        foreach (var pair in wallDics)
+        {
+            var wall = pair.Value;
+            wall.EnableDisplay(false);
         }
 
         foreach (var pair in curFogDics)
@@ -155,30 +176,13 @@ public class FogMgr : MonoBehaviour
             foreach (var fogTile in list)
             {
                 var tile = fogTile.tileBase;
-                EnableTile(tile, fogTile.isTileInSight, fogTile.enabledDirType);
+                if (tile != null)
+                    tile.EnableDisplay(fogTile.isInSight);
+
+                var wall = fogTile.wallBase;
+                if (wall != null)
+                    wall.EnableDisplay(fogTile.isInSight);
             }
-        }
-    }
-
-    private void EnableTile(TileBase tileBase, bool isTileEnabled, DirectionType direction)
-    {
-        tileBase.EnableDisplay(isTileEnabled);
-
-        var objList = tileBase.objList;
-        foreach (var obj in objList)
-        {
-            var wall = obj.GetComponent<WallBase>();
-            if (wall != null)
-            {
-                //if ((direction & wall.type) != 0)
-                    wall.EnableDisplay(true);
-                //else
-                //    wall.EnableDisplay(false);
-            }
-
-            var door = obj.GetComponent<DoorBase>();
-            if (door != null)
-                door.EnableDisplay();
         }
     }
 }

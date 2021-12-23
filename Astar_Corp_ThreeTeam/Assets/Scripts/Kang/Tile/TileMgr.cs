@@ -14,8 +14,10 @@ public enum TileDirection
 public class TileMgr : MonoBehaviour
 {
     public GameObject tiles;
+    public GameObject walls;
 
     public Dictionary<Vector3, TileBase> tileDics = new Dictionary<Vector3, TileBase>();
+    public Dictionary<Vector3, WallBase> wallDics = new Dictionary<Vector3, WallBase>();
 
     public static int MAX_X_IDX = 16;
     public static int MAX_Z_IDX = 16;
@@ -31,6 +33,17 @@ public class TileMgr : MonoBehaviour
             tileBase.Init(this);
 
             tileDics.Add(tileBase.tileIdx, tileBase);
+        }
+
+        var wallCount = walls.transform.childCount;
+        for (int idx = 0; idx < wallCount; ++idx)
+        {
+            var go = walls.transform.GetChild(idx);
+
+            var wallBase = go.GetComponent<WallBase>();
+            wallBase.Init();
+
+            wallDics.Add(wallBase.tileIdx, wallBase);
         }
 
         InitAdjTile();
@@ -65,25 +78,13 @@ public class TileMgr : MonoBehaviour
             if (!tileDics.ContainsKey(upStairIdx))
             {
                 // 같은 층일 경우
-                if (thisTile.CheckObj(thisType))
-                    return;
-                if (otherTile.CheckObj(otherType))
-                    return;
-
-                thisTile.adjNodes.Add(otherTile);
+                CheckObj(thisTile, otherTile);
             }
             else
             {
                 // 상향 계단이 있을 경우
                 var stairTile = tileDics[upStairIdx];
-                if (thisTile.CheckObj(thisType))
-                    return;
-                if (otherTile.CheckObj(otherType))
-                    return;
-                if (stairTile.CheckObj(otherType))
-                    return;
-
-                thisTile.adjNodes.Add(stairTile);
+                CheckObj(thisTile, stairTile);
             }
         }
         else
@@ -93,13 +94,27 @@ public class TileMgr : MonoBehaviour
             {
                 // 하향 계단이 있을 경우
                 var stairTile = tileDics[downStairIdx];
-                if (thisTile.CheckObj(thisType))
-                    return;
-                if (stairTile.CheckObj(otherType))
-                    return;
-
-                thisTile.adjNodes.Add(stairTile);
+                CheckObj(thisTile, stairTile);
             }
+        }
+    }
+
+    private void CheckObj(TileBase thisTile, TileBase otherTile)
+    {
+        var thisIdx = thisTile.tileIdx;
+        var otherIdx = otherTile.tileIdx;
+
+        if (thisIdx.z == otherIdx.z)
+        {
+            var wallIdx = new Vector3((thisIdx.x + otherIdx.x) * 0.5f, thisIdx.y, thisIdx.z);
+            if (!wallDics.ContainsKey(wallIdx))
+                thisTile.adjNodes.Add(otherTile);
+        }
+        else if (thisIdx.x == otherIdx.x)
+        {
+            var wallIdx = new Vector3(thisIdx.x, thisIdx.y, (thisIdx.z + otherIdx.z) * 0.5f);
+            if (!wallDics.ContainsKey(wallIdx))
+                thisTile.adjNodes.Add(otherTile);
         }
     }
 }

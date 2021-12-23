@@ -40,13 +40,6 @@ public class PlayerableChar : MonoBehaviour
     {
         if (!isTurnOver)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                currentTile.OpenDoor(true);
-                // test
-                BattleMgr.Instance.fogMgr.UpdateFog();
-            }
-
             if (Input.GetMouseButtonDown(0))
             {
                 RaycastHit hit;
