@@ -19,7 +19,39 @@ public class WindowManagerEditor : Editor
 
 		serializedObject.ApplyModifiedProperties();
 
-		if (GUILayout.Button("Generate Window Enums"))
+		if (GUILayout.Button("Generate Bunker Window Enums"))
+        {
+			var windows = ((WindowManager)target).windows;
+			var total = windows.Length;
+
+			var sb = new StringBuilder();
+			sb.Append("public enum BunkerWindows{");
+			sb.Append("None,");
+
+			for (var i = 0; i < total; i++)
+			{
+				sb.Append(windows[i].name.Replace(" ", ""));
+				if (i < total - 1)
+					sb.Append(",");
+			}
+
+			sb.Append("}");
+
+			var path = EditorUtility.SaveFilePanel("Save The Window Enums", "", "BunkerWindowEnums.cs", "cs");
+
+			using (FileStream fs = new FileStream(path, FileMode.Create))
+			{
+
+				using (StreamWriter writer = new StreamWriter(fs))
+				{
+					writer.Write(sb.ToString());
+				}
+
+			}
+			AssetDatabase.Refresh();
+		}
+
+		if (GUILayout.Button("Generate WorldMap Window Enums"))
 		{
 			var windows = ((WindowManager)target).windows;
 			var total = windows.Length;
