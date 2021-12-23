@@ -35,20 +35,21 @@ public class CharacterSO
                     string[] splitData = line.Split(',');
 
                     Character character = ScriptableObject.CreateInstance<Character>();
-                    character.id = splitData[0];
-                    character.iconId = splitData[1];
-                    character.profileId = splitData[2];
-                    character.prefabId = splitData[3];
-                    character.name = splitData[4];
-                    character.description = splitData[5];
-                    character.level = int.Parse(splitData[6]);
-                    character.damage = int.Parse(splitData[7]);
-                    character.range = int.Parse(splitData[8]);
-                    character.hp = int.Parse(splitData[9]);
-                    character.crit_rate = int.Parse(splitData[10]);
-                    character.willpower = int.Parse(splitData[11]);
-                    character.stamina = int.Parse(splitData[12]);
-                    character.resistnace = int.Parse(splitData[13]);
+                    character.id            = splitData[0];
+                    character.iconId        = splitData[1];
+                    character.profileId     = splitData[2];
+                    character.prefabId      = splitData[3];
+                    character.name          = splitData[4];
+                    character.description   = splitData[5];
+                    character.min_Hp        = int.Parse(splitData[6]);
+                    character.max_Hp        = int.Parse(splitData[7]);
+                    character.damage        = int.Parse(splitData[8]);
+                    character.range         = int.Parse(splitData[9]);
+                    character.crit_rate     = float.Parse(splitData[10]);
+                    character.min_Willpower = int.Parse(splitData[11]);
+                    character.max_Willpower = int.Parse(splitData[12]);
+                    character.min_Stamina   = int.Parse(splitData[13]);
+                    character.max_Stamina   = int.Parse(splitData[14]);
 
                     AssetDatabase.CreateAsset(character, $"Assets//Resources/Choi/Datas/Characters/{character.name}.asset");
                     characterNum++;

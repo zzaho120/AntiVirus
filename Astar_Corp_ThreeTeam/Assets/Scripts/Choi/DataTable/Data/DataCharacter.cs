@@ -7,33 +7,9 @@ public class DataCharacter
 
     public CharacterTableElem tableElem;
 
-    // public int exp;
-    // public int level;
-
     public List<EquippableTableElem> listDataArmor = new List<EquippableTableElem>();
 
     // Stats
-
-    public float LEVEL
-    {
-        get
-        {
-            var baseLevel = tableElem.level;  // 테이블에 있는 기본 스탯
-            var level = baseLevel;
-
-            //var itemTable = DataTableMgr.GetTable<LevelTable>();
-            //var itemelem = itemTable.GetData<LevelTableElem>(level.ToString());
-
-            // 레벨에 따른 추가 수치
-            //ad += itemelem.ad;
-
-
-            // 무기에 의한 추가 수치
-            // 방어구들 추가 수치
-            // 버프, 디버프 보정
-            return level;
-        }
-    }
 
     public float DAMAGE
     {
@@ -42,16 +18,6 @@ public class DataCharacter
             var baseDamage = tableElem.damage;  // 테이블에 있는 기본 스탯
             var damage = baseDamage;
 
-            //var itemTable = DataTableMgr.GetTable<LevelTable>();
-            //var itemelem = itemTable.GetData<LevelTableElem>(level.ToString());
-
-            // 레벨에 따른 추가 수치
-            //ap += itemelem.ap;
-
-
-            // 무기에 의한 추가 수치
-            // 방어구들 추가 수치
-            // 버프, 디버프 보정
             return damage;
         }
     }
@@ -81,7 +47,7 @@ public class DataCharacter
     {
         get
         {
-            var baseHp = tableElem.hp;  // 테이블에 있는 기본 스탯
+            var baseHp = tableElem.max_Hp;  // 테이블에 있는 기본 스탯
             var hp = baseHp;
 
             //var itemTable = DataTableMgr.GetTable<LevelTable>();
@@ -123,7 +89,7 @@ public class DataCharacter
     {
         get
         {
-            var baseWillpower = tableElem.willpower;  // 테이블에 있는 기본 스탯
+            var baseWillpower = tableElem.min_Willpower;  // 테이블에 있는 기본 스탯
             var willpower = baseWillpower;
 
             //var itemTable = DataTableMgr.GetTable<LevelTable>();
@@ -151,7 +117,7 @@ public class DataCharacter
     {
         get
         {
-            var baseStamina = tableElem.stamina;  // 테이블에 있는 기본 스탯
+            var baseStamina = tableElem.min_Stamina;  // 테이블에 있는 기본 스탯
             var stamina = baseStamina;
 
             //var itemTable = DataTableMgr.GetTable<LevelTable>();
@@ -168,33 +134,6 @@ public class DataCharacter
         }
     }
 
-    public int RESISTANCE
-    {
-        get
-        {
-            var baseResist = tableElem.resistance;  // 테이블에 있는 기본 스탯
-            var resistance = baseResist;
-
-            //var itemTable = DataTableMgr.GetTable<LevelTable>();
-            //var itemelem = itemTable.GetData<LevelTableElem>(level.ToString());
-
-            // 레벨에 따른 추가 수치
-            //statInt += itemelem.stat_int;
-
-            // 무기에 의한 추가 수치
-            //statInt += dataWeapon.tableElem.weapon_int;
-
-            // 방어구들 추가 수치
-            //foreach (var element in listDataArmor)
-            //{
-            //    statInt += element.intellet;
-            //}
-
-            // 버프, 디버프 보정
-            return resistance;
-        }
-    }
-
 
     public DataCharacter(string charID)
     {
@@ -208,3 +147,17 @@ public class DataCharacter
     }
 }
 
+
+// 추후 수정?
+// 아이템, 레벨에 따른 추가 스탯 부여하기
+
+//var itemTable = DataTableMgr.GetTable<LevelTable>();
+//var itemelem = itemTable.GetData<LevelTableElem>(level.ToString());
+
+// 레벨에 따른 추가 수치
+//ad += itemelem.ad;
+
+
+// 무기에 의한 추가 수치
+// 방어구들 추가 수치
+// 버프, 디버프 보정

@@ -10,13 +10,14 @@ public class Character : ScriptableObject
 	public string prefabId;
 	public string name;
 	public string description;
-	public float level;
-	public float hp;
-	public float damage;
-	public float range;
+	public int min_Hp;
+	public int max_Hp;
+	public int damage;
+	public int range;
 	public float crit_rate;
-	public int willpower;
-	public int stamina;
-	public int resistnace;
+	public int min_Willpower;
+	public int max_Willpower;
+	public int min_Stamina;
+	public int max_Stamina;
 	//public int statLuk;
 }

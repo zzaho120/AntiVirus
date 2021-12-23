@@ -9,14 +9,15 @@ public class CharacterTableElem : DataTableElemBase
 	//public string prefabId;
 	public string name;
 	public string description;
-	public float level;
-	public float hp;
-	public float damage;
-	public float range;
+	public int min_Hp;
+	public int max_Hp;
+	public int damage;
+	public int range;
 	public float crit_rate;
-	public int willpower;
-	public int stamina;
-	public int resistance;
+	public int min_Willpower;
+	public int max_Willpower;
+	public int min_Stamina;
+	public int max_Stamina;
 	//private Sprite iconSprite;
 	//private LevelTableElem levelTableElem;
 
@@ -37,22 +38,22 @@ public class CharacterTableElem : DataTableElemBase
 		//iconId = data["ICON_ID"];
 		//profileId = data["PROFILE_ID"];
 		//prefabId = data["PREFAB_ID"];
-		name = data["NAME"];
-		description = data["DESC"];
-		level = float.Parse(data["LEVEL"]);
-		hp = float.Parse(data["HP"]);
-		damage = float.Parse(data["DAMAGE"]);
-		range = float.Parse(data["RANGE"]);
-		crit_rate = float.Parse(data["CRIT_RATE"]);
-		willpower = int.Parse(data["WILLPOWER"]);
-		stamina = int.Parse(data["STAMINA"]);
-		resistance = int.Parse(data["RESISTANCE"]);
+		name			= data["NAME"];
+		description		= data["DESC"];
+		min_Hp			= int.Parse(data["MIN_HP"]);
+		max_Hp			= int.Parse(data["MAX_HP"]);
+		damage			= int.Parse(data["DAMAGE"]);
+		range			= int.Parse(data["RANGE"]);
+		crit_rate		= float.Parse(data["CRIT_RATE"]);
+		min_Willpower	= int.Parse(data["MIN_WILLPOWER"]);
+		max_Willpower	= int.Parse(data["MAX_WILLPOWER"]);
+		min_Stamina		= int.Parse(data["MIN_STAMINA"]);
+		max_Stamina		= int.Parse(data["MAX_STAMINA"]);
 
 		//iconSprite = Resources.Load<Sprite>($"Sprites/Characters/Icons/{iconId}");
 		//profileSprite = Resources.Load<Sprite>($"Sprites/Characters/Profiles/{profileId}");
 	}
 }
-
 
 
 public class CharacterTable : DataTableBase
