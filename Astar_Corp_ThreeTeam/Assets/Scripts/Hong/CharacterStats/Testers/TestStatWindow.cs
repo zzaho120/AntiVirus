@@ -8,14 +8,14 @@ using UnityEngine.UI;
 public class TestStatWindow : MonoBehaviour
 {
     private Text[] text;
-    public PlayerData character;
+    public PlayerData playerData;
 
     private void Start()
     {
         text = GetComponentsInChildren<Text>();
-        character = character.GetComponent<PlayerData>();
+        //playerData = playerData.GetComponent<PlayerData>();
 
-        text[0].text = character.characterInfo.Name;
+        //text[0].text = playerData.characterStats.Name;
         //text[1].text = ("Level : " + character.characterInfo.level + "\n" +
         //                "HP : " + character.characterInfo.currentHp + "\n" +
         //                "Stamina : " + character.characterInfo.stamina + "\n" +
@@ -24,10 +24,10 @@ public class TestStatWindow : MonoBehaviour
 
     private void Update()
     {
-        text[0].text = character.characterInfo.Name;
-        text[1].text = ("Level : " + character.characterInfo.level + "\n" +
-                        "HP : " + character.characterInfo.currentHp + "\n" +
-                        "Stamina : " + string.Format("{0:0.#}", character.characterInfo.stamina) + "\n" +
-                        "Willpower : " + character.characterInfo.willpower).ToString();
+        text[0].text = playerData.characterStats.Name;
+        text[1].text = ("Level : " + playerData.characterStats.level + "\n" +
+                        "HP : " + playerData.characterStats.currentHp + "\n" +
+                        "Stamina : " + string.Format("{0:0.#}", playerData.characterStats.stamina) + "\n" +
+                        "Willpower : " + playerData.characterStats.willpower).ToString();
     }
 }

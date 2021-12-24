@@ -17,12 +17,12 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
-    public Character characterStat;
+    public Character character;
     public Antibody antibody;
     public AttackDefinition weapon;
 
     // 1. 체력
-    public int maxHp { get => Hp; }
+    public int maxHp; // { get => Hp; /*set => Hp = value;*/ }
     [HideInInspector]
     public int currentHp;
 
@@ -30,34 +30,42 @@ public class CharacterStats : MonoBehaviour
     // 3. 공격범위
 
     // 4. 의지력
+    [HideInInspector]
     public int willpower;
 
     // 5. 기력
+    [HideInInspector]
     public float stamina;
 
     // 6. 내성
 
+    [HideInInspector]
     public int level;
 
-    public string Name { get { return characterStat.name; } }
+    public string Name { get { return character.name; } }
 
     #region 레벨당 증가하는 스탯 설정
     private int Hp
     {
         get
         {
-            var baseHp = Random.Range(characterStat.min_Hp, characterStat.max_Hp + 1);
+            var baseHp = Random.Range(character.min_Hp, character.max_Hp + 1);
             var hp = baseHp;
-            
+            Debug.Log("호출");
             return hp;
         }
+        //set
+        //{
+        //    Debug.Log("호출");
+        //    Hp = value;
+        //}
     }
 
     private int Stamina
     {
         get
         {
-            var baseStamina = Random.Range(characterStat.min_Stamina, characterStat.max_Stamina + 1);
+            var baseStamina = Random.Range(character.min_Stamina, character.max_Stamina + 1);
             var stamina = baseStamina;
 
             return stamina;
@@ -68,11 +76,12 @@ public class CharacterStats : MonoBehaviour
     {
         get
         {
-            var baseWillpower = Random.Range(characterStat.min_Willpower, characterStat.max_Willpower + 1);
+            var baseWillpower = Random.Range(character.min_Willpower, character.max_Willpower + 1);
             var willpower = baseWillpower;
 
             return willpower;
         }
+
     }
     #endregion
 
@@ -84,7 +93,7 @@ public class CharacterStats : MonoBehaviour
         {
             //var baseDamage = characterStat.damage;
             //var damage = baseDamage;
-            var damage = weapon.CreateAttack(characterStat).Damage;
+            var damage = weapon.CreateAttack(character).Damage;
 
             return damage;
         }
@@ -94,7 +103,7 @@ public class CharacterStats : MonoBehaviour
     {
         get
         {
-            var baseRange = characterStat.range;
+            var baseRange = character.range;
             var range = baseRange;
 
             return range;
@@ -105,7 +114,7 @@ public class CharacterStats : MonoBehaviour
     {
         get
         {
-            var baseCritRate = characterStat.crit_rate;
+            var baseCritRate = character.crit_rate;
             var critRate = baseCritRate;
 
             return critRate;
@@ -142,6 +151,7 @@ public class CharacterStats : MonoBehaviour
 
     private void Init()
     {
+        //maxHp = Hp;
         currentHp = maxHp;
         stamina = Stamina;
         willpower = Willpower;

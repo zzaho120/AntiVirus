@@ -15,10 +15,10 @@ public class InfectedCharTest : MonoBehaviour
 
         for (int i = 0; i < buttons.Length; i++)
         {
-            buttons[0].GetComponentInChildren<Text>().text = characterList[0].characterInfo.Name;
-            buttons[1].GetComponentInChildren<Text>().text = characterList[1].characterInfo.Name;
-            buttons[2].GetComponentInChildren<Text>().text = characterList[2].characterInfo.Name;
-            buttons[3].GetComponentInChildren<Text>().text = characterList[3].characterInfo.Name;
+            buttons[0].GetComponentInChildren<Text>().text = characterList[0].characterStats.Name;
+            buttons[1].GetComponentInChildren<Text>().text = characterList[1].characterStats.Name;
+            buttons[2].GetComponentInChildren<Text>().text = characterList[2].characterStats.Name;
+            buttons[3].GetComponentInChildren<Text>().text = characterList[3].characterStats.Name;
         }
     }
 }

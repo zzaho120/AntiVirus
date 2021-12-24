@@ -1,28 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerData : MonoBehaviour
 {
     [HideInInspector]
-    public CharacterStats characterInfo;
+    public CharacterStats characterStats;
+
+    private GameObject levelUpSwitch;
 
     private void Start()
     {
-        characterInfo = GetComponent<CharacterStats>();
+        characterStats = GetComponent<CharacterStats>();
+
+
+//    ┌────────────────── 레벨업 실험용 ──────────────────────┐
+
+        levelUpSwitch = GameObject.Find("LevelUp Switch");
+        
+        // UI매니저 씬에서만 작동
+        if (SceneManager.GetActiveScene().name == "UIManager")
+        {
+            if (levelUpSwitch != null)
+                levelUpSwitch.SetActive(false);
+        }
+//    └──────────────────────────────────────────────────────┘
     }
 
     private void LevelUp()
     {
-        //Debug.Log("Level up");
-
-        if (characterInfo.level < 10)
+        if (characterStats.level < 10)
         {
-            characterInfo.level += 1;
+            characterStats.level += 1;
 
-            //characterInfo.maxHp += Random.Range(characterInfo.characterStat.min_Hp_Increase, characterInfo.characterStat.max_Hp_Increase + 1);
-            characterInfo.willpower += characterInfo.characterStat.willpower_Increase;
-            characterInfo.stamina += characterInfo.characterStat.stamina_Increase;
+            //int HpIncrease = Random.Range(characterStats.character.min_Hp_Increase, characterStats.character.max_Hp_Increase + 1);
+            //Debug.Log("Hp 상승량 : " + HpIncrease);
+            
+            //characterStats.maxHp += HpIncrease;
+            characterStats.willpower += characterStats.character.willpower_Increase;
+            characterStats.stamina += characterStats.character.stamina_Increase;
         }
         else
         {
@@ -32,9 +49,18 @@ public class PlayerData : MonoBehaviour
 
     public void OnGUI()
     {
-        if (GUI.Button(new Rect(0, 0, 100, 30), "Level up"))
+        Vector2 screenSize = Camera.main.ViewportToScreenPoint(new Vector3(1, 1));
+
+        if (GUI.Button(new Rect(screenSize.x - 100, screenSize.y - 30, 100, 30), "Level up"))
         {
-            LevelUp();
+            if (levelUpSwitch.activeInHierarchy)
+            {
+                LevelUp();
+            }
+            else
+            {
+                Debug.Log("현재 씬에서 사용불가");
+            }
         }
     }
 }
