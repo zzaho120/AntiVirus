@@ -16,6 +16,10 @@ public class BattleMgr : Singleton<BattleMgr>
     {
         base.Awake();
         commandMgr = new CommandMgr();
+
+        tileMgr = GameObject.FindWithTag("TileMgr").GetComponent<TileMgr>();
+        player = GameObject.FindWithTag("Player").GetComponent<BattlePlayer>();
+        fogMgr = GameObject.FindWithTag("FogMgr").GetComponent<FogMgr>();
     }
 
     public void Start()
