@@ -190,7 +190,7 @@ public class NonBattleMgr : MonoBehaviour
         markList = new List<Vector3>();
     }
 
-public void Restart()
+    public void Restart()
     {
         PlayerPrefs.DeleteAll();
     }

@@ -160,54 +160,11 @@ public class FogMgr : MonoBehaviour
 
     private void InitObstacle()
     {
-        //Debug.Log(obstacleDics[0].Count);
-        //if (obstacleDics[0].Count < 1)
-        //    return;
-        //var obstacleDist = new Dictionary<Vector2, float>();
-        //var playerIdx = playerableChars[0].currentTile.tileIdx;
-        //var curIdx = new Vector2(playerIdx.x, playerIdx.z);
-        //var min = float.MaxValue;
-        //foreach (var pair in obstacleDics[0])
-        //{
-        //    var dist = Vector2.Distance(curIdx, pair.Key);
-        //    obstacleDist.Add(pair.Key, dist);
-
-        //    if (min > dist)
-        //        min = dist;
-        //}
-        //foreach (var sight in playerSightDics[0])
-        //{
-        //    var dist = Vector2.Distance(curIdx, sight.Key);
-        //    var isNonSight = false;
-        //    if (dist > min)
-        //    {
-        //        foreach (var obsDist in obstacleDist)
-        //        {
-        //            var curNor = (curIdx - sight.Key).normalized;
-        //            var obsNor = (curIdx - obsDist.Key).normalized;
-        //            var dot = Vector2.Dot(curNor, obsNor);
-        //            Debug.Log(dot);
-        //            if (dot > 0.9f)
-        //            {
-        //                isNonSight = true;
-        //                break;
-        //            }
-        //        }
-        //        if (isNonSight)
-        //        {
-        //            foreach (var fogTileBase in curFogDics[sight.Key])
-        //            {
-        //                fogTileBase.isInSight = false;
-        //            }
-        //        }
-        //    }
-        //}
-
-        for (var idx = 0; idx < 1; ++idx)
+        for (var idx = 0; idx < playerableChars.Count; ++idx)
         {
-            var curTileIdx = playerableChars[0].currentTile.tileIdx;
+            var curTileIdx = playerableChars[idx].currentTile.tileIdx;
             var checkIdx = new Vector2(curTileIdx.x, curTileIdx.z);
-            foreach (var pair in playerSightDics[0])
+            foreach (var pair in playerSightDics[idx])
             {
                 var target = pair.Key;
                 if (target.x == checkIdx.x)
@@ -296,21 +253,27 @@ public class FogMgr : MonoBehaviour
     {
         var aX = 0;
         var aY = 0;
-        var slopeVector = targetIdx - checkIdx;
-        var aG = Mathf.Abs(slopeVector.y / slopeVector.x);
-        var start = aG;
-        var idx = 0;
+        var slopeX = Mathf.Abs(targetIdx.x - checkIdx.x);
+        var slopeY = Mathf.Abs(targetIdx.y - checkIdx.y);
+        var aG = slopeY / slopeX;
         var wallIdx = new Vector2(-1, -1);
+
+        if (slopeX == 1 && slopeY == 1)
+        {
+            CheckCaseOne(targetIdx, checkIdx);
+            return;
+        }
 
         if (aG >= 1)
         {
             do
             {
-                if (slopeVector.x == 0)
+                if (slopeX == 0)
                 {
                     CheckSameX(targetIdx, checkIdx);
                     break;
                 }
+
                 var fomula = (aX / (aY + 1)) < aG;
                 if (fomula)
                 {
@@ -350,18 +313,12 @@ public class FogMgr : MonoBehaviour
                     {
                         fogTile.isInSight = false;
                     }
-                    Debug.Log("return");
                     return;
                 }
 
-                if (++idx > 30)
-                {
-                    Debug.Log($"{targetIdx}, {start}");
-                    break;
-                }
-
-                slopeVector = targetIdx - checkIdx;
-                aG = Mathf.Abs(slopeVector.y / slopeVector.x);
+                slopeX = Mathf.Abs(targetIdx.x - checkIdx.x);
+                slopeY = Mathf.Abs(targetIdx.y - checkIdx.y);
+                aG = slopeY / slopeX;
             }
             while (targetIdx != checkIdx);
         }
@@ -369,7 +326,7 @@ public class FogMgr : MonoBehaviour
         {
             do
             {
-                if (slopeVector.x == 0)
+                if (slopeX == 0)
                 {
                     CheckSameX(targetIdx, checkIdx);
                     break;
@@ -413,20 +370,89 @@ public class FogMgr : MonoBehaviour
                     {
                         fogTile.isInSight = false;
                     }
-                    Debug.Log("return");
                     return;
                 }
 
-                if (++idx > 30)
-                {
-                    Debug.Log($"{targetIdx}, {start}");
-                    break;
-                }
-
-                slopeVector = targetIdx - checkIdx;
-                aG = Mathf.Abs(slopeVector.y / slopeVector.x);
+                slopeX = Mathf.Abs(targetIdx.x - checkIdx.x);
+                slopeY = Mathf.Abs(targetIdx.y - checkIdx.y);
+                aG = slopeY / slopeX;
             }
             while (targetIdx != checkIdx);
+        }
+    }
+
+    private void CheckCaseOne(Vector2 targetIdx, Vector2 checkIdx)
+    {
+        var startCheckIdx = checkIdx;
+        var wallIdx = new Vector2(-1, -1);
+        var wallCollision1 = false;
+        var wallCollision2 = false;
+
+        if (targetIdx.y > checkIdx.y)
+        {
+            wallIdx = new Vector2(checkIdx.x, checkIdx.y + 0.5f);
+            checkIdx = new Vector2(checkIdx.x, checkIdx.y + 1);
+        }
+        else
+        {
+            wallIdx = new Vector2(checkIdx.x, checkIdx.y - 0.5f);
+            checkIdx = new Vector2(checkIdx.x, checkIdx.y - 1);
+        }
+
+        if (curFogDics.ContainsKey(wallIdx))
+            wallCollision1 = true;
+
+        if (targetIdx.x > checkIdx.x)
+        {
+            wallIdx = new Vector2(checkIdx.x + 0.5f, checkIdx.y);
+            checkIdx = new Vector2(checkIdx.x + 1, checkIdx.y);
+        }
+        else
+        {
+            wallIdx = new Vector2(checkIdx.x - 0.5f, checkIdx.y);
+            checkIdx = new Vector2(checkIdx.x - 1, checkIdx.y);
+        }
+
+        if (curFogDics.ContainsKey(wallIdx))
+            wallCollision1 = true;
+
+        checkIdx = startCheckIdx;
+
+        if (targetIdx.x > checkIdx.x)
+        {
+            wallIdx = new Vector2(checkIdx.x + 0.5f, checkIdx.y);
+            checkIdx = new Vector2(checkIdx.x + 1, checkIdx.y);
+        }
+        else
+        {
+            wallIdx = new Vector2(checkIdx.x - 0.5f, checkIdx.y);
+            checkIdx = new Vector2(checkIdx.x - 1, checkIdx.y);
+        }
+
+        if (curFogDics.ContainsKey(wallIdx))
+            wallCollision2 = true;
+
+        if (targetIdx.y > checkIdx.y)
+        {
+            wallIdx = new Vector2(checkIdx.x, checkIdx.y + 0.5f);
+            checkIdx = new Vector2(checkIdx.x, checkIdx.y + 1);
+        }
+        else
+        {
+            wallIdx = new Vector2(checkIdx.x, checkIdx.y - 0.5f);
+            checkIdx = new Vector2(checkIdx.x, checkIdx.y - 1);
+        }
+
+
+        if (curFogDics.ContainsKey(wallIdx))
+            wallCollision2 = true;
+
+        if (wallCollision1 && wallCollision2)
+        {
+            foreach (var fogTile in curFogDics[targetIdx])
+            {
+                fogTile.isInSight = false;
+            }
         }
     }
 
