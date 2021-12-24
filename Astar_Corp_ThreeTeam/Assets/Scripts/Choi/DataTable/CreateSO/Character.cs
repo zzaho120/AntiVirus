@@ -8,7 +8,7 @@ public class Character : ScriptableObject
 	public string iconId;
 	public string profileId;
 	public string prefabId;
-	public string name;
+	public new string name;
 	public string description;
 	public int min_Hp;
 	public int max_Hp;

@@ -22,7 +22,7 @@ public class CharacterStats : MonoBehaviour
     public AttackDefinition weapon;
 
     // 1. 체력
-    public int maxHp; // { get => Hp; /*set => Hp = value;*/ }
+    public int maxHp; //{ get => Hp; set => Hp = value; }
     [HideInInspector]
     public int currentHp;
 
@@ -42,7 +42,10 @@ public class CharacterStats : MonoBehaviour
     [HideInInspector]
     public int level;
 
-    public string Name { get { return character.name; } }
+    public string Name 
+    { 
+        get { return character.name; } 
+    }
 
     #region 레벨당 증가하는 스탯 설정
     private int Hp
@@ -51,14 +54,9 @@ public class CharacterStats : MonoBehaviour
         {
             var baseHp = Random.Range(character.min_Hp, character.max_Hp + 1);
             var hp = baseHp;
-            Debug.Log("호출");
+            //Debug.Log("호출");
             return hp;
         }
-        //set
-        //{
-        //    Debug.Log("호출");
-        //    Hp = value;
-        //}
     }
 
     private int Stamina
@@ -151,7 +149,7 @@ public class CharacterStats : MonoBehaviour
 
     private void Init()
     {
-        //maxHp = Hp;
+        maxHp = Hp;
         currentHp = maxHp;
         stamina = Stamina;
         willpower = Willpower;

@@ -10,7 +10,7 @@ public class PlayerData : MonoBehaviour
 
     private GameObject levelUpSwitch;
 
-    private void Start()
+    private void Awake()
     {
         characterStats = GetComponent<CharacterStats>();
 
@@ -34,10 +34,10 @@ public class PlayerData : MonoBehaviour
         {
             characterStats.level += 1;
 
-            //int HpIncrease = Random.Range(characterStats.character.min_Hp_Increase, characterStats.character.max_Hp_Increase + 1);
+            int HpIncrease = Random.Range(characterStats.character.min_Hp_Increase, characterStats.character.max_Hp_Increase + 1);
             //Debug.Log("Hp »ó½Â·® : " + HpIncrease);
             
-            //characterStats.maxHp += HpIncrease;
+            characterStats.maxHp += HpIncrease;
             characterStats.willpower += characterStats.character.willpower_Increase;
             characterStats.stamina += characterStats.character.stamina_Increase;
         }

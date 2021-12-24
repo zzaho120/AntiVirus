@@ -977,7 +977,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &261201999
 MonoBehaviour:
@@ -1450,7 +1450,7 @@ MonoBehaviour:
   nextWindow: 0
   previousWindow: 0
   firstSelected: {fileID: 0}
-  manager: {fileID: 0}
+  manager: {fileID: 986789738}
 --- !u!1 &431550336
 GameObject:
   m_ObjectHideFlags: 0
@@ -1496,9 +1496,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f41aed4eb818c418a8f27b08318d4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterStat: {fileID: 11400000, guid: 3b4f065766a03114b88da2c0cdeda627, type: 2}
+  character: {fileID: 11400000, guid: 4c66e5e92e71a1d4ebea32395f6ca56a, type: 2}
   antibody: {fileID: 11400000, guid: 076b0c7e273cb8349b6fee33d899394b, type: 2}
   weapon: {fileID: 11400000, guid: c13f7cb2266a10f48a3acbb9be06aa77, type: 2}
+  maxHp: 0
   currentHp: 0
   willpower: 0
   stamina: 0
@@ -1515,7 +1516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9eafcc6dc9b9e845a22e3924a8454c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterInfo: {fileID: 431550338}
+  characterStats: {fileID: 0}
 --- !u!224 &502227390 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 22445384, guid: b2b14929607404ef9b57a4fb84104b64, type: 3}
@@ -2813,7 +2814,7 @@ RectTransform:
   - {fileID: 715940856}
   - {fileID: 19203216}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3816,9 +3817,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f41aed4eb818c418a8f27b08318d4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterStat: {fileID: 11400000, guid: c9b2cfdeec7c2c943ac7b81f3ea34315, type: 2}
+  character: {fileID: 11400000, guid: 3b4f065766a03114b88da2c0cdeda627, type: 2}
   antibody: {fileID: 11400000, guid: 7185a750df5b08a41b6b77fa1d9dfd00, type: 2}
   weapon: {fileID: 11400000, guid: c13f7cb2266a10f48a3acbb9be06aa77, type: 2}
+  maxHp: 0
   currentHp: 0
   willpower: 0
   stamina: 0
@@ -3835,7 +3837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9eafcc6dc9b9e845a22e3924a8454c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterInfo: {fileID: 1344250286}
+  characterStats: {fileID: 0}
 --- !u!1 &1391682488
 GameObject:
   m_ObjectHideFlags: 0
@@ -3869,7 +3871,7 @@ Transform:
   - {fileID: 1969096912}
   - {fileID: 1649853613}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1443982763 stripped
 RectTransform:
@@ -4525,9 +4527,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f41aed4eb818c418a8f27b08318d4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterStat: {fileID: 11400000, guid: 79bab08d7591f8f46b49935e30baea85, type: 2}
+  character: {fileID: 11400000, guid: c9b2cfdeec7c2c943ac7b81f3ea34315, type: 2}
   antibody: {fileID: 11400000, guid: 8092fed3194743a4b8d62f8f9013018e, type: 2}
   weapon: {fileID: 11400000, guid: 5619b6e3ab23d894693f1610f815ff4d, type: 2}
+  maxHp: 0
   currentHp: 0
   willpower: 0
   stamina: 0
@@ -4544,7 +4547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9eafcc6dc9b9e845a22e3924a8454c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterInfo: {fileID: 1649853614}
+  characterStats: {fileID: 0}
 --- !u!1 &1888023521
 GameObject:
   m_ObjectHideFlags: 0
@@ -4989,9 +4992,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f41aed4eb818c418a8f27b08318d4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterStat: {fileID: 11400000, guid: a9a156d8d1f34954cb19d09077440d22, type: 2}
+  character: {fileID: 11400000, guid: 79bab08d7591f8f46b49935e30baea85, type: 2}
   antibody: {fileID: 11400000, guid: 8092fed3194743a4b8d62f8f9013018e, type: 2}
   weapon: {fileID: 11400000, guid: c13f7cb2266a10f48a3acbb9be06aa77, type: 2}
+  maxHp: 0
   currentHp: 0
   willpower: 0
   stamina: 0
@@ -5008,7 +5012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9eafcc6dc9b9e845a22e3924a8454c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterInfo: {fileID: 1969096913}
+  characterStats: {fileID: 0}
 --- !u!1 &1976914210
 GameObject:
   m_ObjectHideFlags: 0
