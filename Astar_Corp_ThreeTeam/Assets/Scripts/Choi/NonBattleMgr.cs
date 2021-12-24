@@ -29,6 +29,8 @@ public class NonBattleMgr : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PlayerPrefs.DeleteAll();
+
         monsterAreaCount = 5;
         eliteMonsterCount = 5;
 
@@ -85,9 +87,9 @@ public class NonBattleMgr : MonoBehaviour
                     position = new Vector3(pos.x, 0, pos.z);
                     randScale = UnityEngine.Random.Range(6, 10);
 
-                } while ((Physics.OverlapSphere(position, radius * randScale, monsterAreaLayer).Length != 0)
-                || (Physics.OverlapSphere(position, radius * randScale, playerLayer).Length != 0)
-                || (Physics.OverlapSphere(position, radius * randScale, virusZone).Length == 0));
+                } while (/*(Physics.OverlapSphere(position, radius * randScale, monsterAreaLayer).Length != 0)*/
+                /*||*/ (Physics.OverlapSphere(position, radius * randScale, playerLayer).Length != 0)
+                /*|| (Physics.OverlapSphere(position, radius * randScale, virusZone).Length == 0)*/);
 
                 string str = $"MonsterAreaX{j}";
                 PlayerPrefs.SetFloat(str, position.x);
@@ -121,9 +123,9 @@ public class NonBattleMgr : MonoBehaviour
                 var pos = Random.onUnitSphere * randX + randLaboratoryPos;
                 position = new Vector3(pos.x, 0, pos.z);
 
-                } while ((Physics.OverlapSphere(position, radius, playerLayer).Length != 0)
-                || (Physics.OverlapSphere(position, radius, eliteMonsterLayer).Length != 0)
-                || (Physics.OverlapSphere(position, radius, virusZone).Length == 0));
+                } while (/*(Physics.OverlapSphere(position, radius, playerLayer).Length != 0)*/
+                /*||*/ (Physics.OverlapSphere(position, radius, eliteMonsterLayer).Length != 0)
+                /*|| (Physics.OverlapSphere(position, radius, virusZone).Length == 0)*/);
 
                 string str = $"EliteMonsterX{j}";
                 PlayerPrefs.SetFloat(str, position.x);
