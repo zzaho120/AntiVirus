@@ -30,6 +30,7 @@ public class BunkerMgr : MonoBehaviour
     int bunkerCount;
     int currentBunkerIndex;
 
+
     private void Start()
     {
         //PlayerPrefs.DeleteAll();
@@ -80,10 +81,14 @@ public class BunkerMgr : MonoBehaviour
                         CreateStore();
                         break;
                 }
-                selectedBunker = null;
-                currentBunkerIndex = -1;
-                currentBunkerKind = BunkerKinds.None;
+                
             }
+            selectedBunker = null;
+
+            
+            currentBunkerIndex = -1;
+            currentBunkerKind = BunkerKinds.None;
+            
         }
     }
 
@@ -92,7 +97,7 @@ public class BunkerMgr : MonoBehaviour
     {
         //Debug.Log($"currentWinId : {currentWinId}");
 
-        if (multiTouch.Tap)
+        if (multiTouch.Tap && !camController.isZoomIn)
         {
             Ray ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
 
@@ -110,16 +115,23 @@ public class BunkerMgr : MonoBehaviour
                 if (hitInfo.collider.gameObject.GetComponent<GardenRoom>() != null)
                 {
                     currentBunkerKind = BunkerKinds.Garden;
+                    camController.isCurrentEmpty = false;
                 }
                 else if (hitInfo.collider.gameObject.GetComponent<OperatingRoom>() != null)
                 {
                     currentBunkerKind = BunkerKinds.OperatingRoom;
+                    camController.isCurrentEmpty = false;
                 }
                 else if (hitInfo.collider.gameObject.GetComponent<StoreRoom>() != null)
                 {
                     currentBunkerKind = BunkerKinds.Store;
+                    camController.isCurrentEmpty = false;
                 }
-                else currentBunkerKind = BunkerKinds.None;
+                else
+                {
+                    currentBunkerKind = BunkerKinds.None;
+                    camController.isCurrentEmpty = true;
+                }
             }
         }
 
@@ -165,8 +177,8 @@ public class BunkerMgr : MonoBehaviour
         Destroy(selectedBunker);
         selectedBunker = go;
 
-        currentWinId = (int)BunkerWindows.InventoryWindow - 1;
-        windowManager.Open(currentWinId);
+        //currentWinId = (int)BunkerWindows.InventoryWindow - 1;
+        //windowManager.Open(currentWinId);
     }
 
     public void CreateOperatingRoom()
@@ -187,8 +199,8 @@ public class BunkerMgr : MonoBehaviour
         Destroy(selectedBunker);
         selectedBunker = go;
 
-        currentWinId = (int)BunkerWindows.SquadWindow - 1;
-        windowManager.Open(currentWinId);
+        //currentWinId = (int)BunkerWindows.SquadWindow - 1;
+        //windowManager.Open(currentWinId);
     }
 
     public void CreateStore()
@@ -209,8 +221,8 @@ public class BunkerMgr : MonoBehaviour
         Destroy(selectedBunker);
         selectedBunker = go;
 
-        currentWinId = (int)BunkerWindows.StoreWindow - 1;
-        windowManager.Open(currentWinId);
+        //currentWinId = (int)BunkerWindows.StoreWindow - 1;
+        //windowManager.Open(currentWinId);
     }
 
     public void ExitBunker()

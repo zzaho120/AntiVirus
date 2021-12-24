@@ -17,6 +17,8 @@ public class BunkerCamController : MonoBehaviour
     Vector3 positionToLook;
     Vector3 centerPos;
 
+    public bool isCurrentEmpty;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,15 +32,20 @@ public class BunkerCamController : MonoBehaviour
 
         if (multiTouch.Tap == true)
         {
-            if (isZoomIn)
+            if (isZoomIn && isCurrentEmpty)//∫ÛπÊ ¡‹æ∆øÙ.
             {
                 RaycastHit hit;
                 Ray ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
 
                 if (Physics.Raycast(ray, out hit))
                 {
-                    if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
+                    //∫ÒæÓ¿÷¿ª∂ß.
+                    if (hit.collider.gameObject.GetComponent<BunkerBase>() != null
+                        && hit.collider.gameObject.GetComponent<GardenRoom>() == null
+                        && hit.collider.gameObject.GetComponent<OperatingRoom>() == null
+                        && hit.collider.gameObject.GetComponent<StoreRoom>() == null)
                     {
+                        
                         isZoomIn = false;
                         positionToLook = centerPos;
 
@@ -49,7 +56,7 @@ public class BunkerCamController : MonoBehaviour
                 }
             }
 
-            else
+            else if(!isZoomIn)//¡‹¿Œ.
             {
                 RaycastHit hit;
                 Ray ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
@@ -107,5 +114,15 @@ public class BunkerCamController : MonoBehaviour
 
             yield return new WaitForSeconds(smoothness);
         }
+    }
+
+    public void Exit()
+    {
+        isZoomIn = false;
+        positionToLook = centerPos;
+
+        if (coroutine != null) StopCoroutine(coroutine);
+        coroutine = ZoomOut();
+        StartCoroutine(coroutine);
     }
 }
