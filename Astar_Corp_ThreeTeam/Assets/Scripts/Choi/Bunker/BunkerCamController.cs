@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class BunkerCamController : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class BunkerCamController : MonoBehaviour
     Vector3 centerPos;
 
     public bool isCurrentEmpty;
+
+    public Action OpenWindow;
+    public Action CloseWindow;
 
     // Start is called before the first frame update
     void Start()
@@ -47,6 +51,7 @@ public class BunkerCamController : MonoBehaviour
                     {
                         
                         isZoomIn = false;
+                        CloseWindow();
                         positionToLook = centerPos;
 
                         if (coroutine != null) StopCoroutine(coroutine);
@@ -80,6 +85,7 @@ public class BunkerCamController : MonoBehaviour
     public void CompleteZoomIn()
     {
         isZoomIn = true;
+        OpenWindow();
     }
 
     IEnumerator ZoomIn()
@@ -124,5 +130,7 @@ public class BunkerCamController : MonoBehaviour
         if (coroutine != null) StopCoroutine(coroutine);
         coroutine = ZoomOut();
         StartCoroutine(coroutine);
+
+        CloseWindow();
     }
 }

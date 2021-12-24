@@ -30,10 +30,14 @@ public class BunkerMgr : MonoBehaviour
     int bunkerCount;
     int currentBunkerIndex;
 
+    bool isOpenWin;
 
     private void Start()
     {
         //PlayerPrefs.DeleteAll();
+
+        camController.OpenWindow = OpenWindow;
+        camController.CloseWindow = CloseWindow;
 
         currentWinId = -1;
         currentBunkerKind = BunkerKinds.None;
@@ -59,8 +63,6 @@ public class BunkerMgr : MonoBehaviour
                 int kind = PlayerPrefs.GetInt(str);
                 BunkerKinds bunkerKinds = (BunkerKinds)kind;
 
-                Debug.Log($"kind : {kind}");
-
                 selectedBunker = bunkerObjs[i];
                 currentBunkerIndex = i;
                 currentBunkerKind = bunkerKinds;
@@ -69,34 +71,29 @@ public class BunkerMgr : MonoBehaviour
                     case BunkerKinds.None:
                         break;
                     case BunkerKinds.Garden:
-                        Debug.Log("Garden");
                         CreateGarden();
                         break;
                     case BunkerKinds.OperatingRoom:
-                        Debug.Log("OperatingRoom");
                         CreateOperatingRoom();
                         break;
                     case BunkerKinds.Store:
-                        Debug.Log("Store");
                         CreateStore();
                         break;
                 }
-                
+
             }
             selectedBunker = null;
 
-            
+
             currentBunkerIndex = -1;
             currentBunkerKind = BunkerKinds.None;
-            
+
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log($"currentWinId : {currentWinId}");
-
         if (multiTouch.Tap && !camController.isZoomIn)
         {
             Ray ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
@@ -134,7 +131,10 @@ public class BunkerMgr : MonoBehaviour
                 }
             }
         }
+    }
 
+    public void OpenWindow()
+    {
         if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Store)
         {
             currentWinId = (int)BunkerWindows.StoreWindow - 1;
@@ -150,7 +150,10 @@ public class BunkerMgr : MonoBehaviour
             currentWinId = (int)BunkerWindows.InventoryWindow - 1;
             windowManager.Open(currentWinId);
         }
+    }
 
+    public void CloseWindow()
+    {
         if (!camController.isZoomIn && currentWinId != -1)
         {
             windowManager.windows[currentWinId].Close();
@@ -177,8 +180,8 @@ public class BunkerMgr : MonoBehaviour
         Destroy(selectedBunker);
         selectedBunker = go;
 
-        //currentWinId = (int)BunkerWindows.InventoryWindow - 1;
-        //windowManager.Open(currentWinId);
+        currentWinId = (int)BunkerWindows.InventoryWindow - 1;
+        windowManager.Open(currentWinId);
     }
 
     public void CreateOperatingRoom()
@@ -199,8 +202,8 @@ public class BunkerMgr : MonoBehaviour
         Destroy(selectedBunker);
         selectedBunker = go;
 
-        //currentWinId = (int)BunkerWindows.SquadWindow - 1;
-        //windowManager.Open(currentWinId);
+        currentWinId = (int)BunkerWindows.SquadWindow - 1;
+        windowManager.Open(currentWinId);
     }
 
     public void CreateStore()
@@ -221,8 +224,8 @@ public class BunkerMgr : MonoBehaviour
         Destroy(selectedBunker);
         selectedBunker = go;
 
-        //currentWinId = (int)BunkerWindows.StoreWindow - 1;
-        //windowManager.Open(currentWinId);
+        currentWinId = (int)BunkerWindows.StoreWindow - 1;
+        windowManager.Open(currentWinId);
     }
 
     public void ExitBunker()
