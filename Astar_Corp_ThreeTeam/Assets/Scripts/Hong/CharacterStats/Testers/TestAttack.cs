@@ -8,7 +8,7 @@ public class TestAttack : MonoBehaviour
     private MonsterStats enemyStats;
 
     //public Character newStatTest;
-    public AttackDefinition attackStat;
+    //public AttackDefinition attackStat;
 
     private void Awake()
     {
@@ -30,23 +30,29 @@ public class TestAttack : MonoBehaviour
                     // Enemy 오브젝트의 CharacterStats 임시로 가져오기
                     enemyStats = hitInfo.collider.gameObject.GetComponent<MonsterStats>();
                     
-                    //var playerAttackStats = attackStat.CreateAttack(newStatTest.);
-                    var playerAttackStats = attackStat.CreateAttack(stats);
-                    OnAttack(hitInfo.collider.gameObject, playerAttackStats);
+                    OnAttack(stats);
+
+                    //var playerAttackStats = attackStat.CreateAttack(stats);
+                    //OnAttack(hitInfo.collider.gameObject, playerAttackStats);
                 }
             }
         }
     }
 
-    public void OnAttack(GameObject attacker, AttackStats attack)
+    //public void OnAttack(GameObject attacker, AttackStats attack)
+    public void OnAttack(CharacterStats attack)
     {
         enemyStats.currentHp -= attack.Damage;
-        
+
         if (enemyStats.currentHp < 0)
         {
             enemyStats.currentHp = 0;
+            Debug.Log("Enemy died");
         }
-        
-        Debug.Log("Enemy HP : " + enemyStats.currentHp);
+        else
+        {
+            Debug.Log("Enemy HP : " + enemyStats.currentHp);
+        }
+
     }
 }

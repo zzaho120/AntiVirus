@@ -22,38 +22,61 @@ public class CharacterStats : MonoBehaviour
     public AttackDefinition weapon;
 
     // 1. 체력
-    private int maxHp { get => Hp; }
+    public int maxHp { get => Hp; }
     [HideInInspector]
     public int currentHp;
 
-    // 2. 공격력, 3. 공격범위 --> AttackStats, AttackDefition 클래스에서 추가 관리
-    //public float Damage;
-    
-    //// 4. 의지력
-    //public int willpower;
-    //
-    //// 5. 기력
-    //public int stamina;
-    //
-    //// 6. 내성
-    //public float resistance;
+    // 2. 공격력
+    // 3. 공격범위
 
-    // 경험치?
-    // public float Exp;
+    // 4. 의지력
+    public int willpower;
+
+    // 5. 기력
+    public float stamina;
+
+    // 6. 내성
+
+    public int level;
 
     public string Name { get { return characterStat.name; } }
 
+    #region 레벨당 증가하는 스탯 설정
     private int Hp
     {
         get
         {
-            var baseHp = Random.Range(characterStat.min_Hp, characterStat.max_Hp);
+            var baseHp = Random.Range(characterStat.min_Hp, characterStat.max_Hp + 1);
             var hp = baseHp;
-
+            
             return hp;
         }
     }
 
+    private int Stamina
+    {
+        get
+        {
+            var baseStamina = Random.Range(characterStat.min_Stamina, characterStat.max_Stamina + 1);
+            var stamina = baseStamina;
+
+            return stamina;
+        }
+    }
+
+    private int Willpower
+    {
+        get
+        {
+            var baseWillpower = Random.Range(characterStat.min_Willpower, characterStat.max_Willpower + 1);
+            var willpower = baseWillpower;
+
+            return willpower;
+        }
+    }
+    #endregion
+
+    #region 기타 기본 스탯 설정
     // 수정? 대충 된 것 같은데 나중에 다시 보기
     public int Damage
     {
@@ -88,29 +111,9 @@ public class CharacterStats : MonoBehaviour
             return critRate;
         }
     }
+    #endregion
 
-    public int Willpower
-    {
-        get
-        {
-            var baseWillpower = Random.Range(characterStat.min_Willpower, characterStat.max_Willpower);
-            var willpower = baseWillpower;
-
-            return willpower;
-        }
-    }
-    
-    public int Stamina
-    {
-        get
-        {
-            var baseStamina = Random.Range(characterStat.min_Stamina, characterStat.max_Stamina);
-            var stamina = baseStamina;
-
-            return stamina;
-        }
-    }
-
+    #region 항체 스탯
     public float HitDmgDecRate
     {
         get { return antibody.hitDmgDecRate; }
@@ -130,6 +133,7 @@ public class CharacterStats : MonoBehaviour
     {
         get { return antibody.suddenDmgDecRate; }
     }
+    #endregion
 
     private void Awake()
     {
@@ -139,5 +143,9 @@ public class CharacterStats : MonoBehaviour
     private void Init()
     {
         currentHp = maxHp;
+        stamina = Stamina;
+        willpower = Willpower;
+        level = 1;
     }
+
 }

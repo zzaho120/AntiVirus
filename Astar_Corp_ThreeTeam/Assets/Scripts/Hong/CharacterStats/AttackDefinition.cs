@@ -14,19 +14,20 @@ public class AttackDefinition : ScriptableObject
     public int criticalDamage;
     //public float coolDown;
 
-    public AttackStats CreateAttack(CharacterStats player)
-    {
-        // 데미지 조정
-        var damage = player.Damage;
-        damage += Random.Range(minDamage, maxDamage);
-
-        // 크리티컬 수치 조정
-        var isCritical = Random.value < criticalChance;
-        if (isCritical)
-            damage *= criticalDamage;
-
-        return new AttackStats((int)damage, isCritical);
-    }
+    // 기존
+    //public AttackStats CreateAttack(CharacterStats player)
+    //{
+    //    // 데미지 조정
+    //    var damage = player.Damage;
+    //    damage += Random.Range(minDamage, maxDamage);
+    //
+    //    // 크리티컬 수치 조정
+    //    var isCritical = Random.value < criticalChance;
+    //    if (isCritical)
+    //        damage *= criticalDamage;
+    //
+    //    return new AttackStats((int)damage, isCritical);
+    //}
 
     public AttackStats CreateAttack(Character player)
     {

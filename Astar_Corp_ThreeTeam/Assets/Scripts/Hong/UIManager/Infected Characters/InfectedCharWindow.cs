@@ -31,8 +31,8 @@ public class InfectedCharWindow : GenericWindow
 			text[0].text = character.characterList[0].characterInfo.Name;
 			text[1].text = ("HP : " + character.characterList[0].characterInfo.currentHp + "\n" +
 							"Damage : " + character.characterList[0].characterInfo.Damage + "\n" +
-							"Willpower : " + character.characterList[0].characterInfo.Willpower + "\n" +
-							"Stamina : " + character.characterList[0].characterInfo.Stamina).ToString();
+							"Willpower : " + character.characterList[0].characterInfo.willpower + "\n" +
+							"Stamina : " + character.characterList[0].characterInfo.stamina).ToString();
 
 		}
 		else if (value == 1)
@@ -40,24 +40,24 @@ public class InfectedCharWindow : GenericWindow
 			text[0].text = character.characterList[1].characterInfo.Name;
 			text[1].text = ("HP : " + character.characterList[1].characterInfo.currentHp + "\n" +
 							"Damage : " + character.characterList[1].characterInfo.Damage + "\n" +
-							"Willpower : " + character.characterList[1].characterInfo.Willpower + "\n" +
-							"Stamina : " + character.characterList[1].characterInfo.Stamina).ToString();
+							"Willpower : " + character.characterList[1].characterInfo.willpower + "\n" +
+							"Stamina : " + character.characterList[1].characterInfo.stamina).ToString();
 		}
 		else if (value == 2)
 		{
 			text[0].text = character.characterList[2].characterInfo.Name;
 			text[1].text = ("HP : " + character.characterList[2].characterInfo.currentHp + "\n" +
 							"Damage : " + character.characterList[2].characterInfo.Damage + "\n" +
-							"Willpower : " + character.characterList[2].characterInfo.Willpower + "\n" +
-							"Stamina : " + character.characterList[2].characterInfo.Stamina).ToString();
+							"Willpower : " + character.characterList[2].characterInfo.willpower + "\n" +
+							"Stamina : " + character.characterList[2].characterInfo.stamina).ToString();
 		}
 		else if (value == 3)
 		{
 			text[0].text = character.characterList[3].characterInfo.Name;
 			text[1].text = ("HP : " + character.characterList[3].characterInfo.currentHp + "\n" +
 							"Damage : " + character.characterList[3].characterInfo.Damage + "\n" +
-							"Willpower : " + character.characterList[3].characterInfo.Willpower + "\n" +
-							"Stamina : " + character.characterList[3].characterInfo.Stamina).ToString();
+							"Willpower : " + character.characterList[3].characterInfo.willpower + "\n" +
+							"Stamina : " + character.characterList[3].characterInfo.stamina).ToString();
 		}
 		else
         {

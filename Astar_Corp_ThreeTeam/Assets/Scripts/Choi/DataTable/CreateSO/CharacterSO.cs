@@ -51,6 +51,12 @@ public class CharacterSO
                     character.min_Stamina   = int.Parse(splitData[13]);
                     character.max_Stamina   = int.Parse(splitData[14]);
 
+                    character.min_Hp_Increase = int.Parse(splitData[15]);
+                    character.max_Hp_Increase = int.Parse(splitData[16]);
+                    character.stamina_Increase = float.Parse(splitData[17]);
+                    character.willpower_Increase = int.Parse(splitData[18]);
+                    character.damage_Increase = int.Parse(splitData[19]);
+
                     AssetDatabase.CreateAsset(character, $"Assets//Resources/Choi/Datas/Characters/{character.name}.asset");
                     characterNum++;
                 }

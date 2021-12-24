@@ -19,5 +19,10 @@ public class Character : ScriptableObject
 	public int max_Willpower;
 	public int min_Stamina;
 	public int max_Stamina;
-	//public int statLuk;
+
+	public int min_Hp_Increase;
+	public int max_Hp_Increase;
+	public float stamina_Increase;
+	public int willpower_Increase;
+	public int damage_Increase;
 }
