@@ -168,17 +168,11 @@ public class FogMgr : MonoBehaviour
             {
                 var target = pair.Key;
                 if (target.x == checkIdx.x)
-                {
                     CheckSameX(target, checkIdx);
-                }
                 else if (target.y == checkIdx.y)
-                {
                     CheckSameY(target, checkIdx);
-                }
                 else
-                {
                     CheckSlope(target, checkIdx);
-                }
             }
         }
     }

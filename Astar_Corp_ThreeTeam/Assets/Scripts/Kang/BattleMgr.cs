@@ -7,7 +7,7 @@ public class BattleMgr : Singleton<BattleMgr>
 {
     public CommandMgr commandMgr;
     public TileMgr tileMgr;
-    public BattlePlayer player;
+    public BattlePlayerMgr player;
     public FogMgr fogMgr;
     public AStar aStar;
     public int turn;
@@ -18,7 +18,7 @@ public class BattleMgr : Singleton<BattleMgr>
         commandMgr = new CommandMgr();
 
         tileMgr = GameObject.FindWithTag("TileMgr").GetComponent<TileMgr>();
-        player = GameObject.FindWithTag("Player").GetComponent<BattlePlayer>();
+        player = GameObject.FindWithTag("Player").GetComponent<BattlePlayerMgr>();
         fogMgr = GameObject.FindWithTag("FogMgr").GetComponent<FogMgr>();
     }
 

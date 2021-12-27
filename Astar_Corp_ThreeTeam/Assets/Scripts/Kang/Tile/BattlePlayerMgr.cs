@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattlePlayer : MonoBehaviour
+public class BattlePlayerMgr : MonoBehaviour
 {
     public List<PlayerableChar> playerableChars;
 
     public void Init()
     {
-        foreach (var character in playerableChars)
+        playerableChars.Clear();
+        var playerArr = transform.GetComponentsInChildren<PlayerableChar>();
+        foreach (var player in playerArr)
         {
-            character.Init();
+            player.Init();
+            playerableChars.Add(player);
         }
 
         EventBusMgr.Subscribe(EventType.TurnEnd, StartTurn);
