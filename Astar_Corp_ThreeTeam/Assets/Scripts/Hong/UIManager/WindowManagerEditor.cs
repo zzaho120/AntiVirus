@@ -19,6 +19,7 @@ public class WindowManagerEditor : Editor
 
 		serializedObject.ApplyModifiedProperties();
 
+		// Bunker Window
 		if (GUILayout.Button("Generate Bunker Window Enums"))
         {
 			var windows = ((WindowManager)target).windows;
@@ -51,6 +52,7 @@ public class WindowManagerEditor : Editor
 			AssetDatabase.Refresh();
 		}
 
+		// WorldMap Window
 		if (GUILayout.Button("Generate WorldMap Window Enums"))
 		{
 			var windows = ((WindowManager)target).windows;
@@ -70,6 +72,39 @@ public class WindowManagerEditor : Editor
 			sb.Append("}");
 
 			var path = EditorUtility.SaveFilePanel("Save The Window Enums", "", "WindowEnums.cs", "cs");
+
+			using (FileStream fs = new FileStream(path, FileMode.Create))
+			{
+
+				using (StreamWriter writer = new StreamWriter(fs))
+				{
+					writer.Write(sb.ToString());
+				}
+
+			}
+			AssetDatabase.Refresh();
+		}
+
+		// Battle Window
+		if (GUILayout.Button("Generate BattleMap Window Enums"))
+		{
+			var windows = ((WindowManager)target).windows;
+			var total = windows.Length;
+
+			var sb = new StringBuilder();
+			sb.Append("public enum BattleWindows{");
+			sb.Append("None,");
+
+			for (var i = 0; i < total; i++)
+			{
+				sb.Append(windows[i].name.Replace(" ", ""));
+				if (i < total - 1)
+					sb.Append(",");
+			}
+
+			sb.Append("}");
+
+			string path = EditorUtility.SaveFilePanel("Save The Window Enums", "", "BattleWindowEnums.cs", "cs");
 
 			using (FileStream fs = new FileStream(path, FileMode.Create))
 			{

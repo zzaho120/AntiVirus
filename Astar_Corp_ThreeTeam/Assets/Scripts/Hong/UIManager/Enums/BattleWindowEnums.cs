@@ -1,0 +1,1 @@
+public enum BattleWindows{None,Panel,Panel1,Panel2}
