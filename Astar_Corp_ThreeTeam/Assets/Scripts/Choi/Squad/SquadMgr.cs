@@ -12,6 +12,7 @@ public class SquadMgr : MonoBehaviour
     public GameObject CharacterLists;
     public List<GameObject> CharacterList;
     List<string> characterData;
+    List<Character> characterList;
 
     public GameObject SquadLists;
     public List<GameObject> SquadList;
@@ -19,27 +20,31 @@ public class SquadMgr : MonoBehaviour
    
     GameObject currentSelected;
     int currentIndex;
+
+    PlayerDataMgr playerDataMgr;
     // Start is called before the first frame update
     void Start()
     {
-        //캐릭터 리스트 관리.
-        //CharacterList = new List<GameObject>();
-        //var characters = CharacterLists.transform;
-        //for (int i = 0; i < characters.childCount; i++)
-        //{
-        //    //var child = characters.transform.GetChild(i).gameObject;
-        //    //child.SetActive(true);
+        var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
+        playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
+        var characterList = playerDataMgr.characterList;
 
-        //    //CharacterList.Add(child);
-        //}
+        var currentSquad = playerDataMgr.currentSquad;
+        
+        foreach (var element in currentSquad)
+        {
+            var child = SquadLists.transform.GetChild(element.Key).gameObject;
+            var squadName = child.transform.GetChild(0).gameObject.GetComponent<Text>();
+            squadName.text = element.Value;
+        }
 
+        //캐릭터 데이터 가져옴.
         characterData = new List<string>();
-        characterData.Add("강주수");
-        characterData.Add("최지은");
-        characterData.Add("홍수진");
-        characterData.Add("김미정");
-        characterData.Add("김형일");
-        characterData.Add("송태명");
+        foreach (var element in characterList)
+        {
+            characterData.Add(element.name);
+        }
+
         characterData = characterData.OrderBy(x => x).ToList<string>();
         
         CharacterList = new List<GameObject>();
@@ -100,17 +105,25 @@ public class SquadMgr : MonoBehaviour
             previousName.text = string.Empty;
 
             squadData.Remove(key);
+            playerDataMgr.currentSquad.Remove(key);
+            string str = $"Squad{key}";
+            PlayerPrefs.SetString(str, null);
         }
 
         //현재 슬롯에 값이 있다면 변경.
         if (squadData.ContainsKey(currentIndex))
         {
             squadData.Remove(currentIndex);
+            playerDataMgr.currentSquad.Remove(currentIndex);
         }
-        
+
         characterName.text = characterData[i];
         squadData.Add(currentIndex, characterName.text);
+        playerDataMgr.currentSquad.Add(currentIndex, characterName.text);
         
+        string squadStr = $"Squad{currentIndex}";
+        PlayerPrefs.SetString(squadStr, characterName.text);
+
         characterListUI.SetActive(false);
     }
 }

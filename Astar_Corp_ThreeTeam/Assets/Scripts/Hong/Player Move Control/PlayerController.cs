@@ -107,7 +107,6 @@ public class PlayerController : MonoBehaviour
             RaycastHit raycastHit;
             if (Physics.Raycast(ray, out raycastHit, 100))
             {
-                Debug.Log($"{raycastHit.collider.gameObject.name}");
                 if (raycastHit.collider.gameObject.name.Equals("Bunker"))
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
@@ -143,15 +142,6 @@ public class PlayerController : MonoBehaviour
         transform.position = agent.nextPosition;
     }
 
-    // 충돌 판별
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if (hit.gameObject.CompareTag("RandomEvent")) return;
-
-        // 씬 전환 시? FadeOut 효과
-        //panel.GetComponent<FadeOutTest>().StartFade();
-    }
-   
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("MonsterArea") && !isBattle) //몬스터와 전투.

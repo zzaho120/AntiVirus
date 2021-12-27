@@ -85,7 +85,8 @@ public class BunkerCamController : MonoBehaviour
     public void CompleteZoomIn()
     {
         isZoomIn = true;
-        OpenWindow();
+
+        if(!isCurrentEmpty) OpenWindow();
     }
 
     IEnumerator ZoomIn()
