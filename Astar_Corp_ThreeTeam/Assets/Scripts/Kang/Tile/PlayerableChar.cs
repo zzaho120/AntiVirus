@@ -2,38 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerableChar : MonoBehaviour
+public class PlayerableChar : BattleChar
 {
-    [Header("Tile")]
-    public Vector3 tileIdx;
-    public TileBase currentTile;
+    [Header("Character")]
+    public CharacterStats characterStats;
 
     [Header("Value")]
     public int moveDistance;
     public int sightDistance;
     public bool isMove;
+    public bool isAttack;
+    public bool isSelected;
     public bool isTurnOver;
-    
 
     private Dictionary<TileBase, int> moveDics =
         new Dictionary<TileBase, int>();
-    private MeshRenderer ren;
-    public void Init()
-    {
-        var dics = BattleMgr.Instance.tileMgr.tileDics;
-        var pos = transform.position;
-        tileIdx = new Vector3(pos.x, pos.y - 1, pos.z);
-        foreach (var pair in dics)
-        {
-            var tile = pair.Value;
-            if (tile.tileIdx == tileIdx)
-            {
-                currentTile = tile;
-                break;
-            }
-        }
 
+    private Dictionary<Vector2, int> attackDics =
+        new Dictionary<Vector2, int>();
+
+    private MeshRenderer ren;
+
+    public override void Init()
+    {
+        base.Init();
         ren = GetComponent<MeshRenderer>();
+        characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
+        characterStats.Init();
     }
 
     public void Update()
@@ -42,6 +37,7 @@ public class PlayerableChar : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
+
                 RaycastHit hit;
                 var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 
@@ -55,15 +51,27 @@ public class PlayerableChar : MonoBehaviour
                             var tileBase = hit.collider.GetComponent<TileBase>();
                             if (moveDics.ContainsKey(tileBase))
                             {
-                                BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
-                                MoveMode();
-                                StartCoroutine(CoMove());
+                                ActionMove(tileBase);
                             }
                         }
                     }
                     if (hit.collider.gameObject == gameObject)
                     {
-                        MoveMode();
+                        isSelected = !isSelected;
+                        if (isSelected)
+                        {
+                            var playerAction = BattleMgr.Instance.BattleWindowMgr.Open(0).GetComponent<PlayerActionWindow>();
+                            playerAction.curChar = this;
+                            ren.material.color = Color.red;
+                        }
+                        else
+                        {
+                            var window = BattleMgr.Instance.BattleWindowMgr.GetWindow(0);
+                            var playerAction = window.GetComponent<PlayerActionWindow>();
+                            playerAction.curChar = null;
+                            window.Close();
+                            ren.material.color = Color.white;
+                        }
                     }
                 }
             }
@@ -76,18 +84,7 @@ public class PlayerableChar : MonoBehaviour
         ren.material.color = Color.white;
     }
 
-    private void MoveTile(Vector3 nextIdx)
-    {
-        foreach (var tile in currentTile.adjNodes)
-        {
-            if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
-            {
-                tileIdx = nextIdx;
-                currentTile = tile;
-                transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 1, tile.tileIdx.z);
-            }
-        }
-    }
+    
 
     private IEnumerator CoMove()
     {
@@ -106,14 +103,28 @@ public class PlayerableChar : MonoBehaviour
         ren.material.color = Color.gray;
     }
 
+    private void MoveTile(Vector3 nextIdx)
+    {
+        foreach (var tile in currentTile.adjNodes)
+        {
+            if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
+            {
+                currentTile.charObj = null;
+                tileIdx = nextIdx;
+                currentTile = tile;
+                currentTile.charObj = gameObject;
+                transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 1, tile.tileIdx.z);
+            }
+        }
+    }
+
     public void MoveMode()
     {
         isMove = !isMove;
 
-        if (isMove)
+        if (isMove && isSelected)
         {
-            ren.material.color = Color.red;
-            MoveFloodFill();
+            FloodFillMove();
         }
         else
         {
@@ -132,7 +143,7 @@ public class PlayerableChar : MonoBehaviour
         }
     }
 
-    private void MoveFloodFill()
+    private void FloodFillMove()
     {
         moveDics.Clear();
         moveDics.Add(currentTile, 0);
@@ -166,6 +177,54 @@ public class PlayerableChar : MonoBehaviour
         tileRen.material.color = Color.blue;
 
         foreach (var adjNode in tile.adjNodes)
+        {
             CheckMoveRange(adjNode, cnt);
+        }
+    }
+
+    private void ActionMove(TileBase tileBase)
+    {
+        BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
+        MoveMode();
+        StartCoroutine(CoMove());
+    }
+
+    public void AttackMode()
+    {
+        isAttack = !isAttack;
+
+        FloodFillAttack();
+    }
+
+    private void FloodFillAttack()
+    {
+        attackDics.Clear();
+        var tileIdx = new Vector2(currentTile.tileIdx.x, currentTile.tileIdx.z);
+        attackDics.Add(tileIdx, 0);
+
+        var cnt = 0;
+        CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y + 1), cnt);
+        CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y - 1), cnt);
+        CheckAttackRange(new Vector2(tileIdx.x - 1, tileIdx.y), cnt);
+        CheckAttackRange(new Vector2(tileIdx.x + 1, tileIdx.y), cnt);
+    }
+
+    private void CheckAttackRange(Vector2 tileIdx, int cnt)
+    {
+        if (cnt >= characterStats.Range)
+            return;
+
+        cnt++;
+        if (!attackDics.ContainsKey(tileIdx))
+            attackDics.Add(tileIdx, cnt);
+        else if (attackDics[tileIdx] > cnt)
+            attackDics[tileIdx] = cnt;
+        else
+            return;
+
+        CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y + 1), cnt);
+        CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y - 1), cnt);
+        CheckAttackRange(new Vector2(tileIdx.x - 1, tileIdx.y), cnt);
+        CheckAttackRange(new Vector2(tileIdx.x + 1, tileIdx.y), cnt);
     }
 }

@@ -7,7 +7,9 @@ public class BattleMgr : Singleton<BattleMgr>
 {
     public CommandMgr commandMgr;
     public TileMgr tileMgr;
-    public BattlePlayerMgr player;
+    public BattlePlayerMgr playerMgr;
+    public BattleMonsterMgr monsterMgr;
+    public WindowManager BattleWindowMgr;
     public FogMgr fogMgr;
     public AStar aStar;
     public int turn;
@@ -18,18 +20,26 @@ public class BattleMgr : Singleton<BattleMgr>
         commandMgr = new CommandMgr();
 
         tileMgr = GameObject.FindWithTag("TileMgr").GetComponent<TileMgr>();
-        player = GameObject.FindWithTag("Player").GetComponent<BattlePlayerMgr>();
         fogMgr = GameObject.FindWithTag("FogMgr").GetComponent<FogMgr>();
+        playerMgr = GameObject.FindWithTag("Player").GetComponent<BattlePlayerMgr>();
+        monsterMgr = GameObject.FindWithTag("BattleMonster").GetComponent<BattleMonsterMgr>();
+        BattleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
     }
 
     public void Start()
     {
         tileMgr.Init();
-        player.Init();
+        playerMgr.Init();
+        monsterMgr.Init();
         aStar.Init();
         fogMgr.Init();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+            OnTurnEnd();
+    }
     public void OnTurnEnd()
     {
         if (turn < 5)

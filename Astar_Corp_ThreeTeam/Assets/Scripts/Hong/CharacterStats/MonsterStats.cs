@@ -95,12 +95,12 @@ public class MonsterStats : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        Init();
-    }
+    //private void Awake()
+    //{
+    //    Init();
+    //}
 
-    private void Init()
+    public void Init()
     {
         currentHp = maxHp;
     }

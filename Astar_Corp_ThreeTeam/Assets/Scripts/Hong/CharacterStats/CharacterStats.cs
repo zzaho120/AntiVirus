@@ -142,12 +142,12 @@ public class CharacterStats : MonoBehaviour
     }
     #endregion
 
-    private void Awake()
-    {
-        Init();
-    }
+    //private void Awake()
+    //{
+    //    Init();
+    //}
 
-    private void Init()
+    public void Init()
     {
         maxHp = Hp;
         currentHp = maxHp;

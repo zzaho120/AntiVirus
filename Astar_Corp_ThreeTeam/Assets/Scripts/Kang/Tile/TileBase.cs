@@ -15,6 +15,9 @@ public class TileBase : MonoBehaviour
     [Header("List")]
     public List<TileBase> adjNodes;
 
+    [Header("RunTime")]
+    public GameObject charObj;
+
     public void Init(TileMgr tileMgr)
     {
         mgr = tileMgr;
@@ -33,8 +36,15 @@ public class TileBase : MonoBehaviour
         var ren = tileObj.GetComponent<MeshRenderer>();
 
         if (isEnabled)
+        {
             ren.material = materials[0];
+        }
         else
+        {
             ren.material = materials[1];
+        }
+
+        if (charObj != null)
+            charObj.GetComponent<MeshRenderer>().enabled = isEnabled;
     }
 }

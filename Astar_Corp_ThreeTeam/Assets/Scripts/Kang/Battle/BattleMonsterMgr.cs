@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class BattleMonsterMgr : MonoBehaviour
 {
-    public List<BattleMonsterBase> monsters;
+    public List<MonsterChar> monsters;
     // Start is called before the first frame update
     public void Init()
     {
         monsters.Clear();
+        var monsterArr = transform.GetComponentsInChildren<MonsterChar>();
+        foreach (var monster in monsterArr)
+        {
+            monster.Init();
+            monsters.Add(monster);
+        }
     }
 }

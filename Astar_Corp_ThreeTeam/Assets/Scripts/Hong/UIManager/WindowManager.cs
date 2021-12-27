@@ -52,6 +52,4 @@ public class WindowManager : MonoBehaviour
 		GenericWindow.manager = this;
 		//Open(defaultWindowID);
 	}
-
-
 }

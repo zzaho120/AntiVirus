@@ -48,10 +48,10 @@ public class TileMgr : MonoBehaviour
             var idx = pair.Key;
             var tile = pair.Value;
 
+            if (idx.z < MAX_Z_IDX - 1) CheckAdjTile(tile, new Vector3(idx.x, idx.y, idx.z + 1), DirectionType.Top, DirectionType.Bot);
+            if (idx.z > 0) CheckAdjTile(tile, new Vector3(idx.x, idx.y, idx.z - 1), DirectionType.Bot, DirectionType.Top);
             if (idx.x > 0) CheckAdjTile(tile, new Vector3(idx.x - 1, idx.y, idx.z), DirectionType.Left, DirectionType.Right);
             if (idx.x < MAX_X_IDX - 1) CheckAdjTile(tile, new Vector3(idx.x + 1, idx.y, idx.z), DirectionType.Right, DirectionType.Left);
-            if (idx.z > 0) CheckAdjTile(tile, new Vector3(idx.x, idx.y, idx.z - 1), DirectionType.Bot, DirectionType.Top);
-            if (idx.z < MAX_Z_IDX - 1) CheckAdjTile(tile, new Vector3(idx.x, idx.y, idx.z + 1), DirectionType.Top, DirectionType.Bot);
         }
     }
 

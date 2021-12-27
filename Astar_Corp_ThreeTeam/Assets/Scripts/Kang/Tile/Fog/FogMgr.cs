@@ -35,9 +35,6 @@ public class FogMgr : MonoBehaviour
     public List<Dictionary<Vector2, List<FogTileBase>>> playerSightDics =
         new List<Dictionary<Vector2, List<FogTileBase>>>();
 
-    public List<Dictionary<Vector2, List<FogTileBase>>> obstacleDics =
-        new List<Dictionary<Vector2, List<FogTileBase>>>();
-    
     // 한 번이라도 시야가 확보된 시야
     public Dictionary<Vector3, bool> everFogDics =
         new Dictionary<Vector3, bool>();
@@ -46,7 +43,7 @@ public class FogMgr : MonoBehaviour
 
     public void Init()
     {
-        playerableChars = BattleMgr.Instance.player.playerableChars;
+        playerableChars = BattleMgr.Instance.playerMgr.playerableChars;
         InitFog();
         UpdateFog();
     }
@@ -80,7 +77,6 @@ public class FogMgr : MonoBehaviour
         for (var idx = 0; idx < playerableChars.Count; ++idx)
         {
             playerSightDics.Add(new Dictionary<Vector2, List<FogTileBase>>());
-            obstacleDics.Add(new Dictionary<Vector2, List<FogTileBase>>());
         }
     }
 
@@ -138,9 +134,6 @@ public class FogMgr : MonoBehaviour
         {
             foreach (var wall in curFogDics[wallIdx])
                 wall.isInSight = true;
-
-            if (!obstacleDics[playerIdx].ContainsKey(wallIdx))
-                obstacleDics[playerIdx].Add(wallIdx, curFogDics[wallIdx]);
         }
 
         foreach (var tile in curFogDics[tileIdx])

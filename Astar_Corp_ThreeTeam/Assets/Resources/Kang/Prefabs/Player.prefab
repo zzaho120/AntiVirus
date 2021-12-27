@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 8190590892999929729}
   - component: {fileID: 8190590892999929728}
   - component: {fileID: 8190590892999929735}
-  - component: {fileID: 8190590892999929730}
   - component: {fileID: 8190590892999929734}
+  - component: {fileID: 8190590892999929730}
+  - component: {fileID: 1857170361929857884}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8190590892999929733}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 7, y: 1, z: 8}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
@@ -85,24 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8190590892999929730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8190590892999929733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 658a35f2334195b469ab628835c8fdeb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileIdx: {x: 0, y: 0, z: 0}
-  currentTile: {fileID: 0}
-  moveDistance: 3
-  sightDistance: 5
-  isMove: 0
-  isTurnOver: 0
 --- !u!136 &8190590892999929734
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -117,3 +100,42 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8190590892999929730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8190590892999929733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 658a35f2334195b469ab628835c8fdeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileIdx: {x: 0, y: 0, z: 0}
+  currentTile: {fileID: 0}
+  moveDistance: 5
+  sightDistance: 5
+  isMove: 0
+  isTurnOver: 0
+  characterStats: {fileID: 1857170361929857884}
+--- !u!114 &1857170361929857884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8190590892999929733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22f41aed4eb818c418a8f27b08318d4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character: {fileID: 0}
+  antibody: {fileID: 0}
+  weapon: {fileID: 0}
+  maxHp: 0
+  currentHp: 0
+  willpower: 0
+  stamina: 0
+  level: 0
