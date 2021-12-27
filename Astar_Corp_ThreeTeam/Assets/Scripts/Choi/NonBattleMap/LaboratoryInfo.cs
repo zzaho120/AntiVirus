@@ -9,6 +9,10 @@ public class LaboratoryInfo : MonoBehaviour
     public float radiusZone3;
     public string virusType;
 
+    public bool isPlayerInZone1;
+    public bool isPlayerInZone2;
+    public bool isPlayerInZone3;
+
     GameObject player;
     PlayerController playerController;
   

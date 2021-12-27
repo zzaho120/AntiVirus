@@ -19,7 +19,7 @@ public static class DataTableMgr
         equippableTable.Load();
         tables.Add(typeof(EquippableTable), equippableTable);
 
-        var charTable = new CharacterTable();
+        CharacterTable charTable = new CharacterTable();
         charTable.Load();
         tables.Add(typeof(CharacterTable), charTable);
 

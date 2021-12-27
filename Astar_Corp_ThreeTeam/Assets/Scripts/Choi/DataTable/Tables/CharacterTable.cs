@@ -86,8 +86,14 @@ public class CharacterTable : DataTableBase
         var list = CSVReader.Read(csvFilePath);
         foreach (var line in list)
         {
-            var elem = new CharacterTableElem(line);
+			CharacterTableElem elem = new CharacterTableElem(line);
             data.Add(elem.id, elem);
+
+			// id, name
+			// id, description
+			// id, min_hp
+			// id, max_hp
+			// ...
         }
     }
 }

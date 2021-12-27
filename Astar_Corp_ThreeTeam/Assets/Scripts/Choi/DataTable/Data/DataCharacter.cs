@@ -137,7 +137,7 @@ public class DataCharacter
 
     public DataCharacter(string charID)
     {
-        var table = DataTableMgr.GetTable<CharacterTable>();
+        CharacterTable table = DataTableMgr.GetTable<CharacterTable>();
         tableElem = table.GetData<CharacterTableElem>(charID);
     }
 

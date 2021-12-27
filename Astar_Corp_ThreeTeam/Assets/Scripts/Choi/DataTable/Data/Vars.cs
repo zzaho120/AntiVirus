@@ -20,7 +20,7 @@ public class Vars
                 userData.consumableNumList.Add(2);
                 userData.consumableNameList.Add("CON_0002");
                 userData.consumableNumList.Add(3);
-                
+
                 //userData.consumableItemList.Add(new ItemCountPair("CON_0001",2));
                 //userData.consumableItemList.Add(new ItemCountPair("CON_0002", 3));
                 //userData.consumableItemList.Add(new ItemCountPair("CON_0003", 5));
