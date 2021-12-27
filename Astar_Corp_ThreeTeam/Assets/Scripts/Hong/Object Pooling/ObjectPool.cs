@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
+public enum PoolName
+{
+    Particle,
+    Object,
+    Sound,
+}
+
 [System.Serializable]
 public class ObjectPool
 {

@@ -6,11 +6,11 @@ public class SaveData
 {
     public static readonly SaveData DefaultData = new SaveData()
     {
-        characterData = Vars.UserData.characterList,
-        equippableData = Vars.UserData.equippableList,
-
-        consumableNameData = Vars.UserData.consumableNameList,
-        consumableNumData = Vars.UserData.consumableNumList
+        //characterData = Vars.UserData.characterList,
+        //equippableData = Vars.UserData.equippableList,
+        //
+        //consumableNameData = Vars.UserData.consumableNameList,
+        //consumableNumData = Vars.UserData.consumableNumList
     };
     public int Version { get; set; }
 
@@ -47,11 +47,11 @@ public class SaveDataV1 : SaveDatabase
     {
         Version = 1;
 
-        characterData = Vars.UserData.characterList;
-        equippableData = Vars.UserData.equippableList;
-
-        consumableNameData = Vars.UserData.consumableNameList;
-        consumableNumData = Vars.UserData.consumableNumList;
+        //characterData = Vars.UserData.characterList;
+        //equippableData = Vars.UserData.equippableList;
+        //
+        //consumableNameData = Vars.UserData.consumableNameList;
+        //consumableNumData = Vars.UserData.consumableNumList;
     }
     public SaveDataV1(SaveDatabase save) : this()
     {
@@ -70,11 +70,11 @@ public class SaveDataV2 : SaveDataV1
     {
         Version = 2;
 
-        characterData = Vars.UserData.characterList;
-        equippableData = Vars.UserData.equippableList;
-
-        consumableNameData = Vars.UserData.consumableNameList;
-        consumableNumData = Vars.UserData.consumableNumList;
+        //characterData = Vars.UserData.characterList;
+        //equippableData = Vars.UserData.equippableList;
+        //
+        //consumableNameData = Vars.UserData.consumableNameList;
+        //consumableNumData = Vars.UserData.consumableNumList;
     }
     public SaveDataV2(SaveDataV1 save) : this()
     {

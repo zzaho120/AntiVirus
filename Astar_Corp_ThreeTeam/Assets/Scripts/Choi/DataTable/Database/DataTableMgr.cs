@@ -11,18 +11,18 @@ public static class DataTableMgr
 
     public static void Init()
     {
-        var itemTable = new ItemTable();
-        itemTable.Load();
-        tables.Add(typeof(ItemTable), itemTable);
-
-        var equippableTable = new EquippableTable();
-        equippableTable.Load();
-        tables.Add(typeof(EquippableTable), equippableTable);
-
-        CharacterTable charTable = new CharacterTable();
-        charTable.Load();
-        tables.Add(typeof(CharacterTable), charTable);
-
+        //var itemTable = new ItemTable();
+        //itemTable.Load();
+        //tables.Add(typeof(ItemTable), itemTable);
+        //
+        //var equippableTable = new EquippableTable();
+        //equippableTable.Load();
+        //tables.Add(typeof(EquippableTable), equippableTable);
+        //
+        //CharacterTable charTable = new CharacterTable();
+        //charTable.Load();
+        //tables.Add(typeof(CharacterTable), charTable);
+        //
         //var levelTable = new LevelTable();
         //levelTable.Load();
         //tables.Add(typeof(LevelTable), levelTable);
