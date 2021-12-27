@@ -8,9 +8,18 @@ using UnityEngine.SceneManagement;
 // NavMeshAgent 매뉴얼
 // https://docs.unity3d.com/kr/530/ScriptReference/NavMeshAgent.html
 
+public class CharacterInfo
+{
+    public string name;
+    public int hp;
+    public int stemina;
+}
+
 public class PlayerController : MonoBehaviour
 {
     //지은.
+    public CharacterInfo character;
+
     public MultiTouch multiTouch;
     public NonBattleMgr manager;
 
@@ -46,6 +55,11 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        character = new CharacterInfo();
+        character.name = "하이";
+        character.hp = 5;
+        character.stemina = 5;
+
         if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")))
         {
             pX = PlayerPrefs.GetFloat("p_x");
@@ -157,4 +171,17 @@ public class PlayerController : MonoBehaviour
             randomTimer = 0;
         }
     }
+
+    public void DecreaseHp(int i)
+    {
+        character.hp -= i;
+        Debug.Log($"hp : {character.hp}");
+    }
+
+    public void DecreaseStemia(int i)
+    {
+        character.stemina -= i;
+        Debug.Log($"stemina : {character.stemina}");
+    }
+
 }

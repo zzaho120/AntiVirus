@@ -12,6 +12,10 @@ public class VirusZone1Info : MonoBehaviour
     GameObject player;
     PlayerController playerController;
 
+    float timer;
+    float decreaseTimer; 
+    float decreaseTime;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -27,6 +31,9 @@ public class VirusZone1Info : MonoBehaviour
             squadUI.TurnOnWarning(2);
             squadUI.TurnOnWarning(3);
         }
+
+        timer = 0f;
+        decreaseTime = 5f;
     }
 
     private void OnTriggerStay(Collider other)
@@ -47,6 +54,19 @@ public class VirusZone1Info : MonoBehaviour
                     squadUI.TurnOnWarning(3);
                 }
             }
+            timer += Time.deltaTime;
+            if (timer > 1)
+            {
+                timer = 0f;
+                decreaseTimer++;
+            }
+            if (decreaseTimer >= decreaseTime)
+            {
+                decreaseTimer = 0f;
+                if (playerController.character.stemina > 1) playerController.DecreaseStemia(1);
+                else if (playerController.character.hp > 1) playerController.DecreaseHp(1);
+                else Debug.Log("Die");
+            }
         }
     }
 
@@ -59,6 +79,9 @@ public class VirusZone1Info : MonoBehaviour
             playerController = null;
 
             squadUI.TurnOffWarning();
+
+            timer = 0f;
+            decreaseTimer = 0f;
         }
     }
 }
