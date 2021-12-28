@@ -18,8 +18,12 @@ public class PlayerableChar : BattleChar
     private Dictionary<TileBase, int> moveDics =
         new Dictionary<TileBase, int>();
 
-    private Dictionary<Vector2, int> attackDics =
-        new Dictionary<Vector2, int>();
+    private Dictionary<Vector2, List<TileBase>> attackDics =
+        new Dictionary<Vector2, List<TileBase>>();
+
+    private Dictionary<Vector2, List<TileBase>> tileVec2Dics;
+
+    private Dictionary<Vector3, WallBase> wallDics;
 
     private MeshRenderer ren;
 
@@ -29,6 +33,9 @@ public class PlayerableChar : BattleChar
         ren = GetComponent<MeshRenderer>();
         characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
         characterStats.Init();
+
+        tileVec2Dics = BattleMgr.Instance.tileMgr.tileVec2Dics;
+        wallDics = BattleMgr.Instance.tileMgr.wallDics;
     }
 
     public void Update()
@@ -43,19 +50,21 @@ public class PlayerableChar : BattleChar
                 
                 if (Physics.Raycast(ray, out hit))
                 {
-                    Debug.Log(hit.collider.name);
-                    if (isMove)
+                    if (isMove && hit.collider.tag == "Tile")
                     {
-                        if (hit.collider.tag == "Tile")
-                        {
-                            var tileBase = hit.collider.GetComponent<TileBase>();
-                            if (moveDics.ContainsKey(tileBase))
-                            {
-                                ActionMove(tileBase);
-                            }
-                        }
+                        var tileBase = hit.collider.GetComponent<TileBase>();
+                        if (moveDics.ContainsKey(tileBase))
+                            ActionMove(tileBase);
                     }
-                    if (hit.collider.gameObject == gameObject)
+                    else if (isAttack && hit.collider.tag == "BattleMonster")
+                    {
+                        Debug.Log(hit.collider.name);
+                        var monster = hit.collider.GetComponent<MonsterChar>();
+                        var tileIdx = new Vector2(monster.tileIdx.x, monster.tileIdx.z);
+                        if (attackDics.ContainsKey(tileIdx))
+                            ActionAttack(monster);
+                    }
+                    else if (hit.collider.gameObject == gameObject)
                     {
                         isSelected = !isSelected;
                         if (isSelected)
@@ -73,6 +82,7 @@ public class PlayerableChar : BattleChar
                             ren.material.color = Color.white;
                         }
                     }
+                    
                 }
             }
         }
@@ -84,8 +94,6 @@ public class PlayerableChar : BattleChar
         ren.material.color = Color.white;
     }
 
-    
-
     private IEnumerator CoMove()
     {
         var path = BattleMgr.Instance.aStar.pathList;
@@ -93,14 +101,16 @@ public class PlayerableChar : BattleChar
         {
             var aStarTile = path.Pop();
 
+            if (aStarTile.tileBase.charObj != null)
+                break;
+
             MoveTile(aStarTile.tileBase.tileIdx);
 
             // test
             BattleMgr.Instance.fogMgr.UpdateFog();
             yield return new WaitForSeconds(0.1f);
         }
-        isTurnOver = true;
-        ren.material.color = Color.gray;
+        TurnOver();
     }
 
     private void MoveTile(Vector3 nextIdx)
@@ -193,20 +203,50 @@ public class PlayerableChar : BattleChar
     {
         isAttack = !isAttack;
 
-        FloodFillAttack();
+        if (isAttack)
+        {
+            FloodFillAttack();
+            foreach (var pair in attackDics)
+            {
+                foreach (var tile in pair.Value)
+                {
+                    var tileRen = tile.transform.GetChild(0).GetComponent<MeshRenderer>();
+                    tileRen.material.color = Color.red;
+                }
+            }
+        }
+        else
+        {
+            foreach (var pair in attackDics)
+            {
+                foreach (var tile in pair.Value)
+                {
+                    var tileRen = tile.transform.GetChild(0).GetComponent<MeshRenderer>();
+                    tileRen.material.color = Color.white;
+                }
+            }
+        }
     }
 
     private void FloodFillAttack()
     {
         attackDics.Clear();
         var tileIdx = new Vector2(currentTile.tileIdx.x, currentTile.tileIdx.z);
-        attackDics.Add(tileIdx, 0);
+        attackDics.Add(tileIdx, tileVec2Dics[tileIdx]);
 
         var cnt = 0;
-        CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y + 1), cnt);
-        CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y - 1), cnt);
-        CheckAttackRange(new Vector2(tileIdx.x - 1, tileIdx.y), cnt);
-        CheckAttackRange(new Vector2(tileIdx.x + 1, tileIdx.y), cnt);
+
+        if (!wallDics.ContainsKey(new Vector3(tileIdx.x, currentTile.tileIdx.y, tileIdx.y + 0.5f)))
+            CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y + 1), cnt);
+
+        if (!wallDics.ContainsKey(new Vector3(tileIdx.x, currentTile.tileIdx.y, tileIdx.y - 0.5f)))
+            CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y - 1), cnt);
+
+        if (!wallDics.ContainsKey(new Vector3(tileIdx.x - 0.5f, currentTile.tileIdx.y, tileIdx.y)))
+            CheckAttackRange(new Vector2(tileIdx.x - 1, tileIdx.y), cnt);
+
+        if (!wallDics.ContainsKey(new Vector3(tileIdx.x + 0.5f, currentTile.tileIdx.y, tileIdx.y)))
+            CheckAttackRange(new Vector2(tileIdx.x + 1, tileIdx.y), cnt);
     }
 
     private void CheckAttackRange(Vector2 tileIdx, int cnt)
@@ -215,16 +255,36 @@ public class PlayerableChar : BattleChar
             return;
 
         cnt++;
-        if (!attackDics.ContainsKey(tileIdx))
-            attackDics.Add(tileIdx, cnt);
-        else if (attackDics[tileIdx] > cnt)
-            attackDics[tileIdx] = cnt;
-        else
-            return;
+        if (tileVec2Dics.ContainsKey(tileIdx))
+        {
+            if (!attackDics.ContainsKey(tileIdx))
+                attackDics.Add(tileIdx, tileVec2Dics[tileIdx]);
+            else
+                return;
+        }
 
-        CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y + 1), cnt);
-        CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y - 1), cnt);
-        CheckAttackRange(new Vector2(tileIdx.x - 1, tileIdx.y), cnt);
-        CheckAttackRange(new Vector2(tileIdx.x + 1, tileIdx.y), cnt);
+        if (!wallDics.ContainsKey(new Vector3(tileIdx.x, currentTile.tileIdx.y, tileIdx.y + 0.5f)))
+            CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y + 1), cnt);
+
+        if (!wallDics.ContainsKey(new Vector3(tileIdx.x, currentTile.tileIdx.y, tileIdx.y - 0.5f)))
+            CheckAttackRange(new Vector2(tileIdx.x, tileIdx.y - 1), cnt);
+
+        if (!wallDics.ContainsKey(new Vector3(tileIdx.x - 0.5f, currentTile.tileIdx.y, tileIdx.y)))
+            CheckAttackRange(new Vector2(tileIdx.x - 1, tileIdx.y), cnt);
+
+        if (!wallDics.ContainsKey(new Vector3(tileIdx.x + 0.5f, currentTile.tileIdx.y, tileIdx.y)))
+            CheckAttackRange(new Vector2(tileIdx.x + 1, tileIdx.y), cnt);
+    }
+
+    private void ActionAttack(MonsterChar monster)
+    {
+        AttackMode();
+        TurnOver();
+    }
+    
+    private void TurnOver()
+    {
+        isTurnOver = true;
+        ren.material.color = Color.gray;
     }
 }

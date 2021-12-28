@@ -25,6 +25,7 @@ public class PlayerActionWindow : GenericWindow
 
     public void OnClickAttackBtn()
     {
-
+        curChar.AttackMode();
+        Close();
     }
 }

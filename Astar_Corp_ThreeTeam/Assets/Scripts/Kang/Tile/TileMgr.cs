@@ -10,10 +10,18 @@ public class TileMgr : MonoBehaviour
 
     public Dictionary<Vector3, TileBase> tileDics = new Dictionary<Vector3, TileBase>();
     public Dictionary<Vector3, WallBase> wallDics = new Dictionary<Vector3, WallBase>();
+    public Dictionary<Vector2, List<TileBase>> tileVec2Dics = new Dictionary<Vector2, List<TileBase>>();
 
     public static int MAX_X_IDX = 16;
     public static int MAX_Z_IDX = 16;
-
+    ScriptableMgr scriptableMgr;
+    // Start is called before the first frame update
+    void Start()
+    {
+        scriptableMgr = ScriptableMgr.Instance;
+        Debug.Log(scriptableMgr);
+        Debug.Log($"Test : {scriptableMgr.characterList.Count}");
+    }
     public void Init()
     {
         var tileCount = tiles.transform.childCount;
@@ -36,6 +44,14 @@ public class TileMgr : MonoBehaviour
             wallBase.Init();
 
             wallDics.Add(wallBase.tileIdx, wallBase);
+        }
+
+        foreach (var pair in tileDics)
+        {
+            var tileIdx = new Vector2(pair.Key.x, pair.Key.z);
+            if (!tileVec2Dics.ContainsKey(tileIdx))
+                tileVec2Dics.Add(tileIdx, new List<TileBase>());
+            tileVec2Dics[tileIdx].Add(pair.Value);
         }
 
         InitAdjTile();

@@ -91,6 +91,11 @@ public class FogMgr : MonoBehaviour
 
     private void UpdateCurrentFog()
     {
+        foreach (var dics in playerSightDics)
+        {
+            dics.Clear();
+        }
+
         foreach (var pair in curFogDics)
         {
             var list = pair.Value;
@@ -136,14 +141,13 @@ public class FogMgr : MonoBehaviour
                 wall.isInSight = true;
         }
 
-        foreach (var tile in curFogDics[tileIdx])
-        {
-            tile.isInSight = true;
-        }
+        //foreach (var tile in curFogDics[tileIdx])
+        //{
+        //    tile.isInSight = true;
+        //}
 
         if (!playerSightDics[playerIdx].ContainsKey(tileIdx))
             playerSightDics[playerIdx].Add(tileIdx, curFogDics[tileIdx]);
-
 
         CheckPlayerSight(new Vector2(tileIdx.x, tileIdx.y + 1), new Vector2(tileIdx.x, tileIdx.y + 0.5f), sightCnt, maxSight, playerIdx);
         CheckPlayerSight(new Vector2(tileIdx.x, tileIdx.y - 1), new Vector2(tileIdx.x, tileIdx.y - 0.5f), sightCnt, maxSight, playerIdx);
@@ -192,15 +196,15 @@ public class FogMgr : MonoBehaviour
 
             if (curFogDics.ContainsKey(wallIdx))
             {
-                foreach (var fogTile in curFogDics[targetIdx])
-                {
-                    fogTile.isInSight = false;
-                }
                 return;
             }
 
         }
         while (targetIdx.y != checkIdx.y);
+        foreach (var fogTile in curFogDics[targetIdx])
+        {
+            fogTile.isInSight = true;
+        }
     }
 
     private void CheckSameY(Vector2 targetIdx, Vector2 checkIdx)
@@ -225,15 +229,16 @@ public class FogMgr : MonoBehaviour
 
             if (curFogDics.ContainsKey(wallIdx))
             {
-                foreach (var fogTile in curFogDics[targetIdx])
-                {
-                    fogTile.isInSight = false;
-                }
                 return;
             }
 
         }
         while (targetIdx.x != checkIdx.x);
+
+        foreach (var fogTile in curFogDics[targetIdx])
+        {
+            fogTile.isInSight = true;
+        }
     }
 
     private void CheckSlope(Vector2 targetIdx, Vector2 checkIdx)
@@ -296,10 +301,6 @@ public class FogMgr : MonoBehaviour
 
                 if (curFogDics.ContainsKey(wallIdx))
                 {
-                    foreach (var fogTile in curFogDics[targetIdx])
-                    {
-                        fogTile.isInSight = false;
-                    }
                     return;
                 }
 
@@ -308,6 +309,10 @@ public class FogMgr : MonoBehaviour
                 aG = slopeY / slopeX;
             }
             while (targetIdx != checkIdx);
+            foreach (var fogTile in curFogDics[targetIdx])
+            {
+                fogTile.isInSight = true;
+            }
         }
         else
         {
@@ -353,10 +358,6 @@ public class FogMgr : MonoBehaviour
 
                 if (curFogDics.ContainsKey(wallIdx))
                 {
-                    foreach (var fogTile in curFogDics[targetIdx])
-                    {
-                        fogTile.isInSight = false;
-                    }
                     return;
                 }
 
@@ -365,6 +366,10 @@ public class FogMgr : MonoBehaviour
                 aG = slopeY / slopeX;
             }
             while (targetIdx != checkIdx);
+            foreach (var fogTile in curFogDics[targetIdx])
+            {
+                fogTile.isInSight = true;
+            }
         }
     }
 
@@ -434,11 +439,11 @@ public class FogMgr : MonoBehaviour
         if (curFogDics.ContainsKey(wallIdx))
             wallCollision2 = true;
 
-        if (wallCollision1 && wallCollision2)
+        if (!wallCollision1 && !wallCollision2)
         {
             foreach (var fogTile in curFogDics[targetIdx])
             {
-                fogTile.isInSight = false;
+                fogTile.isInSight = true;
             }
         }
     }

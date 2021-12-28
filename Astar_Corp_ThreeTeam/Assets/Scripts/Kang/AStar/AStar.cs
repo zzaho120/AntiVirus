@@ -174,6 +174,7 @@ public class AStar : MonoBehaviour
             isArrive = true;
 
             SetPath(closeList[closeList.Count - 1]);
+            pathList.Pop();
         }
     }
 

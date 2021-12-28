@@ -22,8 +22,9 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     public Dictionary<string, PassiveSkill> passiveSkillList = new Dictionary<string, PassiveSkill>();
     #endregion
 
-    void Start()
+    public override void Awake()
     {
+        base.Awake();
         // 1. Character
         string charSOPath = "Choi/Datas/Characters";
         Character[] characterArr = Resources.LoadAll<Character>(charSOPath);
