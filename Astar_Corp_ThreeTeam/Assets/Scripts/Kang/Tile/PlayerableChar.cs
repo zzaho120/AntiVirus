@@ -23,7 +23,7 @@ public class PlayerableChar : BattleChar
 
     private Dictionary<Vector2, List<TileBase>> tileVec2Dics;
 
-    private Dictionary<Vector3, WallBase> wallDics;
+    private Dictionary<Vector3, TileBase> wallDics;
 
     private MeshRenderer ren;
 

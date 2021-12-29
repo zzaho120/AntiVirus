@@ -11,12 +11,14 @@ public class TileBase : MonoBehaviour
     public Vector3 tileIdx;
     public GameObject tileObj;
     public List<Material> materials;
+    public bool isWall;
 
     [Header("List")]
     public List<TileBase> adjNodes;
 
     [Header("RunTime")]
     public GameObject charObj;
+    public TileBase wallTile;
 
     public void Init(TileMgr tileMgr)
     {
