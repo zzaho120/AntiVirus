@@ -42,6 +42,11 @@ public class InfectedCharTest : MonoBehaviour
         //}
     }
 
+    public void RemoveSquad(int i)
+    {
+        buttons[i].GetComponentInChildren<Text>().text = null;
+    }
+
     public void TurnOffWarning()
     {
         

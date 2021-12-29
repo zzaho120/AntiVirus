@@ -11,4 +11,5 @@ public class PlayerSaveData
     public List<int> offensePowers { get; set; }
     public List<int> willPowers { get; set; }
     public List<int> staminas { get; set; }
+    public List<string> antivirus { get; set; }
 }

@@ -11,8 +11,9 @@ public class SquadMgr : MonoBehaviour
     public GameObject characterListPrefab;
     public GameObject CharacterLists;
     public List<GameObject> CharacterList;
-    List<string> characterData;
-    List<Character> characterList;
+    //List<string> characterData;
+    //List<Character> characterList;
+    Dictionary<int, CharacterDetail> characterInfos  = new Dictionary<int, CharacterDetail>();
 
     public GameObject SquadLists;
     public List<GameObject> SquadList;
@@ -25,12 +26,20 @@ public class SquadMgr : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Script : SquadMgr");
+
         var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
         playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-        var characterList = playerDataMgr.characterList;
+        //var characterList = playerDataMgr.characterList;
+
+        int k = 0;
+        foreach (var element in playerDataMgr.characterInfos)
+        {
+            characterInfos.Add(k, element.Value);
+            k++;
+        }
 
         var currentSquad = playerDataMgr.currentSquad;
-        
         foreach (var element in currentSquad)
         {
             var child = SquadLists.transform.GetChild(element.Key).gameObject;
@@ -38,18 +47,10 @@ public class SquadMgr : MonoBehaviour
             squadName.text = element.Value;
         }
 
-        //캐릭터 데이터 가져옴.
-        characterData = new List<string>();
-        foreach (var element in characterList)
-        {
-            characterData.Add(element.name);
-        }
-
-        characterData = characterData.OrderBy(x => x).ToList<string>();
-        
+        //캐릭터 리스트 창 생성.
         CharacterList = new List<GameObject>();
         var characters = CharacterLists.transform;
-        for (int i = 0; i < characterData.Count; i++)
+        for (int i = 0; i < characterInfos.Count; i++)
         {
             var go = Instantiate(characterListPrefab, characters);
             var button = go.GetComponent<Button>();
@@ -57,16 +58,15 @@ public class SquadMgr : MonoBehaviour
             button.onClick.AddListener(delegate { ClickCharacter(num); });
 
             CharacterList.Add(go);
-            
         }
 
         int j = 0;
-        for (int i = 0; i < CharacterList.Count; i++)
+        foreach (var element in characterInfos)
         {
-            var child = CharacterList[i].transform.GetChild(0).gameObject;
+            var child = CharacterList[j].transform.GetChild(0).gameObject;
 
             var characterName = child.GetComponent<Text>();
-            characterName.text = characterData[j];
+            characterName.text = element.Value.name;
             j++;
         }
 
@@ -97,9 +97,9 @@ public class SquadMgr : MonoBehaviour
         var characterName = child.GetComponent<Text>();
 
         //다른 슬롯에 있다면 다른 슬롯은 비워버림.
-        if (squadData.ContainsValue(characterData[i]))
+        if (squadData.ContainsValue(characterInfos[i].name))
         {
-            var key = squadData.FirstOrDefault(x => x.Value == characterData[i]).Key;
+            var key = squadData.FirstOrDefault(x => x.Value == characterInfos[i].name).Key;
             var previous = SquadList[key].transform.GetChild(0).gameObject;
             var previousName = previous.GetComponent<Text>();
             previousName.text = string.Empty;
@@ -117,7 +117,7 @@ public class SquadMgr : MonoBehaviour
             playerDataMgr.currentSquad.Remove(currentIndex);
         }
 
-        characterName.text = characterData[i];
+        characterName.text = characterInfos[i].name;
         squadData.Add(currentIndex, characterName.text);
         playerDataMgr.currentSquad.Add(currentIndex, characterName.text);
         
