@@ -17,9 +17,18 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
+    // 기본 스탯
     public Character character;
     public Antibody antibody;
-    public AttackDefinition weapon;
+
+    // 무기 스탯
+    public Equippable mainWeapon;
+    public Equippable subWeapon;
+    //public AttackDefinition weapon;
+
+    // 스킬
+    //public List<CharacterSkillList> skills;
+    public CharacterSkillList skills;
 
     // 1. 체력
     public int maxHp; //{ get => Hp; set => Hp = value; }
@@ -89,10 +98,19 @@ public class CharacterStats : MonoBehaviour
     {
         get
         {
-            //var baseDamage = characterStat.damage;
-            //var damage = baseDamage;
-            var damage = weapon.CreateAttack(character).Damage;
+            var baseDamage = character.damage;
+            var damage = baseDamage;
 
+            //var damage = weapon.CreateAttack(character).Damage;
+
+            if (mainWeapon != null)
+            
+               damage += mainWeapon.damage;
+            
+            if (subWeapon != null)
+            
+               damage += subWeapon.damage;
+            
             return damage;
         }
     }
@@ -142,10 +160,10 @@ public class CharacterStats : MonoBehaviour
     }
     #endregion
 
-    //private void Awake()
-    //{
-    //    Init();
-    //}
+    private void Awake()
+    {
+        Init();
+    }
 
     public void Init()
     {
@@ -154,6 +172,7 @@ public class CharacterStats : MonoBehaviour
         stamina = Stamina;
         willpower = Willpower;
         level = 1;
+
     }
 
 }

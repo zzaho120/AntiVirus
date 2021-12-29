@@ -19,7 +19,7 @@ public class WindowDefaultSetting : GenericWindow
 		base.OnNextWindow();
 	}
 
-	public WindowManager manager;
+	//public WindowManager manager;
 
 	public void StartDoubleWindow()
 	{

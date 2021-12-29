@@ -25,4 +25,20 @@ public class Equippable : ScriptableObject
     //{
     //    get { return iconSprite; }
     //}
+
+    // Attack 수치 조정용
+    //public AttackStats CreateAttack(Character player)
+    //{
+    //    // 데미지 조정
+    //    // 수정 - 나중에 랜덤값 조절해보기
+    //    var damage = player.damage;
+    //    damage += Random.Range(damage - 10, damage + 10);
+    //
+    //    // 크리티컬 수치 조정
+    //    var isCritical = Random.value < critRate;
+    //    if (isCritical)
+    //        damage *= critDamage;
+    //
+    //    return new AttackStats((int)damage, isCritical);
+    //}
 }

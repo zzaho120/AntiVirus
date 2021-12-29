@@ -2,11 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
-
-// NavMeshAgent 매뉴얼
-// https://docs.unity3d.com/kr/530/ScriptReference/NavMeshAgent.html
 
 public class CharacterInfo
 {
@@ -37,17 +35,12 @@ public class PlayerController : MonoBehaviour
     bool saveMode;
 
     //바이러스 영역.
-    public bool isInVirusZone1;
-    public bool isInVirusZone2;
-    public bool isInVirusZone3;
+    //public bool isInVirusZone1;
+    //public bool isInVirusZone2;
+    //public bool isInVirusZone3;
 
     float originAgentSpeed;
     //private Vector3 calcVelocity = Vector3.zero;
-
-    // 더블점프 방지용 -> 나중에 써야할지도?
-    //private bool isGround = false;
-    //[SerializeField]
-    //float groundCheckDistance = 0.3f;
 
     // to set layers
     [SerializeField]
@@ -88,13 +81,17 @@ public class PlayerController : MonoBehaviour
         saveMode = true;
     }
 
+    //private WindowManager windowManager;
+    private NonBattlePopUps nonBattlePopUps;
+    public WindowManager windowManager;
+
     void Update()
     {
         //if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")) && saveMode)
         //    PlayerPrefs.DeleteAll();
-        if (isInVirusZone1) Debug.Log("VirusZone1");
-        else if (isInVirusZone2) Debug.Log("VirusZone2");
-        else if (isInVirusZone3) Debug.Log("VirusZone3");
+        //if (isInVirusZone1) Debug.Log("VirusZone1");
+        //else if (isInVirusZone2) Debug.Log("VirusZone2");
+        //else if (isInVirusZone3) Debug.Log("VirusZone3");
 
         if (agent.velocity.magnitude > 0.15f) //움직이고 있을 때.
         {
@@ -103,8 +100,6 @@ public class PlayerController : MonoBehaviour
             PlayerPrefs.SetFloat("p_z", transform.position.z);
         }
 
-        // [수정] 현재 -> 마우스 클릭 방향으로 이동하게
-        // 나중에 터치 포지션으로 이동하도록 수정
         if (multiTouch.DoubleTap)
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
@@ -126,14 +121,51 @@ public class PlayerController : MonoBehaviour
                     pX = raycastHit.collider.gameObject.transform.position.x;
                     pY = raycastHit.collider.gameObject.transform.position.y;
                     pZ = raycastHit.collider.gameObject.transform.position.z;
+            
+                    saveMode = false;
+                    PlayerPrefs.SetFloat("p_x", pX);
+                    PlayerPrefs.SetFloat("p_y", pY);
+                    PlayerPrefs.SetFloat("p_z", pZ);
+
+                    //벙커 팝업창
+                    var windowId = (int)Windows.BunkerWindow - 1;
+                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                }
+
+                if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
+                {
+                    pX = raycastHit.collider.gameObject.transform.position.x;
+                    pY = raycastHit.collider.gameObject.transform.position.y;
+                    pZ = raycastHit.collider.gameObject.transform.position.z;
 
                     saveMode = false;
                     PlayerPrefs.SetFloat("p_x", pX);
                     PlayerPrefs.SetFloat("p_y", pY);
                     PlayerPrefs.SetFloat("p_z", pZ);
 
-                    SceneManager.LoadScene("Bunker");
+                    Debug.Log("연구소 클릭");
+                    //벙커 팝업창
+                    var windowId = (int)Windows.LaboratoryWindow - 1;
+                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
                 }
+
+                // 수정
+                // 엘리트몬스터 오브젝트 이름 확인하고 바꾸기
+                //if (raycastHit.collider.gameObject.name.Equals("Elite Monster"))
+                //{
+                //    pX = raycastHit.collider.gameObject.transform.position.x;
+                //    pY = raycastHit.collider.gameObject.transform.position.y;
+                //    pZ = raycastHit.collider.gameObject.transform.position.z;
+                //
+                //    saveMode = false;
+                //    PlayerPrefs.SetFloat("p_x", pX);
+                //    PlayerPrefs.SetFloat("p_y", pY);
+                //    PlayerPrefs.SetFloat("p_z", pZ);
+                //
+                //    //벙커 팝업창
+                //    var windowId = (int)Windows.LaboratoryWindow - 1;
+                //    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                //}
             }
         }
 
@@ -149,6 +181,16 @@ public class PlayerController : MonoBehaviour
             characterController.Move(Vector3.zero);
             isMove = false;
         }
+    }
+
+    public void MoveToBunker()
+    {
+        SceneManager.LoadScene("Bunker");
+    }
+
+    public void MoveToLaboratory()
+    {
+        Debug.Log("연구소로 이동");
     }
 
     private void LateUpdate()

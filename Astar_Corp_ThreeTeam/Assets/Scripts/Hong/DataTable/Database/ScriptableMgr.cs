@@ -5,12 +5,21 @@ using UnityEngine;
 public class ScriptableMgr : Singleton<ScriptableMgr>
 {
     #region Dictionary List
-    public Dictionary<string, Antibody>     antibodyList    = new Dictionary<string, Antibody>(); 
-    public Dictionary<string, Character>    characterList   = new Dictionary<string, Character>();
-    public Dictionary<string, Consumable>   consumableList  = new Dictionary<string, Consumable>();
-    public Dictionary<string, Equippable>   equippableList  = new Dictionary<string, Equippable>();
-    public Dictionary<string, Monster>      monsterList     = new Dictionary<string, Monster>();
-    public Dictionary<string, Virus>        virusList       = new Dictionary<string, Virus>();
+    // 캐릭터 스탯 관련
+    public Dictionary<string, Antibody> antibodyList = new Dictionary<string, Antibody>(); 
+    public Dictionary<string, Character> characterList = new Dictionary<string, Character>();
+
+    // 몬스터 스탯 관련
+    public Dictionary<string, Monster> monsterList = new Dictionary<string, Monster>();
+    public Dictionary<string, Virus> virusList = new Dictionary<string, Virus>();
+
+    // 아이템 관련
+    public Dictionary<string, Consumable> consumableList = new Dictionary<string, Consumable>();
+    public Dictionary<string, Equippable> equippableList = new Dictionary<string, Equippable>();
+
+    // 스킬 관련
+    public Dictionary<string, ActiveSkill> activeSkillList = new Dictionary<string, ActiveSkill>();
+    public Dictionary<string, PassiveSkill> passiveSkillList = new Dictionary<string, PassiveSkill>();
     #endregion
 
     void Start()
@@ -62,6 +71,22 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         {
             virusList.Add($"{virus.name}{virus.level}", virus);
         }
+
+        // 7. Active Skills
+        string activeSkillSOPath = "Choi/Datas/Skills/ActiveSkills";
+        ActiveSkill[] activeSkillArr = Resources.LoadAll<ActiveSkill>(activeSkillSOPath);
+        foreach (var skill in activeSkillArr)
+        {
+            activeSkillList.Add($"{skill.id}", skill);
+        }
+
+        // 8. Passive Skills
+        string passiveSkillSOPath = "Choi/Datas/Skills/PassiveSkills";
+        PassiveSkill[] passiveSkillArr = Resources.LoadAll<PassiveSkill>(passiveSkillSOPath);
+        foreach (var skill in passiveSkillArr)
+        {
+            passiveSkillList.Add($"{skill.id}", skill);
+        }
     }
 
     /// <summary>
@@ -98,6 +123,16 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     public Virus GetVirus(string id)
     {
         return Instantiate(virusList[id]);
+    }
+
+    public ActiveSkill GetActiveSkill(string id)
+    {
+        return Instantiate(activeSkillList[id]);
+    }
+
+    public PassiveSkill GetPassiveSkill(string id)
+    {
+        return Instantiate(passiveSkillList[id]);
     }
 
     //private void Update()

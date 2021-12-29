@@ -44,6 +44,7 @@ public class InfectedCharTest : MonoBehaviour
 
     public void TurnOffWarning()
     {
+        
         for (int i = 0; i < warning.Length; i++)
         {
             warning[i].SetActive(false);

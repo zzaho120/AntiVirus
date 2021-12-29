@@ -34,6 +34,8 @@ public class TestAttack : MonoBehaviour
 
                     //var playerAttackStats = attackStat.CreateAttack(stats);
                     //OnAttack(hitInfo.collider.gameObject, playerAttackStats);
+
+                    Debug.Log("Damage : " + stats.Damage);
                 }
             }
         }

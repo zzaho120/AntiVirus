@@ -282,7 +282,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &19203216
 RectTransform:
   m_ObjectHideFlags: 0
@@ -360,6 +360,7 @@ MonoBehaviour:
   - {fileID: 431550339}
   - {fileID: 1969096914}
   - {fileID: 1649853615}
+  squadUI: {fileID: 0}
 --- !u!1 &79199399
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,7 +401,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 243.152}
+  m_AnchoredPosition: {x: 0, y: 243.15198}
   m_SizeDelta: {x: 0, y: -486.303}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &79199401
@@ -1282,7 +1283,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1290,7 +1291,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1330,11 +1331,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 155
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -55
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1498,7 +1499,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 11400000, guid: 4c66e5e92e71a1d4ebea32395f6ca56a, type: 2}
   antibody: {fileID: 11400000, guid: 076b0c7e273cb8349b6fee33d899394b, type: 2}
-  weapon: {fileID: 11400000, guid: c13f7cb2266a10f48a3acbb9be06aa77, type: 2}
+  mainWeapon: {fileID: 0}
+  subWeapon: {fileID: 0}
   maxHp: 0
   currentHp: 0
   willpower: 0
@@ -1615,7 +1617,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1623,7 +1625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1663,11 +1665,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 255
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -55
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1706,7 +1708,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &715940856
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1971,7 +1973,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &822588459
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2866,7 +2868,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1012127079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3560,7 +3562,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1264884451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3663,7 +3665,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6341909110489761387, guid: 976c6ef59af681d48a4b6b706abaff42, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6341909110489761387, guid: 976c6ef59af681d48a4b6b706abaff42, type: 3}
       propertyPath: m_AnchorMin.x
@@ -3671,7 +3673,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6341909110489761387, guid: 976c6ef59af681d48a4b6b706abaff42, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6341909110489761387, guid: 976c6ef59af681d48a4b6b706abaff42, type: 3}
       propertyPath: m_SizeDelta.x
@@ -3711,11 +3713,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6341909110489761387, guid: 976c6ef59af681d48a4b6b706abaff42, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 463.38348
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6341909110489761387, guid: 976c6ef59af681d48a4b6b706abaff42, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -133.028
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6341909110489761387, guid: 976c6ef59af681d48a4b6b706abaff42, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3819,7 +3821,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 11400000, guid: 3b4f065766a03114b88da2c0cdeda627, type: 2}
   antibody: {fileID: 11400000, guid: 7185a750df5b08a41b6b77fa1d9dfd00, type: 2}
-  weapon: {fileID: 11400000, guid: c13f7cb2266a10f48a3acbb9be06aa77, type: 2}
+  mainWeapon: {fileID: 0}
+  subWeapon: {fileID: 0}
   maxHp: 0
   currentHp: 0
   willpower: 0
@@ -4077,7 +4080,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMin.x
@@ -4085,7 +4088,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_SizeDelta.x
@@ -4125,11 +4128,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -55
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4243,7 +4246,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMin.x
@@ -4251,7 +4254,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_SizeDelta.x
@@ -4291,11 +4294,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 355
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -55
       objectReference: {fileID: 0}
     - target: {fileID: 22473626, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4529,7 +4532,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 11400000, guid: c9b2cfdeec7c2c943ac7b81f3ea34315, type: 2}
   antibody: {fileID: 11400000, guid: 8092fed3194743a4b8d62f8f9013018e, type: 2}
-  weapon: {fileID: 11400000, guid: 5619b6e3ab23d894693f1610f815ff4d, type: 2}
+  mainWeapon: {fileID: 0}
+  subWeapon: {fileID: 0}
   maxHp: 0
   currentHp: 0
   willpower: 0
@@ -4581,9 +4585,9 @@ RectTransform:
   m_Father: {fileID: 1568845303}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 154.22699, y: -133.028}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 221.487, y: 221.487}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1888023523
@@ -4994,7 +4998,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 11400000, guid: 79bab08d7591f8f46b49935e30baea85, type: 2}
   antibody: {fileID: 11400000, guid: 8092fed3194743a4b8d62f8f9013018e, type: 2}
-  weapon: {fileID: 11400000, guid: c13f7cb2266a10f48a3acbb9be06aa77, type: 2}
+  mainWeapon: {fileID: 0}
+  subWeapon: {fileID: 0}
   maxHp: 0
   currentHp: 0
   willpower: 0
@@ -5031,7 +5036,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1976914211
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5127,7 +5132,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2009343020
 RectTransform:
   m_ObjectHideFlags: 0

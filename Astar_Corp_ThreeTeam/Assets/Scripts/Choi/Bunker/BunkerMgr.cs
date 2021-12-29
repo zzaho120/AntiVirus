@@ -100,8 +100,11 @@ public class BunkerMgr : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hitInfo))
             {
+
                 if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
                 {
+                    Debug.Log("º¡Ä¿ Å¬¸¯");
+
                     var script = hitInfo.collider.gameObject.GetComponent<BunkerBase>();
                     currentBunkerIndex = script.bunkerId;
 
