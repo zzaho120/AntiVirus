@@ -14,6 +14,7 @@ public class PlayerableChar : BattleChar
     public bool isAttack;
     public bool isSelected;
     public bool isTurnOver;
+    public DirectionType direction;
 
     private Dictionary<TileBase, int> moveDics =
         new Dictionary<TileBase, int>();
@@ -33,6 +34,7 @@ public class PlayerableChar : BattleChar
         ren = GetComponent<MeshRenderer>();
         characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
         characterStats.Init();
+        direction = DirectionType.Top;
 
         tileVec2Dics = BattleMgr.Instance.tileMgr.tileVec2Dics;
         wallDics = BattleMgr.Instance.tileMgr.wallDics;
@@ -107,7 +109,7 @@ public class PlayerableChar : BattleChar
             MoveTile(aStarTile.tileBase.tileIdx);
 
             // test
-            BattleMgr.Instance.fogMgr.UpdateFog();
+            BattleMgr.Instance.sightMgr.UpdateFog();
             yield return new WaitForSeconds(0.1f);
         }
         TurnOver();
@@ -278,7 +280,7 @@ public class PlayerableChar : BattleChar
 
     private void ActionAttack(MonsterChar monster)
     {
-        AttackMode();
+        //AttackMode();
         TurnOver();
     }
     

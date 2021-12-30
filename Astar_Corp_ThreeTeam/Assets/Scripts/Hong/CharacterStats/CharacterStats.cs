@@ -61,6 +61,7 @@ public class CharacterStats : MonoBehaviour
     {
         get
         {
+            Debug.Log(character);
             var baseHp = Random.Range(character.min_Hp, character.max_Hp + 1);
             var hp = baseHp;
             //Debug.Log("»£√‚");
@@ -160,9 +161,9 @@ public class CharacterStats : MonoBehaviour
     }
     #endregion
 
-    private void Awake()
+    private void Start()
     {
-        Init();
+        //Init();
     }
 
     public void Init()

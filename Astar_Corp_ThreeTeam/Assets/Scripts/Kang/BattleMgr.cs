@@ -10,7 +10,7 @@ public class BattleMgr : Singleton<BattleMgr>
     public BattlePlayerMgr playerMgr;
     public BattleMonsterMgr monsterMgr;
     public WindowManager BattleWindowMgr;
-    public FogMgr fogMgr;
+    public SightMgr sightMgr;
     public AStar aStar;
     public int turn;
 
@@ -20,7 +20,7 @@ public class BattleMgr : Singleton<BattleMgr>
         commandMgr = new CommandMgr();
 
         tileMgr = GameObject.FindWithTag("TileMgr").GetComponent<TileMgr>();
-        fogMgr = GameObject.FindWithTag("FogMgr").GetComponent<FogMgr>();
+        sightMgr = GameObject.FindWithTag("FogMgr").GetComponent<SightMgr>();
         playerMgr = GameObject.FindWithTag("Player").GetComponent<BattlePlayerMgr>();
         monsterMgr = GameObject.FindWithTag("BattleMonster").GetComponent<BattleMonsterMgr>();
         BattleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
@@ -32,7 +32,7 @@ public class BattleMgr : Singleton<BattleMgr>
         playerMgr.Init();
         monsterMgr.Init();
         aStar.Init();
-        fogMgr.Init();
+        sightMgr.Init();
     }
 
     private void Update()
