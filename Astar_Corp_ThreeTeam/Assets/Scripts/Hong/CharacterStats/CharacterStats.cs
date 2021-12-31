@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 캐릭터 스탯, 항체 스탯, 무기, 스킬
+
 // 캐릭터 기본 스텟
 // 1. 체력
-// 2. 공격력
-// 3. 분과별 공격 사정/유효 거리
-// 4. 의지력
-// 5. 기력
+// 2. 예민함? Sensivity
+// 3. 회피율
+// 4. 집중력
+// 5. 정신력
+// 6. 치명타 확률
 
-// 내성(항체) 관련 스탯
+// 내성(항체) 관련 스탯 ---> 수정될듯함
 // 6. 피격 피해 감소율
 // 7. 특수능력 저항력
 // 8. 특수능력 피해 감소율
@@ -17,37 +20,47 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
+    // 스크립터블 오브젝트 불러오기
+    //private ScriptableMgr scriptableMgr;
+
     // 기본 스탯
     public Character character;
     public List<Antibody> antibody;
 
     // 무기 스탯
-    public Equippable mainWeapon;
-    public Equippable subWeapon;
-    //public AttackDefinition weapon;
+    public WeaponStats weapon;
+    //public Weapon mainWeapon;
+    //public Weapon subWeapon;
 
     // 스킬
-    //public List<CharacterSkillList> skills;
     public CharacterSkillList skills;
 
     // 1. 체력
-    public int maxHp; //{ get => Hp; set => Hp = value; }
+    public int maxHp; // { get => Hp; set => Hp = value; }
     [HideInInspector]
     public int currentHp;
 
-    // 2. 공격력
-    // 3. 공격범위
+    // 2. 예민함
+    [HideInInspector]
+    public int sensivity;
 
-    // 4. 의지력
+    // 3. 회피율
+    [HideInInspector]
+    public int avoidRate;
+
+    // 4. 집중력
+    [HideInInspector]
+    public int concentration;
+
+    // 5. 정신력
     [HideInInspector]
     public int willpower;
 
-    // 5. 기력
+    // 6. 치명타 확률
     [HideInInspector]
-    public float stamina;
+    public int critRate;
 
-    // 6. 내성
-
+    // 레벨
     [HideInInspector]
     public int level;
 
@@ -64,19 +77,44 @@ public class CharacterStats : MonoBehaviour
             Debug.Log(character);
             var baseHp = Random.Range(character.min_Hp, character.max_Hp + 1);
             var hp = baseHp;
-            //Debug.Log("호출");
             return hp;
+        }
+        set
+        {
+            Hp = value;
         }
     }
 
-    private int Stamina
+    private int Sensivity
     {
         get
         {
-            var baseStamina = Random.Range(character.min_Stamina, character.max_Stamina + 1);
-            var stamina = baseStamina;
+            var baseSensivity = Random.Range(character.min_Sensitivity, character.max_Sensitivity + 1);
+            var stamina = baseSensivity;
 
             return stamina;
+        }
+    }
+
+    private int AvoidRate
+    {
+        get
+        {
+            var baseAvoidRate = Random.Range(character.min_Avoid_Rate, character.max_Avoid_Rate + 1);
+            var avoidRate = baseAvoidRate;
+
+            return avoidRate;
+        }
+    }
+
+    private int Concentration
+    {
+        get
+        {
+            var baseConcentration = Random.Range(character.min_Concentration, character.max_Concentration + 1);
+            var concentration = baseConcentration;
+
+            return concentration;
         }
     }
 
@@ -89,49 +127,13 @@ public class CharacterStats : MonoBehaviour
 
             return willpower;
         }
-
     }
-    #endregion
 
-    #region 기타 기본 스탯 설정
-    // 수정? 대충 된 것 같은데 나중에 다시 보기
-    public int Damage
+    private int CritRate
     {
         get
         {
-            var baseDamage = character.damage;
-            var damage = baseDamage;
-
-            //var damage = weapon.CreateAttack(character).Damage;
-
-            if (mainWeapon != null)
-            
-               damage += mainWeapon.damage;
-            
-            if (subWeapon != null)
-            
-               damage += subWeapon.damage;
-            
-            return damage;
-        }
-    }
-
-    public int Range
-    {
-        get
-        {
-            var baseRange = character.range;
-            var range = baseRange;
-
-            return range;
-        }
-    }
-
-    public float Crit_rate
-    {
-        get
-        {
-            var baseCritRate = character.crit_rate;
+            var baseCritRate = Random.Range(character.min_Crit_Rate, character.max_Crit_Rate + 1);
             var critRate = baseCritRate;
 
             return critRate;
@@ -139,7 +141,54 @@ public class CharacterStats : MonoBehaviour
     }
     #endregion
 
-    #region 항체 스탯
+    #region 무기 관련 스탯 설정
+    //public int AccurRate_Base
+    //{
+    //    get
+    //    {
+    //
+    //    }
+    //}
+
+    //public int Damage
+    //{
+    //    get
+    //    {
+    //        
+    //    }
+    //}
+    
+    //public int Range
+    //{
+    //    get
+    //    {
+    //        var baseRange = mainWeapon.range;
+    //        var range = baseRange;
+    //
+    //        return range;
+    //    }
+    //}
+    //
+    //private int OverRange_Penalty
+    //{
+    //    get
+    //    {
+    //        return mainWeapon.overRange_Penalty;
+    //    }
+    //}
+    //
+    //private int UnderRange_Penalty
+    //{
+    //    get
+    //    {
+    //        return mainWeapon.underRange_Penalty;
+    //    }
+    //}
+
+
+    #endregion
+
+    #region 항체 스탯 - 수정필요
     public float HitDmgDecRate
     {
         get 
@@ -198,14 +247,31 @@ public class CharacterStats : MonoBehaviour
         //Init();
     }
 
-    public void Init()
+    private void Update()
     {
-        maxHp = Hp;
-        currentHp = maxHp;
-        stamina = Stamina;
-        willpower = Willpower;
-        level = 1;
+        // 테스트용 스탯 설정
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            //Debug.Log(weapon.mainWeaponBullet);
 
+            // 무기 스탯 테스트 (데미지)
+            Debug.Log(weapon.damage);
+        }
     }
 
+    public void Init()
+    {
+        // 스탯 초기화
+        maxHp           = Hp;    
+        currentHp       = maxHp;
+        sensivity       = Sensivity;
+        avoidRate       = AvoidRate;
+        concentration   = Concentration;
+        willpower       = Willpower;
+        critRate        = CritRate;
+        level           = 1;
+
+        // 무기 스탯 초기화
+        weapon.Init();
+    }
 }

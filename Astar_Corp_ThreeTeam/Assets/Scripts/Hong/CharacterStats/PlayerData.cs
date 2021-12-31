@@ -25,6 +25,10 @@ public class PlayerData : MonoBehaviour
             if (levelUpSwitch != null)
                 levelUpSwitch.SetActive(false);
         }
+        else
+        {
+            Debug.Log("⑷營 壁縑憮 餌辨碳陛");
+        }
 //    戌式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式戎
     }
 
@@ -34,12 +38,12 @@ public class PlayerData : MonoBehaviour
         {
             characterStats.level += 1;
 
-            int HpIncrease = Random.Range(characterStats.character.min_Hp_Increase, characterStats.character.max_Hp_Increase + 1);
+            int HpIncrease = Random.Range(characterStats.character.max_Avoid_Rate, characterStats.character.min_Concentration + 1);
             //Debug.Log("Hp 鼻蝓榆 : " + HpIncrease);
             
             characterStats.maxHp += HpIncrease;
-            characterStats.willpower += characterStats.character.willpower_Increase;
-            characterStats.stamina += characterStats.character.stamina_Increase;
+            //characterStats.willpower += characterStats.character.min_Con_Rise;
+            //characterStats.stamina += characterStats.character.max_Concentration;
         }
         else
         {

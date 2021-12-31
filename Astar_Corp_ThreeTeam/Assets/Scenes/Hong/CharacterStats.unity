@@ -447,20 +447,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f41aed4eb818c418a8f27b08318d4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 11400000, guid: a9a156d8d1f34954cb19d09077440d22, type: 2}
-  antibody: {fileID: 11400000, guid: 076b0c7e273cb8349b6fee33d899394b, type: 2}
-  mainWeapon: {fileID: 11400000, guid: 5502a751ce11e3445b8172baae95faa5, type: 2}
-  subWeapon: {fileID: 11400000, guid: 2552f93b8bc7f3c4695ce347a174cf98, type: 2}
+  character: {fileID: 11400000, guid: f85d6f67eb0a3b445b5f1b7af507ec8b, type: 2}
+  antibody: {fileID: 0}
+  weapon:
+    mainWeapon: {fileID: 11400000, guid: 656d0a63a2afd0b44b9a2bbaf04315ee, type: 2}
+    subWeapon: {fileID: 11400000, guid: cca79446b5e9b024ebae34042c1a4c27, type: 2}
+    type: 0
+    accurRate_base: 0
+    accurRate_alert: 0
+    damage: 0
+    mainWeaponBullet: 0
+    subWeaponBullet: 0
+    recoil: 0
+    accurRateDec: 0
+    weight: 0
+    firstAp: 0
+    nextAp: 0
+    loadAp: 0
+    range: 0
+    overRange_penalty: 0
+    underRange_penalty: 0
   skills:
-  - activeSkills:
-    - {fileID: 11400000, guid: 31cb38a86c8e4f941bb008c685f578de, type: 2}
-    passiveSkills:
-    - {fileID: 11400000, guid: 8805b7494a9e357418f8b86707649635, type: 2}
-    - {fileID: 11400000, guid: 4f93d9cfa78176544af139b04f2e7f3d, type: 2}
+    activeSkills: []
+    passiveSkills: []
   maxHp: 0
   currentHp: 0
+  sensivity: 0
+  avoidRate: 0
+  concentration: 0
   willpower: 0
-  stamina: 0
+  critRate: 0
   level: 0
 --- !u!1001 &518885314
 PrefabInstance:

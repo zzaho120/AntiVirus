@@ -14,20 +14,14 @@ public class TestStatWindow : MonoBehaviour
     {
         text = GetComponentsInChildren<Text>();
         playerData = playerData.GetComponent<PlayerData>();
-
-        //text[0].text = playerData.characterStats.Name;
-        //text[1].text = ("Level : " + character.characterInfo.level + "\n" +
-        //                "HP : " + character.characterInfo.currentHp + "\n" +
-        //                "Stamina : " + character.characterInfo.stamina + "\n" +
-        //                "Willpower : " + character.characterInfo.Willpower).ToString();
     }
 
     private void Update()
     {
-        text[0].text = playerData.characterStats.Name;
-        text[1].text = ("Level : " + playerData.characterStats.level + "\n" +
-                        "HP : " + playerData.characterStats.maxHp + "\n" +
-                        "Stamina : " + string.Format("{0:0.#}", playerData.characterStats.stamina) + "\n" +
-                        "Willpower : " + playerData.characterStats.willpower).ToString();
+        //text[0].text = playerData.characterStats.Name;
+        //text[1].text = ("Level : " + playerData.characterStats.level + "\n" +
+        //                "HP : " + playerData.characterStats.maxHp + "\n" +
+        //                "Stamina : " + string.Format("{0:0.#}", playerData.characterStats.stamina) + "\n" +
+        //                "Willpower : " + playerData.characterStats.willpower).ToString();
     }
 }

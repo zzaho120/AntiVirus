@@ -25,20 +25,20 @@ public class MultiTouch : MonoBehaviour
     void Update()
     {
         // ег
-        if (Tap)
-        {
-            Debug.Log("Tap!");
-        }
-
-        if (DoubleTap)
-        {
-            Debug.Log("DoubleTap!");
-        }
-
-        if (LongTap)
-        {
-            Debug.Log("LongPress!");
-        }
+        //if (Tap)
+        //{
+        //    Debug.Log("Tap!");
+        //}
+        //
+        //if (DoubleTap)
+        //{
+        //    Debug.Log("DoubleTap!");
+        //}
+        //
+        //if (LongTap)
+        //{
+        //    Debug.Log("LongPress!");
+        //}
     }
 
     private void LateUpdate()

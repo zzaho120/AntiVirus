@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AttackStats.asset", menuName = "Stats/Attack")]
+//[CreateAssetMenu(fileName = "AttackStats.asset", menuName = "Stats/Attack")]
 public class AttackDefinition : ScriptableObject
 {
     public int minDamage;
@@ -15,11 +15,11 @@ public class AttackDefinition : ScriptableObject
     public int criticalDamage;
     //public float coolDown;
 
-    // 기존
-    //public AttackStats CreateAttack(CharacterStats player)
+
+    //public AttackStats CreateAttack(Character player)
     //{
     //    // 데미지 조정
-    //    var damage = player.Damage;
+    //    var damage = player.min_Hp_Rise;
     //    damage += Random.Range(minDamage, maxDamage);
     //
     //    // 크리티컬 수치 조정
@@ -29,18 +29,4 @@ public class AttackDefinition : ScriptableObject
     //
     //    return new AttackStats((int)damage, isCritical);
     //}
-
-    public AttackStats CreateAttack(Character player)
-    {
-        // 데미지 조정
-        var damage = player.damage;
-        damage += Random.Range(minDamage, maxDamage);
-
-        // 크리티컬 수치 조정
-        var isCritical = Random.value < criticalChance;
-        if (isCritical)
-            damage *= criticalDamage;
-
-        return new AttackStats((int)damage, isCritical);
-    }
 }

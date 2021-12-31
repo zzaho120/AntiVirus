@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class PatrolState : EliteMonsterState
 {
     private float startTime;
-    private float moveRange = 10f;  // 이동 범위 설정
+    private float moveRange = 5f;  // 이동 범위 설정
 
     private Vector3 targetPos;
     private Vector3 startPos;
@@ -41,8 +41,8 @@ public class PatrolState : EliteMonsterState
         // 허용 범위를 초과하면 타겟위치 = 시작위치
         if (Vector3.Distance(targetPos, startPos) > moveRange)
         {
-            targetPos = startPos;
             Debug.Log("Range Over");
+            targetPos = startPos;
         }
 
         // 내비메쉬 이동

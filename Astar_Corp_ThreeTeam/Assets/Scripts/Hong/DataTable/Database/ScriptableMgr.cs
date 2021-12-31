@@ -14,8 +14,8 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     public Dictionary<string, Virus> virusList = new Dictionary<string, Virus>();
 
     // 아이템 관련
+    public Dictionary<string, Weapon> equippableList = new Dictionary<string, Weapon>();
     public Dictionary<string, Consumable> consumableList = new Dictionary<string, Consumable>();
-    public Dictionary<string, Equippable> equippableList = new Dictionary<string, Equippable>();
 
     // 스킬 관련
     public Dictionary<string, ActiveSkill> activeSkillList = new Dictionary<string, ActiveSkill>();
@@ -25,6 +25,7 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     public override void Awake()
     {
         base.Awake();
+
         // 1. Character
         string charSOPath = "Choi/Datas/Characters";
         Character[] characterArr = Resources.LoadAll<Character>(charSOPath);
@@ -51,7 +52,7 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
 
         // 4. Equippable
         string equippableSOPath = "Choi/Datas/Equippables";
-        Equippable[] equippableArr = Resources.LoadAll<Equippable>(equippableSOPath);
+        Weapon[] equippableArr = Resources.LoadAll<Weapon>(equippableSOPath);
         foreach (var equippable in equippableArr)
         {
             equippableList.Add(equippable.id, equippable);
@@ -108,7 +109,7 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         return Instantiate(consumableList[id]);
     }
 
-    public Equippable GetEquippable(string id)
+    public Weapon GetEquippable(string id)
     {
         return Instantiate(equippableList[id]);
     }

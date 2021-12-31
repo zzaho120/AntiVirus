@@ -35,7 +35,7 @@ public class TestAttack : MonoBehaviour
                     //var playerAttackStats = attackStat.CreateAttack(stats);
                     //OnAttack(hitInfo.collider.gameObject, playerAttackStats);
 
-                    Debug.Log("Damage : " + stats.Damage);
+                    //Debug.Log("Damage : " + stats.Damage);
                 }
             }
         }
@@ -44,7 +44,7 @@ public class TestAttack : MonoBehaviour
     //public void OnAttack(GameObject attacker, AttackStats attack)
     public void OnAttack(CharacterStats attack)
     {
-        enemyStats.currentHp -= attack.Damage;
+        //enemyStats.currentHp -= attack.Damage;
 
         if (enemyStats.currentHp < 0)
         {

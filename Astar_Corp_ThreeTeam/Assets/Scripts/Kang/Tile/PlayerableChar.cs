@@ -253,8 +253,8 @@ public class PlayerableChar : BattleChar
 
     private void CheckAttackRange(Vector2 tileIdx, int cnt)
     {
-        if (cnt >= characterStats.Range)
-            return;
+        //if (cnt >= characterStats.Range)
+        //    return;
 
         cnt++;
         if (tileVec2Dics.ContainsKey(tileIdx))

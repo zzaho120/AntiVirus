@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
@@ -38,6 +34,7 @@ public class PlayerController : MonoBehaviour
     //public bool isInVirusZone1;
     //public bool isInVirusZone2;
     //public bool isInVirusZone3;
+    private TimeController timeController;
 
     float originAgentSpeed;
     //private Vector3 calcVelocity = Vector3.zero;
@@ -48,6 +45,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
+
         character = new CharacterInfo();
         character.name = "ж檜";
         character.hp = 5;
@@ -62,7 +61,9 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            transform.position = manager.bunkerPos.position;
+            int randomNum = UnityEngine.Random.Range(0, manager.bunkerPos.Count);
+            Vector3 pos = manager.bunkerPos[randomNum].transform.position;
+            transform.position = pos;
         }
 
         characterController = GetComponent<CharacterController>();
@@ -98,18 +99,17 @@ public class PlayerController : MonoBehaviour
             PlayerPrefs.SetFloat("p_z", transform.position.z);
         }
 
-        //if (multiTouch.DoubleTap)
-        //{
-        //    Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
-        //    RaycastHit raycastHit;
-        //    groundLayerMask = LayerMask.GetMask("Ground");
-        //    if (Physics.Raycast(ray, out raycastHit, 100/*, groundLayerMask*/))
-        //    {
-        //        //if(raycastHit.collider.gameObject.layer)
-        //        agent.SetDestination(raycastHit.point);
-        //    }
-        //}
-        else if (multiTouch.Tap)
+        if (multiTouch.DoubleTap && timeController.isPause == false)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
+            RaycastHit raycastHit;
+            groundLayerMask = LayerMask.GetMask("Ground");
+            if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
+            {
+                agent.SetDestination(raycastHit.point);
+            }
+        }
+        else if (multiTouch.Tap && timeController.isPause == false)
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
             RaycastHit raycastHit;
@@ -120,19 +120,18 @@ public class PlayerController : MonoBehaviour
                     pX = raycastHit.collider.gameObject.transform.position.x;
                     pY = raycastHit.collider.gameObject.transform.position.y;
                     pZ = raycastHit.collider.gameObject.transform.position.z;
-
+            
                     saveMode = false;
                     PlayerPrefs.SetFloat("p_x", pX);
                     PlayerPrefs.SetFloat("p_y", pY);
                     PlayerPrefs.SetFloat("p_z", pZ);
 
-                    MoveToBunker();
                     //滿醴 で機璽
-                    //var windowId = (int)Windows.BunkerWindow - 1;
-                    //nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    var windowId = (int)Windows.BunkerWindow - 1;
+                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
                 }
 
-                else if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
+                if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
                     pY = raycastHit.collider.gameObject.transform.position.y;
@@ -147,11 +146,6 @@ public class PlayerController : MonoBehaviour
                     //滿醴 で機璽
                     var windowId = (int)Windows.LaboratoryWindow - 1;
                     nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
-                }
-
-                else
-                {
-                    agent.SetDestination(raycastHit.point);
                 }
 
                 // 熱薑

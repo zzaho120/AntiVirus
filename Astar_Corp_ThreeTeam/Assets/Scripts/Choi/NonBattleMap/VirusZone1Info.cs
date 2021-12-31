@@ -40,8 +40,8 @@ public class VirusZone1Info : MonoBehaviour
                 playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
             }
 
-            Debug.Log("플레이어가 들어왔습니다.");
-            Debug.Log($"바이러스 종류 : {virusType}");
+            //Debug.Log("플레이어가 들어왔습니다.");
+            //Debug.Log($"바이러스 종류 : {virusType}");
 
             player = other.gameObject;
             playerController = player.GetComponent<PlayerController>();
