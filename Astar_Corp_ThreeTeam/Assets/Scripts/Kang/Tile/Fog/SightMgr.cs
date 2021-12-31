@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SightTileBase : IComparable<SightTileBase>
@@ -40,17 +41,17 @@ public class SightMgr : MonoBehaviour
     // 합쳐놓은 타일
     // key의 x는 vector3의 x
     // key의 y는 vector3의 z
-    public Dictionary<Vector2, List<SightTileBase>> curFogDics =
+    public Dictionary<Vector2, List<SightTileBase>> totalSightDics =
         new Dictionary<Vector2, List<SightTileBase>>();
 
-    public List<List<SightTileBase>> playerSightList =
+    public List<List<SightTileBase>> sightList =
         new List<List<SightTileBase>>();
 
-    public List<List<SightTileBase>> playerFrontSightList =
+    public List<List<SightTileBase>> frontSightList =
         new List<List<SightTileBase>>();
 
-    public List<Vector2> playerMinVectorList =
-        new List<Vector2>();
+    public List<Dictionary<Vector2, List<SightTileBase>>> calculateSightDics =
+        new List<Dictionary<Vector2, List<SightTileBase>>>();
 
     private List<PlayerableChar> playerableChars;
 
@@ -73,21 +74,21 @@ public class SightMgr : MonoBehaviour
         {
             var checkIdx = new Vector2(pair.Key.x, pair.Key.z);
 
-            if (!curFogDics.ContainsKey(checkIdx))
-                curFogDics.Add(checkIdx, new List<SightTileBase>());
-            curFogDics[checkIdx].Add(new SightTileBase(pair.Value));
+            if (!totalSightDics.ContainsKey(checkIdx))
+                totalSightDics.Add(checkIdx, new List<SightTileBase>());
+            totalSightDics[checkIdx].Add(new SightTileBase(pair.Value));
         }
 
         foreach (var pair in wallDics)
         {
             var checkIdx = new Vector2(pair.Key.x, pair.Key.z);
 
-            if (!curFogDics.ContainsKey(checkIdx))
-                curFogDics.Add(checkIdx, new List<SightTileBase>());
-            curFogDics[checkIdx].Add(new SightTileBase(pair.Value));
+            if (!totalSightDics.ContainsKey(checkIdx))
+                totalSightDics.Add(checkIdx, new List<SightTileBase>());
+            totalSightDics[checkIdx].Add(new SightTileBase(pair.Value));
         }
 
-        foreach (var pair in curFogDics)
+        foreach (var pair in totalSightDics)
         {
             foreach (var tile in pair.Value)
             {
@@ -97,8 +98,9 @@ public class SightMgr : MonoBehaviour
 
         for (var idx = 0; idx < playerableChars.Count; ++idx)
         {
-            playerFrontSightList.Add(new List<SightTileBase>());
-            playerSightList.Add(new List<SightTileBase>());
+            frontSightList.Add(new List<SightTileBase>());
+            sightList.Add(new List<SightTileBase>());
+            calculateSightDics.Add(new Dictionary<Vector2, List<SightTileBase>>());
         }
     }
 
@@ -119,7 +121,7 @@ public class SightMgr : MonoBehaviour
         checkTime = 0;
         playerCheck = 0;
         rayCheck = 0;
-        foreach (var list in playerSightList)
+        foreach (var list in sightList)
         {
             foreach (var tile in list)
             {
@@ -128,7 +130,7 @@ public class SightMgr : MonoBehaviour
             list.Clear();
         }
 
-        foreach (var list in playerFrontSightList)
+        foreach (var list in frontSightList)
         {
             foreach (var tile in list)
             {
@@ -149,31 +151,40 @@ public class SightMgr : MonoBehaviour
             var sightDistance = player.sightDistance;
             var curTileIdx = new Vector2(player.currentTile.tileIdx.x, player.currentTile.tileIdx.z);
 
-            for (var i = -sightDistance; i <= sightDistance; ++i)
+            if (!calculateSightDics[idx].ContainsKey(curTileIdx))
             {
-                if (curTileIdx.y + i < 0)
-                    continue;
-
-                for (var j = -sightDistance; j <= sightDistance; ++j)
+                for (var i = -sightDistance; i <= sightDistance; ++i)
                 {
-                    checkTime++;
-                    playerCheck++;
-
-                    if (curTileIdx.x + j < 0)
+                    if (curTileIdx.y + i < 0)
                         continue;
 
-                    var checkIdx = new Vector2(curTileIdx.x + j, curTileIdx.y + i);
-                    if (Mathf.Abs(i) + Mathf.Abs(j) > sightDistance)
-                        continue;
-
-                    if (curFogDics.ContainsKey(checkIdx))
+                    for (var j = -sightDistance; j <= sightDistance; ++j)
                     {
-                        foreach (var sightTile in curFogDics[checkIdx])
+                        checkTime++;
+                        playerCheck++;
+
+                        if (curTileIdx.x + j < 0)
+                            continue;
+
+                        var checkIdx = new Vector2(curTileIdx.x + j, curTileIdx.y + i);
+                        if (Mathf.Abs(i) + Mathf.Abs(j) > sightDistance)
+                            continue;
+
+                        if (totalSightDics.ContainsKey(checkIdx))
                         {
-                            playerSightList[idx].Add(sightTile);
+                            foreach (var sightTile in totalSightDics[checkIdx])
+                            {
+                                sightList[idx].Add(sightTile);
+                            }
                         }
                     }
                 }
+                var sight = sightList[idx].ToList();
+                calculateSightDics[idx].Add(curTileIdx, sight);
+            }
+            else
+            {
+                sightList[idx] = calculateSightDics[idx][curTileIdx];
             }
         }
     }
@@ -252,9 +263,9 @@ public class SightMgr : MonoBehaviour
             if (DistPow(current, start) > sightDist * sightDist)
                 break;
 
-            if (curFogDics.ContainsKey(current))
+            if (totalSightDics.ContainsKey(current))
             {
-                foreach (var sightTile in curFogDics[current])
+                foreach (var sightTile in totalSightDics[current])
                 {
                     if (sightTile.tileBase.isWall)
                     {
@@ -263,7 +274,7 @@ public class SightMgr : MonoBehaviour
                     }    
                 }
 
-                list.Add(curFogDics[current]);
+                list.Add(totalSightDics[current]);
                 if (isExistWall)
                     break;
             }
@@ -302,7 +313,7 @@ public class SightMgr : MonoBehaviour
         var tileDics = BattleMgr.Instance.tileMgr.tileDics;
         var wallDics = BattleMgr.Instance.tileMgr.wallDics;
 
-        foreach (var list in playerSightList)
+        foreach (var list in sightList)
         {
             foreach (var tile in list)
             {
@@ -310,7 +321,7 @@ public class SightMgr : MonoBehaviour
             }
         }
 
-        foreach (var list in playerFrontSightList)
+        foreach (var list in frontSightList)
         {
             foreach (var tile in list)
             {
@@ -332,7 +343,7 @@ public class SightMgr : MonoBehaviour
         {
             if (playerableChars[idx] == player)
             {
-                playerSight = playerFrontSightList[idx];
+                playerSight = frontSightList[idx];
                 break;
             }
         }
@@ -427,8 +438,8 @@ public class SightMgr : MonoBehaviour
         if (!playerSight.ContainsKey(checkIdx))
             playerSight.Add(checkIdx, new List<SightTileBase>());
 
-        if (curFogDics.ContainsKey(checkIdx))
-            playerSight[checkIdx] = curFogDics[checkIdx];
+        if (totalSightDics.ContainsKey(checkIdx))
+            playerSight[checkIdx] = totalSightDics[checkIdx];
 
         switch (direction)
         {

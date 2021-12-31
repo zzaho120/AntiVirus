@@ -20,6 +20,13 @@ public class TileBase : MonoBehaviour
     public GameObject charObj;
     public TileBase wallTile;
 
+    public TileBase(TileBase copy)
+    {
+        tileIdx = copy.tileIdx;
+        tileObj = copy.tileObj;
+        materials = copy.materials;
+        isWall = copy.isWall;
+    }
     public void Init(TileMgr tileMgr)
     {
         mgr = tileMgr;
