@@ -6,9 +6,9 @@ using UnityEngine;
 public class PoolManager : MonoBehaviour
 {
     public ObjectPool[] pools;
-    private GameObject newPool;
+    protected GameObject newPool;
 
-    private void Start()
+    private void Awake()
     {
         CreatePoolsTr();
     }
@@ -18,7 +18,8 @@ public class PoolManager : MonoBehaviour
     {
         for (int i = 0; i < pools.Length; i++)
         {
-            newPool = new GameObject(pools[i].poolName.ToString());
+            //newPool = new GameObject(pools[i].poolName.ToString());
+            newPool = new GameObject($"{pools[i].poolName}_{pools[i].prefab.name}");
             newPool.transform.SetParent(this.transform);
             pools[i].poolTr = newPool.transform;
         }
@@ -26,32 +27,33 @@ public class PoolManager : MonoBehaviour
 
     //protected abstract void GetObjFromPool();
 
-    void OnGUI()
-    {
-        // Get : 꺼내가기
-        GUILayout.Label("Pool size: " + pools[0].Pool.CountInactive);
-        if (GUILayout.Button("Create Particles"))
-        {
-            var amount = UnityEngine.Random.Range(1, 5);
-            for (int i = 0; i < amount; ++i)
-            {
-                var ps = pools[0].Pool.Get();
-                ps.transform.position = UnityEngine.Random.insideUnitSphere * 10;
-            }
-        }
-
-        // 두번째 풀 실험용
-        if (GUILayout.Button("Create Objects"))
-        {
-            var amount = UnityEngine.Random.Range(1, 5);
-            //for (int i = 0; i < pools[i].quantity; ++i)
-            for (int i = 0; i < amount; ++i)
-            {
-                var ps = pools[1].Pool.Get();
-                ps.transform.position = UnityEngine.Random.insideUnitSphere * 10;
-            }
-        }
-    }
+    // 실험용
+    //void OnGUI()
+    //{
+    //    // Get : 꺼내가기
+    //    GUILayout.Label("Pool size: " + pools[0].Pool.CountInactive);
+    //    if (GUILayout.Button("Create Particles"))
+    //    {
+    //        var amount = UnityEngine.Random.Range(1, 5);
+    //        for (int i = 0; i < amount; ++i)
+    //        {
+    //            var ps = pools[0].Pool.Get();
+    //            ps.transform.position = UnityEngine.Random.insideUnitSphere * 10;
+    //        }
+    //    }
+    //
+    //    // 두번째 풀 실험용
+    //    if (GUILayout.Button("Create Objects"))
+    //    {
+    //        var amount = UnityEngine.Random.Range(1, 5);
+    //        //for (int i = 0; i < pools[i].quantity; ++i)
+    //        for (int i = 0; i < amount; ++i)
+    //        {
+    //            var ps = pools[1].Pool.Get();
+    //            ps.transform.position = UnityEngine.Random.insideUnitSphere * 10;
+    //        }
+    //    }
+    //}
 
 
     //// 실험용

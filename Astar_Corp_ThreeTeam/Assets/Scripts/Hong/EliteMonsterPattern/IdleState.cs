@@ -21,7 +21,9 @@ public class IdleState : StateBase
 
     public override void Update()
     {
-        if (Time.time > startTime + 3f)
+        var randTime = Random.Range(3f, 5f);
+
+        if (Time.time > startTime + randTime)
             fsm.ChangeState(STATE.State2);
             //fsm.ChangeState(STATE.Move);
     }

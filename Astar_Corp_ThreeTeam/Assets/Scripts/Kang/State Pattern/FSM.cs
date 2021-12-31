@@ -40,6 +40,6 @@ public class FSM : MonoBehaviour
             curState.Enter();
         }
 
-        Debug.Log(state);
+        //Debug.Log(state);
     }
 }

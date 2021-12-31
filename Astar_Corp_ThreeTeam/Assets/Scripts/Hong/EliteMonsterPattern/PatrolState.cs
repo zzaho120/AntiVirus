@@ -56,7 +56,9 @@ public class PatrolState : EliteMonsterState
 
     public override void Update()
     {
-        if (Time.time > startTime + 3)
+        var randTime = Random.Range(0f, 5f);
+
+        if (Time.time > startTime + randTime)
             fsm.ChangeState(STATE.State1);
     }
 }
