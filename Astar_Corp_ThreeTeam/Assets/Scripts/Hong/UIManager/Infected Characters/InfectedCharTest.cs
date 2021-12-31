@@ -10,7 +10,7 @@ public class InfectedCharTest : MonoBehaviour
 
     public GameObject squadUI;
     PlayerDataMgr playerDataMgr;
-    Dictionary<int, string> currentSquad = new Dictionary<int, string>();
+    Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();
     GameObject[] warning = new GameObject[4];
     private void Start()
     {
@@ -22,7 +22,7 @@ public class InfectedCharTest : MonoBehaviour
 
        foreach(var element in currentSquad)
         {
-            buttons[element.Key].GetComponentInChildren<Text>().text = element.Value;
+            buttons[element.Key].GetComponentInChildren<Text>().text = element.Value.character.name;
         }
 
         for (int i = 0; i < 4; i++)

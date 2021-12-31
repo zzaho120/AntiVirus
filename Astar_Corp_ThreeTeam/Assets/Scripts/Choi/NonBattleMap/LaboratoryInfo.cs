@@ -5,13 +5,15 @@ using UnityEngine;
 public class LaboratoryInfo : MonoBehaviour
 {
     public InfectedCharTest squadUI;
+
+    public float radiusZone1;
     public float radiusZone2;
     public float radiusZone3;
-    public string virusType;
 
-    public bool isPlayerInZone1;
-    public bool isPlayerInZone2;
-    public bool isPlayerInZone3;
+    public bool isActiveZone2;
+    public bool isAvtiveZone3;
+
+    public string virusType;
 
     GameObject player;
     PlayerController playerController;
@@ -37,10 +39,12 @@ public class LaboratoryInfo : MonoBehaviour
                 var distance = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(player.transform.position.x, player.transform.position.z));
                 //Debug.Log($"distance : {distance}");
 
-                if (distance < radiusZone3)
+                if (distance < radiusZone3 && isAvtiveZone3)
                     Debug.Log("플레이어가 구역3에 들어왔습니다.");
-                else if (distance < radiusZone2)
+                else if (distance < radiusZone2 && isActiveZone2)
                     Debug.Log("플레이어가 구역2에 들어왔습니다.");
+                else if(distance < radiusZone1)
+                    Debug.Log("플레이어가 구역1에 들어왔습니다.");
             }
         }
     }

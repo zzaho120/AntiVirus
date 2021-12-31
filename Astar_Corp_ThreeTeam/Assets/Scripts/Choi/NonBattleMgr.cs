@@ -5,9 +5,8 @@ using UnityEngine;
 public class NonBattleMgr : MonoBehaviour
 {
     public GameObject player;
-    public List<GameObject> maps;
-    public List<Transform> bunkerPos;
-    public List<GameObject> randomBunker;
+    public Transform bunkerPos;
+    public List<GameObject> randomLaboratory;
     public List<GameObject> laboratoryObjs;
     public List<GameObject> virusZones1;
 
@@ -15,7 +14,8 @@ public class NonBattleMgr : MonoBehaviour
     public GameObject eliteMonsterPrefab;
 
     //연구소 영역.
-    float Zoon2Magnifi = 2f;
+    float Zone2Magnifi;
+    float Zone3Magnifi;
     string[] virusType = { "E", "B", "P", "I", "T" };
     
     //몬스터 영역.
@@ -37,16 +37,17 @@ public class NonBattleMgr : MonoBehaviour
         monsterAreaCount = 5;
         eliteMonsterCount = 5;
 
-        Zoon2Magnifi = 2f;
-        
+        Zone2Magnifi = 2f;
+        Zone3Magnifi = 3f;
+
+
         //처음 시작할때.
         if (!PlayerPrefs.HasKey("MonsterAreaX0"))
         {
-            int eBunkerIndex = UnityEngine.Random.Range(0, randomBunker.Count);
-            randomBunker[eBunkerIndex].SetActive(true);
-            bunkerPos.Add(randomBunker[eBunkerIndex].transform);
-            string eBunkerIndexStr = "EBunkerIndex";
-            PlayerPrefs.SetInt(eBunkerIndexStr, eBunkerIndex);
+            int randomLaboratoryIndex = UnityEngine.Random.Range(0, randomLaboratory.Count);
+            randomLaboratory[randomLaboratoryIndex].SetActive(true);
+            string laboratoryIndexStr = "randomLaboratoryIndex";
+            PlayerPrefs.SetInt(laboratoryIndexStr, randomLaboratoryIndex);
 
             var randomVirusType = RandomVirusType();
             foreach (var element in randomVirusType)
@@ -58,22 +59,40 @@ public class NonBattleMgr : MonoBehaviour
             foreach (var element in laboratoryObjs)
             {
                 //맨밑이 제일 큼.
-                var virusZoon3 = element.transform.GetChild(1).gameObject;
-                var virusZoon2 = element.transform.GetChild(2).gameObject;
+                var virusZone3 = element.transform.GetChild(1).gameObject;
+                var virusZone2 = element.transform.GetChild(2).gameObject;
+                var virusZone1 = element.transform.GetChild(3).gameObject;
                 
                 int randomNum = UnityEngine.Random.Range(5, 8);
 
-                virusZoon3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
-                virusZoon2.transform.localScale = new Vector3(randomNum * Zoon2Magnifi, randomNum * Zoon2Magnifi, randomNum * Zoon2Magnifi);
+                virusZone3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
+                virusZone2.transform.localScale = new Vector3(randomNum * Zone2Magnifi, randomNum * Zone2Magnifi, randomNum * Zone2Magnifi);
+                virusZone1.transform.localScale = new Vector3(randomNum * Zone3Magnifi, randomNum * Zone3Magnifi, randomNum * Zone3Magnifi);
+
+                var radius = virusZone3.GetComponent<SphereCollider>().radius;
+                var script = virusZone1.GetComponent<LaboratoryInfo>();
+                script.radiusZone3 = radius * virusZone3.transform.lossyScale.x;
+                script.radiusZone2 = radius * virusZone2.transform.lossyScale.x;
+                script.radiusZone1 = radius * virusZone1.transform.lossyScale.x;
+
+                string str = $"VirusZone1Scale{i}";
+                PlayerPrefs.SetInt(str, randomNum);
+
+                script.isActiveZone2 = (Random.Range(0, 2) == 0)? true : false;
+                if (!script.isActiveZone2) virusZone2.SetActive(false);
+                    
+                if(script.isActiveZone2) script.isAvtiveZone3 = (Random.Range(0, 2) == 0) ? true : false;
+                if (!script.isAvtiveZone3) virusZone3.SetActive(false);
                 
-                var radius = virusZoon3.GetComponent<SphereCollider>().radius;
-                var script = virusZoon2.GetComponent<LaboratoryInfo>();
-                script.radiusZone3 = radius * virusZoon3.transform.lossyScale.x;
-                script.radiusZone2 = radius * virusZoon2.transform.lossyScale.x;
+                str = $"Laboratory{i}Zone2";
+                int num = (script.isActiveZone2 == true)? 1 : 0;
+                PlayerPrefs.SetInt(str, num);
+                str = $"Laboratory{i}Zone3";
+                num = (script.isAvtiveZone3 == true) ? 1 : 0;
+                PlayerPrefs.SetInt(str, num);
+
                 script.virusType = randomVirusType[i];
                 
-                string str = $"VirusZone2Scale{i}";
-                PlayerPrefs.SetInt(str, randomNum);
                 i++;
             }
 
@@ -174,47 +193,48 @@ public class NonBattleMgr : MonoBehaviour
         }
         else//이어하기.
         {
-            string eBunkerIndexStr = "EBunkerIndex";
-            int eBunkerIndex = PlayerPrefs.GetInt(eBunkerIndexStr);
-            randomBunker[eBunkerIndex].SetActive(true);
-            bunkerPos.Add(randomBunker[eBunkerIndex].transform);
-           
+            string laboratoryIndexStr = "randomLaboratoryIndex";
+            int randomLaboratoryIndex = PlayerPrefs.GetInt(laboratoryIndexStr);
+            randomLaboratory[randomLaboratoryIndex].SetActive(true);
+
             int i = 0;
             foreach (var element in laboratoryObjs)
             {
-                var virusZoon3 = element.transform.GetChild(1).gameObject;
-                var virusZoon2 = element.transform.GetChild(2).gameObject;
-                
-                string str = $"VirusZone2Scale{i}";
-                int randomNum = PlayerPrefs.GetInt(str);
-                virusZoon3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
-                virusZoon2.transform.localScale = new Vector3(randomNum * Zoon2Magnifi, randomNum * Zoon2Magnifi, randomNum * Zoon2Magnifi);
-                
-                i++;
+                var virusZone3 = element.transform.GetChild(1).gameObject;
+                var virusZone2 = element.transform.GetChild(2).gameObject;
+                var virusZone1 = element.transform.GetChild(3).gameObject;
 
-                var radius = virusZoon3.GetComponent<SphereCollider>().radius;
-                var script = virusZoon2.GetComponent<LaboratoryInfo>();
-                script.radiusZone3 = radius * virusZoon3.transform.lossyScale.x;
-                script.radiusZone2 = radius * virusZoon2.transform.lossyScale.x;
-            }
-            i = 0;
-            foreach (var element in virusZones1)
-            {
-                //범위 랜덤 설정.
                 string str = $"VirusZone1Scale{i}";
                 int randomNum = PlayerPrefs.GetInt(str);
-                element.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
+                virusZone3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
+                virusZone2.transform.localScale = new Vector3(randomNum * Zone2Magnifi, randomNum * Zone2Magnifi, randomNum * Zone2Magnifi);
+                virusZone1.transform.localScale = new Vector3(randomNum * Zone3Magnifi, randomNum * Zone3Magnifi, randomNum * Zone3Magnifi);
 
-                //해당지역 연구소 정보 가져오기.
-                var script = element.GetComponent<VirusZone1Info>();
-                script.laboratoryPos = laboratoryObjs[i].transform.position;
+                str = $"Laboratory{i}Zone2";
+                int num  = PlayerPrefs.GetInt(str);
+                if (num == 0) virusZone2.SetActive(false);
 
-                var virusZoon2 = laboratoryObjs[i].transform.GetChild(2).gameObject;
-                var laboratoryInfo = virusZoon2.GetComponent<LaboratoryInfo>();
-                script.virusZone2Radius = laboratoryInfo.radiusZone2;
+
+                str = $"Laboratory{i}Zone3";
+                num = PlayerPrefs.GetInt(str);
+                if (num == 0) virusZone3.SetActive(false);
+
+
                 i++;
-            }
 
+                var radius = virusZone3.GetComponent<SphereCollider>().radius;
+                var script = virusZone1.GetComponent<LaboratoryInfo>();
+                script.radiusZone3 = radius * virusZone3.transform.lossyScale.x;
+                script.radiusZone2 = radius * virusZone2.transform.lossyScale.x;
+                script.radiusZone1 = radius * virusZone1.transform.lossyScale.x;
+
+                script.isActiveZone2 = (Random.Range(0, 2) == 0) ? true : false;
+                if (!script.isActiveZone2) virusZone2.SetActive(false);
+
+                if (script.isActiveZone2) script.isAvtiveZone3 = (Random.Range(0, 2) == 0) ? true : false;
+                if (!script.isAvtiveZone3) virusZone3.SetActive(false);
+            }
+            
             for (int j = 0; j < monsterAreaCount; j++)
             {
                 string str = $"MonsterAreaX{j}";

@@ -62,9 +62,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            int randomNum = UnityEngine.Random.Range(0, manager.bunkerPos.Count);
-            Vector3 pos = manager.bunkerPos[randomNum].transform.position;
-            transform.position = pos;
+            transform.position = manager.bunkerPos.position;
         }
 
         characterController = GetComponent<CharacterController>();
@@ -100,16 +98,17 @@ public class PlayerController : MonoBehaviour
             PlayerPrefs.SetFloat("p_z", transform.position.z);
         }
 
-        if (multiTouch.DoubleTap)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
-            RaycastHit raycastHit;
-            groundLayerMask = LayerMask.GetMask("Ground");
-            if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
-            {
-                agent.SetDestination(raycastHit.point);
-            }
-        }
+        //if (multiTouch.DoubleTap)
+        //{
+        //    Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
+        //    RaycastHit raycastHit;
+        //    groundLayerMask = LayerMask.GetMask("Ground");
+        //    if (Physics.Raycast(ray, out raycastHit, 100/*, groundLayerMask*/))
+        //    {
+        //        //if(raycastHit.collider.gameObject.layer)
+        //        agent.SetDestination(raycastHit.point);
+        //    }
+        //}
         else if (multiTouch.Tap)
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
@@ -121,18 +120,19 @@ public class PlayerController : MonoBehaviour
                     pX = raycastHit.collider.gameObject.transform.position.x;
                     pY = raycastHit.collider.gameObject.transform.position.y;
                     pZ = raycastHit.collider.gameObject.transform.position.z;
-            
+
                     saveMode = false;
                     PlayerPrefs.SetFloat("p_x", pX);
                     PlayerPrefs.SetFloat("p_y", pY);
                     PlayerPrefs.SetFloat("p_z", pZ);
 
+                    MoveToBunker();
                     //滿醴 で機璽
-                    var windowId = (int)Windows.BunkerWindow - 1;
-                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    //var windowId = (int)Windows.BunkerWindow - 1;
+                    //nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
                 }
 
-                if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
+                else if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
                     pY = raycastHit.collider.gameObject.transform.position.y;
@@ -147,6 +147,11 @@ public class PlayerController : MonoBehaviour
                     //滿醴 で機璽
                     var windowId = (int)Windows.LaboratoryWindow - 1;
                     nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                }
+
+                else
+                {
+                    agent.SetDestination(raycastHit.point);
                 }
 
                 // 熱薑

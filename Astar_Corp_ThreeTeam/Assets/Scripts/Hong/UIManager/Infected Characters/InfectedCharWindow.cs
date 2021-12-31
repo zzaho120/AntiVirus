@@ -10,7 +10,7 @@ public class InfectedCharWindow : GenericWindow
 	private InfectedCharTest character;
 
 	PlayerDataMgr playerDataMgr;
-	Dictionary<int, string> currentSquad = new Dictionary<int, string>();
+	Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();
 
     private void Start()
     {
@@ -49,7 +49,7 @@ public class InfectedCharWindow : GenericWindow
 		}
 		else
 		{
-			text[0].text = currentSquad[value];
+			text[0].text = currentSquad[value].character.name;
 		}
 		//if (value == 0)
   //      {

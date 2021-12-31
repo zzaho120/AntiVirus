@@ -44,7 +44,7 @@ public class SquadMgr : MonoBehaviour
         {
             var child = SquadLists.transform.GetChild(element.Key).gameObject;
             var squadName = child.transform.GetChild(0).gameObject.GetComponent<Text>();
-            squadName.text = element.Value;
+            squadName.text = element.Value.character.name;
         }
 
         //캐릭터 리스트 창 생성.
@@ -119,7 +119,7 @@ public class SquadMgr : MonoBehaviour
 
         characterName.text = characterInfos[i].name;
         squadData.Add(currentIndex, characterName.text);
-        playerDataMgr.currentSquad.Add(currentIndex, characterName.text);
+        playerDataMgr.currentSquad.Add(currentIndex, playerDataMgr.characterStats[characterName.text]);
         
         string squadStr = $"Squad{currentIndex}";
         PlayerPrefs.SetString(squadStr, characterName.text);

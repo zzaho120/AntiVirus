@@ -19,7 +19,7 @@ public class CharacterStats : MonoBehaviour
 {
     // ±âº» ½ºÅÈ
     public Character character;
-    public Antibody antibody;
+    public List<Antibody> antibody;
 
     // ¹«±â ½ºÅÈ
     public Equippable mainWeapon;
@@ -142,22 +142,54 @@ public class CharacterStats : MonoBehaviour
     #region Ç×Ã¼ ½ºÅÈ
     public float HitDmgDecRate
     {
-        get { return antibody.hitDmgDecRate; }
+        get 
+        {
+            float sum = 0;
+            foreach (var element in antibody)
+            {
+                sum += element.hitDmgDecRate;
+            }
+            return sum;
+        }
     }
 
     public float VirusSkillResist
     {
-        get { return antibody.virusSkillResist; }
+        get 
+        {
+            float sum = 0;
+            foreach (var element in antibody)
+            {
+                sum += element.virusSkillResist;
+            }
+            return sum; 
+        }
     }
 
     public float VirusDmgDecRate
     {
-        get { return antibody.virusDmgDecRate; }
+        get 
+        {
+            float sum = 0;
+            foreach (var element in antibody)
+            {
+                sum += element.virusDmgDecRate;
+            }
+            return sum;
+        }
     }
 
     public float SuddenDmgDecRate
     {
-        get { return antibody.suddenDmgDecRate; }
+        get 
+        {
+            float sum = 0;
+            foreach (var element in antibody)
+            {
+                sum += element.suddenDmgDecRate;
+            }
+            return sum;
+        }
     }
     #endregion
 

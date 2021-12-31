@@ -22,15 +22,13 @@ public class CharacterMgr : MonoBehaviour
     {
         var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
         playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-        antibodyList = playerDataMgr.antibodyList;
-        weaponList = playerDataMgr.weaponList;
 
         var currentSquad = playerDataMgr.currentSquad;
         int i = 0;
         foreach (var element in currentSquad)
         {
             var child = squadObj.transform.GetChild(i).gameObject;
-            child.transform.GetChild(0).gameObject.GetComponent<Text>().text = element.Value;
+            child.transform.GetChild(0).gameObject.GetComponent<Text>().text = element.Value.character.name;
             i++;
         }
     }

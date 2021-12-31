@@ -70,7 +70,7 @@ public class BunkerCamController : MonoBehaviour
                 {
                     if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
                     {
-                        Invoke("CompleteZoomIn", 1f);
+                        Invoke("CompleteZoomIn", 0.2f);
                         positionToLook = hit.collider.transform.position;
 
                         if (coroutine != null) StopCoroutine(coroutine);
