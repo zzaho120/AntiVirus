@@ -18,18 +18,17 @@ public class PoolManager : MonoBehaviour
     {
         for (int i = 0; i < pools.Length; i++)
         {
-            //GameObject poolTr = new GameObject(pools[i].poolName.ToString());
-            //poolTr.transform.SetParent(this.transform);
-            //pools[i].poolTr = poolTr.transform;
-
             newPool = new GameObject(pools[i].poolName.ToString());
             newPool.transform.SetParent(this.transform);
             pools[i].poolTr = newPool.transform;
         }
     }
 
+    //protected abstract void GetObjFromPool();
+
     void OnGUI()
     {
+        // Get : ²¨³»°¡±â
         GUILayout.Label("Pool size: " + pools[0].Pool.CountInactive);
         if (GUILayout.Button("Create Particles"))
         {

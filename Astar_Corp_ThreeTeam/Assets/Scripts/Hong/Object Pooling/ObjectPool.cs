@@ -14,10 +14,11 @@ public enum PoolName
 [System.Serializable]
 public class ObjectPool
 {
-    // public int quantity;
+    public int quantity;
     public PoolName poolName;
     public GameObject prefab;
 
+    
     [HideInInspector]
     public Transform poolTr;
     [HideInInspector]
@@ -59,6 +60,7 @@ public class ObjectPool
     {
         go.SetActive(false);
         Debug.Log("Àß½è½À´Ï´Ù");
+        
     }
 
     // Called when an item is taken from the pool using Get
