@@ -61,9 +61,9 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            int randomNum = UnityEngine.Random.Range(0, manager.bunkerPos.Count);
-            Vector3 pos = manager.bunkerPos[randomNum].transform.position;
-            transform.position = pos;
+            //int randomNum = UnityEngine.Random.Range(0, manager.bunkerPos.Count);
+            //Vector3 pos = manager.bunkerPos[randomNum].transform.position;
+            //transform.position = pos;
         }
 
         characterController = GetComponent<CharacterController>();

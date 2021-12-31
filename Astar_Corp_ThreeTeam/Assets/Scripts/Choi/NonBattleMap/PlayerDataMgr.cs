@@ -33,7 +33,7 @@ public class PlayerDataMgr : MonoBehaviour
     public Dictionary<string, Character> characterList = new Dictionary<string, Character>();
     public Dictionary<string, Antibody> antibodyList = new Dictionary<string, Antibody>();
     public Dictionary<string, Consumable> consumableList = new Dictionary<string, Consumable>();
-    public Dictionary<string, Equippable> equippableList = new Dictionary<string, Equippable>();
+    //public Dictionary<string, Weapon> equippableList = new Dictionary<string, Weapon>();
     public Dictionary<string, Monster> monsterList = new Dictionary<string, Monster>();
     public Dictionary<string, Virus> virusList = new Dictionary<string, Virus>();
     public Dictionary<string, ActiveSkill> activeSkillList = new Dictionary<string, ActiveSkill>();
@@ -41,7 +41,7 @@ public class PlayerDataMgr : MonoBehaviour
     ScriptableMgr scriptableMgr;
 
     //아이템 데이터.
-    public Dictionary<string, Equippable> currentEquippables = new Dictionary<string, Equippable>();
+    //public Dictionary<string, Weapon> currentEquippables = new Dictionary<string, Weapon>();
     public Dictionary<string, int> currentEquippablesNum = new Dictionary<string, int>();
     public Dictionary<string, Consumable> currentConsumables = new Dictionary<string, Consumable>();
     public Dictionary<string, int> currentConsumablesNum = new Dictionary<string, int>();
@@ -60,7 +60,7 @@ public class PlayerDataMgr : MonoBehaviour
         characterList = scriptableMgr.characterList;
         antibodyList = scriptableMgr.antibodyList;
         consumableList = scriptableMgr.consumableList;
-        equippableList = scriptableMgr.equippableList;
+        //equippableList = scriptableMgr.equippableList;
         monsterList = scriptableMgr.monsterList;
         virusList = scriptableMgr.virusList;
         activeSkillList = scriptableMgr.activeSkillList;
@@ -103,14 +103,14 @@ public class PlayerDataMgr : MonoBehaviour
                 }
 
                 //아이템 설정.
-                foreach (var element in equippableList)
-                {
-                    saveData.equippableList.Add(element.Key);
-                    int num = 1;
-                    saveData.equippableNumList.Add(num);
-                    currentEquippables.Add(element.Key, equippableList[element.Key]);
-                    currentEquippablesNum.Add(element.Key, num);
-                }
+                //foreach (var element in equippableList)
+                //{
+                //    saveData.equippableList.Add(element.Key);
+                //    int num = 1;
+                //    saveData.equippableNumList.Add(num);
+                //    currentEquippables.Add(element.Key, equippableList[element.Key]);
+                //    currentEquippablesNum.Add(element.Key, num);
+                //}
                 foreach (var element in consumableList)
                 {
                     saveData.consumableList.Add(element.Key);
@@ -125,12 +125,12 @@ public class PlayerDataMgr : MonoBehaviour
                 foreach (var element in characterList)
                 {
                     //초기값 설정.
-                    saveData.ids.Add(element.Value.id);
-                    saveData.names.Add(element.Value.name);
-                    saveData.hps.Add(Random.Range(element.Value.min_Hp, element.Value.max_Hp));
-                    saveData.offensePowers.Add(element.Value.damage);
-                    saveData.willPowers.Add(Random.Range(element.Value.min_Willpower, element.Value.max_Willpower));
-                    saveData.staminas.Add(Random.Range(element.Value.min_Stamina, element.Value.max_Stamina));
+                    //saveData.ids.Add(element.Value.id);
+                    //saveData.names.Add(element.Value.name);
+                    //saveData.hps.Add(Random.Range(element.Value.min_Hp, element.Value.max_Hp));
+                    //saveData.offensePowers.Add(element.Value.damage);
+                    //saveData.willPowers.Add(Random.Range(element.Value.min_Willpower, element.Value.max_Willpower));
+                    //saveData.staminas.Add(Random.Range(element.Value.min_Stamina, element.Value.max_Stamina));
                     for (int k = 0; k < 5; k++) { saveData.antivirus.Add(null); }
                     saveData.mainWeapon.Add(null);
                     saveData.mainWeaponNum.Add(0);
@@ -161,28 +161,28 @@ public class PlayerDataMgr : MonoBehaviour
                     characterInfos.Add(info.name, info);
 
                     //게임상 관리하기 쉽도록.
-                    CharacterStats stat = new CharacterStats();
-                    stat.currentHp = info.hp;
-                    stat.maxHp = element.Value.max_Hp;
-                    stat.willpower = info.willPower;
-                    stat.stamina = info.stamina;
-                    stat.character = element.Value;
-                    stat.character.id = info.characterId;
-                    stat.mainWeapon = (info.mainWeapon == null)? null :equippableList[info.mainWeapon];
-                    stat.subWeapon = (info.subWeapon == null)? null : equippableList[info.subWeapon];
+                    //CharacterStats stat = new CharacterStats();
+                    //stat.currentHp = info.hp;
+                    //stat.maxHp = element.Value.max_Hp;
+                    //stat.willpower = info.willPower;
+                    //stat.stamina = info.stamina;
+                    //stat.character = element.Value;
+                    //stat.character.id = info.characterId;
+                    //stat.mainWeapon = (info.mainWeapon == null)? null :equippableList[info.mainWeapon];
+                    //stat.subWeapon = (info.subWeapon == null)? null : equippableList[info.subWeapon];
                     
-                    foreach (var activeSkill in info.activeSkills)
-                    {
-                        if (!activeSkillList.ContainsKey(activeSkill)) continue;
-                        stat.skills.activeSkills.Add(activeSkillList[activeSkill]);
-                    }
-                    foreach (var passiveSkill in info.passiveSkills)
-                    {
-                        if (!passiveSkillList.ContainsKey(passiveSkill)) continue;
-                        stat.skills.passiveSkills.Add(passiveSkillList[passiveSkill]);
-                    }
-                    characterStats.Add(info.name, stat);
-                    j++;
+                    //foreach (var activeSkill in info.activeSkills)
+                    //{
+                    //    if (!activeSkillList.ContainsKey(activeSkill)) continue;
+                    //    stat.skills.activeSkills.Add(activeSkillList[activeSkill]);
+                    //}
+                    //foreach (var passiveSkill in info.passiveSkills)
+                    //{
+                    //    if (!passiveSkillList.ContainsKey(passiveSkill)) continue;
+                    //    stat.skills.passiveSkills.Add(passiveSkillList[passiveSkill]);
+                    //}
+                    //characterStats.Add(info.name, stat);
+                    //j++;
                 }
 
                 characterInfos.OrderBy(x => x.Key);
@@ -206,13 +206,13 @@ public class PlayerDataMgr : MonoBehaviour
 
                 //아이템 설정.
                 int k = 0;
-                foreach (var element in saveData.equippableList)
-                {
-                    currentEquippables.Add(element, equippableList[element]);
-                    int num = k;
-                    currentEquippablesNum.Add(element, saveData.equippableNumList[num]);
-                    k++;
-                }
+                //foreach (var element in saveData.equippableList)
+                //{
+                //    currentEquippables.Add(element, equippableList[element]);
+                //    int num = k;
+                //    currentEquippablesNum.Add(element, saveData.equippableNumList[num]);
+                //    k++;
+                //}
                 k = 0;
                 foreach (var element in saveData.consumableList)
                 {
@@ -251,34 +251,34 @@ public class PlayerDataMgr : MonoBehaviour
                     characterInfos.Add(info.name, info);
 
                     //게임상 관리하기 쉽도록.
-                    CharacterStats stat = new CharacterStats();
-                    stat.currentHp = info.hp;
-                    stat.maxHp = characterList[info.characterId].max_Hp;
-                    stat.willpower = info.willPower;
-                    stat.stamina = info.stamina;
-                    stat.character = characterList[info.characterId];
-                    stat.character.id = info.characterId;
-                    foreach(var antivirus in info.antivirus)
-                    {
-                        if (antivirus == null) continue;
-                        //if (!antibodyList.ContainsKey(antivirus)) continue;
-                        stat.antibody.Add(antibodyList[antivirus]);
-                    }
-                    stat.mainWeapon = (info.mainWeapon == null) ? null : equippableList[info.mainWeapon];
-                    stat.subWeapon = (info.subWeapon == null) ? null : equippableList[info.subWeapon];
+                    //CharacterStats stat = new CharacterStats();
+                    //stat.currentHp = info.hp;
+                    //stat.maxHp = characterList[info.characterId].max_Hp;
+                    //stat.willpower = info.willPower;
+                    //stat.stamina = info.stamina;
+                    //stat.character = characterList[info.characterId];
+                    //stat.character.id = info.characterId;
+                    //foreach(var antivirus in info.antivirus)
+                    //{
+                    //    if (antivirus == null) continue;
+                    //    //if (!antibodyList.ContainsKey(antivirus)) continue;
+                    //    stat.antibody.Add(antibodyList[antivirus]);
+                    //}
+                    //stat.mainWeapon = (info.mainWeapon == null) ? null : equippableList[info.mainWeapon];
+                    //stat.subWeapon = (info.subWeapon == null) ? null : equippableList[info.subWeapon];
 
-                    foreach (var activeSkill in info.activeSkills)
-                    {
-                        if (!activeSkillList.ContainsKey(activeSkill)) continue;
-                        stat.skills.activeSkills.Add(activeSkillList[activeSkill]);
-                    }
-                    foreach (var passiveSkill in info.passiveSkills)
-                    {
-                        if (!passiveSkillList.ContainsKey(passiveSkill)) continue;
-                        stat.skills.passiveSkills.Add(passiveSkillList[passiveSkill]);
-                    }
+                    //foreach (var activeSkill in info.activeSkills)
+                    //{
+                    //    if (!activeSkillList.ContainsKey(activeSkill)) continue;
+                    //    stat.skills.activeSkills.Add(activeSkillList[activeSkill]);
+                    //}
+                    //foreach (var passiveSkill in info.passiveSkills)
+                    //{
+                    //    if (!passiveSkillList.ContainsKey(passiveSkill)) continue;
+                    //    stat.skills.passiveSkills.Add(passiveSkillList[passiveSkill]);
+                    //}
 
-                    characterStats.Add(info.name, stat);
+                    //characterStats.Add(info.name, stat);
                 }
                 characterInfos.OrderBy(x => x.Key);
             }
