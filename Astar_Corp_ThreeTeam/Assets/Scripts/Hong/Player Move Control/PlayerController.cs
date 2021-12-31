@@ -30,10 +30,6 @@ public class PlayerController : MonoBehaviour
     float pZ;
     bool saveMode;
 
-    //바이러스 영역.
-    //public bool isInVirusZone1;
-    //public bool isInVirusZone2;
-    //public bool isInVirusZone3;
     private TimeController timeController;
 
     float originAgentSpeed;
@@ -45,7 +41,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
+        //timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
 
         character = new CharacterInfo();
         character.name = "하이";
@@ -61,9 +57,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            //int randomNum = UnityEngine.Random.Range(0, manager.bunkerPos.Count);
-            //Vector3 pos = manager.bunkerPos[randomNum].transform.position;
-            //transform.position = pos;
+            transform.position = manager.bunkerPos.position;
         }
 
         characterController = GetComponent<CharacterController>();
@@ -86,12 +80,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        //if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")) && saveMode)
-        //    PlayerPrefs.DeleteAll();
-        //if (isInVirusZone1) Debug.Log("VirusZone1");
-        //else if (isInVirusZone2) Debug.Log("VirusZone2");
-        //else if (isInVirusZone3) Debug.Log("VirusZone3");
-
         if (agent.velocity.magnitude > 0.15f) //움직이고 있을 때.
         {
             PlayerPrefs.SetFloat("p_x", transform.position.x);
@@ -99,39 +87,32 @@ public class PlayerController : MonoBehaviour
             PlayerPrefs.SetFloat("p_z", transform.position.z);
         }
 
-        if (multiTouch.DoubleTap && timeController.isPause == false)
+        if (multiTouch.Tap /*&& timeController.isPause == false*/)
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
             RaycastHit raycastHit;
             groundLayerMask = LayerMask.GetMask("Ground");
-            if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
-            {
-                agent.SetDestination(raycastHit.point);
-            }
-        }
-        else if (multiTouch.Tap && timeController.isPause == false)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
-            RaycastHit raycastHit;
-            if (Physics.Raycast(ray, out raycastHit, 100))
+            int layer = LayerMask.GetMask("Facility");
+            if (Physics.Raycast(ray, out raycastHit, 100, layer))
             {
                 if (raycastHit.collider.gameObject.name.Equals("Bunker"))
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
                     pY = raycastHit.collider.gameObject.transform.position.y;
                     pZ = raycastHit.collider.gameObject.transform.position.z;
-            
+
                     saveMode = false;
                     PlayerPrefs.SetFloat("p_x", pX);
                     PlayerPrefs.SetFloat("p_y", pY);
                     PlayerPrefs.SetFloat("p_z", pZ);
 
                     //벙커 팝업창
-                    var windowId = (int)Windows.BunkerWindow - 1;
-                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    //var windowId = (int)Windows.BunkerWindow - 1;
+                    //nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    MoveToBunker();
                 }
 
-                if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
+                else if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
                     pY = raycastHit.collider.gameObject.transform.position.y;
@@ -146,6 +127,12 @@ public class PlayerController : MonoBehaviour
                     //벙커 팝업창
                     var windowId = (int)Windows.LaboratoryWindow - 1;
                     nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                }
+
+                else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
+                   raycastHit.collider.gameObject.name.Equals("Plane"))
+                {
+                    agent.SetDestination(raycastHit.point);
                 }
 
                 // 수정
@@ -165,6 +152,10 @@ public class PlayerController : MonoBehaviour
                 //    var windowId = (int)Windows.LaboratoryWindow - 1;
                 //    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
                 //}
+            }
+            else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
+            {
+                agent.SetDestination(raycastHit.point);
             }
         }
 
@@ -224,5 +215,4 @@ public class PlayerController : MonoBehaviour
         character.stemina -= i;
         Debug.Log($"stemina : {character.stemina}");
     }
-
 }
