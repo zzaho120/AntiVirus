@@ -55,8 +55,7 @@ public class PlayerDataMgr : MonoBehaviour
 
     private void Start()
     {
-        PlayerPrefs.DeleteAll();
-       scriptableMgr = ScriptableMgr.Instance;
+        scriptableMgr = ScriptableMgr.Instance;
         
         characterList = scriptableMgr.characterList;
         antibodyList = scriptableMgr.antibodyList;

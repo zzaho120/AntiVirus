@@ -92,8 +92,8 @@ public class PlayerController : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
             RaycastHit raycastHit;
             groundLayerMask = LayerMask.GetMask("Ground");
-            int layer = LayerMask.GetMask("Facility");
-            if (Physics.Raycast(ray, out raycastHit, 100, layer))
+            int facilitiesLayer = LayerMask.GetMask("Facilities");
+            if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
             {
                 if (raycastHit.collider.gameObject.name.Equals("Bunker"))
                 {

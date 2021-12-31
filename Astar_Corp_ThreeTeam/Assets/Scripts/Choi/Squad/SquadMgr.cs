@@ -18,7 +18,8 @@ public class SquadMgr : MonoBehaviour
     public GameObject SquadLists;
     public List<GameObject> SquadList;
     Dictionary<int, string> squadData;
-   
+    public int squadNum; 
+
     GameObject currentSelected;
     int currentIndex;
 
@@ -26,7 +27,7 @@ public class SquadMgr : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Script : SquadMgr");
+        squadNum = 4;
 
         var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
         playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();

@@ -51,7 +51,7 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         }
 
         // 4. Equippable
-        string equippableSOPath = "Choi/Datas/Equippables";
+        string equippableSOPath = "Choi/Datas/Weapons";
         Weapon[] equippableArr = Resources.LoadAll<Weapon>(equippableSOPath);
         foreach (var equippable in equippableArr)
         {
