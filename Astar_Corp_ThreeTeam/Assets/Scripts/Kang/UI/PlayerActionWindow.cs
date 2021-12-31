@@ -25,8 +25,7 @@ public class PlayerActionWindow : GenericWindow
 
     public void OnClickAttackBtn()
     {
-        curChar.AttackMode();
-        BattleMgr.Instance.sightMgr.AddFrontSight(curChar);
+        BattleMgr.Instance.sightMgr.UpdateFrontSight(curChar);
         Close();
     }
 

@@ -13,6 +13,13 @@ public class SightTileBase : IComparable<SightTileBase>
         this.tileBase = tileBase;
     }
 
+    public SightTileBase(SightTileBase sightTile)
+    {
+        tileBase = sightTile.tileBase;
+        isInSight = sightTile.isInSight;
+    }
+
+
     public int CompareTo(SightTileBase other)
     {
         var thisTileIdx = tileBase.tileIdx;
@@ -108,7 +115,6 @@ public class SightMgr : MonoBehaviour
     {
         UpdateCurrentFog();
         InitPlayerSight();
-        InitObstacle();
         UpdateObj();
 
         Debug.Log($"checkTime : {checkTime}");
@@ -123,20 +129,21 @@ public class SightMgr : MonoBehaviour
         rayCheck = 0;
         foreach (var list in sightList)
         {
-            foreach (var tile in list)
-            {
-                tile.Init();
-            }
             list.Clear();
         }
 
         foreach (var list in frontSightList)
         {
-            foreach (var tile in list)
-            {
-                tile.Init();
-            }
             list.Clear();
+        }
+
+        foreach (var pair in totalSightDics)
+        {
+            var list = pair.Value;
+            foreach (var elem in list)
+            {
+                elem.Init();
+            }
         }
     }
 
@@ -179,49 +186,56 @@ public class SightMgr : MonoBehaviour
                         }
                     }
                 }
-                var sight = sightList[idx].ToList();
-                calculateSightDics[idx].Add(curTileIdx, sight);
+                InitObstacle(idx);
+                var tempList = new List<SightTileBase>();
+                foreach (var sightTile in sightList[idx])
+                {
+                    tempList.Add(new SightTileBase(sightTile));
+                }
+                calculateSightDics[idx].Add(curTileIdx, tempList);
             }
             else
             {
-                sightList[idx] = calculateSightDics[idx][curTileIdx];
+                var tempList = new List<SightTileBase>();
+                foreach (var sightTile in calculateSightDics[idx][curTileIdx])
+                {
+                    tempList.Add(new SightTileBase(sightTile));
+                }
+                sightList[idx] = tempList;
             }
         }
     }
 
-    private void InitObstacle()
+    private void InitObstacle(int playerIdx)
     {
-        for (var idx = 0; idx < playerableChars.Count; ++idx)
+        var player = playerableChars[playerIdx];
+        if (!player.gameObject.activeSelf)
+            return;
+
+        var sightDist = player.sightDistance;
+        var maxX = sightDist;
+        var maxY = sightDist;
+        var startTileIdx = new Vector2(player.currentTile.tileIdx.x, player.currentTile.tileIdx.z);
+
+        for (var i = -sightDist; i <= maxY; ++i)
         {
-            var player = playerableChars[idx];
-            if (!player.gameObject.activeSelf)
-                continue;
+            var startY = startTileIdx.y + i;
+            if (startY < 0)
+                i = i + (int)Mathf.Abs(startY);
 
-            var sightDist = player.sightDistance;
-            var maxX = sightDist;
-            var maxY = sightDist;
-            var startTileIdx = new Vector2(player.currentTile.tileIdx.x, player.currentTile.tileIdx.z);
-
-            for (var i = -sightDist; i <= maxY; ++i)
+            for (var j = -sightDist; j <= maxX; ++j)
             {
-                var startY = startTileIdx.y + i;
-                if (startY < 0)
-                    i = i + (int)Mathf.Abs(startY);
+                var startX = startTileIdx.x + j;
+                if (startX < 0)
+                    j = j + (int)Mathf.Abs(startX);
 
-                for (var j = -sightDist; j <= maxX; ++j)
-                {
-                    var startX = startTileIdx.x + j;
-                    if (startX < 0)
-                        j = j + (int)Mathf.Abs(startX);
-
-                    var endTileIdx = new Vector2(startTileIdx.x + j, startTileIdx.y + i);
-                    var absX = Mathf.Abs(j);
-                    var absY = Mathf.Abs(i);
-                    var specificCase = absX == absY &&
-                        (absX + absY) == sightDist - 1;
-                    if (absY + absX == sightDist || specificCase)
-                        CastRayTile(startTileIdx, endTileIdx, sightDist, idx);
-                }
+                var endTileIdx = new Vector2(startTileIdx.x + j, startTileIdx.y + i);
+                var absX = Mathf.Abs(j);
+                var absY = Mathf.Abs(i);
+                var specificCase = absX == absY &&
+                    (absX + absY) == sightDist - 1;
+                if (absY + absX == sightDist || specificCase)
+                    CastRayTile(startTileIdx, endTileIdx, sightDist, playerIdx);
             }
         }
     }
@@ -313,13 +327,13 @@ public class SightMgr : MonoBehaviour
         var tileDics = BattleMgr.Instance.tileMgr.tileDics;
         var wallDics = BattleMgr.Instance.tileMgr.wallDics;
 
-        foreach (var list in sightList)
-        {
-            foreach (var tile in list)
-            {
-                tile.tileBase.EnableDisplay(tile.isInSight);
-            }
-        }
+        //foreach (var list in sightList)
+        //{
+        //    foreach (var tile in list)
+        //    {
+        //        tile.tileBase.EnableDisplay(tile.isInSight);
+        //    }
+        //}
 
         foreach (var list in frontSightList)
         {
@@ -330,135 +344,57 @@ public class SightMgr : MonoBehaviour
         }
     }
 
-    public void AddFrontSight(PlayerableChar player)
-    {
-        UpdateFrontSight(player);
-        UpdateObj();
-    }
-
     public void UpdateFrontSight(PlayerableChar player)
     {
-        List<SightTileBase> playerSight = null;
-        for (int idx = 0; idx < playerableChars.Count; ++idx)
+        var playerIdx = -1;
+        for (var idx = 0; idx < playerableChars.Count; ++idx)
         {
             if (playerableChars[idx] == player)
-            {
-                playerSight = frontSightList[idx];
+                playerIdx = idx;
+        }
+        var curTileIdx = playerableChars[playerIdx].currentTile.tileIdx;
+        var maxI = 0;
+        for (var i = 1; i < 7; ++i)
+        {
+            var maxJ = 0;
+            if (i == 1 || i == 2)
+                maxJ = 1;
+            else if (i > 2)
+                maxJ = i - 1;
+
+            maxI = i - 1;
+            var addTileIdx = new Vector2(curTileIdx.x, curTileIdx.z + i);
+            if (addTileIdx.y >= TileMgr.MAX_Z_IDX)
                 break;
+            foreach (var sightTile in totalSightDics[addTileIdx])
+            {
+                frontSightList[playerIdx].Add(sightTile);
+            }
+            for (var j = 0; j < maxJ; ++j)
+            {
+                addTileIdx = new Vector2(curTileIdx.x - j, curTileIdx.z + i);
+                foreach (var sightTile in totalSightDics[addTileIdx])
+                {
+                    frontSightList[playerIdx].Add(sightTile);
+                }
+                addTileIdx = new Vector2(curTileIdx.x + j, curTileIdx.z + i);
+                foreach (var sightTile in totalSightDics[addTileIdx])
+                {
+                    frontSightList[playerIdx].Add(sightTile);
+                }
             }
         }
 
-        var checkIdx = Vector2.zero;
-        switch (player.direction)
-        {
-            case DirectionType.Top:
-                checkIdx = new Vector2(player.currentTile.tileIdx.x, player.currentTile.tileIdx.z + 1);
-                CheckFrontSight(0, checkIdx, DirectionType.Top, playerSight);
-                break;
-            case DirectionType.Bot:
-                checkIdx = new Vector2(player.currentTile.tileIdx.x, player.currentTile.tileIdx.z - 1);
-                CheckFrontSight(0, checkIdx, DirectionType.Bot, playerSight);
-                break;
-            case DirectionType.Left:
-                checkIdx = new Vector2(player.currentTile.tileIdx.x - 1, player.currentTile.tileIdx.z);
-                CheckFrontSight(0, checkIdx, DirectionType.Left, playerSight);
-                break;
-            case DirectionType.Right:
-                checkIdx = new Vector2(player.currentTile.tileIdx.x + 1, player.currentTile.tileIdx.z);
-                CheckFrontSight(0, checkIdx, DirectionType.Right, playerSight);
-                break;
-        }
-    }
+        Debug.Log(maxI);
 
-    public void CheckFrontSight(int forwardCnt, Vector2 checkIdx, DirectionType direction, List<SightTileBase> playerSight, bool isIncrease = true)
-    {
-        if (isIncrease)
+        var sightDist = player.sightDistance;
+        var startTileIdx = new Vector2(player.currentTile.tileIdx.x, player.currentTile.tileIdx.z);
+        for (var j = -maxI; j <= maxI; ++j)
         {
-            forwardCnt++;
-            if (forwardCnt > 5)
-                isIncrease = false;
-        }
-        else
-        {
-            forwardCnt--;
-            if (forwardCnt < 0)
-                return;
+            var endTileIdx = new Vector2(startTileIdx.x + j, startTileIdx.y + maxI);
+            CastRayTile(startTileIdx, endTileIdx, sightDist, playerIdx);
         }
 
-        //if (!playerSight.Exists(tile => new Vector2(tile.tileBase.tileIdx.x, tile.tileBase.tileIdx.z) == checkIdx))
-        //{
-        //    foreach (var tile in curFogDics[checkIdx])
-        //        playerSight.Add(tile);
-        //}
-
-        //if (curFogDics.ContainsKey(checkIdx))
-        //{
-        //    var idx = playerSight.FindIndex(tile => new Vector2(tile.tileBase.tileIdx.x, tile.tileBase.tileIdx.z) == checkIdx);
-        //    foreach (var tile in curFogDics[checkIdx])
-        //        playerSight.Add(tile);
-        //    playerSight[idx] = curFogDics[checkIdx];
-        //}
-
-        //switch (direction)
-        //{
-        //    case DirectionType.Top:
-        //        checkIdx = new Vector2(checkIdx.x, checkIdx.y + 1);
-        //        CheckFrontSight(forwardCnt, checkIdx, DirectionType.Top, playerSight, isIncrease);
-        //        CheckSideSight(0, forwardCnt, checkIdx, DirectionType.Left, playerSight);
-        //        CheckSideSight(0, forwardCnt, checkIdx, DirectionType.Right, playerSight);
-        //        break;
-        //    case DirectionType.Bot:
-        //        checkIdx = new Vector2(checkIdx.x, checkIdx.y - 1);
-        //        CheckFrontSight(forwardCnt, checkIdx, DirectionType.Bot, playerSight, isIncrease);
-        //        CheckSideSight(0, forwardCnt, checkIdx, DirectionType.Left, playerSight);
-        //        CheckSideSight(0, forwardCnt, checkIdx, DirectionType.Right, playerSight);
-        //        break;
-        //    case DirectionType.Left:
-        //        checkIdx = new Vector2(checkIdx.x - 1, checkIdx.y);
-        //        CheckFrontSight(forwardCnt, checkIdx, DirectionType.Left, playerSight, isIncrease);
-        //        CheckSideSight(0, forwardCnt, checkIdx, DirectionType.Top, playerSight);
-        //        CheckSideSight(0, forwardCnt, checkIdx, DirectionType.Bot, playerSight);
-        //        break;
-        //    case DirectionType.Right:
-        //        checkIdx = new Vector2(checkIdx.x + 1, checkIdx.y);
-        //        CheckFrontSight(forwardCnt, checkIdx, DirectionType.Right, playerSight, isIncrease);
-        //        CheckSideSight(0, forwardCnt, checkIdx, DirectionType.Top, playerSight);
-        //        CheckSideSight(0, forwardCnt, checkIdx, DirectionType.Bot, playerSight);
-        //        break;
-        //}
-
-    }
-
-    public void CheckSideSight(int sideCnt, int maxCnt, Vector2 checkIdx, DirectionType direction, Dictionary<Vector2, List<SightTileBase>> playerSight)
-    {
-        if (maxCnt < sideCnt)
-            return;
-
-        sideCnt++;
-        if (!playerSight.ContainsKey(checkIdx))
-            playerSight.Add(checkIdx, new List<SightTileBase>());
-
-        if (totalSightDics.ContainsKey(checkIdx))
-            playerSight[checkIdx] = totalSightDics[checkIdx];
-
-        switch (direction)
-        {
-            case DirectionType.Top:
-                checkIdx = new Vector2(checkIdx.x, checkIdx.y + 1);
-                CheckSideSight(sideCnt, maxCnt, checkIdx, DirectionType.Top, playerSight);
-                break;
-            case DirectionType.Bot:
-                checkIdx = new Vector2(checkIdx.x, checkIdx.y - 1);
-                CheckSideSight(sideCnt, maxCnt, checkIdx, DirectionType.Bot, playerSight);
-                break;
-            case DirectionType.Left:
-                checkIdx = new Vector2(checkIdx.x - 1, checkIdx.y);
-                CheckSideSight(sideCnt, maxCnt, checkIdx, DirectionType.Left, playerSight);
-                break;
-            case DirectionType.Right:
-                checkIdx = new Vector2(checkIdx.x + 1, checkIdx.y);
-                CheckSideSight(sideCnt, maxCnt, checkIdx, DirectionType.Right, playerSight);
-                break;
-        }
+        UpdateObj();
     }
 }
