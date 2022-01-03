@@ -4,14 +4,23 @@ using UnityEngine;
 
 public class Virus : ScriptableObject
 {
+	// 기본 정보
 	public string id;
 	public string name;
-	public int level;
-	public int damage;
+
+	// 캐릭터 패널티
+	public int penaltyType;
+	public int hp_Dec;
+	public int stat_Dec;
+
+	// 몬스터 스탯 상승
 	public int hp;
-	public int stamina;
+	public int ap;
+	public int damage;
+	public int crit_Rate;
+	public int crit_Dmg;
+
+	// 처치 시 보상 수치
 	public int exp;
-	public int range;
-	public List<string> debuffs = new List<string>();
-	//public int extraSkills;
+	public int resistCharge;
 }

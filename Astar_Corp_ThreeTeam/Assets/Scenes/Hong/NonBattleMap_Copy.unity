@@ -562,7 +562,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 11400000, guid: c9b2cfdeec7c2c943ac7b81f3ea34315, type: 2}
-  antibody: {fileID: 11400000, guid: 8092fed3194743a4b8d62f8f9013018e, type: 2}
+  antibody:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   weapon:
     mainWeapon: {fileID: 0}
     subWeapon: {fileID: 0}
@@ -1203,20 +1206,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1618749313}
-  maps:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  bunkerPos:
-  - {fileID: 404529432}
-  - {fileID: 700686874}
-  - {fileID: 861019472}
-  - {fileID: 1702595521}
-  randomBunker:
-  - {fileID: 1425622908}
-  - {fileID: 1714275824}
-  - {fileID: 1231264006}
-  - {fileID: 486686333}
+  bunkerPos: {fileID: 0}
+  randomLaboratory: []
   laboratoryObjs:
   - {fileID: 749191546}
   - {fileID: 1603195583}
@@ -1657,11 +1648,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 437691417}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &486686333 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7662973795500692126, guid: eb0034179ad898749940f1efedc614f4, type: 3}
-  m_PrefabInstance: {fileID: 1051034560}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &492476829
 GameObject:
   m_ObjectHideFlags: 0
@@ -2161,7 +2147,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 11400000, guid: 4c66e5e92e71a1d4ebea32395f6ca56a, type: 2}
-  antibody: {fileID: 11400000, guid: 076b0c7e273cb8349b6fee33d899394b, type: 2}
+  antibody:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   weapon:
     mainWeapon: {fileID: 0}
     subWeapon: {fileID: 0}
@@ -3474,7 +3463,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 11400000, guid: 3b4f065766a03114b88da2c0cdeda627, type: 2}
-  antibody: {fileID: 11400000, guid: 7185a750df5b08a41b6b77fa1d9dfd00, type: 2}
+  antibody:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   weapon:
     mainWeapon: {fileID: 0}
     subWeapon: {fileID: 0}
@@ -4360,7 +4352,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 11400000, guid: 79bab08d7591f8f46b49935e30baea85, type: 2}
-  antibody: {fileID: 11400000, guid: 8092fed3194743a4b8d62f8f9013018e, type: 2}
+  antibody:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   weapon:
     mainWeapon: {fileID: 0}
     subWeapon: {fileID: 0}
@@ -4672,25 +4667,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a03bf6c368f146c45bdd1adcf1429688, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  antibodyList:
-  - {fileID: 11400000, guid: 7185a750df5b08a41b6b77fa1d9dfd00, type: 2}
-  - {fileID: 11400000, guid: bb6026d8a24c70c4fa7bef406531fc90, type: 2}
-  - {fileID: 11400000, guid: b3c65512ebe7af447a7182f41004bc33, type: 2}
-  - {fileID: 11400000, guid: 83ec10cc5b51d774992f183dcb6b2e64, type: 2}
-  - {fileID: 11400000, guid: 9dbd38c4fe08ebf49b5227a485c1bef8, type: 2}
-  - {fileID: 11400000, guid: cb84a33852241c644b1def075c61e7a2, type: 2}
-  - {fileID: 11400000, guid: 0c7ce5b385caf4a4fad32d2e298cac13, type: 2}
-  - {fileID: 11400000, guid: 41ed3e089bab0d146868ad08879998fc, type: 2}
-  - {fileID: 11400000, guid: 1d2ab90095bf19c4a876b43b8541a312, type: 2}
-  - {fileID: 11400000, guid: 8b0486a0292841d4cad67bb6881ed274, type: 2}
-  - {fileID: 11400000, guid: 076b0c7e273cb8349b6fee33d899394b, type: 2}
-  - {fileID: 11400000, guid: 39ece2bb1e0313d40bd08cee61dc2c89, type: 2}
-  - {fileID: 11400000, guid: 479cb8d72e8992149b1f9bbaa3297153, type: 2}
-  - {fileID: 11400000, guid: 5cfc9debd4cda3849ae58a93e586a8cf, type: 2}
-  - {fileID: 11400000, guid: 8092fed3194743a4b8d62f8f9013018e, type: 2}
-  weaponList:
-  - {fileID: 11400000, guid: 5619b6e3ab23d894693f1610f815ff4d, type: 2}
-  - {fileID: 11400000, guid: c13f7cb2266a10f48a3acbb9be06aa77, type: 2}
 --- !u!4 &1127415632
 Transform:
   m_ObjectHideFlags: 0
@@ -5345,11 +5321,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1228007736}
   m_CullTransparentMesh: 1
---- !u!1 &1231264006 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7662973795500692126, guid: eb0034179ad898749940f1efedc614f4, type: 3}
-  m_PrefabInstance: {fileID: 1386319418}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1261778263
 GameObject:
   m_ObjectHideFlags: 0
@@ -6534,11 +6505,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 7662973795500692097, guid: eb0034179ad898749940f1efedc614f4, type: 3}
   m_PrefabInstance: {fileID: 1386319418}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1425622908 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7662973795500692126, guid: eb0034179ad898749940f1efedc614f4, type: 3}
-  m_PrefabInstance: {fileID: 1218272}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1426025204
 GameObject:
@@ -8775,11 +8741,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 7662973795500692097, guid: eb0034179ad898749940f1efedc614f4, type: 3}
   m_PrefabInstance: {fileID: 1702595520}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1714275824 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7662973795500692126, guid: eb0034179ad898749940f1efedc614f4, type: 3}
-  m_PrefabInstance: {fileID: 649422513}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1724689413
 PrefabInstance:

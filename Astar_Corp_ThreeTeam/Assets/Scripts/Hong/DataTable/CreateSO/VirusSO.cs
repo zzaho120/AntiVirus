@@ -35,25 +35,23 @@ public class VirusSO
                     string[] splitData = line.Split(',');
 
                     Virus virus = ScriptableObject.CreateInstance<Virus>();
-                    virus.id          = splitData[0];
-                    virus.name        = splitData[1];
-                    virus.level       = int.Parse(splitData[2]);
-                    virus.damage      = int.Parse(splitData[3]);
-                    virus.hp          = int.Parse(splitData[4]);
-                    virus.stamina     = int.Parse(splitData[5]);
-                    virus.exp         = int.Parse(splitData[6]);
-                    virus.range       = int.Parse(splitData[7]);
-                    //virus.extraSkills = int.Parse(splitData[9]);
+                    virus.id           = splitData[0];
+                    virus.name         = splitData[1];
+                                       
+                    virus.penaltyType  = int.Parse(splitData[2]);
+                    virus.hp_Dec       = int.Parse(splitData[3]);
+                    virus.stat_Dec     = int.Parse(splitData[4]);
+                                       
+                    virus.hp           = int.Parse(splitData[5]);
+                    virus.ap           = int.Parse(splitData[6]);
+                    virus.damage       = int.Parse(splitData[7]);
+                    virus.crit_Rate    = int.Parse(splitData[8]);
+                    virus.crit_Dmg     = int.Parse(splitData[9]);
 
-                    // 디버프 리스트
-                    string[] debuff = splitData[8].Split('*');
-                    for (int i = 0; i < debuff.Length; i++)
-                    {
-                        //Debug.Log(debuff[i]);
-                        virus.debuffs.Add(debuff[i]);
-                    }
+                    virus.exp          = int.Parse(splitData[10]);
+                    virus.resistCharge = int.Parse(splitData[11]);
 
-                    AssetDatabase.CreateAsset(virus, $"Assets//Resources/Choi/Datas/Viruses/{virus.name} {virus.level}.asset");
+                    AssetDatabase.CreateAsset(virus, $"Assets//Resources/Choi/Datas/Viruses/{virus.name} {virus.penaltyType}.asset");
                     virusNum++;
                 }
                 sr.Close();

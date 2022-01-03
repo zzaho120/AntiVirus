@@ -11,10 +11,10 @@ public class WeaponStats
         Sub
     }
 
+    public WeaponType type;
+
     public Weapon mainWeapon;
     public Weapon subWeapon;
-
-    public WeaponType type;
 
     [HideInInspector] public int accurRate_base;
     [HideInInspector] public int accurRate_alert;

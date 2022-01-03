@@ -69,12 +69,12 @@ public class CharacterStats : MonoBehaviour
         get { return character.name; } 
     }
 
-    #region 레벨당 증가하는 스탯 설정
+    #region 캐릭터 기본 스탯 설정
     private int Hp
     {
         get
         {
-            Debug.Log(character);
+            //Debug.Log(character);
             var baseHp = Random.Range(character.min_Hp, character.max_Hp + 1);
             var hp = baseHp;
             return hp;
@@ -141,106 +141,6 @@ public class CharacterStats : MonoBehaviour
     }
     #endregion
 
-    #region 무기 관련 스탯 설정
-    //public int AccurRate_Base
-    //{
-    //    get
-    //    {
-    //
-    //    }
-    //}
-
-    //public int Damage
-    //{
-    //    get
-    //    {
-    //        
-    //    }
-    //}
-    
-    //public int Range
-    //{
-    //    get
-    //    {
-    //        var baseRange = mainWeapon.range;
-    //        var range = baseRange;
-    //
-    //        return range;
-    //    }
-    //}
-    //
-    //private int OverRange_Penalty
-    //{
-    //    get
-    //    {
-    //        return mainWeapon.overRange_Penalty;
-    //    }
-    //}
-    //
-    //private int UnderRange_Penalty
-    //{
-    //    get
-    //    {
-    //        return mainWeapon.underRange_Penalty;
-    //    }
-    //}
-
-
-    #endregion
-
-    #region 항체 스탯 - 수정필요
-    public float HitDmgDecRate
-    {
-        get 
-        {
-            float sum = 0;
-            foreach (var element in antibody)
-            {
-                sum += element.hitDmgDecRate;
-            }
-            return sum;
-        }
-    }
-
-    public float VirusSkillResist
-    {
-        get 
-        {
-            float sum = 0;
-            foreach (var element in antibody)
-            {
-                sum += element.virusSkillResist;
-            }
-            return sum; 
-        }
-    }
-
-    public float VirusDmgDecRate
-    {
-        get 
-        {
-            float sum = 0;
-            foreach (var element in antibody)
-            {
-                sum += element.virusDmgDecRate;
-            }
-            return sum;
-        }
-    }
-
-    public float SuddenDmgDecRate
-    {
-        get 
-        {
-            float sum = 0;
-            foreach (var element in antibody)
-            {
-                sum += element.suddenDmgDecRate;
-            }
-            return sum;
-        }
-    }
-    #endregion
 
     private void Start()
     {

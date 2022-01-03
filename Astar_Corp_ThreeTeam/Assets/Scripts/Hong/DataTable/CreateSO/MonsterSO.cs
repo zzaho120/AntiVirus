@@ -34,12 +34,19 @@ public class MonsterSO
                     string[] splitData = line.Split(',');
 
                     Monster monster = ScriptableObject.CreateInstance<Monster>();
-                    monster.id      = splitData[0];
-                    monster.name    = splitData[1];
-                    monster.damage  = int.Parse(splitData[2]);
-                    monster.hp      = int.Parse(splitData[3]);
-                    monster.stamina = int.Parse(splitData[4]);
-                    monster.range   = int.Parse(splitData[5]);
+                    monster.id              = splitData[0];
+                    monster.name            = splitData[1];
+                    monster.min_Hp          = int.Parse(splitData[2]);
+                    monster.max_Hp          = int.Parse(splitData[3]);
+                    monster.ap              = int.Parse(splitData[4]);
+                    monster.closeUpAtk_Ap   = int.Parse(splitData[5]);
+                    monster.min_Dmg         = int.Parse(splitData[6]);
+                    monster.max_Dmg         = int.Parse(splitData[7]);
+                    monster.min_CritRate    = int.Parse(splitData[8]);
+                    monster.max_CritRate    = int.Parse(splitData[9]);
+                    monster.critDmg         = int.Parse(splitData[10]);
+                    monster.exp             = int.Parse(splitData[11]);
+
 
                     AssetDatabase.CreateAsset(monster, $"Assets//Resources/Choi/Datas/Monsters/{monster.name}.asset");
                     monsterNum++;

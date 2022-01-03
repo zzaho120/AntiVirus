@@ -10,7 +10,7 @@ public class MonsterChar : BattleChar
     public override void Init()
     {
         base.Init();
-        monsterStats.monsterStat = (Monster)Instantiate(Resources.Load("Choi/Datas/Monsters/Prototype Test 1"));
+        monsterStats.monster = (Monster)Instantiate(Resources.Load("Choi/Datas/Monsters/Prototype Test 1"));
         monsterStats.Init();
     }
 }

@@ -422,6 +422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e341a79c6ba0684b8cbce492a84bac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyStats: {fileID: 634642846}
 --- !u!114 &393838283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,14 +449,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 11400000, guid: f85d6f67eb0a3b445b5f1b7af507ec8b, type: 2}
-  antibody: {fileID: 0}
+  antibody:
+  - {fileID: 0}
   weapon:
+    type: 1
     mainWeapon: {fileID: 11400000, guid: 656d0a63a2afd0b44b9a2bbaf04315ee, type: 2}
     subWeapon: {fileID: 11400000, guid: cca79446b5e9b024ebae34042c1a4c27, type: 2}
-    type: 0
     accurRate_base: 0
     accurRate_alert: 0
-    damage: 0
     mainWeaponBullet: 0
     subWeaponBullet: 0
     recoil: 0
@@ -722,8 +723,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e266d0c7b5e56134abe7aa0835eb6829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterStat: {fileID: 11400000, guid: ae63ccfc4fe98c04089f90d5096aeac5, type: 2}
-  virus: {fileID: 0}
+  monster: {fileID: 11400000, guid: a266528184c0bd44299fd8b4503fc915, type: 2}
+  virus: {fileID: 11400000, guid: 5b278970ae74223418fcdbf4c8efffa3, type: 2}
+  virusLevel: 3
   currentHp: 0
 --- !u!1001 &942986787
 PrefabInstance:
@@ -1134,7 +1136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1523210464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1147,8 +1149,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e266d0c7b5e56134abe7aa0835eb6829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterStat: {fileID: 11400000, guid: d3f0cd1a0b42bc347b486859e9284fb1, type: 2}
+  monster: {fileID: 0}
   virus: {fileID: 11400000, guid: e7e5b650038fe3d4aa74c636e8659177, type: 2}
+  virusLevel: 0
   currentHp: 0
 --- !u!65 &1523210465
 BoxCollider:
@@ -1376,7 +1379,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2017348326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1389,8 +1392,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e266d0c7b5e56134abe7aa0835eb6829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterStat: {fileID: 11400000, guid: f13c2a00617985a4188180b16ae9583a, type: 2}
+  monster: {fileID: 0}
   virus: {fileID: 11400000, guid: 379e491a28b97604d934351330aa7081, type: 2}
+  virusLevel: 0
   currentHp: 0
 --- !u!65 &2017348327
 BoxCollider:

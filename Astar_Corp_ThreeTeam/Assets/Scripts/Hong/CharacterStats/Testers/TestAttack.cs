@@ -5,7 +5,7 @@ using UnityEngine;
 public class TestAttack : MonoBehaviour
 {
     private CharacterStats stats;     // Old version
-    private MonsterStats enemyStats;
+    public MonsterStats enemyStats;
 
     //public Character newStatTest;
     //public AttackDefinition attackStat;
@@ -13,10 +13,17 @@ public class TestAttack : MonoBehaviour
     private void Awake()
     {
         stats = GetComponent<CharacterStats>();
+
+        enemyStats = GetComponent<MonsterStats>();
     }
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Debug.Log("Enemy Hp : " + enemyStats.currentHp);
+        }
+
         // 마우스로 Enemy 오브젝트 클릭 시 Attack 되도록 Test
         if (Input.GetMouseButtonDown(0))
         {
@@ -29,13 +36,9 @@ public class TestAttack : MonoBehaviour
                 {
                     // Enemy 오브젝트의 CharacterStats 임시로 가져오기
                     enemyStats = hitInfo.collider.gameObject.GetComponent<MonsterStats>();
-                    
+
+                    // 공격
                     OnAttack(stats);
-
-                    //var playerAttackStats = attackStat.CreateAttack(stats);
-                    //OnAttack(hitInfo.collider.gameObject, playerAttackStats);
-
-                    //Debug.Log("Damage : " + stats.Damage);
                 }
             }
         }
@@ -44,7 +47,7 @@ public class TestAttack : MonoBehaviour
     //public void OnAttack(GameObject attacker, AttackStats attack)
     public void OnAttack(CharacterStats attack)
     {
-        //enemyStats.currentHp -= attack.Damage;
+        enemyStats.currentHp -= attack.weapon.damage;
 
         if (enemyStats.currentHp < 0)
         {

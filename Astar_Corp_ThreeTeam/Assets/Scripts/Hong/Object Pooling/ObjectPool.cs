@@ -35,7 +35,7 @@ public class ObjectPool
             {
                 m_Pool = new ObjectPool<GameObject>(
                     () => CreatePooledItem(prefab), OnTakeFromPool, OnReturnedToPool, OnDestroyPoolObject, 
-                    collectionChecks, 10, maxPoolSize) ;
+                    collectionChecks, quantity, maxPoolSize) ;
             }
             return m_Pool;
         }
@@ -59,7 +59,7 @@ public class ObjectPool
     void OnReturnedToPool(GameObject go)
     {
         go.SetActive(false);
-        Debug.Log("Àß½è½À´Ï´Ù");
+        //Debug.Log("Àß½è½À´Ï´Ù");
         
     }
 
@@ -67,7 +67,7 @@ public class ObjectPool
     void OnTakeFromPool(GameObject go)
     {
         go.SetActive(true);
-        Debug.Log("ºô·Á°©´Ï´Ù");
+        //Debug.Log("ºô·Á°©´Ï´Ù");
     }
 
     // If the pool capacity is reached then any items returned will be destroyed.
