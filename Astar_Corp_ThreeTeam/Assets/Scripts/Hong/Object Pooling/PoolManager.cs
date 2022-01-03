@@ -6,10 +6,13 @@ using UnityEngine;
 public class PoolManager : MonoBehaviour
 {
     public ObjectPool[] pools;
-    protected GameObject newPool;
+    private GameObject newPool;
+    protected GameObject[] poolBox;
 
     private void Awake()
     {
+        poolBox = new GameObject[pools.Length];
+
         CreatePoolsTr();
     }
 
@@ -18,10 +21,13 @@ public class PoolManager : MonoBehaviour
     {
         for (int i = 0; i < pools.Length; i++)
         {
-            //newPool = new GameObject(pools[i].poolName.ToString());
+            // 풀로 사용할 게임오브젝트 생성
             newPool = new GameObject($"{pools[i].poolName}_{pools[i].prefab.name}");
             newPool.transform.SetParent(this.transform);
             pools[i].poolTr = newPool.transform;
+
+            // 풀로 사용할 게임오브젝트 저장
+            poolBox[i] = newPool;
         }
     }
 
