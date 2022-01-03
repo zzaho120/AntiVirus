@@ -11,10 +11,12 @@ public class LaboratoryInfo : MonoBehaviour
     public float radiusZone2;
     public float radiusZone3;
 
+    //is Zone SetActive?
     public bool isActiveZone2;
-    public bool isAvtiveZone3;
+    public bool isActiveZone3;
 
     public string virusType;
+    string[] virusTypes = { "E", "B", "P", "I", "T" };
     int step;
 
     GameObject player;
@@ -42,7 +44,7 @@ public class LaboratoryInfo : MonoBehaviour
             {
                 var distance = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(player.transform.position.x, player.transform.position.z));
 
-                if (distance < radiusZone3 && isAvtiveZone3)
+                if (distance < radiusZone3 && isActiveZone3)
                 {
                     if (step != 3)
                     {
@@ -76,14 +78,6 @@ public class LaboratoryInfo : MonoBehaviour
                         Debug.Log("플레이어가 구역1에 들어왔습니다.");
                     }
                 }
-                else
-                {
-                    if (step != 0)
-                    {
-                        virusData.None = true;
-                        virusData.currentVirus[$"{virusType}"] = 0;
-                    }
-                }
             }
         }
     }
@@ -95,6 +89,26 @@ public class LaboratoryInfo : MonoBehaviour
             Debug.Log("플레이어가 나갔습니다.");
             player = null;
             playerController = null;
+
+            virusData.currentVirus[$"{virusType}"] = 0;
+            step = 0;
+            virusData.Change();
+
+            bool isInZone = false;
+            foreach (var element in virusTypes)
+            {
+                if (virusData.currentVirus[element] != 0)
+                {
+                    isInZone = true;
+                    break;
+                }
+            }
+
+            if (isInZone == false)
+            {
+                virusData.None = true;
+                virusData.Init();
+            }
         }
     }
 }

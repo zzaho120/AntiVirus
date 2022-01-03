@@ -20,10 +20,10 @@ public class InfectedCharTest : MonoBehaviour
         playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
         currentSquad = playerDataMgr.currentSquad;
 
-       foreach(var element in currentSquad)
-        {
-            buttons[element.Key].GetComponentInChildren<Text>().text = element.Value.character.name;
-        }
+       //foreach(var element in currentSquad)
+       // {
+       //     buttons[element.Key].GetComponentInChildren<Text>().text = element.Value.character.name;
+       // }
 
         for (int i = 0; i < 4; i++)
         {

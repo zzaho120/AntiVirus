@@ -196,17 +196,6 @@ public class PlayerDataMgr : MonoBehaviour
             //이어하기.
             else
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    string str = $"Squad{i}";
-                    string value = PlayerPrefs.GetString(str);
-                    Debug.Log($"{i} : {value}");
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        currentSquad.Add(i, characterStats[value]);
-                    }
-                }
-
                 saveData = PlayerSaveLoadSystem.Load(filePath);
 
                 //아이템 설정.
@@ -288,6 +277,19 @@ public class PlayerDataMgr : MonoBehaviour
                     characterStats.Add(info.name, stat);
                 }
                 characterInfos.OrderBy(x => x.Key);
+
+                string squadNum = "SquadNum";
+                int totalSquadNum = (PlayerPrefs.HasKey(squadNum)) ? PlayerPrefs.GetInt(squadNum) : 4;
+                for (int i = 0; i < totalSquadNum; i++)
+                {
+                    string str = $"Squad{i}";
+                    string value = PlayerPrefs.GetString(str);
+                    Debug.Log($"{i} : {value}");
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        currentSquad.Add(i, characterStats[value]);
+                    }
+                }
             }
         } 
         else 

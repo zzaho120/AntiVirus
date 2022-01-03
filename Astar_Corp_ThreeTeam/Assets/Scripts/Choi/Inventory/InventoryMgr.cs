@@ -34,7 +34,8 @@ public class InventoryMgr : MonoBehaviour
 
     string currentCharacter;
     Dictionary<int, string> characterData = new Dictionary<int, string>();
-    List<GameObject> characterGOs;
+    List<GameObject> characterGOs = new List<GameObject>();
+    int totalSquadNum;
 
     //DetailInfo.
     public GameObject detailWin;
@@ -51,8 +52,6 @@ public class InventoryMgr : MonoBehaviour
     Dictionary<int, string> currentList;
 
     string currentItem;
-    //(string, int) currentMainWeapon;
-    //(string, int) currentSubWeapon;
     InvenMode currentMode;
 
     EquipType equipType;
@@ -65,19 +64,21 @@ public class InventoryMgr : MonoBehaviour
         var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
         playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
 
-        int i = 0;
-        foreach (var element in playerDataMgr.characterInfos)
-        {
-            int num = i;
-            characterData.Add(num, element.Value.name);
-            var go = Instantiate(characterPrefab, characterContent.transform);
-            var button = go.AddComponent<Button>();
-            button.onClick.AddListener(delegate { SelectCharacter(num); });
+        Init();
 
-            var child = go.transform.GetChild(1).gameObject;
-            child.GetComponent<Text>().text = element.Value.name;
-            i++;
-        }
+        //int i = 0;
+        //foreach (var element in playerDataMgr.currentSquad)
+        //{
+        //    int num = i;
+        //    characterData.Add(num, element.Value.name);
+        //    var go = Instantiate(characterPrefab, characterContent.transform);
+        //    var button = go.AddComponent<Button>();
+        //    button.onClick.AddListener(delegate { SelectCharacter(num); });
+
+        //    var child = go.transform.GetChild(1).gameObject;
+        //    child.GetComponent<Text>().text = element.Value.name;
+        //    i++;
+        //}
 
         //아이템 데이터.
         itemData = new Dictionary<string, ItemType>();
@@ -110,6 +111,49 @@ public class InventoryMgr : MonoBehaviour
 
         currentMode = InvenMode.All;
         AllDisplay();
+    }
+
+    public void Init()
+    {
+        if (playerDataMgr == null)
+        {
+            var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
+            playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
+        }
+
+        var currentSquad = playerDataMgr.currentSquad;
+
+        if (characterData.Count != 0) characterData.Clear();
+
+        if (characterGOs.Count != 0)
+        {
+            foreach (var element in characterGOs)
+            {
+                Destroy(element);
+            }
+
+            characterGOs.Clear();
+        }
+        
+        int j = 0;
+        foreach (var element in currentSquad)
+        {
+            var go = Instantiate(characterPrefab, characterContent.transform);
+            var button = go.AddComponent<Button>();
+            int num = j;
+            button.onClick.AddListener(delegate { SelectCharacter(num); });
+            characterGOs.Add(go);
+
+            if(element.Value == null) characterData.Add(num, null);
+            else characterData.Add(num, element.Value.character.name);
+
+            var child = characterContent.transform.GetChild(element.Key).gameObject;
+            var squadName = child.transform.GetChild(1).gameObject.GetComponent<Text>();
+            if (element.Value == null) squadName.text = null;
+            else squadName.text = element.Value.character.name;
+
+            j++;
+        }
     }
 
     public void AllDisplay()

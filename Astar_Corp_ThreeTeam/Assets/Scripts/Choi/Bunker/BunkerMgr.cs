@@ -17,6 +17,7 @@ public class BunkerMgr : MonoBehaviour
     public BunkerCamController camController;
     public WindowManager windowManager;
     public SquadMgr squadMgr;
+    public InventoryMgr inventoryMgr;
 
     public Camera camera;
     GameObject selectedBunker;
@@ -116,6 +117,7 @@ public class BunkerMgr : MonoBehaviour
                 {
                     currentBunkerKind = BunkerKinds.Garden;
                     camController.isCurrentEmpty = false;
+                    inventoryMgr.Init();
                 }
                 else if (hitInfo.collider.gameObject.GetComponent<OperatingRoom>() != null)
                 {
@@ -142,19 +144,16 @@ public class BunkerMgr : MonoBehaviour
         {
             currentWinId = (int)BunkerWindows.StoreWindow - 1;
             windowManager.Open(currentWinId);
-            Debug.Log("»óÁ¡¿ÀÇÂ");
         }
         else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.OperatingRoom)
         {
             currentWinId = (int)BunkerWindows.SquadWindow - 1;
             windowManager.Open(currentWinId);
-            Debug.Log("ÀÛÀü½Ç¿ÀÇÂ");
         }
         else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Garden)
         {
             currentWinId = (int)BunkerWindows.InventoryWindow - 1;
             windowManager.Open(currentWinId);
-            Debug.Log("Á¤¿ø¿ÀÇÂ");
         }
     }
 
@@ -173,14 +172,10 @@ public class BunkerMgr : MonoBehaviour
     public void CreateGarden()
     {
         if (selectedBunker == null) return;
-        //if (!camController.isZoomIn) return;
         currentBunkerKind = BunkerKinds.Garden;
 
         string str = $"BunkerKind{currentBunkerIndex}";
         PlayerPrefs.SetInt(str, (int)currentBunkerKind);
-
-        Debug.Log($"currentBunkerIndex : {currentBunkerIndex}");
-        Debug.Log($"currentBunkerKind : {(int)currentBunkerKind}");
 
         var go = Instantiate(gardenPrefab, selectedBunker.transform.position, Quaternion.identity);
         var script = go.GetComponent<GardenRoom>();
@@ -195,15 +190,11 @@ public class BunkerMgr : MonoBehaviour
     public void CreateOperatingRoom()
     {
         if (selectedBunker == null) return;
-        //if (!camController.isZoomIn) return;
-
+        
         currentBunkerKind = BunkerKinds.OperatingRoom;
 
         string str = $"BunkerKind{currentBunkerIndex}";
         PlayerPrefs.SetInt(str, (int)currentBunkerKind);
-
-        Debug.Log($"currentBunkerIndex : {currentBunkerIndex}");
-        Debug.Log($"currentBunkerKind : {(int)currentBunkerKind}");
 
         var go = Instantiate(operatingRoomPrefab, selectedBunker.transform.position, Quaternion.identity);
         var script = go.GetComponent<OperatingRoom>();
@@ -218,14 +209,10 @@ public class BunkerMgr : MonoBehaviour
     public void CreateStore()
     {
         if (selectedBunker == null) return;
-        //if (!camController.isZoomIn) return;
         currentBunkerKind = BunkerKinds.Store;
 
         string str = $"BunkerKind{currentBunkerIndex}";
         PlayerPrefs.SetInt(str, (int)currentBunkerKind);
-
-        Debug.Log($"currentBunkerIndex : {currentBunkerIndex}");
-        Debug.Log($"currentBunkerKind : {(int)currentBunkerKind}");
 
         var go = Instantiate(storePrefab, selectedBunker.transform.position, Quaternion.identity);
         var script = go.GetComponent<StoreRoom>();

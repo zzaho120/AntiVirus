@@ -8,17 +8,21 @@ public class SquadMgr : MonoBehaviour
 {
     public GameObject characterListUI;
 
+    //캐릭터 리스트.
     public GameObject characterListPrefab;
     public GameObject CharacterLists;
     public List<GameObject> CharacterList;
-    //List<string> characterData;
-    //List<Character> characterList;
     Dictionary<int, CharacterDetail> characterInfos  = new Dictionary<int, CharacterDetail>();
 
-    public GameObject SquadLists;
-    public List<GameObject> SquadList;
-    Dictionary<int, string> squadData;
-    public int squadNum; 
+    //스쿼드 리스트.
+    public GameObject SquadParents;
+    public GameObject SquadPrefab;
+    public List<GameObject> SquadGOs;
+
+    //public GameObject SquadLists;
+    //public List<GameObject> SquadList;
+    Dictionary<int, string> SquadData;
+    int totalSquadNum = 8;
 
     GameObject currentSelected;
     int currentIndex;
@@ -27,12 +31,33 @@ public class SquadMgr : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        squadNum = 4;
-
         var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
         playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-        //var characterList = playerDataMgr.characterList;
 
+        SquadData = new Dictionary<int, string>();
+
+        string str = "SquadNum";
+        totalSquadNum = (PlayerPrefs.HasKey(str))? PlayerPrefs.GetInt(str) : 4;
+
+        var squadParents = SquadParents.transform;
+        for (int i = 0; i < totalSquadNum; i++)
+        {
+            var go = Instantiate(SquadPrefab, squadParents);
+            var button = go.AddComponent<Button>();
+            int num = i;
+            button.onClick.AddListener(delegate { ClickSquad(num); });
+            SquadGOs.Add(go);
+        }
+
+        var currentSquad = playerDataMgr.currentSquad;
+        foreach (var element in currentSquad)
+        {
+            var child = SquadParents.transform.GetChild(element.Key).gameObject;
+            var squadName = child.transform.GetChild(0).gameObject.GetComponent<Text>();
+            squadName.text = element.Value.character.name;
+        }
+
+        //캐릭터 리스트 창 생성.
         int k = 0;
         foreach (var element in playerDataMgr.characterInfos)
         {
@@ -40,15 +65,6 @@ public class SquadMgr : MonoBehaviour
             k++;
         }
 
-        var currentSquad = playerDataMgr.currentSquad;
-        foreach (var element in currentSquad)
-        {
-            var child = SquadLists.transform.GetChild(element.Key).gameObject;
-            var squadName = child.transform.GetChild(0).gameObject.GetComponent<Text>();
-            squadName.text = element.Value.character.name;
-        }
-
-        //캐릭터 리스트 창 생성.
         CharacterList = new List<GameObject>();
         var characters = CharacterLists.transform;
         for (int i = 0; i < characterInfos.Count; i++)
@@ -72,19 +88,17 @@ public class SquadMgr : MonoBehaviour
         }
 
         //스쿼드 리스트 관리.
-        SquadList = new List<GameObject>();
-        var squadLists = SquadLists.transform;
-        for (int i = 0; i < squadLists.childCount; i++)
-        {
-            SquadList.Add(squadLists.GetChild(i).gameObject);
-        }
-
-        squadData = new Dictionary<int, string>();
+        //SquadList = new List<GameObject>();
+        //var squadLists = SquadLists.transform;
+        //for (int i = 0; i < squadLists.childCount; i++)
+        //{
+        //    SquadList.Add(squadLists.GetChild(i).gameObject);
+        //}
     }
 
     public void ClickSquad(int i)
     {
-        currentSelected = SquadList[i];
+        currentSelected = SquadGOs[i];
         currentIndex = i;
 
         characterListUI.SetActive(true);
@@ -97,34 +111,54 @@ public class SquadMgr : MonoBehaviour
         var child = currentSelected.transform.GetChild(0).gameObject;
         var characterName = child.GetComponent<Text>();
 
-        //다른 슬롯에 있다면 다른 슬롯은 비워버림.
-        if (squadData.ContainsValue(characterInfos[i].name))
-        {
-            var key = squadData.FirstOrDefault(x => x.Value == characterInfos[i].name).Key;
-            var previous = SquadList[key].transform.GetChild(0).gameObject;
-            var previousName = previous.GetComponent<Text>();
-            previousName.text = string.Empty;
+        ////다른 슬롯에 있다면 다른 슬롯은 비워버림.
+        //if (squadData.ContainsValue(characterInfos[i].name))
+        //{
+        //    var key = squadData.FirstOrDefault(x => x.Value == characterInfos[i].name).Key;
+        //    var previous = SquadList[key].transform.GetChild(0).gameObject;
+        //    var previousName = previous.GetComponent<Text>();
+        //    previousName.text = string.Empty;
 
-            squadData.Remove(key);
-            playerDataMgr.currentSquad.Remove(key);
-            string str = $"Squad{key}";
-            PlayerPrefs.SetString(str, null);
-        }
+        //    squadData.Remove(key);
+        //    playerDataMgr.currentSquad.Remove(key);
+        //    string str = $"Squad{key}";
+        //    PlayerPrefs.SetString(str, null);
+        //}
 
         //현재 슬롯에 값이 있다면 변경.
-        if (squadData.ContainsKey(currentIndex))
+        if (SquadData.ContainsKey(currentIndex))
         {
-            squadData.Remove(currentIndex);
+            SquadData.Remove(currentIndex);
             playerDataMgr.currentSquad.Remove(currentIndex);
         }
 
         characterName.text = characterInfos[i].name;
-        squadData.Add(currentIndex, characterName.text);
+        SquadData.Add(currentIndex, characterName.text);
         playerDataMgr.currentSquad.Add(currentIndex, playerDataMgr.characterStats[characterName.text]);
         
         string squadStr = $"Squad{currentIndex}";
         PlayerPrefs.SetString(squadStr, characterName.text);
 
         characterListUI.SetActive(false);
+    }
+
+    public void AddSquad()
+    {
+        var squadParents = SquadParents.transform;
+        var go = Instantiate(SquadPrefab, squadParents);
+        var button = go.AddComponent<Button>();
+       
+        totalSquadNum += 1;
+        int num = totalSquadNum;
+        button.onClick.AddListener(delegate { ClickSquad(num-1); });
+        SquadGOs.Add(go);
+
+        playerDataMgr.currentSquad.Add(num, null);
+
+        string squadStr = $"Squad{num-1}";
+        PlayerPrefs.SetString(squadStr,null);
+
+        string str = "SquadNum";
+        PlayerPrefs.SetInt(str, num);
     }
 }

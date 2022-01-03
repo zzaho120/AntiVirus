@@ -39,29 +39,6 @@ public class VirusData : MonoBehaviour
 
     public void Change()
     {
-        //if (None)
-        //{
-        //    B1 = false;
-        //    B2 = false;
-        //    B3 = false;
-
-        //    E1 = false;
-        //    E2 = false;
-        //    E3 = false;
-
-        //    I1 = false;
-        //    I2 = false;
-        //    I3 = false;
-            
-        //    P1 = false;
-        //    P2 = false;
-        //    P3 = false;
-
-        //    T1 = false;
-        //    T2 = false;
-        //    T3 = false;
-        //}
-     
         foreach (var element in currentVirus)
         {
             if (element.Key.Equals("B"))
@@ -160,5 +137,28 @@ public class VirusData : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void Init()
+    {
+        B1 = false;
+        B2 = false;
+        B3 = false;
+
+        E1 = false;
+        E2 = false;
+        E3 = false;
+
+        I1 = false;
+        I2 = false;
+        I3 = false;
+
+        P1 = false;
+        P2 = false;
+        P3 = false;
+
+        T1 = false;
+        T2 = false;
+        T3 = false;
     }
 }

@@ -80,14 +80,14 @@ public class NonBattleMgr : MonoBehaviour
                 script.isActiveZone2 = (Random.Range(0, 2) == 0)? true : false;
                 if (!script.isActiveZone2) virusZone2.SetActive(false);
                     
-                if(script.isActiveZone2) script.isAvtiveZone3 = (Random.Range(0, 2) == 0) ? true : false;
-                if (!script.isAvtiveZone3) virusZone3.SetActive(false);
+                if(script.isActiveZone2) script.isActiveZone3 = (Random.Range(0, 2) == 0) ? true : false;
+                if (!script.isActiveZone3) virusZone3.SetActive(false);
                 
                 str = $"Laboratory{i}Zone2";
                 int num = (script.isActiveZone2 == true)? 1 : 0;
                 PlayerPrefs.SetInt(str, num);
                 str = $"Laboratory{i}Zone3";
-                num = (script.isAvtiveZone3 == true) ? 1 : 0;
+                num = (script.isActiveZone3 == true) ? 1 : 0;
                 PlayerPrefs.SetInt(str, num);
 
                 script.virusType = randomVirusType[i];
@@ -185,26 +185,29 @@ public class NonBattleMgr : MonoBehaviour
                 var virusZone2 = element.transform.GetChild(2).gameObject;
                 var virusZone1 = element.transform.GetChild(3).gameObject;
 
-                var script = virusZone1.GetComponent<LaboratoryInfo>();
-                var radius = virusZone3.GetComponent<SphereCollider>().radius;
-                script.radiusZone3 = radius * virusZone3.transform.lossyScale.x;
-                script.radiusZone2 = radius * virusZone2.transform.lossyScale.x;
-                script.radiusZone1 = radius * virusZone1.transform.lossyScale.x;
-
                 string str = $"VirusZone1Scale{i}";
                 int randomNum = PlayerPrefs.GetInt(str);
-               
+
+                var script = virusZone1.GetComponent<LaboratoryInfo>();
+                var radius = virusZone3.GetComponent<SphereCollider>().radius;
+
                 virusZone3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
                 virusZone2.transform.localScale = new Vector3(randomNum * Zone2Magnifi, randomNum * Zone2Magnifi, randomNum * Zone2Magnifi);
                 virusZone1.transform.localScale = new Vector3(randomNum * Zone3Magnifi, randomNum * Zone3Magnifi, randomNum * Zone3Magnifi);
 
+                script.radiusZone3 = radius * virusZone3.transform.lossyScale.x;
+                script.radiusZone2 = radius * virusZone2.transform.lossyScale.x;
+                script.radiusZone1 = radius * virusZone1.transform.lossyScale.x;
+
                 str = $"Laboratory{i}Zone2";
                 int num  = PlayerPrefs.GetInt(str);
                 if (num == 0) virusZone2.SetActive(false);
+                else script.isActiveZone2 = true;
 
                 str = $"Laboratory{i}Zone3";
                 num = PlayerPrefs.GetInt(str);
                 if (num == 0) virusZone3.SetActive(false);
+                else script.isActiveZone3 = true;
 
                 str = $"Laboratory{i}VirusType";
                 var virusType = PlayerPrefs.GetString(str);
@@ -212,7 +215,7 @@ public class NonBattleMgr : MonoBehaviour
 
                 i++;
             }
-            
+            //MonsterArea 持失.
             for (int j = 0; j < monsterAreaCount; j++)
             {
                 string str = $"MonsterAreaX{j}";
@@ -226,6 +229,7 @@ public class NonBattleMgr : MonoBehaviour
                 var randScale = PlayerPrefs.GetInt(str);
                 go.transform.localScale = new Vector3(randScale, randScale, randScale);
             }
+            //EliteMonster 持失.
             for (int j = 0; j < eliteMonsterCount; j++)
             {
                 string str = $"EliteMonsterX{j}";
