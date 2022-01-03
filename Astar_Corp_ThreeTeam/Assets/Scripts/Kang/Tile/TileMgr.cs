@@ -8,15 +8,18 @@ public class TileMgr : MonoBehaviour
     public GameObject tiles;
     public GameObject walls;
 
+    public GameObject tilePrefab;
+
     public Dictionary<Vector3, TileBase> tileDics = new Dictionary<Vector3, TileBase>();
     public Dictionary<Vector3, TileBase> wallDics = new Dictionary<Vector3, TileBase>();
     public Dictionary<Vector2, List<TileBase>> tileVec2Dics = new Dictionary<Vector2, List<TileBase>>();
 
-    public static int MAX_X_IDX = 16;
-    public static int MAX_Z_IDX = 16;
+    public static int MAX_X_IDX = 24;
+    public static int MAX_Z_IDX = 24;
  
     public void Init()
     {
+        GenerateTile();
         var tileCount = tiles.transform.childCount;
         for (int idx = 0; idx < tileCount; ++idx)
         {
@@ -55,6 +58,18 @@ public class TileMgr : MonoBehaviour
         }
 
         InitAdjTile();
+    }
+
+    private void GenerateTile()
+    {
+        for (var i = 0; i < MAX_Z_IDX; ++i)
+        {
+            for (var j = 0; j < MAX_X_IDX; ++j)
+            {
+                var go = Instantiate(tilePrefab, new Vector3(j, 0, i), Quaternion.identity);
+                go.transform.SetParent(tiles.transform);
+            }
+        }
     }
 
     private void InitAdjTile()

@@ -12,6 +12,8 @@ public class TileBase : MonoBehaviour
     public GameObject tileObj;
     public List<Material> materials;
     public bool isWall;
+    public int accuracy;
+    public int moveAP;
 
     [Header("List")]
     public List<TileBase> adjNodes;
@@ -47,13 +49,25 @@ public class TileBase : MonoBehaviour
         if (isEnabled)
         {
             ren.material = materials[0];
+            ren.material.color = Color.white;
         }
         else
         {
             ren.material = materials[1];
+            ren.material.color = Color.white;
         }
 
         if (charObj != null)
             charObj.GetComponent<MeshRenderer>().enabled = isEnabled;
+    }
+
+    public void SetHighlight()
+    {
+        if (charObj != null && charObj.tag == "BattleMonster")
+        {
+            var ren = tileObj.GetComponent<MeshRenderer>();
+
+            ren.material.color = Color.red;
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SightTileBase : IComparable<SightTileBase>
+public class SightTileBase
 {
     public TileBase tileBase;
     public bool isInSight;
@@ -17,23 +17,6 @@ public class SightTileBase : IComparable<SightTileBase>
     {
         tileBase = sightTile.tileBase;
         isInSight = sightTile.isInSight;
-    }
-
-
-    public int CompareTo(SightTileBase other)
-    {
-        var thisTileIdx = tileBase.tileIdx;
-        var otherTileIdx = other.tileBase.tileIdx;
-
-        var thisValue = thisTileIdx.x * TileMgr.MAX_Z_IDX + thisTileIdx.z;
-        var otherValue = otherTileIdx.x * TileMgr.MAX_Z_IDX + otherTileIdx.z;
-
-        if (thisValue == otherValue)
-            return 0;
-        else if (thisValue > otherValue)
-            return 1;
-        else
-            return -1;
     }
 
     public void Init()
@@ -285,9 +268,8 @@ public class SightMgr : MonoBehaviour
                     {
                         isExistWall = true;
                         break;
-                    }    
+                    }
                 }
-
                 list.Add(totalSightDics[current]);
                 if (isExistWall)
                     break;
@@ -327,19 +309,21 @@ public class SightMgr : MonoBehaviour
         var tileDics = BattleMgr.Instance.tileMgr.tileDics;
         var wallDics = BattleMgr.Instance.tileMgr.wallDics;
 
-        //foreach (var list in sightList)
-        //{
-        //    foreach (var tile in list)
-        //    {
-        //        tile.tileBase.EnableDisplay(tile.isInSight);
-        //    }
-        //}
+        foreach (var list in sightList)
+        {
+            foreach (var tile in list)
+            {
+                tile.tileBase.EnableDisplay(tile.isInSight);
+            }
+        }
 
         foreach (var list in frontSightList)
         {
             foreach (var tile in list)
             {
                 tile.tileBase.EnableDisplay(tile.isInSight);
+
+                tile.tileBase.SetHighlight();
             }
         }
     }
@@ -354,47 +338,63 @@ public class SightMgr : MonoBehaviour
         }
         var curTileIdx = playerableChars[playerIdx].currentTile.tileIdx;
         var maxI = 0;
-        for (var i = 1; i < 7; ++i)
+        for (var i = 1; i < 8; ++i)
         {
             var maxJ = 0;
             if (i == 1 || i == 2)
-                maxJ = 1;
+                maxJ = 2;
             else if (i > 2)
-                maxJ = i - 1;
+                maxJ = i;
 
-            maxI = i - 1;
+            maxI = i;
             var addTileIdx = new Vector2(curTileIdx.x, curTileIdx.z + i);
             if (addTileIdx.y >= TileMgr.MAX_Z_IDX)
                 break;
+
             foreach (var sightTile in totalSightDics[addTileIdx])
             {
+                sightTile.tileBase.accuracy = maxJ;
                 frontSightList[playerIdx].Add(sightTile);
             }
-            for (var j = 0; j < maxJ; ++j)
+
+            for (var j = 1; j < maxJ; ++j)
             {
                 addTileIdx = new Vector2(curTileIdx.x - j, curTileIdx.z + i);
                 foreach (var sightTile in totalSightDics[addTileIdx])
                 {
+                    sightTile.tileBase.accuracy = maxJ;
                     frontSightList[playerIdx].Add(sightTile);
                 }
                 addTileIdx = new Vector2(curTileIdx.x + j, curTileIdx.z + i);
                 foreach (var sightTile in totalSightDics[addTileIdx])
                 {
+                    sightTile.tileBase.accuracy = maxJ;
                     frontSightList[playerIdx].Add(sightTile);
                 }
             }
         }
-
-        Debug.Log(maxI);
-
-        var sightDist = player.sightDistance;
         var startTileIdx = new Vector2(player.currentTile.tileIdx.x, player.currentTile.tileIdx.z);
-        for (var j = -maxI; j <= maxI; ++j)
-        {
-            var endTileIdx = new Vector2(startTileIdx.x + j, startTileIdx.y + maxI);
-            CastRayTile(startTileIdx, endTileIdx, sightDist, playerIdx);
-        }
 
+        var val = 0;
+        if (maxI < 2)
+            val = 1;
+        else
+            val = maxI - 1;
+        for (var i = -val; i <= val; ++i)
+        {
+            var endTileIdx = new Vector2(startTileIdx.x + i, startTileIdx.y + maxI);
+            CastRayTile(endTileIdx, startTileIdx, 10, playerIdx);
+        }
         UpdateObj();
+    }
+
+    public List<SightTileBase> GetFrontSight(PlayerableChar player)
+    {
+        for (var idx = 0; idx < frontSightList.Count; ++idx)
+        {
+            if (playerableChars[idx] == player)
+                return frontSightList[idx];
+        }
+        return null;
     }
 }

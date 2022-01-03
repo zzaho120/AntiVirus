@@ -8,6 +8,7 @@ public class PlayerableChar : BattleChar
     public CharacterStats characterStats;
 
     [Header("Value")]
+    public int AP;
     public int moveDistance;
     public int sightDistance;
     public bool isMove;
@@ -19,13 +20,6 @@ public class PlayerableChar : BattleChar
     private Dictionary<TileBase, int> moveDics =
         new Dictionary<TileBase, int>();
 
-    private Dictionary<Vector2, List<TileBase>> attackDics =
-        new Dictionary<Vector2, List<TileBase>>();
-
-    private Dictionary<Vector2, List<TileBase>> tileVec2Dics;
-
-    private Dictionary<Vector3, TileBase> wallDics;
-
     private MeshRenderer ren;
 
     public override void Init()
@@ -35,9 +29,8 @@ public class PlayerableChar : BattleChar
         characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
         characterStats.Init();
         direction = DirectionType.Top;
-
-        tileVec2Dics = BattleMgr.Instance.tileMgr.tileVec2Dics;
-        wallDics = BattleMgr.Instance.tileMgr.wallDics;
+        AP = 6;
+        characterStats.Init();
     }
 
     public void Update()
@@ -63,7 +56,7 @@ public class PlayerableChar : BattleChar
                         Debug.Log(hit.collider.name);
                         var monster = hit.collider.GetComponent<MonsterChar>();
                         var tileIdx = new Vector2(monster.tileIdx.x, monster.tileIdx.z);
-                        if (attackDics.ContainsKey(tileIdx))
+                        if (BattleMgr.Instance.sightMgr.GetFrontSight(this).Exists(x => x.tileBase == monster.currentTile))
                             ActionAttack(monster);
                     }
                     else if (hit.collider.gameObject == gameObject)
@@ -93,6 +86,7 @@ public class PlayerableChar : BattleChar
     public void StartTurn()
     {
         isTurnOver = false;
+        AP = 6;
         ren.material.color = Color.white;
     }
 
@@ -107,8 +101,6 @@ public class PlayerableChar : BattleChar
                 break;
 
             MoveTile(aStarTile.tileBase.tileIdx);
-
-            // test
             BattleMgr.Instance.sightMgr.UpdateFog();
             yield return new WaitForSeconds(0.1f);
         }
@@ -169,8 +161,14 @@ public class PlayerableChar : BattleChar
 
     private void CheckMoveRange(TileBase tile, int cnt)
     {
-        if (cnt >= moveDistance)
+        if (cnt >= AP)
             return;
+
+        if (cnt % 3 == 0)
+        {
+            tile.moveAP = ((cnt + 3) / 3);
+            Debug.Log(tile.moveAP);
+        }
 
         cnt++;
         if (!moveDics.ContainsKey(tile))
@@ -194,8 +192,14 @@ public class PlayerableChar : BattleChar
         }
     }
 
+    public void AttackMode()
+    {
+        isAttack = true;
+    }
+
     private void ActionMove(TileBase tileBase)
     {
+        BattleMgr.Instance.sightMgr.UpdateFog();
         BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
         MoveMode();
         StartCoroutine(CoMove());
@@ -203,10 +207,63 @@ public class PlayerableChar : BattleChar
 
     private void ActionAttack(MonsterChar monster)
     {
-        //AttackMode();
         TurnOver();
+
+        var tileAccuracy = monster.currentTile.accuracy; ;
+        var totalAccuracy = 0;
+        var weapon = characterStats.weapon;
+        switch (characterStats.weapon.range)
+        {
+            case 1: // 근거리
+                if (0 < tileAccuracy && tileAccuracy < 5)
+                    totalAccuracy = weapon.accurRate_base;
+                else
+                    totalAccuracy = weapon.accurRate_base - 30 * (tileAccuracy - 4);
+                break;
+
+            case 2: // 중거리
+                if (3 < tileAccuracy && tileAccuracy < 8)
+                    totalAccuracy = weapon.accurRate_base;
+                else if (tileAccuracy < 4)
+                    totalAccuracy = weapon.accurRate_base - 10 * (4 - tileAccuracy);
+                else if (tileAccuracy > 7)
+                    totalAccuracy = weapon.accurRate_base - 15 * (tileAccuracy - 8);
+                break;
+
+            case 3: // 원거리
+                if (6 < tileAccuracy && tileAccuracy < 11)
+                    totalAccuracy = weapon.accurRate_base;
+                else if (tileAccuracy < 7)
+                    totalAccuracy = weapon.accurRate_base - 15 * (7 - tileAccuracy);
+                else if (tileAccuracy > 10)
+                    totalAccuracy = weapon.accurRate_base - 10 * (tileAccuracy - 10);
+                break;
+
+            case 4: // 근접무기
+                if (1 == tileAccuracy)
+                    totalAccuracy = weapon.accurRate_base;
+                else
+                    totalAccuracy = 0;
+                break;
+        }
+
+        totalAccuracy = Mathf.Clamp(totalAccuracy, 0, 100);
+
+        var randomAccuracy = Random.Range(0, 100) < totalAccuracy;
+
+        if (randomAccuracy)
+            monster.GetDamage(weapon.damage);
+        Debug.Log(totalAccuracy);
+        Debug.Log(randomAccuracy);
+
+        monster.currentTile.EnableDisplay(true);
     }
-    
+
+    private void ActionBoundary()
+    {
+
+    }
+
     private void TurnOver()
     {
         isTurnOver = true;
