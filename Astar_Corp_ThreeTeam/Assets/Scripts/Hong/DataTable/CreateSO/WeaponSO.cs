@@ -44,22 +44,22 @@ public class WeaponSO
 
                     equippable.accur_Rate_Base      = int.Parse(splitData[6]);
 
-                    equippable.min_damage           = int.Parse(splitData[7]);
-                    equippable.max_damage           = int.Parse(splitData[8]);
-                    equippable.crit_Damage          = int.Parse(splitData[9]);
+                    equippable.min_damage           = int.Parse(splitData[8]);
+                    equippable.max_damage           = int.Parse(splitData[9]);
+                    equippable.crit_Damage          = int.Parse(splitData[10]);
 
-                    equippable.bullet               = int.Parse(splitData[10]);
-                    equippable.accur_Rate_Dec       = int.Parse(splitData[11]);
-                    equippable.weight               = int.Parse(splitData[12]);
+                    equippable.bullet               = int.Parse(splitData[11]);
+                    equippable.accur_Rate_Dec       = int.Parse(splitData[12]);
+                    equippable.weight               = int.Parse(splitData[13]);
 
-                    equippable.firstShot_Ap         = int.Parse(splitData[13]);
-                    equippable.alertShot_Ap         = int.Parse(splitData[14]);
-                    equippable.aimShot_Ap           = int.Parse(splitData[15]);
-                    equippable.load_Ap              = int.Parse(splitData[16]);
+                    equippable.firstShot_Ap         = int.Parse(splitData[14]);
+                    equippable.alertShot_Ap         = int.Parse(splitData[15]);
+                    equippable.aimShot_Ap           = int.Parse(splitData[16]);
+                    equippable.load_Ap              = int.Parse(splitData[17]);
 
-                    equippable.range                = int.Parse(splitData[17]);
-                    equippable.overRange_Penalty    = int.Parse(splitData[18]);
-                    equippable.underRange_Penalty   = int.Parse(splitData[19]);
+                    equippable.range                = int.Parse(splitData[18]);
+                    equippable.overRange_Penalty    = int.Parse(splitData[19]);
+                    equippable.underRange_Penalty   = int.Parse(splitData[20]);
 
                     AssetDatabase.CreateAsset(equippable, $"Assets//Resources/Choi/Datas/Weapons/{equippable.name}.asset");
                     equippableNum++;

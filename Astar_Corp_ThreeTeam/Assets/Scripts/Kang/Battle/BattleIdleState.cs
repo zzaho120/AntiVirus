@@ -7,9 +7,11 @@ public class BattleIdleState : StateBase
     private int moveRange = 8;
     private Vector3 nextTile;
     private Stack<AStarTile> pathList;
-    private bool isSetPath;
     private MonsterChar monster;
     private float timer;
+    private bool isSetPath;
+    private bool inited;
+
     public BattleIdleState(MonsterChar monster, FSM fsm)
     {
         this.fsm = fsm;
@@ -18,18 +20,8 @@ public class BattleIdleState : StateBase
 
     public override void Enter()
     {
-        var randomX = Random.Range(-moveRange, moveRange);
-        var randomZ = Random.Range(-moveRange, moveRange);
-        var currentTile = monster.currentTile.tileIdx;
-        var endTile = currentTile + new Vector3(randomX, 0, randomZ);
-        timer = 0;
-
-        if (BattleMgr.Instance.sightMgr.totalSightDics.ContainsKey(new Vector2(endTile.x, endTile.z)))
-        {
-            var aStar = BattleMgr.Instance.aStar;
-            aStar.InitAStar(currentTile, endTile);
-            pathList = aStar.pathList;
-        }
+        inited = false;
+        isSetPath = false;
     }
 
     public override void Exit()
@@ -40,6 +32,12 @@ public class BattleIdleState : StateBase
     {
         if (monster.target == null)
         {
+            if (!inited)
+            {
+                inited = true;
+                SetPath();
+            }
+
             if (!isSetPath)
             {
                 isSetPath = true;
@@ -63,5 +61,21 @@ public class BattleIdleState : StateBase
         }
         else
             fsm.ChangeState((int)BattleMonState.Move);
+    }
+
+    private void SetPath()
+    {
+        var randomX = Random.Range(-moveRange, moveRange);
+        var randomZ = Random.Range(-moveRange, moveRange);
+        var currentTile = monster.currentTile.tileIdx;
+        var endTile = currentTile + new Vector3(randomX, 0, randomZ);
+        timer = 0;
+
+        if (BattleMgr.Instance.sightMgr.totalSightDics.ContainsKey(new Vector2(endTile.x, endTile.z)))
+        {
+            var aStar = BattleMgr.Instance.aStar;
+            aStar.InitAStar(currentTile, endTile);
+            pathList = aStar.pathList;
+        }
     }
 }

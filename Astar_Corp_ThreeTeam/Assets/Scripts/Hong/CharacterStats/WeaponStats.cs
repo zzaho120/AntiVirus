@@ -17,8 +17,14 @@ public class WeaponStats
     public Weapon subWeapon;
 
     // 명중률
-    [HideInInspector] 
-    public float accurRate_base, accurRate_alert;
+    [HideInInspector]
+    public int accurRate_base;
+
+    [HideInInspector]
+    public float accurRate_alert
+    {
+        get => accurRate_base * 0.7f;
+    }
 
     // 데미지
     [HideInInspector] 
@@ -43,6 +49,34 @@ public class WeaponStats
         set => subWeapon.bullet = value;
     }
 
+    [HideInInspector]
+    public int WeaponBullet
+    {
+        get
+        {
+            switch (type)
+            {
+                case WeaponType.Main:
+                    return mainWeapon.bullet;
+                case WeaponType.Sub:
+                    return subWeapon.bullet;
+            }
+            return 0;
+        }
+
+        set
+        {
+            switch (type)
+            {
+                case WeaponType.Main:
+                    mainWeapon.bullet = value;
+                    break;
+                case WeaponType.Sub:
+                    subWeapon.bullet = value;
+                    break;
+            }
+        }
+    }
     // 명중률 감소
     [HideInInspector] 
     public int accurRateDec;

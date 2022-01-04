@@ -238,10 +238,10 @@ public class PlayerableChar : BattleChar
     {
         var weapon = characterStats.weapon;
 
+        Debug.Log(weapon.mainWeaponBullet);
         if (weapon.mainWeaponBullet > 0)
         {
-
-            var tileAccuracy = monster.currentTile.accuracy; ;
+            var tileAccuracy = monster.currentTile.accuracy;
             var totalAccuracy = 0;
             switch (characterStats.weapon.range)
             {
@@ -282,6 +282,7 @@ public class PlayerableChar : BattleChar
 
             var randomAccuracy = Random.Range(0, 100) < totalAccuracy;
 
+            Debug.Log(randomAccuracy);
             if (randomAccuracy)
                 monster.GetDamage(weapon.damage);
 
@@ -291,10 +292,10 @@ public class PlayerableChar : BattleChar
             if (!isFirstAtk)
             {
                 isFirstAtk = true;
-                AP -= weapon.firstAp;
+                AP -= weapon.firstShotAp;
             }
             else
-                AP -= weapon.nextAp;
+                AP -= weapon.aimShotAp;
             EndPlayer();
         }
     }
@@ -304,7 +305,7 @@ public class PlayerableChar : BattleChar
         status = PlayerStatus.Alert;
 
         var weapon = characterStats.weapon;
-        AP -= weapon.firstAp;
+        AP -= weapon.firstShotAp;
         actionAP = AP;
         AP = 0;
     }
