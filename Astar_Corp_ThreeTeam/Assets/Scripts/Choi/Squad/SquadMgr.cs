@@ -12,7 +12,7 @@ public class SquadMgr : MonoBehaviour
     public GameObject characterListPrefab;
     public GameObject CharacterLists;
     public List<GameObject> CharacterList;
-    Dictionary<int, CharacterDetail> characterInfos  = new Dictionary<int, CharacterDetail>();
+    Dictionary<int, Character> characterInfos  = new Dictionary<int, Character>();
 
     //스쿼드 리스트.
     public GameObject SquadParents;
@@ -50,16 +50,20 @@ public class SquadMgr : MonoBehaviour
         }
 
         var currentSquad = playerDataMgr.currentSquad;
+        Debug.Log($"currentSquad.Count : {currentSquad.Count}");
         foreach (var element in currentSquad)
         {
+            Debug.Log($"element.Key : {element.Key}");
+
             var child = SquadParents.transform.GetChild(element.Key).gameObject;
             var squadName = child.transform.GetChild(0).gameObject.GetComponent<Text>();
             squadName.text = element.Value.character.name;
+            SquadData.Add(element.Key, element.Value.character.name);
         }
 
         //캐릭터 리스트 창 생성.
         int k = 0;
-        foreach (var element in playerDataMgr.characterInfos)
+        foreach (var element in playerDataMgr.characterList)
         {
             characterInfos.Add(k, element.Value);
             k++;
@@ -134,7 +138,10 @@ public class SquadMgr : MonoBehaviour
 
         characterName.text = characterInfos[i].name;
         SquadData.Add(currentIndex, characterName.text);
-        playerDataMgr.currentSquad.Add(currentIndex, playerDataMgr.characterStats[characterName.text]);
+
+        Debug.Log($"currentIndex : {currentIndex}");
+
+        playerDataMgr.AddCharacter(characterInfos[i], currentIndex);
         
         string squadStr = $"Squad{currentIndex}";
         PlayerPrefs.SetString(squadStr, characterName.text);
@@ -153,12 +160,14 @@ public class SquadMgr : MonoBehaviour
         button.onClick.AddListener(delegate { ClickSquad(num-1); });
         SquadGOs.Add(go);
 
-        playerDataMgr.currentSquad.Add(num, null);
+        SquadData.Add(num - 1, null);
 
+        Character character = new Character();
+        character.name = string.Empty;
+
+        playerDataMgr.AddCharacter(character, num-1);
+       
         string squadStr = $"Squad{num-1}";
         PlayerPrefs.SetString(squadStr,null);
-
-        string str = "SquadNum";
-        PlayerPrefs.SetInt(str, num);
     }
 }

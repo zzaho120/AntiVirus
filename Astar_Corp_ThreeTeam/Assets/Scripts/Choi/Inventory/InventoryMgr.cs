@@ -51,6 +51,7 @@ public class InventoryMgr : MonoBehaviour
     List<GameObject> itemGOs;
     Dictionary<int, string> currentList;
 
+    int currentIndex;
     string currentItem;
     InvenMode currentMode;
 
@@ -63,22 +64,6 @@ public class InventoryMgr : MonoBehaviour
     {
         var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
         playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-
-        Init();
-
-        //int i = 0;
-        //foreach (var element in playerDataMgr.currentSquad)
-        //{
-        //    int num = i;
-        //    characterData.Add(num, element.Value.name);
-        //    var go = Instantiate(characterPrefab, characterContent.transform);
-        //    var button = go.AddComponent<Button>();
-        //    button.onClick.AddListener(delegate { SelectCharacter(num); });
-
-        //    var child = go.transform.GetChild(1).gameObject;
-        //    child.GetComponent<Text>().text = element.Value.name;
-        //    i++;
-        //}
 
         //아이템 데이터.
         itemData = new Dictionary<string, ItemType>();
@@ -124,7 +109,6 @@ public class InventoryMgr : MonoBehaviour
         var currentSquad = playerDataMgr.currentSquad;
 
         if (characterData.Count != 0) characterData.Clear();
-
         if (characterGOs.Count != 0)
         {
             foreach (var element in characterGOs)
@@ -134,25 +118,37 @@ public class InventoryMgr : MonoBehaviour
 
             characterGOs.Clear();
         }
-        
+        characterContent.transform.DetachChildren();
+
         int j = 0;
+        //string str = "SquadNum";
+        //int squadNum = PlayerPrefs.GetInt(str);
+
         foreach (var element in currentSquad)
         {
             var go = Instantiate(characterPrefab, characterContent.transform);
             var button = go.AddComponent<Button>();
             int num = j;
-            button.onClick.AddListener(delegate { SelectCharacter(num); });
+            button.onClick.AddListener(delegate { SelectCharacter(element.Key); });
             characterGOs.Add(go);
 
-            if(element.Value == null) characterData.Add(num, null);
-            else characterData.Add(num, element.Value.character.name);
+            //Debug.Log($"element.Key : {element.Key}");
+            //Debug.Log($"character.name : {element.Value.character.name}");
 
-            var child = characterContent.transform.GetChild(element.Key).gameObject;
-            var squadName = child.transform.GetChild(1).gameObject.GetComponent<Text>();
-            if (element.Value == null) squadName.text = null;
-            else squadName.text = element.Value.character.name;
+            if (element.Value.character.name == string.Empty) characterData.Add(element.Key, null);
+            else characterData.Add(element.Key, element.Value.character.name);
 
             j++;
+        }
+
+        Debug.Log($"characterContent.count : {characterContent.transform.childCount}");
+        for (int i = 0 ; i < currentSquad.Count; i++)
+        {
+            var child = characterContent.transform.GetChild(i).gameObject;
+            var squadName = child.transform.GetChild(1).gameObject.GetComponent<Text>();
+            Debug.Log($"i : {i}");
+            if (currentSquad[i].character.name == string.Empty) squadName.text = string.Empty;
+            else squadName.text = currentSquad[i].character.name;
         }
     }
 
@@ -253,31 +249,50 @@ public class InventoryMgr : MonoBehaviour
         Debug.Log("캐릭터변경");
         if (detailWin.activeSelf == true) detailWin.SetActive(false);
         currentCharacter = characterData[i];
-        currentCharacterTxt.text = currentCharacter;
+        currentIndex = i;
 
-        if (playerDataMgr.characterStats[currentCharacter].weapon.mainWeapon != null)
+        Debug.Log($"currentIndex : {currentIndex}");
+
+        if (currentCharacter != null)
         {
-            var child = mainWeaponQuick.transform.GetChild(0);
-            var detailInfo = child.GetComponent<Text>();
-            detailInfo.text = $"+{playerDataMgr.characterInfos[currentCharacter].mainWeaponNum}";
+            currentCharacterTxt.text = currentCharacter;
+
+            if (playerDataMgr.characterStats[currentIndex].weapon.mainWeapon != null)
+            {
+                var child = mainWeaponQuick.transform.GetChild(0);
+                var detailInfo = child.GetComponent<Text>();
+                detailInfo.text = $"+{playerDataMgr.characterInfos[currentIndex].mainWeaponNum}";
+            }
+            else
+            {
+                var child = mainWeaponQuick.transform.GetChild(0);
+                var detailInfo = child.GetComponent<Text>();
+                detailInfo.text = null;
+            }
+
+            if (playerDataMgr.characterStats[currentIndex].weapon.subWeapon != null)
+            {
+                var child = subWeaponQuick.transform.GetChild(0);
+                var detailInfo = child.GetComponent<Text>();
+                detailInfo.text = $"+{playerDataMgr.characterInfos[currentIndex].subWeaponNum}";
+            }
+            else
+            {
+                var child = subWeaponQuick.transform.GetChild(0);
+                var detailInfo = child.GetComponent<Text>();
+                detailInfo.text = null;
+            }
         }
         else
         {
+            currentCharacterTxt.text = "비어있음";
+
             var child = mainWeaponQuick.transform.GetChild(0);
             var detailInfo = child.GetComponent<Text>();
             detailInfo.text = null;
-        }
 
-        if (playerDataMgr.characterStats[currentCharacter].weapon.subWeapon != null)
-        {
-            var child = subWeaponQuick.transform.GetChild(0);
-            var detailInfo = child.GetComponent<Text>();
-            detailInfo.text = $"+{playerDataMgr.characterInfos[currentCharacter].subWeaponNum}";
-        }
-        else
-        {
-            var child = subWeaponQuick.transform.GetChild(0);
-            var detailInfo = child.GetComponent<Text>();
+            child = subWeaponQuick.transform.GetChild(0);
+            detailInfo = child.GetComponent<Text>();
             detailInfo.text = null;
         }
     }
@@ -287,7 +302,7 @@ public class InventoryMgr : MonoBehaviour
         detailWin.SetActive(true);
 
         currentItem = currentList[i];
-
+       
         if (itemData[currentItem] == ItemType.Equippable)
         {
             detailInfoName.text = playerDataMgr.currentEquippables[currentList[i]].name;
@@ -317,18 +332,25 @@ public class InventoryMgr : MonoBehaviour
 
     public void UseItem()
     {
+        Debug.Log("1");
         if (currentCharacter == null) return;
-
+        Debug.Log("2");
         var singleButton = singleButtonObj.transform.GetChild(0).gameObject;
         if (singleButton.GetComponent<Text>().text.Equals("해제하기"))
         {
+            Debug.Log("해제하기");
             Disarm();
             var child = mainWeaponQuick.transform.GetChild(0);
             var detailInfo = child.GetComponent<Text>();
             detailInfo.text = string.Empty;
+
+            singleButton.GetComponent<Text>().text = string.Empty;
         }
         else
         {
+            Debug.Log("장착하기");
+            Debug.Log($"currentItem : {currentItem}");
+
             if (itemData[currentItem] == ItemType.Equippable)
             {
                 if (equipType == EquipType.MainWeapon)
@@ -337,19 +359,19 @@ public class InventoryMgr : MonoBehaviour
                     //이미 아이템이 있으면 인벤토리에 넣음.
                     Disarm();
 
-                    playerDataMgr.characterInfos[currentCharacter].mainWeapon = currentItem;
-                    playerDataMgr.characterInfos[currentCharacter].mainWeaponNum = items[currentItem];
+                    playerDataMgr.characterInfos[currentIndex].mainWeapon = currentItem;
+                    playerDataMgr.characterInfos[currentIndex].mainWeaponNum = items[currentItem];
                     var equip = playerDataMgr.currentEquippables[currentItem];
-                    playerDataMgr.characterStats[currentCharacter].weapon.mainWeapon = equip;
+                    playerDataMgr.characterStats[currentIndex].weapon.mainWeapon = equip;
 
                     var child = mainWeaponQuick.transform.GetChild(0);
                     var detailInfo = child.GetComponent<Text>();
-                    detailInfo.text = $"+{playerDataMgr.characterInfos[currentCharacter].mainWeaponNum}";
+                    detailInfo.text = $"+{playerDataMgr.characterInfos[currentIndex].mainWeaponNum}";
 
                     playerDataMgr.currentEquippables.Remove(currentItem);
                     playerDataMgr.currentEquippablesNum.Remove(currentItem);
 
-                    var index = playerDataMgr.characterInfos[currentCharacter].saveId;
+                    var index = playerDataMgr.characterInfos[currentIndex].saveId;
                     playerDataMgr.saveData.mainWeapon[index] = currentItem;
                     playerDataMgr.saveData.mainWeaponNum[index] = items[currentItem];
                     index = playerDataMgr.saveData.equippableList.IndexOf(currentItem);
@@ -364,19 +386,19 @@ public class InventoryMgr : MonoBehaviour
                     Debug.Log("보조무기 장착");
                     Disarm();
 
-                    playerDataMgr.characterInfos[currentCharacter].subWeapon = currentItem;
-                    playerDataMgr.characterInfos[currentCharacter].subWeaponNum = items[currentItem];
+                    playerDataMgr.characterInfos[currentIndex].subWeapon = currentItem;
+                    playerDataMgr.characterInfos[currentIndex].subWeaponNum = items[currentItem];
                     var equip = playerDataMgr.currentEquippables[currentItem];
-                    playerDataMgr.characterStats[currentCharacter].weapon.subWeapon = equip;
+                    playerDataMgr.characterStats[currentIndex].weapon.subWeapon = equip;
 
                     var child = subWeaponQuick.transform.GetChild(0);
                     var detailInfo = child.GetComponent<Text>();
-                    detailInfo.text = $"+{playerDataMgr.characterInfos[currentCharacter].subWeaponNum}";
+                    detailInfo.text = $"+{playerDataMgr.characterInfos[currentIndex].subWeaponNum}";
 
                     playerDataMgr.currentEquippables.Remove(currentItem);
                     playerDataMgr.currentEquippablesNum.Remove(currentItem);
 
-                    var index = playerDataMgr.characterInfos[currentCharacter].saveId;
+                    var index = playerDataMgr.characterInfos[currentIndex].saveId;
                     playerDataMgr.saveData.subWeapon[index] = currentItem;
                     playerDataMgr.saveData.subWeaponNum[index] = items[currentItem];
                     index = playerDataMgr.saveData.equippableList.IndexOf(currentItem);
@@ -415,18 +437,18 @@ public class InventoryMgr : MonoBehaviour
     public void EquipQuickDisplay()
     {
         if (currentCharacter == null) return;
-        else if (playerDataMgr.characterStats[currentCharacter].weapon.mainWeapon == null && equipType == EquipType.MainWeapon) return;
-        else if (playerDataMgr.characterStats[currentCharacter].weapon.subWeapon == null && equipType == EquipType.SubWeapon) return;
+        else if (playerDataMgr.characterStats[currentIndex].weapon.mainWeapon == null && equipType == EquipType.MainWeapon) return;
+        else if (playerDataMgr.characterStats[currentIndex].weapon.subWeapon == null && equipType == EquipType.SubWeapon) return;
 
         string name;
         switch (equipType)
         {
             case EquipType.MainWeapon:
-                name = playerDataMgr.characterStats[currentCharacter].weapon.mainWeapon.name;
+                name = playerDataMgr.characterStats[currentIndex].weapon.mainWeapon.name;
                 detailInfoName.text = name;
                 break;
             case EquipType.SubWeapon:
-                name = playerDataMgr.characterStats[currentCharacter].weapon.subWeapon.name;
+                name = playerDataMgr.characterStats[currentIndex].weapon.subWeapon.name;
                 detailInfoName.text = name;
                 break;
         }
@@ -442,35 +464,35 @@ public class InventoryMgr : MonoBehaviour
 
     public void Disarm()
     {
-        if (playerDataMgr.characterInfos[currentCharacter].mainWeapon != null && equipType == EquipType.MainWeapon)
+        if (playerDataMgr.characterInfos[currentIndex].mainWeapon != null && equipType == EquipType.MainWeapon)
         {
-            var id = playerDataMgr.characterInfos[currentCharacter].mainWeapon;
-            var num = playerDataMgr.characterInfos[currentCharacter].mainWeaponNum;
+            var id = playerDataMgr.characterInfos[currentIndex].mainWeapon;
+            var num = playerDataMgr.characterInfos[currentIndex].mainWeaponNum;
 
             playerDataMgr.saveData.equippableList.Add(id);
             playerDataMgr.saveData.equippableNumList.Add(num);
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
-            playerDataMgr.characterInfos[currentCharacter].mainWeapon = null;
-            playerDataMgr.characterInfos[currentCharacter].mainWeaponNum = 0;
-            playerDataMgr.characterStats[currentCharacter].weapon.mainWeapon = null;
+            playerDataMgr.characterInfos[currentIndex].mainWeapon = null;
+            playerDataMgr.characterInfos[currentIndex].mainWeaponNum = 0;
+            playerDataMgr.characterStats[currentIndex].weapon.mainWeapon = null;
             playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
             playerDataMgr.currentEquippablesNum.Add(id, num);
 
             items.Add(id, num);
         }
-        else if (playerDataMgr.characterInfos[currentCharacter].subWeapon != null && equipType == EquipType.SubWeapon)
+        else if (playerDataMgr.characterInfos[currentIndex].subWeapon != null && equipType == EquipType.SubWeapon)
         {
-            var id = playerDataMgr.characterInfos[currentCharacter].subWeapon;
-            var num = playerDataMgr.characterInfos[currentCharacter].subWeaponNum;
+            var id = playerDataMgr.characterInfos[currentIndex].subWeapon;
+            var num = playerDataMgr.characterInfos[currentIndex].subWeaponNum;
 
             playerDataMgr.saveData.equippableList.Add(id);
             playerDataMgr.saveData.equippableNumList.Add(num);
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
-            playerDataMgr.characterInfos[currentCharacter].subWeapon = null;
-            playerDataMgr.characterInfos[currentCharacter].subWeaponNum = 0;
-            playerDataMgr.characterStats[currentCharacter].weapon.subWeapon = null;
+            playerDataMgr.characterInfos[currentIndex].subWeapon = null;
+            playerDataMgr.characterInfos[currentIndex].subWeaponNum = 0;
+            playerDataMgr.characterStats[currentIndex].weapon.subWeapon = null;
             playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
             playerDataMgr.currentEquippablesNum.Add(id, num);
 

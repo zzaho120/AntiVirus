@@ -76,12 +76,12 @@ public class VirusZone1Info : MonoBehaviour
                 foreach (var element in playerDataMgr.currentSquad.Keys.ToList())
                 {
                     //항체를 가지고 있지 않다면.
-                    var characterName = playerDataMgr.currentSquad[element].character.name;
-                    if (!playerDataMgr.characterInfos[characterName].antivirus.Contains($"{virusType}1"))
-                    {
+                    //var characterName = playerDataMgr.currentSquad[element].character.name;
+                    //if (!playerDataMgr.characterInfos[characterName].antivirus.Contains($"{virusType}1"))
+                    //{
 
-                        //squadUI.TurnOnWarning(element);
-                    }
+                    //    //squadUI.TurnOnWarning(element);
+                    //}
                 }
             }
         }

@@ -48,9 +48,9 @@ public class PlayerDataMgr : MonoBehaviour
 
     //캐릭터 데이터.
     //세이브 데이터 관리하기 쉽도록.(세이브 데이터 삭제하기 위한 id도 별도로 있음)
-    public Dictionary<string, CharacterDetail> characterInfos = new Dictionary<string, CharacterDetail>(); 
+    public Dictionary<int, CharacterDetail> characterInfos = new Dictionary<int, CharacterDetail>(); 
     //게임상 관리하기 쉽도록.
-    public Dictionary<string, CharacterStats> characterStats = new Dictionary<string, CharacterStats>();
+    public Dictionary<int, CharacterStats> characterStats = new Dictionary<int, CharacterStats>();
     public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();
 
     private void Start()
@@ -122,76 +122,13 @@ public class PlayerDataMgr : MonoBehaviour
                 }
 
                 //캐릭터 값 생성.
-                int j = 0;
-                foreach (var element in characterList)
+                for (int i = 0; i < 4; i++)
                 {
-                    //초기값 설정.
-                    saveData.id.Add(element.Value.id);
-                    saveData.name.Add(element.Value.name);
-                    saveData.hp.Add(Random.Range(element.Value.min_Hp, element.Value.max_Hp));
-                    saveData.sensitivity.Add(Random.Range(element.Value.min_Sensitivity, element.Value.max_Sensitivity));
-                    saveData.concentration.Add(Random.Range(element.Value.min_Concentration, element.Value.max_Concentration));
-                    saveData.willPower.Add(Random.Range(element.Value.min_Willpower, element.Value.max_Willpower));
-                    for (int k = 0; k < 5; k++) { saveData.antivirus.Add(null); }
-                    saveData.mainWeapon.Add(null);
-                    saveData.mainWeaponNum.Add(0);
-                    saveData.subWeapon.Add(null);
-                    saveData.subWeaponNum.Add(0);
-                    for (int k = 0; k < 5; k++){ saveData.activeSkillList.Add(null); }
-                    for (int k = 0; k < 5; k++) { saveData.passiveSkillList.Add(null); }
-
-                    //저장된 데이터 관리하기 쉽도록.
-                    CharacterDetail info = new CharacterDetail();
-                    info.saveId = j;
-                    info.characterId = saveData.id[j];
-                    info.name = saveData.name[j];
-                    info.hp = saveData.hp[j];
-                    info.sensitivity = saveData.sensitivity[j];
-                    info.concentration = saveData.concentration[j];
-                    info.willPower = saveData.willPower[j];
-                    for (int k = 0; k < 5; k++){ info.antivirus.Add(saveData.antivirus[j * 5 + k]); }
-                    info.mainWeapon = saveData.mainWeapon[j];
-                    info.mainWeaponNum = saveData.mainWeaponNum[j];
-                    info.subWeapon = saveData.subWeapon[j];
-                    info.subWeaponNum = saveData.subWeaponNum[j];
-
-                    int activeSkillNum = activeSkillList.Count;
-                    for (int k = 0; k < activeSkillNum; k++) { info.antivirus.Add(saveData.activeSkillList[j * activeSkillNum + k]); }
-                    int passiveSkillNum = passiveSkillList.Count;
-                    for (int k = 0; k < passiveSkillNum; k++) { info.antivirus.Add(saveData.passiveSkillList[j * passiveSkillNum + k]); }
-                    characterInfos.Add(info.name, info);
-
-                    //게임상 관리하기 쉽도록.
-                    CharacterStats stat = new CharacterStats();
-                    stat.currentHp = info.hp;
-                    stat.maxHp = element.Value.max_Hp;
-                    stat.sensivity = info.sensitivity;
-                    stat.concentration = info.concentration;
-                    stat.willpower = info.willPower;
-
-                    stat.character = element.Value;
-                    stat.character.id = info.characterId;
-
-                    stat.weapon = new WeaponStats();
-                    stat.weapon.mainWeapon = (info.mainWeapon == null) ? null : equippableList[info.mainWeapon];
-                    stat.weapon.subWeapon = (info.subWeapon == null) ? null : equippableList[info.subWeapon];
-
-                    foreach (var activeSkill in info.activeSkills)
-                    {
-                        if (!activeSkillList.ContainsKey(activeSkill)) continue;
-                        stat.skills.activeSkills.Add(activeSkillList[activeSkill]);
-                    }
-                    foreach (var passiveSkill in info.passiveSkills)
-                    {
-                        if (!passiveSkillList.ContainsKey(passiveSkill)) continue;
-                        stat.skills.passiveSkills.Add(passiveSkillList[passiveSkill]);
-                    }
-                    characterStats.Add(info.name, stat);
-                    j++;
+                    Character character = new Character();
+                    character.name = string.Empty;
+                    int num = i;
+                    AddCharacter(character, num);
                 }
-
-                characterInfos.OrderBy(x => x.Key);
-                PlayerSaveLoadSystem.Save(saveData);
             }
             //이어하기.
             else
@@ -243,7 +180,7 @@ public class PlayerDataMgr : MonoBehaviour
                     int passiveSkillNum = passiveSkillList.Count;
                     for (int j = 0; j < passiveSkillNum; j++) { info.antivirus.Add(saveData.passiveSkillList[i * passiveSkillNum + j]); }
                     
-                    characterInfos.Add(info.name, info);
+                    characterInfos.Add(i, info);
 
                     //게임상 관리하기 쉽도록.
                     CharacterStats stat = new CharacterStats();
@@ -251,7 +188,13 @@ public class PlayerDataMgr : MonoBehaviour
                     stat.sensivity = info.sensitivity;
                     stat.concentration = info.concentration;
                     stat.willpower = info.willPower;
-                    stat.character = characterList[info.characterId];
+                    if (saveData.id[i] == string.Empty)
+                    {
+                        Character character = new Character();
+                        character.name = string.Empty;
+                        stat.character = character;
+                    }
+                    else stat.character = characterList[info.characterId];
                     stat.character.id = info.characterId;
                     
                     foreach (var antivirus in info.antivirus)
@@ -274,7 +217,7 @@ public class PlayerDataMgr : MonoBehaviour
                         stat.skills.passiveSkills.Add(passiveSkillList[passiveSkill]);
                     }
 
-                    characterStats.Add(info.name, stat);
+                    characterStats.Add(i, stat);
                 }
                 characterInfos.OrderBy(x => x.Key);
 
@@ -287,7 +230,15 @@ public class PlayerDataMgr : MonoBehaviour
                     Debug.Log($"{i} : {value}");
                     if (!string.IsNullOrEmpty(value))
                     {
-                        currentSquad.Add(i, characterStats[value]);
+                        currentSquad.Add(i, characterStats[i]);
+                    }
+                    else
+                    {
+                        CharacterStats stats = new CharacterStats();
+                        Character character = new Character();
+                        stats.character = character;
+                        stats.character.name = string.Empty;
+                        currentSquad.Add(i, stats);
                     }
                 }
             }
@@ -296,5 +247,179 @@ public class PlayerDataMgr : MonoBehaviour
         { 
             Destroy(gameObject); 
         }
+    }
+
+    public void AddCharacter(Character character, int num)
+    {
+        string str = "SquadNum";
+        int totalSquadNum = (PlayerPrefs.HasKey(str)) ? PlayerPrefs.GetInt(str) : 0;
+
+        Debug.Log($"totalSquadNum : {totalSquadNum}");
+
+        if (num > totalSquadNum-1)
+        {
+            if (character.name != string.Empty)
+            {
+                saveData.id.Add(character.id);
+                saveData.name.Add(character.name);
+                saveData.hp.Add(Random.Range(character.min_Hp, character.max_Hp));
+                saveData.sensitivity.Add(Random.Range(character.min_Sensitivity, character.max_Sensitivity));
+                saveData.concentration.Add(Random.Range(character.min_Concentration, character.max_Concentration));
+                saveData.willPower.Add(Random.Range(character.min_Willpower, character.max_Willpower));
+            }
+            else
+            {
+                string emptyStr = string.Empty;
+                int emptyInt = -1;
+                saveData.id.Add(emptyStr);
+                saveData.name.Add(emptyStr);
+                saveData.hp.Add(emptyInt);
+                saveData.sensitivity.Add(emptyInt);
+                saveData.concentration.Add(emptyInt);
+                saveData.willPower.Add(emptyInt);
+            }
+            for (int k = 0; k < 5; k++) { saveData.antivirus.Add(null); }
+            saveData.mainWeapon.Add(null);
+            saveData.mainWeaponNum.Add(0);
+            saveData.subWeapon.Add(null);
+            saveData.subWeaponNum.Add(0);
+            for (int k = 0; k < 5; k++) { saveData.activeSkillList.Add(null); }
+            for (int k = 0; k < 5; k++) { saveData.passiveSkillList.Add(null); }
+
+            //저장된 데이터 관리하기 쉽도록.
+            CharacterDetail info = new CharacterDetail();
+            info.saveId = num;
+            info.characterId = saveData.id[num];
+            info.name = saveData.name[num];
+            info.hp = saveData.hp[num];
+            info.sensitivity = saveData.sensitivity[num];
+            info.concentration = saveData.concentration[num];
+            info.willPower = saveData.willPower[num];
+            for (int k = 0; k < 5; k++) { info.antivirus.Add(saveData.antivirus[num * 5 + k]); }
+            info.mainWeapon = saveData.mainWeapon[num];
+            info.mainWeaponNum = saveData.mainWeaponNum[num];
+            info.subWeapon = saveData.subWeapon[num];
+            info.subWeaponNum = saveData.subWeaponNum[num];
+
+            int activeSkillNum = activeSkillList.Count;
+            for (int k = 0; k < activeSkillNum; k++) { info.antivirus.Add(saveData.activeSkillList[num * activeSkillNum + k]); }
+            int passiveSkillNum = passiveSkillList.Count;
+            for (int k = 0; k < passiveSkillNum; k++) { info.antivirus.Add(saveData.passiveSkillList[num * passiveSkillNum + k]); }
+            characterInfos.Add(num, info);
+
+            //게임상 관리하기 쉽도록.
+            CharacterStats stat = new CharacterStats();
+            stat.currentHp = info.hp;
+            stat.maxHp = character.max_Hp;
+            stat.sensivity = info.sensitivity;
+            stat.concentration = info.concentration;
+            stat.willpower = info.willPower;
+
+            stat.character = character;
+            stat.character.id = info.characterId;
+
+            stat.weapon = new WeaponStats();
+            stat.weapon.mainWeapon = (info.mainWeapon == null) ? null : equippableList[info.mainWeapon];
+            stat.weapon.subWeapon = (info.subWeapon == null) ? null : equippableList[info.subWeapon];
+
+            foreach (var activeSkill in info.activeSkills)
+            {
+                if (!activeSkillList.ContainsKey(activeSkill)) continue;
+                stat.skills.activeSkills.Add(activeSkillList[activeSkill]);
+            }
+            foreach (var passiveSkill in info.passiveSkills)
+            {
+                if (!passiveSkillList.ContainsKey(passiveSkill)) continue;
+                stat.skills.passiveSkills.Add(passiveSkillList[passiveSkill]);
+            }
+            characterStats.Add(num, stat);
+
+            currentSquad.Add(num, stat);
+            string squadNum = "SquadNum";
+            int currentNum = PlayerPrefs.HasKey(squadNum)? PlayerPrefs.GetInt(squadNum) : 0;
+            PlayerPrefs.SetInt(squadNum, currentNum + 1);
+        }
+        else
+        {
+            if (character.name != string.Empty)
+            {
+                saveData.id[num] = character.id;
+                saveData.name[num] = character.name;
+                saveData.hp[num]= Random.Range(character.min_Hp, character.max_Hp);
+                saveData.sensitivity[num] = Random.Range(character.min_Sensitivity, character.max_Sensitivity);
+                saveData.concentration[num] = Random.Range(character.min_Concentration, character.max_Concentration);
+                saveData.willPower[num] = Random.Range(character.min_Willpower, character.max_Willpower);
+            }
+            else
+            {
+                string emptyStr = string.Empty;
+                int emptyInt = -1;
+                saveData.id[num] = emptyStr;
+                saveData.name[num] = emptyStr;
+                saveData.hp[num] = emptyInt;
+                saveData.sensitivity[num] = emptyInt;
+                saveData.concentration[num] = emptyInt;
+                saveData.willPower[num] = emptyInt;
+            }
+            for (int k = 0; k < 5; k++) { saveData.antivirus[num*5+k] = null; }
+            saveData.mainWeapon[num] = null;
+            saveData.mainWeaponNum[num] = 0;
+            saveData.subWeapon[num] = null;
+            saveData.subWeaponNum[num] = 0;
+            for (int k = 0; k < 5; k++) { saveData.activeSkillList[num*5 +k] = null; }
+            for (int k = 0; k < 5; k++) { saveData.passiveSkillList[num*5 +k] = null; }
+
+            //저장된 데이터 관리하기 쉽도록.
+            CharacterDetail info = new CharacterDetail();
+            info.saveId = num;
+            info.characterId = saveData.id[num];
+            info.name = saveData.name[num];
+            info.hp = saveData.hp[num];
+            info.sensitivity = saveData.sensitivity[num];
+            info.concentration = saveData.concentration[num];
+            info.willPower = saveData.willPower[num];
+            for (int k = 0; k < 5; k++) { info.antivirus.Add(saveData.antivirus[num * 5 + k]); }
+            info.mainWeapon = saveData.mainWeapon[num];
+            info.mainWeaponNum = saveData.mainWeaponNum[num];
+            info.subWeapon = saveData.subWeapon[num];
+            info.subWeaponNum = saveData.subWeaponNum[num];
+
+            int activeSkillNum = activeSkillList.Count;
+            for (int k = 0; k < activeSkillNum; k++) { info.antivirus.Add(saveData.activeSkillList[num * activeSkillNum + k]); }
+            int passiveSkillNum = passiveSkillList.Count;
+            for (int k = 0; k < passiveSkillNum; k++) { info.antivirus.Add(saveData.passiveSkillList[num * passiveSkillNum + k]); }
+            characterInfos[num] = info;
+
+            //게임상 관리하기 쉽도록.
+            CharacterStats stat = new CharacterStats();
+            stat.currentHp = info.hp;
+            stat.maxHp = character.max_Hp;
+            stat.sensivity = info.sensitivity;
+            stat.concentration = info.concentration;
+            stat.willpower = info.willPower;
+
+            stat.character = character;
+            stat.character.id = info.characterId;
+
+            stat.weapon = new WeaponStats();
+            stat.weapon.mainWeapon = (info.mainWeapon == null) ? null : equippableList[info.mainWeapon];
+            stat.weapon.subWeapon = (info.subWeapon == null) ? null : equippableList[info.subWeapon];
+
+            foreach (var activeSkill in info.activeSkills)
+            {
+                if (!activeSkillList.ContainsKey(activeSkill)) continue;
+                stat.skills.activeSkills.Add(activeSkillList[activeSkill]);
+            }
+            foreach (var passiveSkill in info.passiveSkills)
+            {
+                if (!passiveSkillList.ContainsKey(passiveSkill)) continue;
+                stat.skills.passiveSkills.Add(passiveSkillList[passiveSkill]);
+            }
+            characterStats[num] = stat;
+            currentSquad[num] = stat;
+        }
+
+        characterInfos.OrderBy(x => x.Key);
+        PlayerSaveLoadSystem.Save(saveData);
     }
 }

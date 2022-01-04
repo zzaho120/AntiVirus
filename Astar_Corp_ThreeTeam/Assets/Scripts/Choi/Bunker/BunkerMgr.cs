@@ -104,8 +104,6 @@ public class BunkerMgr : MonoBehaviour
 
                 if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
                 {
-                    Debug.Log("º¡Ä¿ Å¬¸¯");
-
                     var script = hitInfo.collider.gameObject.GetComponent<BunkerBase>();
                     currentBunkerIndex = script.bunkerId;
 
@@ -117,7 +115,6 @@ public class BunkerMgr : MonoBehaviour
                 {
                     currentBunkerKind = BunkerKinds.Garden;
                     camController.isCurrentEmpty = false;
-                    inventoryMgr.Init();
                 }
                 else if (hitInfo.collider.gameObject.GetComponent<OperatingRoom>() != null)
                 {
@@ -152,6 +149,7 @@ public class BunkerMgr : MonoBehaviour
         }
         else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Garden)
         {
+            inventoryMgr.Init();
             currentWinId = (int)BunkerWindows.InventoryWindow - 1;
             windowManager.Open(currentWinId);
         }
