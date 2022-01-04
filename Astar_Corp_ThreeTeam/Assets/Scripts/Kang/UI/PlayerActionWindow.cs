@@ -9,6 +9,7 @@ public class PlayerActionWindow : GenericWindow
     public PlayerableChar curChar;
     public GameObject directionBtns;
     public bool isDetailMenu;
+    public bool inited;
     public override void Open()
     {
         base.Open();
@@ -17,6 +18,12 @@ public class PlayerActionWindow : GenericWindow
             btn.SetActive(true);
         }
         directionBtns.SetActive(false);
+
+        if (!inited)
+        {
+            inited = true;
+            EventBusMgr.Subscribe(EventType.EndTurn, CloseTurnEnd);
+        }
     }
 
     public override void Close()
@@ -24,6 +31,10 @@ public class PlayerActionWindow : GenericWindow
         base.Close();
     }
 
+    public void CloseTurnEnd(object empty)
+    {
+        Close();
+    }
     public void OnClickMoveBtn()
     {
         curChar.MoveMode();
@@ -46,6 +57,9 @@ public class PlayerActionWindow : GenericWindow
         BattleMgr.Instance.sightMgr.UpdateFrontSight(curChar);
         Close();
         Debug.Log(curChar.direction);
+
+        if (curChar.status == PlayerStatus.Alert)
+            EventBusMgr.Publish(EventType.EndTurn);
     }
 
     public void OnClickCancelBtn()
@@ -58,8 +72,21 @@ public class PlayerActionWindow : GenericWindow
             }
         }
         else
-        {
             Close();
+    }
+
+    public void OnClickTurnEndBtn()
+    {
+        EventBusMgr.Publish(EventType.EndTurn);
+    }
+
+    public void OnClickAlertBtn()
+    {
+        curChar.AlertMode();
+        foreach (var btn in buttons)
+        {
+            btn.SetActive(false);
         }
+        directionBtns.SetActive(true);
     }
 }

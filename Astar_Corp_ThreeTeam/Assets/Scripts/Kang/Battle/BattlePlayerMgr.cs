@@ -16,7 +16,7 @@ public class BattlePlayerMgr : MonoBehaviour
             playerableChars.Add(player);
         }
 
-        EventBusMgr.Subscribe(EventType.TurnEnd, StartTurn);
+        EventBusMgr.Subscribe(EventType.StartTurn, StartTurn);
     }
 
     public void StartTurn(object empty)

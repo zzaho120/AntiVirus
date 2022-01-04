@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PlayerStatus
+{
+    Wait,
+    Move,
+    Attack,
+    Alert,
+    TurnEnd
+}
+
 public class PlayerableChar : BattleChar
 {
     [Header("Character")]
@@ -9,12 +18,12 @@ public class PlayerableChar : BattleChar
 
     [Header("Value")]
     public int AP;
-    public int moveDistance;
+    public int actionAP;
     public int sightDistance;
-    public bool isMove;
-    public bool isAttack;
+    public PlayerStatus status;
     public bool isSelected;
-    public bool isTurnOver;
+    public bool isFirstAtk;
+
     public DirectionType direction;
 
     private Dictionary<TileBase, int> moveDics =
@@ -29,55 +38,68 @@ public class PlayerableChar : BattleChar
         characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
         characterStats.Init();
         direction = DirectionType.Top;
-        AP = 6;
         characterStats.Init();
+        AP = 6;
+        status = PlayerStatus.Wait;
     }
 
     public void Update()
     {
-        if (!isTurnOver)
+        if (status != PlayerStatus.TurnEnd)
         {
             if (Input.GetMouseButtonDown(0))
             {
-
                 RaycastHit hit;
                 var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 
                 if (Physics.Raycast(ray, out hit))
                 {
-                    if (isMove && hit.collider.tag == "Tile")
+                    switch (status)
                     {
-                        var tileBase = hit.collider.GetComponent<TileBase>();
-                        if (moveDics.ContainsKey(tileBase))
-                            ActionMove(tileBase);
+                        case PlayerStatus.Wait:
+                            if (hit.collider.gameObject == gameObject)
+                            {
+                                isSelected = !isSelected;
+                                if (isSelected)
+                                {
+                                    var playerAction = BattleMgr.Instance.BattleWindowMgr.Open(1, false).GetComponent<PlayerActionWindow>();
+                                    playerAction.curChar = this;
+
+                                    var battleInfo = BattleMgr.Instance.BattleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
+                                    battleInfo.EnablePlayerInfo(true, this);
+                                    ren.material.color = Color.red;
+                                }
+                                else
+                                {
+                                    var window = BattleMgr.Instance.BattleWindowMgr.GetWindow(1);
+                                    var playerAction = window.GetComponent<PlayerActionWindow>();
+                                    playerAction.curChar = null;
+                                    window.Close();
+                                    ren.material.color = Color.white;
+                                }
+                            }
+                            break;
+                        case PlayerStatus.Move:
+                            if (hit.collider.tag == "Tile")
+                            {
+                                var tileBase = hit.collider.GetComponent<TileBase>();
+                                if (moveDics.ContainsKey(tileBase))
+                                    ActionMove(tileBase);
+                            }
+                            break;
+                        case PlayerStatus.Attack:
+                            if (hit.collider.tag == "BattleMonster")
+                            {
+                                Debug.Log(hit.collider.name);
+                                var monster = hit.collider.GetComponent<MonsterChar>();
+                                var tileIdx = new Vector2(monster.tileIdx.x, monster.tileIdx.z);
+                                if (BattleMgr.Instance.sightMgr.GetFrontSight(this).Exists(x => x.tileBase == monster.currentTile))
+                                    ActionAttack(monster);
+                            }
+                            break;
+                        case PlayerStatus.Alert:
+                            break;
                     }
-                    else if (isAttack && hit.collider.tag == "BattleMonster")
-                    {
-                        Debug.Log(hit.collider.name);
-                        var monster = hit.collider.GetComponent<MonsterChar>();
-                        var tileIdx = new Vector2(monster.tileIdx.x, monster.tileIdx.z);
-                        if (BattleMgr.Instance.sightMgr.GetFrontSight(this).Exists(x => x.tileBase == monster.currentTile))
-                            ActionAttack(monster);
-                    }
-                    else if (hit.collider.gameObject == gameObject)
-                    {
-                        isSelected = !isSelected;
-                        if (isSelected)
-                        {
-                            var playerAction = BattleMgr.Instance.BattleWindowMgr.Open(0).GetComponent<PlayerActionWindow>();
-                            playerAction.curChar = this;
-                            ren.material.color = Color.red;
-                        }
-                        else
-                        {
-                            var window = BattleMgr.Instance.BattleWindowMgr.GetWindow(0);
-                            var playerAction = window.GetComponent<PlayerActionWindow>();
-                            playerAction.curChar = null;
-                            window.Close();
-                            ren.material.color = Color.white;
-                        }
-                    }
-                    
                 }
             }
         }
@@ -85,7 +107,10 @@ public class PlayerableChar : BattleChar
 
     public void StartTurn()
     {
-        isTurnOver = false;
+        status = PlayerStatus.Wait;
+        isSelected = false;
+        isFirstAtk = false;
+
         AP = 6;
         ren.material.color = Color.white;
     }
@@ -104,7 +129,7 @@ public class PlayerableChar : BattleChar
             BattleMgr.Instance.sightMgr.UpdateFog();
             yield return new WaitForSeconds(0.1f);
         }
-        TurnOver();
+        TurnEnd();
     }
 
     private void MoveTile(Vector3 nextIdx)
@@ -124,9 +149,12 @@ public class PlayerableChar : BattleChar
 
     public void MoveMode()
     {
-        isMove = !isMove;
+        if (status == PlayerStatus.Move)
+            status = PlayerStatus.Wait;
+        else
+            status = PlayerStatus.Move;
 
-        if (isMove && isSelected)
+        if (status == PlayerStatus.Move && isSelected)
         {
             FloodFillMove();
         }
@@ -192,11 +220,6 @@ public class PlayerableChar : BattleChar
         }
     }
 
-    public void AttackMode()
-    {
-        isAttack = true;
-    }
-
     private void ActionMove(TileBase tileBase)
     {
         BattleMgr.Instance.sightMgr.UpdateFog();
@@ -204,69 +227,91 @@ public class PlayerableChar : BattleChar
         MoveMode();
         StartCoroutine(CoMove());
     }
+    public void AttackMode()
+    {
+        status = PlayerStatus.Attack;
+    }
+
 
     private void ActionAttack(MonsterChar monster)
     {
-        TurnOver();
-
-        var tileAccuracy = monster.currentTile.accuracy; ;
-        var totalAccuracy = 0;
         var weapon = characterStats.weapon;
-        switch (characterStats.weapon.range)
+
+        if (weapon.mainWeaponBullet > 0)
         {
-            case 1: // 근거리
-                if (0 < tileAccuracy && tileAccuracy < 5)
-                    totalAccuracy = weapon.accurRate_base;
-                else
-                    totalAccuracy = weapon.accurRate_base - 30 * (tileAccuracy - 4);
-                break;
 
-            case 2: // 중거리
-                if (3 < tileAccuracy && tileAccuracy < 8)
-                    totalAccuracy = weapon.accurRate_base;
-                else if (tileAccuracy < 4)
-                    totalAccuracy = weapon.accurRate_base - 10 * (4 - tileAccuracy);
-                else if (tileAccuracy > 7)
-                    totalAccuracy = weapon.accurRate_base - 15 * (tileAccuracy - 8);
-                break;
+            var tileAccuracy = monster.currentTile.accuracy; ;
+            var totalAccuracy = 0;
+            switch (characterStats.weapon.range)
+            {
+                case 1: // 근거리
+                    if (0 < tileAccuracy && tileAccuracy < 5)
+                        totalAccuracy = weapon.accurRate_base;
+                    else
+                        totalAccuracy = weapon.accurRate_base - 30 * (tileAccuracy - 4);
+                    break;
 
-            case 3: // 원거리
-                if (6 < tileAccuracy && tileAccuracy < 11)
-                    totalAccuracy = weapon.accurRate_base;
-                else if (tileAccuracy < 7)
-                    totalAccuracy = weapon.accurRate_base - 15 * (7 - tileAccuracy);
-                else if (tileAccuracy > 10)
-                    totalAccuracy = weapon.accurRate_base - 10 * (tileAccuracy - 10);
-                break;
+                case 2: // 중거리
+                    if (3 < tileAccuracy && tileAccuracy < 8)
+                        totalAccuracy = weapon.accurRate_base;
+                    else if (tileAccuracy < 4)
+                        totalAccuracy = weapon.accurRate_base - 10 * (4 - tileAccuracy);
+                    else if (tileAccuracy > 7)
+                        totalAccuracy = weapon.accurRate_base - 15 * (tileAccuracy - 8);
+                    break;
 
-            case 4: // 근접무기
-                if (1 == tileAccuracy)
-                    totalAccuracy = weapon.accurRate_base;
-                else
-                    totalAccuracy = 0;
-                break;
+                case 3: // 원거리
+                    if (6 < tileAccuracy && tileAccuracy < 11)
+                        totalAccuracy = weapon.accurRate_base;
+                    else if (tileAccuracy < 7)
+                        totalAccuracy = weapon.accurRate_base - 15 * (7 - tileAccuracy);
+                    else if (tileAccuracy > 10)
+                        totalAccuracy = weapon.accurRate_base - 10 * (tileAccuracy - 10);
+                    break;
+
+                case 4: // 근접무기
+                    if (1 == tileAccuracy)
+                        totalAccuracy = weapon.accurRate_base;
+                    else
+                        totalAccuracy = 0;
+                    break;
+            }
+
+            totalAccuracy = Mathf.Clamp(totalAccuracy, 0, 100);
+
+            var randomAccuracy = Random.Range(0, 100) < totalAccuracy;
+
+            if (randomAccuracy)
+                monster.GetDamage(weapon.damage);
+
+            weapon.mainWeaponBullet--;
+            monster.currentTile.EnableDisplay(true);
+
+            if (!isFirstAtk)
+            {
+                isFirstAtk = true;
+                AP -= weapon.firstAp;
+            }
+            else
+                AP -= weapon.nextAp;
+            TurnEnd();
         }
-
-        totalAccuracy = Mathf.Clamp(totalAccuracy, 0, 100);
-
-        var randomAccuracy = Random.Range(0, 100) < totalAccuracy;
-
-        if (randomAccuracy)
-            monster.GetDamage(weapon.damage);
-        Debug.Log(totalAccuracy);
-        Debug.Log(randomAccuracy);
-
-        monster.currentTile.EnableDisplay(true);
     }
 
-    private void ActionBoundary()
+    public void AlertMode()
     {
+        status = PlayerStatus.Alert;
 
+        var weapon = characterStats.weapon;
+        AP -= weapon.firstAp;
+        actionAP = AP;
+        AP = 0;
     }
 
-    private void TurnOver()
+    public void TurnEnd()
     {
-        isTurnOver = true;
+        status = PlayerStatus.TurnEnd;
         ren.material.color = Color.gray;
+        EventBusMgr.Publish(EventType.EndTurn);
     }
 }

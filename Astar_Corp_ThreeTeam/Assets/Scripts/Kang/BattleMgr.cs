@@ -33,23 +33,6 @@ public class BattleMgr : Singleton<BattleMgr>
         monsterMgr.Init();
         aStar.Init();
         sightMgr.Init();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-            OnTurnEnd();
-    }
-    public void OnTurnEnd()
-    {
-        if (turn < 5)
-        {
-            EventBusMgr.Publish(EventType.TurnEnd);
-            turn++;
-        }
-        else
-        {
-            SceneManager.LoadScene(0);
-        }
+        BattleWindowMgr.Open(0);
     }
 }
