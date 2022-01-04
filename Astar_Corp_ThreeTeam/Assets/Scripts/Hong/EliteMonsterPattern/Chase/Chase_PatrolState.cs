@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class PatrolState : EliteMonsterState
+public class Chase_PatrolState : StateBase
 {
     private float startTime;
-    private float moveRange = 5f;  // 이동 범위 설정
+    private float moveRange = 5f;   // 이동 범위 설정
+    private float distance = Constants.disance;    // 플레이어, 몬스터간 거리
 
     private Vector3 targetPos;
     private Vector3 startPos;
@@ -14,11 +15,10 @@ public class PatrolState : EliteMonsterState
     private Transform player;
     private NavMeshAgent agent;
 
-    //public PatrolState(FSM fsm)
-    public PatrolState(PatrolFSM fsm)
+    public Chase_PatrolState(FSM fsm)
     {
         this.fsm = fsm;
-
+        
         if (this.fsm != null)
         {
             agent = fsm.GetComponent<NavMeshAgent>();
@@ -54,25 +54,22 @@ public class PatrolState : EliteMonsterState
 
     public override void Exit()
     {
-
+        agent.SetDestination(startPos);
     }
 
     public override void Update()
     {
-        var randTime = Random.Range(0f, 5f);
-
-        if (Vector3.Distance(player.position, agent.transform.position) <= 10)
+        if (Vector3.Distance(player.position, agent.transform.position) <= distance)
         {
-            agent.SetDestination(player.position);
-            Debug.Log("Chase");
+            fsm.ChangeState(STATE.Chase);
         }
         else
         {
+            var randTime = Random.Range(3f,3f);
             if (Time.time > startTime + randTime)
             {
                 fsm.ChangeState(STATE.Idle);
             }
         }
-
     }
 }

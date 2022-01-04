@@ -13,12 +13,10 @@ public class PlayerController : MonoBehaviour
 {
     //지은.
     public CharacterInfo character;
-
     public MultiTouch multiTouch;
     public NonBattleMgr manager;
 
     private NavMeshAgent agent;
-    private CharacterController characterController;
 
     public GameObject panel;
     public bool isMove;//지은.
@@ -57,14 +55,7 @@ public class PlayerController : MonoBehaviour
             transform.position = manager.bunkerPos.position;
         }
 
-        characterController = GetComponent<CharacterController>();
         agent = GetComponent<NavMeshAgent>();
-        originAgentSpeed = agent.speed;
-        //panel = GetComponent<FadeOutTest>().gameObject;
-
-        // 캐릭터 컨트롤러 포지션 설정할 때 사용
-        agent.updatePosition = false;
-        agent.updateRotation = true;
 
         isMove = false;
         isBattle = false;
@@ -158,19 +149,6 @@ public class PlayerController : MonoBehaviour
                 agent.SetDestination(raycastHit.point);
             }
         }
-
-        //if (agent.remainingDistance > agent.stoppingDistance)
-        //{
-        //    characterController.Move(agent.velocity * Time.deltaTime);
-        //    isMove = true;
-        //    // Debug.Log(agent.stoppingDistance);
-        //    // RemainingDistance : 현재 경로(path)에서 남아있는 거리
-        //}
-        //else
-        //{
-        //    characterController.Move(Vector3.zero);
-        //    isMove = false;
-        //}
     }
 
     public void MoveToBunker()

@@ -16,27 +16,48 @@ public class WeaponStats
     public Weapon mainWeapon;
     public Weapon subWeapon;
 
-    [HideInInspector] public int accurRate_base;
-    [HideInInspector] public int accurRate_alert;
+    // 명중률
+    [HideInInspector] 
+    public float accurRate_base, accurRate_alert;
 
-    [HideInInspector] public int damage { get => SetWeaponDamage(); } 
+    // 데미지
+    [HideInInspector] 
+    public int damage { get => SetWeaponDamage(); }
 
-    [HideInInspector] public int mainWeaponBullet;
-    [HideInInspector] public int subWeaponBullet;
+    // 크리티컬 데미지
+    [HideInInspector]
+    public int critDmg;
 
-    [HideInInspector] public int recoil;
+    // 주무기 불릿
+    [HideInInspector] 
+    public int mainWeaponBullet
+    {
+        get => mainWeapon.bullet;
+        set => mainWeapon.bullet = value;
+    }
+    // 보조무기 불릿
+    [HideInInspector] 
+    public int subWeaponBullet
+    {
+        get => subWeapon.bullet;
+        set => subWeapon.bullet = value;
+    }
 
-    [HideInInspector] public int accurRateDec;
+    // 명중률 감소
+    [HideInInspector] 
+    public int accurRateDec;
 
-    [HideInInspector] public int weight;
+    // 무게
+    [HideInInspector] 
+    public int weight;
 
-    [HideInInspector] public int firstAp;
-    [HideInInspector] public int nextAp;
-    [HideInInspector] public int loadAp;
+    // 발사 시 Ap 소모량
+    [HideInInspector] 
+    public int firstShotAp, alertShotAp, aimShotAp, loadAp;
 
-    [HideInInspector] public int range;
-    [HideInInspector] public int overRange_penalty;
-    [HideInInspector] public int underRange_penalty;
+    // 사거리, 패널티
+    [HideInInspector] 
+    public int range, overRange_penalty, underRange_penalty;
 
     public int SetWeaponDamage()
     {
@@ -85,17 +106,16 @@ public class WeaponStats
             {
                 // 명중률
                 accurRate_base = mainWeapon.accur_Rate_Base;
-                accurRate_alert = mainWeapon.accur_Rate_Alert;
 
                 // 데미지
                 //var damage = Random.Range(mainWeapon.min_damage, mainWeapon.max_damage + 1);
                 //this.damage = damage;
 
-                // 탄알
-                mainWeaponBullet = mainWeapon.bullet;
+                // 크뎀
+                critDmg = mainWeapon.crit_Damage;
 
-                // 반동
-                recoil = mainWeapon.recoil;
+                // 탄알
+                //mainWeaponBullet = mainWeapon.bullet;
 
                 // 명중률 감소
                 accurRateDec = mainWeapon.accur_Rate_Dec;
@@ -104,9 +124,10 @@ public class WeaponStats
                 weight = mainWeapon.weight;
 
                 // 소모AP
-                firstAp = mainWeapon.firstAp;
-                nextAp = mainWeapon.nextAp;
-                loadAp = mainWeapon.loadAp;
+                firstShotAp = mainWeapon.firstShot_Ap;
+                alertShotAp = mainWeapon.alertShot_Ap;
+                aimShotAp = mainWeapon.aimShot_Ap;
+                loadAp = mainWeapon.load_Ap;
 
                 // 범위
                 range = mainWeapon.range;
@@ -118,17 +139,16 @@ public class WeaponStats
             {
                 // 명중률
                 accurRate_base = subWeapon.accur_Rate_Base;
-                accurRate_alert = subWeapon.accur_Rate_Alert;
 
                 // 데미지
                 //var damage = Random.Range(subWeapon.min_damage, subWeapon.max_damage + 1);
                 //this.damage = damage;
 
-                // 탄알
-                subWeaponBullet = subWeapon.bullet;
+                // 크뎀
+                critDmg = subWeapon.crit_Damage;
 
-                // 반동
-                recoil = subWeapon.recoil;
+                // 탄알
+                //subWeaponBullet = subWeapon.bullet;
 
                 // 명중률 감소
                 accurRateDec = subWeapon.accur_Rate_Dec;
@@ -137,9 +157,10 @@ public class WeaponStats
                 weight = subWeapon.weight;
 
                 // 소모AP
-                firstAp = subWeapon.firstAp;
-                nextAp = subWeapon.nextAp;
-                loadAp = subWeapon.loadAp;
+                firstShotAp = subWeapon.firstShot_Ap;
+                alertShotAp = subWeapon.alertShot_Ap;
+                aimShotAp = subWeapon.aimShot_Ap;
+                loadAp = subWeapon.load_Ap;
 
                 // 범위
                 range = subWeapon.range;
@@ -154,9 +175,6 @@ public class WeaponStats
             Debug.LogError("무기 장착해");
             //return 0;
         }
-
-        //this.damage = damage;
-        //Debug.Log(this.damage);
     }
 
 

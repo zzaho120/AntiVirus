@@ -22,6 +22,8 @@ public class FSM : MonoBehaviour
     {
         if (curState != null)
             curState.Update();
+
+        //Debug.Log(states.Count);
     }
 
     public void AddState(StateBase state)

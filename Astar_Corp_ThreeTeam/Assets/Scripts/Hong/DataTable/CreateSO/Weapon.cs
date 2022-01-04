@@ -13,21 +13,23 @@ public class Weapon : ScriptableObject
     public new string name;
 
     public int accur_Rate_Base;
-    public int accur_Rate_Alert;
+    //public float accur_Rate_Alert;
 
-    public int unstability;
     public int min_damage;
     public int max_damage;
     public int crit_Damage;
 
     public int bullet;
-    public int recoil;
     public int accur_Rate_Dec;
+    /// <summary>
+    /// Mp ¼Ò¸ð·®
+    /// </summary>
     public int weight;
 
-    public int firstAp;
-    public int nextAp;
-    public int loadAp;
+    public int firstShot_Ap;
+    public int alertShot_Ap;
+    public int aimShot_Ap;
+    public int load_Ap;
 
     public int range;
     public int overRange_Penalty;
