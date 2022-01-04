@@ -9,7 +9,7 @@ public class SleepFSM : FSM
         // Idle 상태로 진입해서 무한 sleep 상태로
          AddState(new IdleState(this));     
          AddState(new SleepState(this));    
-         ChangeState(STATE.State1);           
+         ChangeState(STATE.Idle);           
     }
 
 }

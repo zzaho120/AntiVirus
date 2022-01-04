@@ -4,11 +4,13 @@ using UnityEngine;
 
 public enum STATE
 {
-    //Idle,
-    //Move
+    Idle,
+    Move,
+    Chase
 
-    State1,
-    State2
+    //State1,
+    //State2,
+    //State3
 }
 
 public class FSM : MonoBehaviour

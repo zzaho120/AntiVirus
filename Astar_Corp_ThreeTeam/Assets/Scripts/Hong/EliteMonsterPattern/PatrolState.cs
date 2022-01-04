@@ -10,11 +10,12 @@ public class PatrolState : EliteMonsterState
 
     private Vector3 targetPos;
     private Vector3 startPos;
-    
+
+    private Transform player;
     private NavMeshAgent agent;
 
-
-    public PatrolState(FSM fsm)
+    //public PatrolState(FSM fsm)
+    public PatrolState(PatrolFSM fsm)
     {
         this.fsm = fsm;
 
@@ -22,6 +23,8 @@ public class PatrolState : EliteMonsterState
         {
             agent = fsm.GetComponent<NavMeshAgent>();
             startPos = fsm.transform.position;  // 시작 위치 저장
+
+            player = GameObject.FindWithTag("Player").transform;
         }
     }
 
@@ -58,7 +61,18 @@ public class PatrolState : EliteMonsterState
     {
         var randTime = Random.Range(0f, 5f);
 
-        if (Time.time > startTime + randTime)
-            fsm.ChangeState(STATE.State1);
+        if (Vector3.Distance(player.position, agent.transform.position) <= 10)
+        {
+            agent.SetDestination(player.position);
+            Debug.Log("Chase");
+        }
+        else
+        {
+            if (Time.time > startTime + randTime)
+            {
+                fsm.ChangeState(STATE.Idle);
+            }
+        }
+
     }
 }

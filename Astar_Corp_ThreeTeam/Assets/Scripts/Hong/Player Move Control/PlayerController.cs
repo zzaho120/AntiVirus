@@ -30,11 +30,8 @@ public class PlayerController : MonoBehaviour
     float pZ;
     bool saveMode;
 
-    private TimeController timeController;
-
     float originAgentSpeed;
-    //private Vector3 calcVelocity = Vector3.zero;
-
+    
     // to set layers
     [SerializeField]
     LayerMask groundLayerMask;
@@ -87,6 +84,7 @@ public class PlayerController : MonoBehaviour
             PlayerPrefs.SetFloat("p_z", transform.position.z);
         }
 
+        // 뉴인풋시스템
         if (multiTouch.Tap /*&& timeController.isPause == false*/)
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
@@ -107,12 +105,32 @@ public class PlayerController : MonoBehaviour
                     PlayerPrefs.SetFloat("p_z", pZ);
 
                     //벙커 팝업창
-                    //var windowId = (int)Windows.BunkerWindow - 1;
-                    //nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
-                    MoveToBunker();
+                    var windowId = (int)Windows.BunkerWindow - 1;
+                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    //MoveToBunker();
                 }
 
-                else if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
+                else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
+                   raycastHit.collider.gameObject.name.Equals("Plane"))
+                {
+                    agent.SetDestination(raycastHit.point);
+                }
+            }
+            else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
+            {
+                agent.SetDestination(raycastHit.point);
+            }
+        }
+        // 마우스 클릭
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit raycastHit;
+            groundLayerMask = LayerMask.GetMask("Ground");
+            int facilitiesLayer = LayerMask.GetMask("Facilities");
+            if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
+            {
+                if (raycastHit.collider.gameObject.name.Equals("Bunker"))
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
                     pY = raycastHit.collider.gameObject.transform.position.y;
@@ -123,10 +141,10 @@ public class PlayerController : MonoBehaviour
                     PlayerPrefs.SetFloat("p_y", pY);
                     PlayerPrefs.SetFloat("p_z", pZ);
 
-                    Debug.Log("연구소 클릭");
                     //벙커 팝업창
-                    var windowId = (int)Windows.LaboratoryWindow - 1;
+                    var windowId = (int)Windows.BunkerWindow - 1;
                     nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    //MoveToBunker();
                 }
 
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
@@ -134,24 +152,6 @@ public class PlayerController : MonoBehaviour
                 {
                     agent.SetDestination(raycastHit.point);
                 }
-
-                // 수정
-                // 엘리트몬스터 오브젝트 이름 확인하고 바꾸기
-                //if (raycastHit.collider.gameObject.name.Equals("Elite Monster"))
-                //{
-                //    pX = raycastHit.collider.gameObject.transform.position.x;
-                //    pY = raycastHit.collider.gameObject.transform.position.y;
-                //    pZ = raycastHit.collider.gameObject.transform.position.z;
-                //
-                //    saveMode = false;
-                //    PlayerPrefs.SetFloat("p_x", pX);
-                //    PlayerPrefs.SetFloat("p_y", pY);
-                //    PlayerPrefs.SetFloat("p_z", pZ);
-                //
-                //    //벙커 팝업창
-                //    var windowId = (int)Windows.LaboratoryWindow - 1;
-                //    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
-                //}
             }
             else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
             {
@@ -159,18 +159,18 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (agent.remainingDistance > agent.stoppingDistance)
-        {
-            characterController.Move(agent.velocity * Time.deltaTime);
-            isMove = true;
-            // Debug.Log(agent.stoppingDistance);
-            // RemainingDistance : 현재 경로(path)에서 남아있는 거리
-        }
-        else
-        {
-            characterController.Move(Vector3.zero);
-            isMove = false;
-        }
+        //if (agent.remainingDistance > agent.stoppingDistance)
+        //{
+        //    characterController.Move(agent.velocity * Time.deltaTime);
+        //    isMove = true;
+        //    // Debug.Log(agent.stoppingDistance);
+        //    // RemainingDistance : 현재 경로(path)에서 남아있는 거리
+        //}
+        //else
+        //{
+        //    characterController.Move(Vector3.zero);
+        //    isMove = false;
+        //}
     }
 
     public void MoveToBunker()

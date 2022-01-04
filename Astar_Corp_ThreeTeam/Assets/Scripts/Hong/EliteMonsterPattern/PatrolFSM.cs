@@ -9,7 +9,7 @@ public class PatrolFSM : FSM
     {
         AddState(new IdleState(this));          // State 1
         AddState(new PatrolState(this));        // State 2
-        ChangeState(STATE.State1);              // 상태설정
+        ChangeState(STATE.Idle);               // 상태설정
     }
 
 }

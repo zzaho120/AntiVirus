@@ -1,1 +1,1 @@
-public enum Windows{None,StatWindow,BunkerWindow,LaboratoryWindow,EliteMonsterWindow}
+public enum Windows{None,StatWindow,BunkerWindow}

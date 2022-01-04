@@ -35,7 +35,6 @@ public class StateTest : StateBase
             rigid.velocity = new Vector3(speed * 3f * Time.fixedDeltaTime, 0f, 0f);
 
         if (Time.time > startTime + 3f)
-            fsm.ChangeState(STATE.State1);
-            //fsm.ChangeState(STATE.Idle);
+            fsm.ChangeState(STATE.Idle);
     }
 }

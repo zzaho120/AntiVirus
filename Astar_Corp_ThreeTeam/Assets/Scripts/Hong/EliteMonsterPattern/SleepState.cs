@@ -22,6 +22,6 @@ public class SleepState : StateBase
     public override void Update()
     {
         if (Time.time > startTime + 3f)
-            fsm.ChangeState(STATE.State2);
+            fsm.ChangeState(STATE.Move);
     }
 }
