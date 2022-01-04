@@ -129,7 +129,7 @@ public class PlayerableChar : BattleChar
             BattleMgr.Instance.sightMgr.UpdateFog();
             yield return new WaitForSeconds(0.1f);
         }
-        TurnEnd();
+        EndPlayer();
     }
 
     private void MoveTile(Vector3 nextIdx)
@@ -227,6 +227,7 @@ public class PlayerableChar : BattleChar
         MoveMode();
         StartCoroutine(CoMove());
     }
+
     public void AttackMode()
     {
         status = PlayerStatus.Attack;
@@ -294,7 +295,7 @@ public class PlayerableChar : BattleChar
             }
             else
                 AP -= weapon.nextAp;
-            TurnEnd();
+            EndPlayer();
         }
     }
 
@@ -308,10 +309,10 @@ public class PlayerableChar : BattleChar
         AP = 0;
     }
 
-    public void TurnEnd()
+    public void EndPlayer()
     {
         status = PlayerStatus.TurnEnd;
         ren.material.color = Color.gray;
-        EventBusMgr.Publish(EventType.EndTurn);
+        EventBusMgr.Publish(EventType.EndPlayer);
     }
 }

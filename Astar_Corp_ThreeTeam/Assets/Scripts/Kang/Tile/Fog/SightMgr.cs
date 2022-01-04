@@ -411,7 +411,7 @@ public class SightMgr : MonoBehaviour
         for (var i = -val; i <= val; ++i)
         {
             var endTileIdx = new Vector2(startTileIdx.x + i, startTileIdx.y + maxI);
-            CastRayTile(endTileIdx, startTileIdx, 10, playerIdx);
+            CastRayTile(endTileIdx, startTileIdx, MaxFrontTile, playerIdx);
         }
     }
 
@@ -464,7 +464,7 @@ public class SightMgr : MonoBehaviour
         for (var i = -val; i <= val; ++i)
         {
             var endTileIdx = new Vector2(startTileIdx.x + i, startTileIdx.y - maxI);
-            CastRayTile(endTileIdx, startTileIdx, 10, playerIdx);
+            CastRayTile(endTileIdx, startTileIdx, MaxFrontTile, playerIdx);
         }
     }
 
@@ -517,7 +517,7 @@ public class SightMgr : MonoBehaviour
         for (var i = -val; i <= val; ++i)
         {
             var endTileIdx = new Vector2(startTileIdx.x - maxJ, startTileIdx.y + i);
-            CastRayTile(endTileIdx, startTileIdx, 10, playerIdx);
+            CastRayTile(endTileIdx, startTileIdx, MaxFrontTile, playerIdx);
         }
     }
     private void UpdateRightFront(Vector3 curTileIdx, int playerIdx)
@@ -569,7 +569,7 @@ public class SightMgr : MonoBehaviour
         for (var i = -val; i <= val; ++i)
         {
             var endTileIdx = new Vector2(startTileIdx.x + maxJ, startTileIdx.y + i);
-            CastRayTile(endTileIdx, startTileIdx, 10, playerIdx);
+            CastRayTile(endTileIdx, startTileIdx, MaxFrontTile, playerIdx);
         }
     }
     public List<SightTileBase> GetFrontSight(PlayerableChar player)

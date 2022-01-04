@@ -16,7 +16,7 @@ public class BattleInfoWindow : GenericWindow
         if (!inited)
         {
             inited = true;
-            EventBusMgr.Subscribe(EventType.EndTurn, CloseTurnEnd);
+            EventBusMgr.Subscribe(EventType.EndPlayer, CloseTurnEnd);
         }
     }
 

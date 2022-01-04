@@ -6,12 +6,17 @@ public class MonsterChar : BattleChar
 {
     [Header("Character")]
     public MonsterStats monsterStats;
+    public BattleMonsterFSM fsm;
+    public int moveDistance;
+    public int recognition;
+    public PlayerableChar target;
 
     public override void Init()
     {
         base.Init();
         monsterStats.monster = (Monster)Instantiate(Resources.Load("Choi/Datas/Monsters/1"));
         monsterStats.Init();
+        fsm = new BattleMonsterFSM(this);
     }
 
     public void GetDamage(int dmg)
@@ -24,5 +29,25 @@ public class MonsterChar : BattleChar
 
         if (monsterStats.currentHp == 0)
             Destroy(gameObject);
+    }
+
+    public void MonsterUpdate()
+    {
+        fsm.Update();
+    }
+
+    public void MoveTile(Vector3 nextIdx)
+    {
+        foreach (var tile in currentTile.adjNodes)
+        {
+            if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
+            {
+                currentTile.charObj = null;
+                tileIdx = nextIdx;
+                currentTile = tile;
+                currentTile.charObj = gameObject;
+                transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 1, tile.tileIdx.z);
+            }
+        }
     }
 }

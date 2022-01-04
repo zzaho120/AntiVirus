@@ -16,6 +16,6 @@ public class BattleBasicMenu : GenericWindow
 
     public void OnClickStartTurn()
     {
-        EventBusMgr.Publish(EventType.StartTurn);
+        EventBusMgr.Publish(EventType.StartPlayer);
     }
 }

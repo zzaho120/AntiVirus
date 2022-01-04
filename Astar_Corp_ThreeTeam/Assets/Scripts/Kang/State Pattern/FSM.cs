@@ -44,4 +44,17 @@ public class FSM : MonoBehaviour
 
         //Debug.Log(state);
     }
+
+    public void ChangeState(int state)
+    {
+        if (curState != null)
+            curState.Exit();
+
+        var stateNum = state;
+        if (states.Count > stateNum)
+        {
+            curState = states[stateNum];
+            curState.Enter();
+        }
+    }
 }

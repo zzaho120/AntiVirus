@@ -22,7 +22,7 @@ public class PlayerActionWindow : GenericWindow
         if (!inited)
         {
             inited = true;
-            EventBusMgr.Subscribe(EventType.EndTurn, CloseTurnEnd);
+            EventBusMgr.Subscribe(EventType.EndPlayer, CloseTurnEnd);
         }
     }
 
@@ -59,7 +59,7 @@ public class PlayerActionWindow : GenericWindow
         Debug.Log(curChar.direction);
 
         if (curChar.status == PlayerStatus.Alert)
-            EventBusMgr.Publish(EventType.EndTurn);
+            EventBusMgr.Publish(EventType.EndPlayer);
     }
 
     public void OnClickCancelBtn()
@@ -77,7 +77,7 @@ public class PlayerActionWindow : GenericWindow
 
     public void OnClickTurnEndBtn()
     {
-        EventBusMgr.Publish(EventType.EndTurn);
+        curChar.EndPlayer();
     }
 
     public void OnClickAlertBtn()

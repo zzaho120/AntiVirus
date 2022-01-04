@@ -85,10 +85,6 @@ public class AStar : MonoBehaviour
             AddCloseList();
             CheckArrive();
         }
-        foreach (var node in pathList)
-        {
-            Debug.Log(node.tileBase.tileIdx);
-        }
     }
 
     private void AddOpenList()

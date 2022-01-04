@@ -16,7 +16,8 @@ public class BattlePlayerMgr : MonoBehaviour
             playerableChars.Add(player);
         }
 
-        EventBusMgr.Subscribe(EventType.StartTurn, StartTurn);
+        EventBusMgr.Subscribe(EventType.StartPlayer, StartTurn);
+        EventBusMgr.Subscribe(EventType.EndPlayer, CheckEndTurn);
     }
 
     public void StartTurn(object empty)
@@ -25,5 +26,18 @@ public class BattlePlayerMgr : MonoBehaviour
         {
             character.StartTurn();
         }
+    }
+
+    public void CheckEndTurn(object empty)
+    {
+        var turnEndCount = 0; 
+        foreach (var player in playerableChars)
+        {
+            if (player.status == PlayerStatus.TurnEnd)
+                turnEndCount++;
+        }
+
+        if (turnEndCount == playerableChars.Count)
+            EventBusMgr.Publish(EventType.ChangeTurn);
     }
 }

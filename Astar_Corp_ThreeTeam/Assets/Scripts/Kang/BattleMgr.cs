@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum BattleTurn
+{
+    Player,
+    Enemy
+}
+
 public class BattleMgr : Singleton<BattleMgr>
 {
     public CommandMgr commandMgr;
@@ -12,7 +18,10 @@ public class BattleMgr : Singleton<BattleMgr>
     public WindowManager BattleWindowMgr;
     public SightMgr sightMgr;
     public AStar aStar;
-    public int turn;
+
+    [Header("Turn")]
+    public BattleTurn turn;
+    public int turnCount;
 
     public override void Awake()
     {
@@ -30,9 +39,39 @@ public class BattleMgr : Singleton<BattleMgr>
     {
         tileMgr.Init();
         playerMgr.Init();
-        monsterMgr.Init();
-        aStar.Init();
         sightMgr.Init();
+        aStar.Init();
+        monsterMgr.Init();
         BattleWindowMgr.Open(0);
+
+        turn = BattleTurn.Player;
+        EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
+    }
+
+    public void Update()
+    {
+        switch (turn)
+        {
+            case BattleTurn.Player:
+                break;
+            case BattleTurn.Enemy:
+                monsterMgr.TurnUpdate();
+                break;
+        }
+    }
+
+    public void OnChangeTurn(object empty)
+    {
+        switch (turn)
+        {
+            case BattleTurn.Player:
+                turn = BattleTurn.Enemy;
+                EventBusMgr.Publish(EventType.StartEnemy);
+                break;
+            case BattleTurn.Enemy:
+                turn = BattleTurn.Player;
+                EventBusMgr.Publish(EventType.StartPlayer);
+                break;
+        }
     }
 }
