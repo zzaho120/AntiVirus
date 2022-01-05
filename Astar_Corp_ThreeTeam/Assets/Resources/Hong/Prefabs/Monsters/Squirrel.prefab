@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 1019796158047088685}
   - component: {fileID: 4760100301711004728}
   - component: {fileID: -7507403936019872739}
+  - component: {fileID: 1432933544850744341}
+  - component: {fileID: 6800542794379770314}
   m_Layer: 0
   m_Name: Squirrel
   m_TagString: Enemy
@@ -29,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6658181747210019695}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.96, y: 0.84, z: 2.48}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -51,7 +53,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6658181747210019695}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -94,7 +96,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6658181747210019695}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -133,3 +135,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e71a3f0ce956b9428f3afe75c73195e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1432933544850744341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6658181747210019695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b8289dc67fbbf742a1906a83e214b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  printType: 0
+--- !u!114 &6800542794379770314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6658181747210019695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3385c720ef50673499ea3392d2f8f462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  footprints: {fileID: 5193417500299374650, guid: 869db1c5ee6326e49b690b58ea03bf5d, type: 3}

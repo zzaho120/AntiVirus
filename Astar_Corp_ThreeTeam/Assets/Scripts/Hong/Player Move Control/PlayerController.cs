@@ -1,8 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 
 public class CharacterInfo
 {
@@ -25,8 +25,8 @@ public class PlayerController : MonoBehaviour
 
     public GameObject panel;
     public bool isMove;//지은.
-    bool isBattle;
-    float randomTimer;
+    //bool isBattle;
+    //float randomTimer;
 
     float pX, pY, pZ;
     bool saveMode;
@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         isMove = false;
-        isBattle = false;
+        //isBattle = false;
         saveMode = true;
     }
 
@@ -75,15 +75,30 @@ public class PlayerController : MonoBehaviour
         //    return;
 
         // 뉴인풋시스템
-        if (Input.touchCount == 1 && !this.IsPointerOverUIObject()
-            /*&& timeController.isPause == false*/)
+		if (Input.touchCount == 1 && !this.IsPointerOverUIObject()
+		//if (multiTouch.Tap && !IsPointerOverUIObject(multiTouch.curTouchPos)            /*&& timeController.isPause == false*/)
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
             RaycastHit raycastHit;
             groundLayerMask = LayerMask.GetMask("Ground");
             int facilitiesLayer = LayerMask.GetMask("Facilities");
+
+            // 전투발생
+            if (Physics.Raycast(ray, out raycastHit))
+            {
+                //Debug.Log(raycastHit.collider.name);
+                if (raycastHit.collider.CompareTag("Enemy"))
+                {
+                    // 렌더러가 활성화 되어있을때만 유효하게
+                    if (raycastHit.collider.GetComponent<MeshRenderer>().enabled)
+                        Debug.Log("전투 발생");
+                    return;
+                }
+            }
             if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
             {
+                //Debug.Log(raycastHit.collider.name);
+
                 if (raycastHit.collider.gameObject.name.Equals("Bunker"))
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
@@ -96,9 +111,24 @@ public class PlayerController : MonoBehaviour
                     PlayerPrefs.SetFloat("p_z", pZ);
 
                     //벙커 팝업창
-                    var windowId = (int)Windows.BunkerWindow - 1;
+                    //var windowId = (int)Windows.BunkerWindow - 1;
                     nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
                     //MoveToBunker();
+                }
+                else if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
+                {
+                    //pX = raycastHit.collider.gameObject.transform.position.x;
+                    //pY = raycastHit.collider.gameObject.transform.position.y;
+                    //pZ = raycastHit.collider.gameObject.transform.position.z;
+                    //
+                    //saveMode = false;
+                    //PlayerPrefs.SetFloat("p_x", pX);
+                    //PlayerPrefs.SetFloat("p_y", pY);
+                    //PlayerPrefs.SetFloat("p_z", pZ);
+
+                    //연구소 팝업창
+                    var windowId = (int)Windows.LaboratoryWindow - 1;
+                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
                 }
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
                    raycastHit.collider.gameObject.name.Equals("Plane"))
@@ -110,11 +140,7 @@ public class PlayerController : MonoBehaviour
             {
                 agent.SetDestination(raycastHit.point);
             }
-            if (Physics.Raycast(ray, out raycastHit))
-            {
-                if (raycastHit.collider.CompareTag("Enemy"))
-                    Debug.Log("전투 발생");
-            }
+
         }
         // 마우스 클릭
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && timeController.isPause == false)
@@ -125,6 +151,7 @@ public class PlayerController : MonoBehaviour
             int facilitiesLayer = LayerMask.GetMask("Facilities");
             if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
             {
+                // 벙커로 이동
                 if (raycastHit.collider.gameObject.name.Equals("Bunker"))
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
@@ -141,7 +168,22 @@ public class PlayerController : MonoBehaviour
                     nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
                     //MoveToBunker();
                 }
+                // 연구소로 이동
+                else if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
+                {
+                    //pX = raycastHit.collider.gameObject.transform.position.x;
+                    //pY = raycastHit.collider.gameObject.transform.position.y;
+                    //pZ = raycastHit.collider.gameObject.transform.position.z;
+                    //
+                    //saveMode = false;
+                    //PlayerPrefs.SetFloat("p_x", pX);
+                    //PlayerPrefs.SetFloat("p_y", pY);
+                    //PlayerPrefs.SetFloat("p_z", pZ);
 
+                    //연구소 팝업창
+                    var windowId = (int)Windows.LaboratoryWindow - 1;
+                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                }
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
                    raycastHit.collider.gameObject.name.Equals("Plane"))
                 {
@@ -165,6 +207,7 @@ public class PlayerController : MonoBehaviour
         {
             agent.SetDestination(agent.transform.position);
         }
+
     }
 
     public void MoveToBunker()
@@ -180,22 +223,6 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         transform.position = agent.nextPosition;
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.CompareTag("MonsterArea") && !isBattle) //몬스터와 전투.
-        {
-            randomTimer++;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("MonsterArea") && !isBattle) //몬스터와 전투.
-        {
-            randomTimer = 0;
-        }
     }
 
     public void DecreaseHp(int i)
@@ -246,4 +273,4 @@ public class PlayerController : MonoBehaviour
         }
         return false;
     }
-}
+}}

@@ -6,6 +6,7 @@ using UnityEngine.Pool;
 public enum PoolName
 {
     Monster,
+    Footprint,
     Particle,
     Object,
     Sound,

@@ -43,7 +43,6 @@ public class PlayerDataMgr : MonoBehaviour
 
     //SOµ•¿Ã≈Õ.
     public Dictionary<string, Character> characterList = new Dictionary<string, Character>();
-    public Dictionary<string, Antibody> antibodyList = new Dictionary<string, Antibody>();
     public Dictionary<string, Consumable> consumableList = new Dictionary<string, Consumable>();
     public Dictionary<string, Weapon> equippableList = new Dictionary<string, Weapon>();
     public Dictionary<string, Monster> monsterList = new Dictionary<string, Monster>();
@@ -71,7 +70,6 @@ public class PlayerDataMgr : MonoBehaviour
         scriptableMgr = ScriptableMgr.Instance;
         
         characterList = scriptableMgr.characterList;
-        antibodyList = scriptableMgr.antibodyList;
         consumableList = scriptableMgr.consumableList;
         equippableList = scriptableMgr.equippableList;
         monsterList = scriptableMgr.monsterList;
@@ -223,11 +221,6 @@ public class PlayerDataMgr : MonoBehaviour
                     else stat.character = characterList[info.characterId];
                     stat.character.id = info.characterId;
                     
-                    foreach (var antivirus in info.antivirus)
-                    {
-                        if (antivirus == null) continue;
-                        stat.antibody.Add(antibodyList[antivirus]);
-                    }
                     stat.weapon = new WeaponStats();
                     stat.weapon.mainWeapon = (info.mainWeapon == null) ? null : equippableList[info.mainWeapon];
                     stat.weapon.subWeapon = (info.subWeapon == null) ? null : equippableList[info.subWeapon];

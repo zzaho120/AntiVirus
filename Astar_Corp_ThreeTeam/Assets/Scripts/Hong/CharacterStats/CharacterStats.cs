@@ -20,19 +20,11 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
-    // 스크립터블 오브젝트 불러오기
-    //private ScriptableMgr scriptableMgr;
-
     // 기본 스탯
     public Character character;
 
-    // 내성 다른 시스템으로 빠짐 - 삭제할 것.
-    public List<Antibody> antibody;
-
     // 무기 스탯
     public WeaponStats weapon;
-    //public Weapon mainWeapon;
-    //public Weapon subWeapon;
 
     // 스킬
     public CharacterSkillList skills;

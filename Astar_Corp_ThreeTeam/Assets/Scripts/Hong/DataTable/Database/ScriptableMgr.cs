@@ -6,7 +6,6 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
 {
     #region Dictionary List
     // 캐릭터 스탯 관련
-    public Dictionary<string, Antibody> antibodyList = new Dictionary<string, Antibody>(); 
     public Dictionary<string, Character> characterList = new Dictionary<string, Character>();
 
     // 몬스터 스탯 관련
@@ -35,12 +34,7 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         }
 
         // 2. Antibody
-        string antibodySOPath = "Choi/Datas/Antibodys";
-        Antibody[] antibodyArr = Resources.LoadAll<Antibody>(antibodySOPath);
-        foreach(var antibody in antibodyArr)
-        {
-            antibodyList.Add($"{antibody.name}{antibody.level}", antibody);
-        }
+        // 없어짐...
 
         // 3. Consumable
         string cousumableSOPath = "Choi/Datas/Consumables";
@@ -89,14 +83,6 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         {
             passiveSkillList.Add($"{skill.id}", skill);
         }
-    }
-
-    /// <summary>
-    /// 매개변수 입력 시, {Name}{level} 형식으로 입력 ex) E1, P3, T2 ...
-    /// </summary>
-    public Antibody GetAntibody(string id)
-    {
-        return Instantiate(antibodyList[id]);
     }
 
     public Character GetCharacter(string id)
