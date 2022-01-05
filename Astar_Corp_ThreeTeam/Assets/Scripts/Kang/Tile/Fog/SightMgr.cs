@@ -22,7 +22,7 @@ public class SightTileBase
     public void Init()
     {
         isInSight = false;
-        tileBase.EnableDisplay(false);
+        tileBase.EnableDisplay(isInSight);
     }
 }
 
@@ -108,7 +108,7 @@ public class SightMgr : MonoBehaviour
 
         InitPlayerSight();
 
-        if (!(BattleMgr.Instance.turn == BattleTurn.Player))
+        if (BattleMgr.Instance.turn != BattleTurn.Player)
         {
             foreach (var player in playerableChars)
             {
@@ -117,11 +117,6 @@ public class SightMgr : MonoBehaviour
         }
 
         UpdateObj();
-
-
-        //Debug.Log($"checkTime : {checkTime}");
-        //Debug.Log($"playerCheck : {playerCheck}");
-        //Debug.Log($"rayCheck : {rayCheck}");
     }
 
     public void UpdateFog(PlayerableChar curPlayer)
@@ -311,13 +306,6 @@ public class SightMgr : MonoBehaviour
                 }
                 if (isExistWall)
                 {
-                    foreach (var elemList in list)
-                    {
-                        foreach (var elem in elemList)
-                        {
-                            elem.isInSight = false;
-                        }
-                    }
                     isExistWall = false;
                     list.Clear();
                 }
@@ -409,6 +397,35 @@ public class SightMgr : MonoBehaviour
         UpdateObj();
     }
 
+    private void UpdateFrontDirection(Vector3 curTileIdx, int playerIdx, DirectionType direction)
+    {
+        for (var i = 1; i < MaxFrontTile; ++i)
+        {
+            var maxSide = 0;
+            if (i < 3)
+                maxSide = 2;
+            else
+                maxSide = i;
+
+            var centerIdx = Vector2.zero;
+            switch (direction)
+            {
+                case DirectionType.Top:
+                    centerIdx = new Vector2(curTileIdx.x, curTileIdx.z + i);
+                    break;
+                case DirectionType.Bot:
+                    centerIdx = new Vector2(curTileIdx.x, curTileIdx.z - i);
+                    break;
+                case DirectionType.Left:
+                    centerIdx = new Vector2(curTileIdx.x - i, curTileIdx.z);
+                    break;
+                case DirectionType.Right:
+                    centerIdx = new Vector2(curTileIdx.x + i, curTileIdx.z);
+                    break;
+            }
+
+        }
+    }
     private void UpdateTopFront(Vector3 curTileIdx, int playerIdx)
     {
         var maxI = 0;
@@ -420,10 +437,10 @@ public class SightMgr : MonoBehaviour
             else if (i > 2)
                 maxJ = i;
 
-            maxI = i;
             var addTileIdx = new Vector2(curTileIdx.x, curTileIdx.z + i);
-            if (addTileIdx.y >= TileMgr.MAX_Z_IDX)
+            if (addTileIdx.y > TileMgr.MAX_Z_IDX)
                 break;
+            maxI = i;
 
             foreach (var sightTile in totalSightDics[addTileIdx])
             {
@@ -473,10 +490,10 @@ public class SightMgr : MonoBehaviour
             else if (i > 2)
                 maxJ = i;
 
-            maxI = i;
             var addTileIdx = new Vector2(curTileIdx.x, curTileIdx.z - i);
-            if (addTileIdx.y >= TileMgr.MAX_Z_IDX)
+            if (addTileIdx.y < 0)
                 break;
+            maxI = i;
 
             foreach (var sightTile in totalSightDics[addTileIdx])
             {
@@ -526,10 +543,10 @@ public class SightMgr : MonoBehaviour
             else if (i > 2)
                 maxI = i;
 
-            maxJ = i;
             var addTileIdx = new Vector2(curTileIdx.x - i, curTileIdx.z);
-            if (addTileIdx.y >= TileMgr.MAX_Z_IDX)
+            if (addTileIdx.x < 0)
                 break;
+            maxJ = i;
 
             foreach (var sightTile in totalSightDics[addTileIdx])
             {
@@ -578,10 +595,10 @@ public class SightMgr : MonoBehaviour
             else if (i > 2)
                 maxI = i;
 
-            maxJ = i;
             var addTileIdx = new Vector2(curTileIdx.x + i, curTileIdx.z);
-            if (addTileIdx.y >= TileMgr.MAX_Z_IDX)
+            if (addTileIdx.x > TileMgr.MAX_X_IDX)
                 break;
+            maxJ = i;
 
             foreach (var sightTile in totalSightDics[addTileIdx])
             {

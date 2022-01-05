@@ -20,7 +20,7 @@ public class Virus : ScriptableObject
 	public int crit_Rate;
 	public int crit_Dmg;
 
-	// 처치 시 보상 수치
 	public int exp;
 	public int resistCharge;
+	public int resistDec;
 }

@@ -25,6 +25,8 @@ public class CharacterStats : MonoBehaviour
 
     // 기본 스탯
     public Character character;
+
+    // 내성 다른 시스템으로 빠짐 - 삭제할 것.
     public List<Antibody> antibody;
 
     // 무기 스탯
@@ -64,7 +66,7 @@ public class CharacterStats : MonoBehaviour
     [HideInInspector]
     public int level;
 
-    //바이러스 패널티.
+    //바이러스 패널티 및 내성
     [HideInInspector]
     public Dictionary<string, VirusPenalty> virusPanalty = new Dictionary<string, VirusPenalty>();
 
@@ -147,18 +149,13 @@ public class CharacterStats : MonoBehaviour
     #endregion
 
 
-    public CharacterStats()
-    {
-        VirusPanaltyInit();
-    }
-
     public void VirusPanaltyInit()
     {
-        virusPanalty.Add("B", new VirusPenalty());
-        virusPanalty.Add("E", new VirusPenalty());
-        virusPanalty.Add("I", new VirusPenalty());
-        virusPanalty.Add("P", new VirusPenalty());
-        virusPanalty.Add("T", new VirusPenalty());
+        virusPanalty.Add("E", new VirusPenalty((Virus)Instantiate(Resources.Load("Choi/Datas/Viruses/E"))));
+        virusPanalty.Add("B", new VirusPenalty((Virus)Instantiate(Resources.Load("Choi/Datas/Viruses/B"))));
+        virusPanalty.Add("P", new VirusPenalty((Virus)Instantiate(Resources.Load("Choi/Datas/Viruses/P"))));
+        virusPanalty.Add("I", new VirusPenalty((Virus)Instantiate(Resources.Load("Choi/Datas/Viruses/I"))));
+        virusPanalty.Add("T", new VirusPenalty((Virus)Instantiate(Resources.Load("Choi/Datas/Viruses/T"))));
     }
 
     private void Update()
@@ -187,5 +184,6 @@ public class CharacterStats : MonoBehaviour
 
         // 무기 스탯 초기화
         weapon.Init();
+        VirusPanaltyInit();
     }
 }

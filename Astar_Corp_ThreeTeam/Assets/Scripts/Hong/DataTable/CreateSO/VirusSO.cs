@@ -50,8 +50,9 @@ public class VirusSO
 
                     virus.exp          = int.Parse(splitData[10]);
                     virus.resistCharge = int.Parse(splitData[11]);
+                    virus.resistDec    = int.Parse(splitData[12]);
 
-                    AssetDatabase.CreateAsset(virus, $"Assets//Resources/Choi/Datas/Viruses/{virus.name} {virus.penaltyType}.asset");
+                    AssetDatabase.CreateAsset(virus, $"Assets//Resources/Choi/Datas/Viruses/{virus.name}.asset");
                     virusNum++;
                 }
                 sr.Close();

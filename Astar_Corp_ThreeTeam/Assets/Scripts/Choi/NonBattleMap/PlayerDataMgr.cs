@@ -209,6 +209,7 @@ public class PlayerDataMgr : MonoBehaviour
 
                     //게임상 관리하기 쉽도록.
                     CharacterStats stat = new CharacterStats();
+                    stat.VirusPanaltyInit();
                     stat.currentHp = info.hp;
                     stat.sensivity = info.sensitivity;
                     stat.concentration = info.concentration;
@@ -260,6 +261,7 @@ public class PlayerDataMgr : MonoBehaviour
                     else
                     {
                         CharacterStats stats = new CharacterStats();
+                        stats.VirusPanaltyInit();
                         Character character = new Character();
                         stats.character = character;
                         stats.character.name = string.Empty;
@@ -360,6 +362,7 @@ public class PlayerDataMgr : MonoBehaviour
 
             //게임상 관리하기 쉽도록.
             CharacterStats stat = new CharacterStats();
+            stat.VirusPanaltyInit();
             stat.currentHp = info.hp;
             stat.maxHp = character.max_Hp;
             stat.sensivity = info.sensitivity;
@@ -369,17 +372,17 @@ public class PlayerDataMgr : MonoBehaviour
             stat.character = character;
             stat.character.id = info.characterId;
 
-            stat.virusPanalty["E"].gauge = saveData.gaugeE[num];
-            stat.virusPanalty["B"].gauge = saveData.gaugeB[num];
-            stat.virusPanalty["P"].gauge = saveData.gaugeP[num];
-            stat.virusPanalty["I"].gauge = saveData.gaugeI[num];
-            stat.virusPanalty["T"].gauge = saveData.gaugeT[num];
+            stat.virusPanalty["E"].penaltyGauge = saveData.gaugeE[num];
+            stat.virusPanalty["B"].penaltyGauge = saveData.gaugeB[num];
+            stat.virusPanalty["P"].penaltyGauge = saveData.gaugeP[num];
+            stat.virusPanalty["I"].penaltyGauge = saveData.gaugeI[num];
+            stat.virusPanalty["T"].penaltyGauge = saveData.gaugeT[num];
 
-            stat.virusPanalty["E"].level = saveData.levelE[num];
-            stat.virusPanalty["B"].level = saveData.levelB[num];
-            stat.virusPanalty["P"].level = saveData.levelP[num];
-            stat.virusPanalty["I"].level = saveData.levelI[num];
-            stat.virusPanalty["T"].level = saveData.levelT[num];
+            stat.virusPanalty["E"].penaltyLevel = saveData.levelE[num];
+            stat.virusPanalty["B"].penaltyLevel = saveData.levelB[num];
+            stat.virusPanalty["P"].penaltyLevel = saveData.levelP[num];
+            stat.virusPanalty["I"].penaltyLevel = saveData.levelI[num];
+            stat.virusPanalty["T"].penaltyLevel = saveData.levelT[num];
 
             stat.weapon = new WeaponStats();
             stat.weapon.mainWeapon = (info.mainWeapon == null) ? null : equippableList[info.mainWeapon];
@@ -490,17 +493,17 @@ public class PlayerDataMgr : MonoBehaviour
             stat.character = character;
             stat.character.id = info.characterId;
 
-            stat.virusPanalty["E"].gauge = saveData.gaugeE[num];
-            stat.virusPanalty["B"].gauge = saveData.gaugeB[num];
-            stat.virusPanalty["P"].gauge = saveData.gaugeP[num];
-            stat.virusPanalty["I"].gauge = saveData.gaugeI[num];
-            stat.virusPanalty["T"].gauge = saveData.gaugeT[num];
+            stat.virusPanalty["E"].penaltyGauge = saveData.gaugeE[num];
+            stat.virusPanalty["B"].penaltyGauge = saveData.gaugeB[num];
+            stat.virusPanalty["P"].penaltyGauge = saveData.gaugeP[num];
+            stat.virusPanalty["I"].penaltyGauge = saveData.gaugeI[num];
+            stat.virusPanalty["T"].penaltyGauge = saveData.gaugeT[num];
 
-            stat.virusPanalty["E"].level = saveData.levelE[num];
-            stat.virusPanalty["B"].level = saveData.levelB[num];
-            stat.virusPanalty["P"].level = saveData.levelP[num];
-            stat.virusPanalty["I"].level = saveData.levelI[num];
-            stat.virusPanalty["T"].level = saveData.levelT[num];
+            stat.virusPanalty["E"].penaltyLevel = saveData.levelE[num];
+            stat.virusPanalty["B"].penaltyLevel = saveData.levelB[num];
+            stat.virusPanalty["P"].penaltyLevel = saveData.levelP[num];
+            stat.virusPanalty["I"].penaltyLevel = saveData.levelI[num];
+            stat.virusPanalty["T"].penaltyLevel = saveData.levelT[num];
 
             stat.weapon = new WeaponStats();
             stat.weapon.mainWeapon = (info.mainWeapon == null) ? null : equippableList[info.mainWeapon];

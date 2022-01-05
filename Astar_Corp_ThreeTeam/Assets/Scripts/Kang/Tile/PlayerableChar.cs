@@ -37,10 +37,9 @@ public class PlayerableChar : BattleChar
         ren = GetComponent<MeshRenderer>();
         characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
         characterStats.weapon.mainWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/AssaultRifle_01"));
-        characterStats.weapon.subWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/AssaultRifle_01"));
+        characterStats.weapon.subWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/FireAxe_01"));
         characterStats.Init();
         direction = DirectionType.None;
-        characterStats.Init();
         AP = 6;
         status = PlayerStatus.Wait;
     }
@@ -116,6 +115,18 @@ public class PlayerableChar : BattleChar
 
         AP = 6;
         ren.material.color = Color.white;
+    }
+
+    public int GetVirusLevel(MonsterChar monster)
+    {
+        var newTile = currentTile.tileIdx - monster.currentTile.tileIdx;
+        var virusTile = new Vector2(newTile.x, newTile.z);
+        var monsterStats = monster.monsterStats;
+        
+        var resultLevel = monsterStats.virusLevel - (int)(Mathf.Abs(virusTile.x) + Mathf.Abs(virusTile.y));
+        Debug.Log(resultLevel);
+
+        return resultLevel;
     }
 
     private IEnumerator CoMove()
@@ -319,11 +330,37 @@ public class PlayerableChar : BattleChar
         EventBusMgr.Publish(EventType.EndPlayer);
     }
 
-    public void GetDamage(int dmg)
+    public void GetDamage(MonsterStats monsterStats)
     {
         var hp = characterStats.currentHp;
+        var dmg = monsterStats.Damage;
         hp -= dmg;
         characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
+
+        if (monsterStats.virus != null)
+        {
+            var virusType = string.Empty;
+            switch (monsterStats.virus.id)
+            {
+                case "1":
+                    virusType = "E";
+                    break;
+                case "2":
+                    virusType = "B";
+                    break;
+                case "3":
+                    virusType = "P";
+                    break;
+                case "4":
+                    virusType = "I";
+                    break;
+                case "5":
+                    virusType = "T";
+                    break;
+            }
+            characterStats.virusPanalty[virusType].Calculation(monsterStats.virusLevel);
+        }
+
 
         Debug.Log($"{characterStats.gameObject.name}은 {dmg} 데미지를 입어 {characterStats.currentHp}가 되었다.");
 

@@ -27,7 +27,7 @@ public class BattleAttackState : StateBase
         if (target != null)
         {
             var stats = monster.monsterStats;
-            target.GetDamage(stats.Damage);
+            target.GetDamage(stats);
             EventBusMgr.Publish(EventType.EndEnemy);
         }
         else

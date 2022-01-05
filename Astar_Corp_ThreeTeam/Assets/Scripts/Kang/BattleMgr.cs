@@ -22,6 +22,7 @@ public class BattleMgr : Singleton<BattleMgr>
     [Header("Turn")]
     public BattleTurn turn;
     public int turnCount;
+    public int fieldVirusLevel;
 
     public override void Awake()
     {
@@ -46,6 +47,8 @@ public class BattleMgr : Singleton<BattleMgr>
 
         turn = BattleTurn.Player;
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
+
+        EventBusMgr.Publish(EventType.StartPlayer);
     }
 
     public void Update()

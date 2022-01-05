@@ -71,8 +71,8 @@ public class LaboratoryInfo : MonoBehaviour
                     foreach (var element in playerDataMgr.currentSquad)
                     {
                         if (element.Value.character.name == string.Empty) break;
-                        var level = element.Value.virusPanalty[virusType].level;
-                        element.Value.virusPanalty[virusType].Calculation(level);
+                        var level = element.Value.virusPanalty[virusType].penaltyLevel;
+                        element.Value.virusPanalty[virusType].Calculation(level + 1);
                     }
                 }
 
@@ -103,8 +103,8 @@ public class LaboratoryInfo : MonoBehaviour
                     foreach (var element in playerDataMgr.currentSquad)
                     {
                         if (element.Value.character.name == string.Empty) break;
-                        var level = element.Value.virusPanalty[virusType].level;
-                        element.Value.virusPanalty[virusType].Calculation(level);
+                        var level = element.Value.virusPanalty[virusType].penaltyLevel;
+                        element.Value.virusPanalty[virusType].Calculation(level + 1);
                     }
                 }
 
@@ -135,8 +135,8 @@ public class LaboratoryInfo : MonoBehaviour
                     foreach (var element in playerDataMgr.currentSquad)
                     {
                         if (element.Value.character.name == string.Empty) break;
-                        var level = element.Value.virusPanalty[virusType].level;
-                        element.Value.virusPanalty[virusType].Calculation(level);
+                        var level = element.Value.virusPanalty[virusType].penaltyLevel;
+                        element.Value.virusPanalty[virusType].Calculation(level + 1);
                     }
                 }
 

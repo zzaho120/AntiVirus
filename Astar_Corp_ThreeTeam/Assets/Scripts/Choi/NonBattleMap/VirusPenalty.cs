@@ -2,51 +2,75 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum VirusType
+{
+    None = -1,
+    E,
+    B,
+    P,
+    I,
+    T
+}
+
 public class VirusPenalty
 {
-    //T 바이러스
-    //int 게이지
-    //int 패널티 레벨
+    public Virus virus;
+    public int penaltyGauge; // 페널티바
+    public int penaltyLevel;
+    public int reductionGauge; // 내성 경험치바
+    public int reductionLevel;
 
-    public int gauge;
-    public int level;
+    private readonly int expGauge = 100; 
+    private readonly int maxLevel = 5; 
 
-    Dictionary<int, int> levelGauge = new Dictionary<int, int>();
-    Dictionary<int, int> gaugeIncrease = new Dictionary<int, int>();
-    Dictionary<int, int> gaugeReduction = new Dictionary<int, int>();
-
-    public VirusPenalty()
+    public int CurrentReduction
     {
-        gauge = 0;
-        level = 1;
-
-        for (int i = 1; i < 6; i++) levelGauge.Add(1 * i, 100 * i);
-
-        gaugeIncrease.Add(1, 30);
-        gaugeIncrease.Add(2, 30);
-        gaugeIncrease.Add(3, 30);
-        gaugeIncrease.Add(4, 30);
-        gaugeIncrease.Add(5, 60);
-
-        gaugeReduction.Add(1, 20);
-        gaugeReduction.Add(2, 20);
-        gaugeReduction.Add(3, 20);
-        gaugeReduction.Add(4, 20);
-        gaugeReduction.Add(5, 40);
+        get => virus.resistDec * reductionLevel;
+    }
+    
+    public int GetPenaltyGauge(int paneltyLevel)
+    {
+        return virus.resistCharge * paneltyLevel;
     }
 
-    public void Calculation(int level)
+    public VirusPenalty(Virus virus)
     {
-        gauge += (gaugeIncrease[level] - gaugeReduction[level]);
+        this.virus = virus;
+        penaltyGauge = 0;
+        penaltyLevel = 0;
+        reductionLevel = 0;
+    }
 
-        if (level != 5 && gauge >= levelGauge[level])
+    public void Calculation(int virusLevel)
+    {
+        penaltyGauge += (GetPenaltyGauge(virusLevel) - CurrentReduction);
+        Debug.Log($"{virus.name} 바이러스 페널티 {GetPenaltyGauge(virusLevel) - CurrentReduction}를 입혀서 {penaltyLevel}레벨 {penaltyGauge}가 됐습니다.");
+        var maxGauge = expGauge * (penaltyLevel + 1);
+        if (penaltyGauge >= maxGauge)
         {
-            gauge -= levelGauge[level];
-            this.level++;
+            if (penaltyLevel != maxLevel)
+            {
+                penaltyGauge -= maxGauge;
+                penaltyLevel++;
+            }
+            else if (penaltyLevel == maxLevel)
+                penaltyGauge = maxGauge;
         }
-        else if (level == 5 && gauge >= levelGauge[level])
+    }
+
+    public void GetReductionExp()
+    {
+        reductionGauge += virus.exp * penaltyLevel;
+        var maxGauge = expGauge * (reductionLevel + 1);
+        if (reductionGauge >= maxGauge)
         {
-            gauge = levelGauge[level];
+            if (reductionLevel != maxLevel)
+            {
+                reductionGauge -= maxGauge;
+                reductionLevel++;
+            }
+            else if (reductionLevel == maxLevel)
+                penaltyGauge = maxGauge;
         }
     }
 }

@@ -40,11 +40,11 @@ public class BattleMoveState : StateBase
         if (!isSetPath)
         {
             isSetPath = true;
-            nextTile = pathList.Pop().tileBase.tileIdx;
+
+            if (pathList.Count > 0)
+                nextTile = pathList.Pop().tileBase.tileIdx;
             if (target.tileIdx == nextTile)
-            {
                 fsm.ChangeState((int)BattleMonState.Attack);
-            }    
         }
 
         if (target.tileIdx != nextTile)

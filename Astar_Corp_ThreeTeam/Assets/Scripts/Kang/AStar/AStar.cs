@@ -166,7 +166,6 @@ public class AStar : MonoBehaviour
     {
         if (closeList[closeList.Count - 1].tileBase.tileIdx == endIdx)
         {
-            Debug.Log("도착했습니다.");
             isArrive = true;
 
             SetPath(closeList[closeList.Count - 1]);
