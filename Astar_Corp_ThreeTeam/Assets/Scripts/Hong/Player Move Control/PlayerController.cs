@@ -25,8 +25,6 @@ public class PlayerController : MonoBehaviour
 
     public GameObject panel;
     public bool isMove;//ÁöÀº.
-    //bool isBattle;
-    //float randomTimer;
 
     float pX, pY, pZ;
     bool saveMode;
@@ -61,7 +59,6 @@ public class PlayerController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         isMove = false;
-        //isBattle = false;
         saveMode = true;
     }
 
@@ -75,8 +72,8 @@ public class PlayerController : MonoBehaviour
         //    return;
 
         // ´ºÀÎÇ²½Ã½ºÅÛ
-		if (Input.touchCount == 1 && !this.IsPointerOverUIObject()
-		//if (multiTouch.Tap && !IsPointerOverUIObject(multiTouch.curTouchPos)            /*&& timeController.isPause == false*/)
+		if (Input.touchCount == 1 && !this.IsPointerOverUIObject())
+		// if (multiTouch.Tap && !IsPointerOverUIObject(multiTouch.curTouchPos)            /*&& timeController.isPause == false*/)
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
             RaycastHit raycastHit;
@@ -111,7 +108,7 @@ public class PlayerController : MonoBehaviour
                     PlayerPrefs.SetFloat("p_z", pZ);
 
                     //º¡Ä¿ ÆË¾÷Ã¢
-                    //var windowId = (int)Windows.BunkerWindow - 1;
+                    var windowId = (int)Windows.BunkerWindow - 1;
                     nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
                     //MoveToBunker();
                 }
@@ -237,7 +234,6 @@ public class PlayerController : MonoBehaviour
         Debug.Log($"stemina : {character.stemina}");
     }
 
-
     public bool IsPointerOverUIObject(Vector2 touchPos)
     {
         PointerEventData eventDataCurrentPosition
@@ -273,4 +269,4 @@ public class PlayerController : MonoBehaviour
         }
         return false;
     }
-}}
+}
