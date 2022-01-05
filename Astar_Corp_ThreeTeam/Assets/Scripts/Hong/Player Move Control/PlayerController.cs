@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class CharacterInfo
@@ -17,15 +18,14 @@ public class PlayerController : MonoBehaviour
     public NonBattleMgr manager;
 
     private NavMeshAgent agent;
+    private TimeController timeController;
 
     public GameObject panel;
     public bool isMove;//지은.
     bool isBattle;
     float randomTimer;
 
-    float pX;
-    float pY;
-    float pZ;
+    float pX, pY, pZ;
     bool saveMode;
 
     float originAgentSpeed;
@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        //timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
+        timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
 
         character = new CharacterInfo();
         character.name = "하이";
@@ -76,7 +76,9 @@ public class PlayerController : MonoBehaviour
         }
 
         // 뉴인풋시스템
-        if (multiTouch.Tap /*&& timeController.isPause == false*/)
+        if (multiTouch.Tap &&
+            !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)
+            /*&& timeController.isPause == false*/)
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
             RaycastHit raycastHit;
@@ -100,7 +102,6 @@ public class PlayerController : MonoBehaviour
                     nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
                     //MoveToBunker();
                 }
-
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
                    raycastHit.collider.gameObject.name.Equals("Plane"))
                 {
@@ -111,9 +112,14 @@ public class PlayerController : MonoBehaviour
             {
                 agent.SetDestination(raycastHit.point);
             }
+            if (Physics.Raycast(ray, out raycastHit))
+            {
+                if (raycastHit.collider.CompareTag("Enemy"))
+                    Debug.Log("전투 발생");
+            }
         }
         // 마우스 클릭
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && timeController.isPause == false)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
@@ -148,6 +154,11 @@ public class PlayerController : MonoBehaviour
             {
                 agent.SetDestination(raycastHit.point);
             }
+        }
+        // 일시정지 상태일 때 목적지 값 변경 (현재 위치로)
+        if (timeController.isPause)
+        {
+            agent.SetDestination(agent.transform.position);
         }
     }
 

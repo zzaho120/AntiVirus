@@ -18,36 +18,25 @@ public class WeaponStats
 
     // 명중률
     [HideInInspector]
-    public int accurRate_base;
+    public int AccurRate_base;
 
     [HideInInspector]
-    public float accurRate_alert
+    public float AccurRate_alert
     {
-        get => accurRate_base * 0.7f;
+        get => AccurRate_base * 0.7f;
     }
 
     // 데미지
     [HideInInspector] 
-    public int damage { get => SetWeaponDamage(); }
+    public int Damage { get => SetWeaponDamage(); }
 
     // 크리티컬 데미지
     [HideInInspector]
-    public int critDmg;
+    public int CritDmg;
 
-    // 주무기 불릿
+    // 탄창 클립 수
     [HideInInspector] 
-    public int mainWeaponBullet
-    {
-        get => mainWeapon.bullet;
-        set => mainWeapon.bullet = value;
-    }
-    // 보조무기 불릿
-    [HideInInspector] 
-    public int subWeaponBullet
-    {
-        get => subWeapon.bullet;
-        set => subWeapon.bullet = value;
-    }
+    public int MainWeaponBullet, SubWeaponBullet;
 
     [HideInInspector]
     public int WeaponBullet
@@ -63,7 +52,6 @@ public class WeaponStats
             }
             return 0;
         }
-
         set
         {
             switch (type)
@@ -77,21 +65,22 @@ public class WeaponStats
             }
         }
     }
+
     // 명중률 감소
     [HideInInspector] 
-    public int accurRateDec;
+    public int AccurRateDec;
 
     // 무게
     [HideInInspector] 
-    public int weight;
+    public int Weight;
 
     // 발사 시 Ap 소모량
     [HideInInspector] 
-    public int firstShotAp, alertShotAp, aimShotAp, loadAp;
+    public int FirstShotAp, AlertShotAp, AimShotAp, LoadAp;
 
     // 사거리, 패널티
     [HideInInspector] 
-    public int range, overRange_penalty, underRange_penalty;
+    public int Range, OverRange_Penalty, UnderRange_Penalty;
 
     public int SetWeaponDamage()
     {
@@ -139,67 +128,67 @@ public class WeaponStats
             if (type == WeaponType.Main)
             {
                 // 명중률
-                accurRate_base = mainWeapon.accur_Rate_Base;
+                AccurRate_base = mainWeapon.accur_Rate_Base;
 
                 // 데미지
                 //var damage = Random.Range(mainWeapon.min_damage, mainWeapon.max_damage + 1);
                 //this.damage = damage;
 
                 // 크뎀
-                critDmg = mainWeapon.crit_Damage;
+                CritDmg = mainWeapon.crit_Damage;
 
                 // 탄알
-                //mainWeaponBullet = mainWeapon.bullet;
+                MainWeaponBullet = mainWeapon.bullet;
 
                 // 명중률 감소
-                accurRateDec = mainWeapon.accur_Rate_Dec;
+                AccurRateDec = mainWeapon.accur_Rate_Dec;
 
                 // 무게
-                weight = mainWeapon.weight;
+                Weight = mainWeapon.weight;
 
                 // 소모AP
-                firstShotAp = mainWeapon.firstShot_Ap;
-                alertShotAp = mainWeapon.alertShot_Ap;
-                aimShotAp = mainWeapon.aimShot_Ap;
-                loadAp = mainWeapon.load_Ap;
+                FirstShotAp = mainWeapon.firstShot_Ap;
+                AlertShotAp = mainWeapon.alertShot_Ap;
+                AimShotAp = mainWeapon.aimShot_Ap;
+                LoadAp = mainWeapon.load_Ap;
 
                 // 범위
-                range = mainWeapon.range;
-                overRange_penalty = mainWeapon.overRange_Penalty;
-                underRange_penalty = mainWeapon.underRange_Penalty;
+                Range = mainWeapon.range;
+                OverRange_Penalty = mainWeapon.overRange_Penalty;
+                UnderRange_Penalty = mainWeapon.underRange_Penalty;
             }
             // 보조무기 장착 시
             else if (type == WeaponType.Sub)
             {
                 // 명중률
-                accurRate_base = subWeapon.accur_Rate_Base;
+                AccurRate_base = subWeapon.accur_Rate_Base;
 
                 // 데미지
                 //var damage = Random.Range(subWeapon.min_damage, subWeapon.max_damage + 1);
                 //this.damage = damage;
 
                 // 크뎀
-                critDmg = subWeapon.crit_Damage;
+                CritDmg = subWeapon.crit_Damage;
 
                 // 탄알
-                //subWeaponBullet = subWeapon.bullet;
+                SubWeaponBullet = subWeapon.bullet;
 
                 // 명중률 감소
-                accurRateDec = subWeapon.accur_Rate_Dec;
+                AccurRateDec = subWeapon.accur_Rate_Dec;
 
                 // 무게
-                weight = subWeapon.weight;
+                Weight = subWeapon.weight;
 
                 // 소모AP
-                firstShotAp = subWeapon.firstShot_Ap;
-                alertShotAp = subWeapon.alertShot_Ap;
-                aimShotAp = subWeapon.aimShot_Ap;
-                loadAp = subWeapon.load_Ap;
+                FirstShotAp = subWeapon.firstShot_Ap;
+                AlertShotAp = subWeapon.alertShot_Ap;
+                AimShotAp = subWeapon.aimShot_Ap;
+                LoadAp = subWeapon.load_Ap;
 
                 // 범위
-                range = subWeapon.range;
-                overRange_penalty = subWeapon.overRange_Penalty;
-                underRange_penalty = subWeapon.underRange_Penalty;
+                Range = subWeapon.range;
+                OverRange_Penalty = subWeapon.overRange_Penalty;
+                UnderRange_Penalty = subWeapon.underRange_Penalty;
             }
             // 탄알 개수
 

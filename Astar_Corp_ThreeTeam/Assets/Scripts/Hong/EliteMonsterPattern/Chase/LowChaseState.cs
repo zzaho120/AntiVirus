@@ -6,7 +6,7 @@ using UnityEngine.AI;
 // 상수 정의
 static class Constants
 {
-    public const int disance = 20;
+    public const int disance = 15;
 }
 
 public class LowChaseState : StateBase
@@ -58,7 +58,7 @@ public class LowChaseState : StateBase
             if (Vector3.Distance(player.position, agent.transform.position) <= distance)
             {
                 agent.SetDestination(player.position);
-                Debug.Log("추적");
+                //Debug.Log("추적");
             }
             else
             {

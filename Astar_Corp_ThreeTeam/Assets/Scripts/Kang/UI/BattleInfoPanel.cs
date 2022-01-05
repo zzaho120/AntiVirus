@@ -19,7 +19,7 @@ public class BattleInfoPanel : MonoBehaviour
         sb.Append($"Level : {stats.level}\n");
         sb.Append($"HP : {stats.currentHp}\n");
         sb.Append($"AP : {player.AP}\n");
-        sb.Append($"bullet : {stats.weapon.mainWeaponBullet}");
+        sb.Append($"bullet : {stats.weapon.MainWeaponBullet}");
 
         infoText.text = sb.ToString();
     }

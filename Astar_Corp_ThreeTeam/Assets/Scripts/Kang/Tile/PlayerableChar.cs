@@ -240,41 +240,41 @@ public class PlayerableChar : BattleChar
     {
         var weapon = characterStats.weapon;
 
-        Debug.Log(weapon.mainWeaponBullet);
-        if (weapon.mainWeaponBullet > 0)
+        Debug.Log(weapon.MainWeaponBullet);
+        if (weapon.MainWeaponBullet > 0)
         {
             var tileAccuracy = monster.currentTile.accuracy;
             var totalAccuracy = 0;
-            switch (characterStats.weapon.range)
+            switch (characterStats.weapon.Range)
             {
                 case 1: // 근거리
                     if (0 < tileAccuracy && tileAccuracy < 5)
-                        totalAccuracy = weapon.accurRate_base;
+                        totalAccuracy = weapon.AccurRate_base;
                     else
-                        totalAccuracy = weapon.accurRate_base - 30 * (tileAccuracy - 4);
+                        totalAccuracy = weapon.AccurRate_base - 30 * (tileAccuracy - 4);
                     break;
 
                 case 2: // 중거리
                     if (3 < tileAccuracy && tileAccuracy < 8)
-                        totalAccuracy = weapon.accurRate_base;
+                        totalAccuracy = weapon.AccurRate_base;
                     else if (tileAccuracy < 4)
-                        totalAccuracy = weapon.accurRate_base - 10 * (4 - tileAccuracy);
+                        totalAccuracy = weapon.AccurRate_base - 10 * (4 - tileAccuracy);
                     else if (tileAccuracy > 7)
-                        totalAccuracy = weapon.accurRate_base - 15 * (tileAccuracy - 8);
+                        totalAccuracy = weapon.AccurRate_base - 15 * (tileAccuracy - 8);
                     break;
 
                 case 3: // 원거리
                     if (6 < tileAccuracy && tileAccuracy < 11)
-                        totalAccuracy = weapon.accurRate_base;
+                        totalAccuracy = weapon.AccurRate_base;
                     else if (tileAccuracy < 7)
-                        totalAccuracy = weapon.accurRate_base - 15 * (7 - tileAccuracy);
+                        totalAccuracy = weapon.AccurRate_base - 15 * (7 - tileAccuracy);
                     else if (tileAccuracy > 10)
-                        totalAccuracy = weapon.accurRate_base - 10 * (tileAccuracy - 10);
+                        totalAccuracy = weapon.AccurRate_base - 10 * (tileAccuracy - 10);
                     break;
 
                 case 4: // 근접무기
                     if (1 == tileAccuracy)
-                        totalAccuracy = weapon.accurRate_base;
+                        totalAccuracy = weapon.AccurRate_base;
                     else
                         totalAccuracy = 0;
                     break;
@@ -286,18 +286,18 @@ public class PlayerableChar : BattleChar
 
             Debug.Log(randomAccuracy);
             if (randomAccuracy)
-                monster.GetDamage(weapon.damage);
+                monster.GetDamage(weapon.Damage);
 
-            weapon.mainWeaponBullet--;
+            weapon.MainWeaponBullet--;
             monster.currentTile.EnableDisplay(true);
 
             if (!isFirstAtk)
             {
                 isFirstAtk = true;
-                AP -= weapon.firstShotAp;
+                AP -= weapon.FirstShotAp;
             }
             else
-                AP -= weapon.aimShotAp;
+                AP -= weapon.AimShotAp;
             EndPlayer();
         }
     }
@@ -307,7 +307,7 @@ public class PlayerableChar : BattleChar
         status = PlayerStatus.Alert;
 
         var weapon = characterStats.weapon;
-        AP -= weapon.firstShotAp;
+        AP -= weapon.FirstShotAp;
         actionAP = AP;
         AP = 0;
     }

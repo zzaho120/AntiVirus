@@ -155,7 +155,7 @@ public class CharacterStats : MonoBehaviour
             //Debug.Log(weapon.mainWeaponBullet);
 
             // 무기 스탯 테스트 (데미지)
-            Debug.Log(weapon.damage);
+            Debug.Log(weapon.Damage);
         }
     }
 

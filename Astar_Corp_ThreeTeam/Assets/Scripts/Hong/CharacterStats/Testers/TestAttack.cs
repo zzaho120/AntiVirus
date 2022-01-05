@@ -47,7 +47,7 @@ public class TestAttack : MonoBehaviour
     //public void OnAttack(GameObject attacker, AttackStats attack)
     public void OnAttack(CharacterStats attack)
     {
-        enemyStats.currentHp -= attack.weapon.damage;
+        enemyStats.currentHp -= attack.weapon.Damage;
 
         if (enemyStats.currentHp < 0)
         {
