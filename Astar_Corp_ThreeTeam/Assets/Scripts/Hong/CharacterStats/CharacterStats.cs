@@ -64,6 +64,11 @@ public class CharacterStats : MonoBehaviour
     [HideInInspector]
     public int level;
 
+    //바이러스 패널티.
+    [HideInInspector]
+    public Dictionary<string, VirusPenalty> virusPanalty = new Dictionary<string, VirusPenalty>();
+
+
     public string Name 
     { 
         get { return character.name; } 
@@ -142,9 +147,18 @@ public class CharacterStats : MonoBehaviour
     #endregion
 
 
-    private void Start()
+    public CharacterStats()
     {
-        //Init();
+        VirusPanaltyInit();
+    }
+
+    public void VirusPanaltyInit()
+    {
+        virusPanalty.Add("B", new VirusPenalty());
+        virusPanalty.Add("E", new VirusPenalty());
+        virusPanalty.Add("I", new VirusPenalty());
+        virusPanalty.Add("P", new VirusPenalty());
+        virusPanalty.Add("T", new VirusPenalty());
     }
 
     private void Update()

@@ -18,15 +18,23 @@ public class LaboratoryInfo : MonoBehaviour
     public string virusType;
     string[] virusTypes = { "E", "B", "P", "I", "T" };
     int step;
+    float timer;
+    float turnTimer;
+    float turnTime;
 
     GameObject player;
     PlayerController playerController;
     VirusData virusData;
-  
+    PlayerDataMgr playerDataMgr;
+
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player"))
         {
+            timer = 0f;
+            turnTimer = 0f;
+            turnTime = 1f;
+
             Debug.Log("플레이어가 들어왔습니다.");
             Debug.Log($"바이러스 종류 : {virusType}");
 
@@ -38,45 +46,110 @@ public class LaboratoryInfo : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        if (playerDataMgr == null)
+        {
+            var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
+            playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
+        }
+
         if (other.gameObject.CompareTag("Player") && player != null)
         {
-            if (playerController.isMove)
+            var distance = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(player.transform.position.x, player.transform.position.z));
+
+            if (distance < radiusZone3 && isActiveZone3)
             {
-                var distance = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(player.transform.position.x, player.transform.position.z));
-
-                if (distance < radiusZone3 && isActiveZone3)
+                timer+=Time.deltaTime;
+                if (timer > 1)
                 {
-                    if (step != 3)
-                    {
-                        virusData.None = false;
-                        step = 3;
-                        virusData.currentVirus[$"{virusType}"] = step;
-                        virusData.Change();
-                        Debug.Log("플레이어가 구역3에 들어왔습니다.");
+                    timer = 0;
+                    turnTimer++;
+                }
+                if (turnTimer > turnTime)
+                {
+                    turnTimer = 0;
 
+                    foreach (var element in playerDataMgr.currentSquad)
+                    {
+                        if (element.Value.character.name == string.Empty) break;
+                        var level = element.Value.virusPanalty[virusType].level;
+                        element.Value.virusPanalty[virusType].Calculation(level);
                     }
                 }
-                else if (distance < radiusZone2 && isActiveZone2)
+
+                if (step != 3)
                 {
-                    if (step != 2)
+                    virusData.None = false;
+                    step = 3;
+                    virusData.currentVirus[$"{virusType}"] = step;
+                    virusData.Change();
+                    Debug.Log("플레이어가 구역3에 들어왔습니다.");
+
+                    timer = 0;
+                    turnTimer = 0;
+                }
+            }
+            else if (distance < radiusZone2 && isActiveZone2)
+            {
+                timer += Time.deltaTime;
+                if (timer > 1)
+                {
+                    timer = 0;
+                    turnTimer++;
+                }
+                if (turnTimer > turnTime)
+                {
+                    turnTimer = 0;
+
+                    foreach (var element in playerDataMgr.currentSquad)
                     {
-                        virusData.None = false;
-                        step = 2;
-                        virusData.currentVirus[$"{virusType}"] = step;
-                        virusData.Change();
-                        Debug.Log("플레이어가 구역2에 들어왔습니다.");
+                        if (element.Value.character.name == string.Empty) break;
+                        var level = element.Value.virusPanalty[virusType].level;
+                        element.Value.virusPanalty[virusType].Calculation(level);
                     }
                 }
-                else if (distance < radiusZone1)
+
+                if (step != 2)
                 {
-                    if (step != 1)
+                    virusData.None = false;
+                    step = 2;
+                    virusData.currentVirus[$"{virusType}"] = step;
+                    virusData.Change();
+                    Debug.Log("플레이어가 구역2에 들어왔습니다.");
+
+                    timer = 0;
+                    turnTimer = 0;
+                }
+            }
+            else if (distance < radiusZone1)
+            {
+                timer += Time.deltaTime;
+                if (timer > 1)
+                {
+                    timer = 0;
+                    turnTimer++;
+                }
+                if (turnTimer > turnTime)
+                {
+                    turnTimer = 0;
+
+                    foreach (var element in playerDataMgr.currentSquad)
                     {
-                        virusData.None = false;
-                        step = 1;
-                        virusData.currentVirus[$"{virusType}"] = step;
-                        virusData.Change();
-                        Debug.Log("플레이어가 구역1에 들어왔습니다.");
+                        if (element.Value.character.name == string.Empty) break;
+                        var level = element.Value.virusPanalty[virusType].level;
+                        element.Value.virusPanalty[virusType].Calculation(level);
                     }
+                }
+
+                if (step != 1)
+                {
+                    virusData.None = false;
+                    step = 1;
+                    virusData.currentVirus[$"{virusType}"] = step;
+                    virusData.Change();
+                    Debug.Log("플레이어가 구역1에 들어왔습니다.");
+
+                    timer = 0;
+                    turnTimer = 0;
                 }
             }
         }

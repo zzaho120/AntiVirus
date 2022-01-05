@@ -99,8 +99,8 @@ public class PlayerController : MonoBehaviour
 
                     //滿醴 で機璽
                     var windowId = (int)Windows.BunkerWindow - 1;
-                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
-                    //MoveToBunker();
+                    //nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    MoveToBunker();
                 }
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
                    raycastHit.collider.gameObject.name.Equals("Plane"))
@@ -140,8 +140,8 @@ public class PlayerController : MonoBehaviour
 
                     //滿醴 で機璽
                     var windowId = (int)Windows.BunkerWindow - 1;
-                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
-                    //MoveToBunker();
+                    //nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    MoveToBunker();
                 }
 
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||

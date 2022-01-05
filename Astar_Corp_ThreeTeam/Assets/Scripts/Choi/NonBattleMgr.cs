@@ -37,8 +37,8 @@ public class NonBattleMgr : MonoBehaviour
         
         // 수진
         // 몬스터 영역 수 설정
-        poolInfo = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
-        monsterAreaCount = poolInfo.pools.Length;
+        //poolInfo = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
+        //monsterAreaCount = poolInfo.pools.Length;
 
         //monsterAreaCount = 5;
         eliteMonsterCount = 5;

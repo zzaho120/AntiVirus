@@ -13,6 +13,18 @@ public class CharacterDetail
     public int concentration;
     public int willPower;
 
+    public int gaugeE;
+    public int gaugeB;
+    public int gaugeP;
+    public int gaugeI;
+    public int gaugeT;
+
+    public int levelE;
+    public int levelB;
+    public int levelP;
+    public int levelI;
+    public int levelT;
+
     public List<string> antivirus = new List<string>();
     public string mainWeapon;
     public int mainWeaponNum;//강화수치등.
@@ -51,7 +63,8 @@ public class PlayerDataMgr : MonoBehaviour
     public Dictionary<int, CharacterDetail> characterInfos = new Dictionary<int, CharacterDetail>(); 
     //게임상 관리하기 쉽도록.
     public Dictionary<int, CharacterStats> characterStats = new Dictionary<int, CharacterStats>();
-    public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();
+    public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();//현재 캐릭터들.
+    public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.
 
     private void Start()
     {
@@ -87,6 +100,18 @@ public class PlayerDataMgr : MonoBehaviour
             saveData.equippableNumList = new List<int>();
             saveData.consumableList = new List<string>();
             saveData.consumableNumList = new List<int>();
+           
+            saveData.gaugeE = new List<int>();
+            saveData.gaugeB = new List<int>();
+            saveData.gaugeP = new List<int>();
+            saveData.gaugeI = new List<int>();
+            saveData.gaugeT = new List<int>();
+
+            saveData.levelE = new List<int>();
+            saveData.levelB = new List<int>();
+            saveData.levelP = new List<int>();
+            saveData.levelI = new List<int>();
+            saveData.levelT = new List<int>();
         }
 
         var obj = FindObjectsOfType<PlayerDataMgr>(); 
@@ -278,6 +303,19 @@ public class PlayerDataMgr : MonoBehaviour
                 saveData.concentration.Add(emptyInt);
                 saveData.willPower.Add(emptyInt);
             }
+
+            saveData.gaugeE.Add(0);
+            saveData.gaugeB.Add(0);
+            saveData.gaugeP.Add(0);
+            saveData.gaugeI.Add(0);
+            saveData.gaugeT.Add(0);
+
+            saveData.levelE.Add(1);
+            saveData.levelB.Add(1);
+            saveData.levelP.Add(1);
+            saveData.levelI.Add(1);
+            saveData.levelT.Add(1);
+
             for (int k = 0; k < 5; k++) { saveData.antivirus.Add(null); }
             saveData.mainWeapon.Add(null);
             saveData.mainWeaponNum.Add(0);
@@ -295,6 +333,19 @@ public class PlayerDataMgr : MonoBehaviour
             info.sensitivity = saveData.sensitivity[num];
             info.concentration = saveData.concentration[num];
             info.willPower = saveData.willPower[num];
+
+            info.gaugeE = saveData.gaugeE[num];
+            info.gaugeB = saveData.gaugeB[num];
+            info.gaugeP = saveData.gaugeP[num];
+            info.gaugeI = saveData.gaugeI[num];
+            info.gaugeT = saveData.gaugeT[num];
+
+            info.levelE = saveData.levelE[num];
+            info.levelB = saveData.levelB[num];
+            info.levelP = saveData.levelP[num];
+            info.levelI = saveData.levelI[num];
+            info.levelT = saveData.levelT[num];
+
             for (int k = 0; k < 5; k++) { info.antivirus.Add(saveData.antivirus[num * 5 + k]); }
             info.mainWeapon = saveData.mainWeapon[num];
             info.mainWeaponNum = saveData.mainWeaponNum[num];
@@ -318,6 +369,18 @@ public class PlayerDataMgr : MonoBehaviour
             stat.character = character;
             stat.character.id = info.characterId;
 
+            stat.virusPanalty["E"].gauge = saveData.gaugeE[num];
+            stat.virusPanalty["B"].gauge = saveData.gaugeB[num];
+            stat.virusPanalty["P"].gauge = saveData.gaugeP[num];
+            stat.virusPanalty["I"].gauge = saveData.gaugeI[num];
+            stat.virusPanalty["T"].gauge = saveData.gaugeT[num];
+
+            stat.virusPanalty["E"].level = saveData.levelE[num];
+            stat.virusPanalty["B"].level = saveData.levelB[num];
+            stat.virusPanalty["P"].level = saveData.levelP[num];
+            stat.virusPanalty["I"].level = saveData.levelI[num];
+            stat.virusPanalty["T"].level = saveData.levelT[num];
+
             stat.weapon = new WeaponStats();
             stat.weapon.mainWeapon = (info.mainWeapon == null) ? null : equippableList[info.mainWeapon];
             stat.weapon.subWeapon = (info.subWeapon == null) ? null : equippableList[info.subWeapon];
@@ -339,7 +402,7 @@ public class PlayerDataMgr : MonoBehaviour
             int currentNum = PlayerPrefs.HasKey(squadNum)? PlayerPrefs.GetInt(squadNum) : 0;
             PlayerPrefs.SetInt(squadNum, currentNum + 1);
         }
-        else
+        else //기존거 변경.
         {
             if (character.name != string.Empty)
             {
@@ -361,6 +424,19 @@ public class PlayerDataMgr : MonoBehaviour
                 saveData.concentration[num] = emptyInt;
                 saveData.willPower[num] = emptyInt;
             }
+
+            saveData.gaugeE[num] = 0;
+            saveData.gaugeB[num] = 0;
+            saveData.gaugeP[num] = 0;
+            saveData.gaugeI[num] = 0;
+            saveData.gaugeT[num] = 0;
+
+            saveData.levelE[num] = 1;
+            saveData.levelB[num] = 1;
+            saveData.levelP[num] = 1;
+            saveData.levelI[num] = 1;
+            saveData.levelT[num] = 1;
+
             for (int k = 0; k < 5; k++) { saveData.antivirus[num*5+k] = null; }
             saveData.mainWeapon[num] = null;
             saveData.mainWeaponNum[num] = 0;
@@ -378,6 +454,19 @@ public class PlayerDataMgr : MonoBehaviour
             info.sensitivity = saveData.sensitivity[num];
             info.concentration = saveData.concentration[num];
             info.willPower = saveData.willPower[num];
+
+            info.gaugeE = saveData.gaugeE[num];
+            info.gaugeB = saveData.gaugeB[num];
+            info.gaugeP = saveData.gaugeP[num];
+            info.gaugeI = saveData.gaugeI[num];
+            info.gaugeT = saveData.gaugeT[num];
+
+            info.levelE = saveData.levelE[num];
+            info.levelB = saveData.levelB[num];
+            info.levelP = saveData.levelP[num];
+            info.levelI = saveData.levelI[num];
+            info.levelT = saveData.levelT[num];
+
             for (int k = 0; k < 5; k++) { info.antivirus.Add(saveData.antivirus[num * 5 + k]); }
             info.mainWeapon = saveData.mainWeapon[num];
             info.mainWeaponNum = saveData.mainWeaponNum[num];
@@ -400,6 +489,18 @@ public class PlayerDataMgr : MonoBehaviour
 
             stat.character = character;
             stat.character.id = info.characterId;
+
+            stat.virusPanalty["E"].gauge = saveData.gaugeE[num];
+            stat.virusPanalty["B"].gauge = saveData.gaugeB[num];
+            stat.virusPanalty["P"].gauge = saveData.gaugeP[num];
+            stat.virusPanalty["I"].gauge = saveData.gaugeI[num];
+            stat.virusPanalty["T"].gauge = saveData.gaugeT[num];
+
+            stat.virusPanalty["E"].level = saveData.levelE[num];
+            stat.virusPanalty["B"].level = saveData.levelB[num];
+            stat.virusPanalty["P"].level = saveData.levelP[num];
+            stat.virusPanalty["I"].level = saveData.levelI[num];
+            stat.virusPanalty["T"].level = saveData.levelT[num];
 
             stat.weapon = new WeaponStats();
             stat.weapon.mainWeapon = (info.mainWeapon == null) ? null : equippableList[info.mainWeapon];
