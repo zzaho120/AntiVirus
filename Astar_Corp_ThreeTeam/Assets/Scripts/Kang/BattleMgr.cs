@@ -39,9 +39,9 @@ public class BattleMgr : Singleton<BattleMgr>
     {
         tileMgr.Init();
         playerMgr.Init();
+        monsterMgr.Init();
         sightMgr.Init();
         aStar.Init();
-        monsterMgr.Init();
         BattleWindowMgr.Open(0);
 
         turn = BattleTurn.Player;

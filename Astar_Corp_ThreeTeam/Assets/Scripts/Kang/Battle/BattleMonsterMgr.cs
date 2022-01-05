@@ -31,22 +31,12 @@ public class BattleMonsterMgr : MonoBehaviour
         {
             monster.fsm.ChangeState((int)BattleMonState.Idle);
         }
+        RecognizePlayer();
     }
 
     public void TurnUpdate()
     {
         monsters[monsterIdx].MonsterUpdate();
-
-        foreach (var monster in monsters)
-        {
-            foreach (var player in playerableChars)
-            {
-                var dist = Vector3.Distance(monster.currentTile.tileIdx, player.currentTile.tileIdx);
-
-                if (monster.recognition > dist)
-                    monster.target = player;
-            }
-        }
     }
 
     public void CheckEndTurn(object empty)
@@ -55,5 +45,20 @@ public class BattleMonsterMgr : MonoBehaviour
 
         if (monsterIdx == monsters.Count)
             EventBusMgr.Publish(EventType.ChangeTurn);
+    }
+
+    private void RecognizePlayer()
+    {
+        foreach (var monster in monsters)
+        {
+            monster.target = null;
+            foreach (var player in playerableChars)
+            {
+                var dist = Vector3.Distance(monster.currentTile.tileIdx, player.currentTile.tileIdx);
+
+                if (monster.recognition > dist)
+                    monster.target = player;
+            }
+        }
     }
 }

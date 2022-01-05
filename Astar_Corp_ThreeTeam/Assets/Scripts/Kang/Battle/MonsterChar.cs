@@ -6,17 +6,18 @@ public class MonsterChar : BattleChar
 {
     [Header("Character")]
     public MonsterStats monsterStats;
-    public BattleMonsterFSM fsm;
     public int moveDistance;
     public int recognition;
     public PlayerableChar target;
+    public BattleMonsterFSM fsm;
 
     public override void Init()
     {
         base.Init();
         monsterStats.monster = (Monster)Instantiate(Resources.Load("Choi/Datas/Monsters/1"));
         monsterStats.Init();
-        fsm = new BattleMonsterFSM(this);
+        fsm = new BattleMonsterFSM();
+        fsm.Init(this);
     }
 
     public void GetDamage(int dmg)
@@ -28,7 +29,10 @@ public class MonsterChar : BattleChar
         Debug.Log($"{monsterStats.gameObject.name}은 {dmg} 데미지를 입어 {monsterStats.currentHp}가 되었다.");
 
         if (monsterStats.currentHp == 0)
+        {
+            BattleMgr.Instance.monsterMgr.monsters.Remove(this);
             Destroy(gameObject);
+        }
     }
 
     public void MonsterUpdate()

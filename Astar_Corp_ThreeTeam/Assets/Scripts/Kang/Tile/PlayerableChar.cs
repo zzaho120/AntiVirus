@@ -36,8 +36,10 @@ public class PlayerableChar : BattleChar
         base.Init();
         ren = GetComponent<MeshRenderer>();
         characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
+        characterStats.weapon.mainWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/AssaultRifle_01"));
+        characterStats.weapon.subWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/AssaultRifle_01"));
         characterStats.Init();
-        direction = DirectionType.Top;
+        direction = DirectionType.None;
         characterStats.Init();
         AP = 6;
         status = PlayerStatus.Wait;
@@ -62,11 +64,12 @@ public class PlayerableChar : BattleChar
                                 isSelected = !isSelected;
                                 if (isSelected)
                                 {
+                                    var battleInfo = BattleMgr.Instance.BattleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
+                                    battleInfo.EnablePlayerInfo(true, this);
+
                                     var playerAction = BattleMgr.Instance.BattleWindowMgr.Open(1, false).GetComponent<PlayerActionWindow>();
                                     playerAction.curChar = this;
 
-                                    var battleInfo = BattleMgr.Instance.BattleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
-                                    battleInfo.EnablePlayerInfo(true, this);
                                     ren.material.color = Color.red;
                                 }
                                 else
@@ -126,10 +129,11 @@ public class PlayerableChar : BattleChar
                 break;
 
             MoveTile(aStarTile.tileBase.tileIdx);
-            BattleMgr.Instance.sightMgr.UpdateFog();
+            BattleMgr.Instance.sightMgr.UpdateFog(this);
             yield return new WaitForSeconds(0.1f);
         }
-        EndPlayer();
+        var window = BattleMgr.Instance.BattleWindowMgr.Open(1).GetComponent<PlayerActionWindow>();
+        window.OnActiveDirectionBtns(false, true);
     }
 
     private void MoveTile(Vector3 nextIdx)
@@ -195,7 +199,6 @@ public class PlayerableChar : BattleChar
         if (cnt % 3 == 0)
         {
             tile.moveAP = ((cnt + 3) / 3);
-            Debug.Log(tile.moveAP);
         }
 
         cnt++;
@@ -222,7 +225,6 @@ public class PlayerableChar : BattleChar
 
     private void ActionMove(TileBase tileBase)
     {
-        BattleMgr.Instance.sightMgr.UpdateFog();
         BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
         MoveMode();
         StartCoroutine(CoMove());
@@ -315,5 +317,17 @@ public class PlayerableChar : BattleChar
         status = PlayerStatus.TurnEnd;
         ren.material.color = Color.gray;
         EventBusMgr.Publish(EventType.EndPlayer);
+    }
+
+    public void GetDamage(int dmg)
+    {
+        var hp = characterStats.currentHp;
+        hp -= dmg;
+        characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
+
+        Debug.Log($"{characterStats.gameObject.name}은 {dmg} 데미지를 입어 {characterStats.currentHp}가 되었다.");
+
+        if (characterStats.currentHp == 0)
+            Destroy(gameObject);
     }
 }

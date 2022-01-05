@@ -9,10 +9,10 @@ public class TileMgr : MonoBehaviour
     public GameObject walls;
 
     public GameObject tilePrefab;
+    public GameObject wallPrefab;
 
     public Dictionary<Vector3, TileBase> tileDics = new Dictionary<Vector3, TileBase>();
     public Dictionary<Vector3, TileBase> wallDics = new Dictionary<Vector3, TileBase>();
-    public Dictionary<Vector2, List<TileBase>> tileVec2Dics = new Dictionary<Vector2, List<TileBase>>();
 
     public static int MAX_X_IDX = 24;
     public static int MAX_Z_IDX = 24;
@@ -49,14 +49,6 @@ public class TileMgr : MonoBehaviour
                 pair.Value.wallTile = wallDics[wallIdx];
         }
 
-        foreach (var pair in tileDics)
-        {
-            var tileIdx = new Vector2(pair.Key.x, pair.Key.z);
-            if (!tileVec2Dics.ContainsKey(tileIdx))
-                tileVec2Dics.Add(tileIdx, new List<TileBase>());
-            tileVec2Dics[tileIdx].Add(pair.Value);
-        }
-
         InitAdjTile();
     }
 
@@ -67,6 +59,12 @@ public class TileMgr : MonoBehaviour
             for (var j = 0; j < MAX_X_IDX; ++j)
             {
                 var go = Instantiate(tilePrefab, new Vector3(j, 0, i), Quaternion.identity);
+
+                if (Random.Range(0, 100) < 5)
+                {
+                    var wallGo = Instantiate(wallPrefab, new Vector3(j, 1, i), Quaternion.identity);
+                    wallGo.transform.SetParent(walls.transform);
+                }
                 go.transform.SetParent(tiles.transform);
             }
         }

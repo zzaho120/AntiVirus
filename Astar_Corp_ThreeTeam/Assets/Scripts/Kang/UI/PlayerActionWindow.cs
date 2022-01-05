@@ -13,11 +13,7 @@ public class PlayerActionWindow : GenericWindow
     public override void Open()
     {
         base.Open();
-        foreach (var btn in buttons)
-        {
-            btn.SetActive(true);
-        }
-        directionBtns.SetActive(false);
+        OnActiveDirectionBtns(true, false);
 
         if (!inited)
         {
@@ -44,11 +40,7 @@ public class PlayerActionWindow : GenericWindow
     public void OnClickAttackBtn()
     {
         curChar.AttackMode();
-        foreach (var btn in buttons)
-        {
-            btn.SetActive(false);
-        }
-        directionBtns.SetActive(true);
+        OnActiveDirectionBtns(false, true);
     }
 
     public void OnClickDirectionBtn(int direction)
@@ -56,10 +48,9 @@ public class PlayerActionWindow : GenericWindow
         curChar.direction = (DirectionType)(1 << direction);
         BattleMgr.Instance.sightMgr.UpdateFrontSight(curChar);
         Close();
-        Debug.Log(curChar.direction);
 
-        if (curChar.status == PlayerStatus.Alert)
-            EventBusMgr.Publish(EventType.EndPlayer);
+        if (curChar.status == PlayerStatus.Alert || curChar.status == PlayerStatus.Wait)
+            curChar.EndPlayer();
     }
 
     public void OnClickCancelBtn()
@@ -83,10 +74,15 @@ public class PlayerActionWindow : GenericWindow
     public void OnClickAlertBtn()
     {
         curChar.AlertMode();
+        OnActiveDirectionBtns(false, true);
+    }
+
+    public void OnActiveDirectionBtns(bool enableBtns, bool enableDir)
+    {
         foreach (var btn in buttons)
         {
-            btn.SetActive(false);
+            btn.SetActive(enableBtns);
         }
-        directionBtns.SetActive(true);
+        directionBtns.SetActive(enableDir);
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public enum EventType
 {
-    Init, StartPlayer, EndPlayer, GetFrontSight, StartEnemy, EndEnemy, ChangeTurn
+    Init, StartPlayer, EndPlayer, GetFrontSight, StartEnemy, EndEnemy, ChangeTurn, EndGame
 }
 
 public static class EventBusMgr

@@ -40,8 +40,11 @@ public class BattleIdleState : StateBase
 
             if (!isSetPath)
             {
-                isSetPath = true;
-                nextTile = pathList.Pop().tileBase.tileIdx;
+                isSetPath = true; 
+                if (pathList.Count == 0)
+                    EventBusMgr.Publish(EventType.EndEnemy);
+                else
+                    nextTile = pathList.Pop().tileBase.tileIdx;
             }
 
             if (timer < 0.1f)
@@ -56,8 +59,7 @@ public class BattleIdleState : StateBase
                 isSetPath = false;
             }
 
-            if (pathList.Count == 0)
-                EventBusMgr.Publish(EventType.EndEnemy);
+            
         }
         else
             fsm.ChangeState((int)BattleMonState.Move);
@@ -68,9 +70,10 @@ public class BattleIdleState : StateBase
         var randomX = Random.Range(-moveRange, moveRange);
         var randomZ = Random.Range(-moveRange, moveRange);
         var currentTile = monster.currentTile.tileIdx;
-        var endTile = currentTile + new Vector3(randomX, 0, randomZ);
+        var endTile = new Vector3(Mathf.Clamp(currentTile.x + randomX, 0, 23), 0, Mathf.Clamp(currentTile.z + randomZ, 0, 23));
         timer = 0;
 
+        Debug.Log(endTile);
         if (BattleMgr.Instance.sightMgr.totalSightDics.ContainsKey(new Vector2(endTile.x, endTile.z)))
         {
             var aStar = BattleMgr.Instance.aStar;

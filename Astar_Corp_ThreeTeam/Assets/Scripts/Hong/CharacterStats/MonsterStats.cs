@@ -71,7 +71,7 @@ public class MonsterStats : MonoBehaviour
         }
     }
 
-    private int CloseAttackAp
+    public int CloseAttackAp
     {
         get
         {
@@ -79,7 +79,7 @@ public class MonsterStats : MonoBehaviour
         }
     }
 
-    private int Damage
+    public int Damage
     {
         get
         {
@@ -159,10 +159,10 @@ public class MonsterStats : MonoBehaviour
         get { return virus.resistCharge; }
     }
 
-    private void Awake()
-    {
-        Init();
-    }
+    //private void Awake()
+    //{
+    //    Init();
+    //}
 
     public void Init()
     {

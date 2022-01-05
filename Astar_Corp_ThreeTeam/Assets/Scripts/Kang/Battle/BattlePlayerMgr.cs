@@ -33,7 +33,7 @@ public class BattlePlayerMgr : MonoBehaviour
         var turnEndCount = 0; 
         foreach (var player in playerableChars)
         {
-            if (player.status == PlayerStatus.TurnEnd)
+            if (player.status == PlayerStatus.TurnEnd || player.status == PlayerStatus.Alert)
                 turnEndCount++;
         }
 
