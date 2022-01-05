@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public enum BunkerKinds
@@ -20,8 +21,8 @@ public class BunkerMgr : MonoBehaviour
     public InventoryMgr inventoryMgr;
 
     public Camera camera;
-    GameObject selectedBunker;
-    BunkerKinds currentBunkerKind;
+    public GameObject selectedBunker;
+    public BunkerKinds currentBunkerKind;
     int currentWinId;
 
     public GameObject gardenPrefab;
@@ -30,9 +31,11 @@ public class BunkerMgr : MonoBehaviour
     public List<GameObject> bunkerObjs;
 
     int bunkerCount;
-    int currentBunkerIndex;
+    public int currentBunkerIndex;
 
     bool isOpenWin;
+
+    public Mode currentMode;
 
     private void Start()
     {
@@ -95,13 +98,16 @@ public class BunkerMgr : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (multiTouch.Tap && !camController.isZoomIn)
+        if (multiTouch.Tap) currentMode = Mode.Touch;
+        else if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) currentMode = Mode.Mouse;
+
+        Ray ray;
+        if (currentMode == Mode.Touch)
         {
-            Ray ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
+            ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
 
             if (Physics.Raycast(ray, out RaycastHit hitInfo))
             {
-
                 if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
                 {
                     var script = hitInfo.collider.gameObject.GetComponent<BunkerBase>();
@@ -133,6 +139,44 @@ public class BunkerMgr : MonoBehaviour
                 }
             }
         }
+        else if (currentMode == Mode.Mouse)
+        {
+            ray = camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out RaycastHit hitInfo))
+            {
+                if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
+                {
+                    var script = hitInfo.collider.gameObject.GetComponent<BunkerBase>();
+                    currentBunkerIndex = script.bunkerId;
+
+                    selectedBunker = hitInfo.collider.gameObject;
+                }
+
+                //현재 벙커 종류.
+                if (hitInfo.collider.gameObject.GetComponent<GardenRoom>() != null)
+                {
+                    currentBunkerKind = BunkerKinds.Garden;
+                    camController.isCurrentEmpty = false;
+                }
+                else if (hitInfo.collider.gameObject.GetComponent<OperatingRoom>() != null)
+                {
+                    currentBunkerKind = BunkerKinds.OperatingRoom;
+                    camController.isCurrentEmpty = false;
+                }
+                else if (hitInfo.collider.gameObject.GetComponent<StoreRoom>() != null)
+                {
+                    currentBunkerKind = BunkerKinds.Store;
+                    camController.isCurrentEmpty = false;
+                }
+                else
+                {
+                    currentBunkerKind = BunkerKinds.None;
+                    camController.isCurrentEmpty = true;
+                }
+            }
+        }
+        currentMode = Mode.None;
     }
 
     public void OpenWindow()
@@ -155,6 +199,15 @@ public class BunkerMgr : MonoBehaviour
         }
     }
 
+    public void OpenConstructionWin()
+    {
+        if (!camController.isZoomIn)
+        {
+            currentWinId = (int)BunkerWindows.ConstructionWindow - 1;
+            windowManager.Open(currentWinId);
+        }
+    }
+
     public void CloseWindow()
     {
         if (/*!camController.isZoomIn &&*/ currentWinId != -1)
@@ -169,6 +222,7 @@ public class BunkerMgr : MonoBehaviour
 
     public void CreateGarden()
     {
+        Debug.Log($"selectedBunker is null :{selectedBunker == null}");
         if (selectedBunker == null) return;
         currentBunkerKind = BunkerKinds.Garden;
 
@@ -181,6 +235,7 @@ public class BunkerMgr : MonoBehaviour
 
         Destroy(selectedBunker);
         selectedBunker = go;
+        camController.currentObject = selectedBunker;
 
         OpenWindow();
     }
@@ -200,6 +255,7 @@ public class BunkerMgr : MonoBehaviour
 
         Destroy(selectedBunker);
         selectedBunker = go;
+        camController.currentObject = selectedBunker;
 
         OpenWindow();
     }
@@ -218,6 +274,7 @@ public class BunkerMgr : MonoBehaviour
 
         Destroy(selectedBunker);
         selectedBunker = go;
+        camController.currentObject = selectedBunker;
 
         OpenWindow();
     }

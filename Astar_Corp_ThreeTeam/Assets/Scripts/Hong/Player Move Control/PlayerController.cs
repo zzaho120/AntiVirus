@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class CharacterInfo
 {
@@ -13,6 +14,8 @@ public class CharacterInfo
 public class PlayerController : MonoBehaviour
 {
     //지은.
+    public GameObject ui;
+
     public CharacterInfo character;
     public MultiTouch multiTouch;
     public NonBattleMgr manager;
@@ -68,16 +71,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (agent.velocity.magnitude > 0.15f) //움직이고 있을 때.
-        {
-            PlayerPrefs.SetFloat("p_x", transform.position.x);
-            PlayerPrefs.SetFloat("p_y", transform.position.y);
-            PlayerPrefs.SetFloat("p_z", transform.position.z);
-        }
+        //if (Input.touchCount > 0 && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+        //    return;
 
         // 뉴인풋시스템
-        if (multiTouch.Tap &&
-            !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)
+        if (Input.touchCount == 1 && !this.IsPointerOverUIObject()
             /*&& timeController.isPause == false*/)
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
@@ -99,8 +97,8 @@ public class PlayerController : MonoBehaviour
 
                     //벙커 팝업창
                     var windowId = (int)Windows.BunkerWindow - 1;
-                    //nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
-                    MoveToBunker();
+                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    //MoveToBunker();
                 }
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
                    raycastHit.collider.gameObject.name.Equals("Plane"))
@@ -140,8 +138,8 @@ public class PlayerController : MonoBehaviour
 
                     //벙커 팝업창
                     var windowId = (int)Windows.BunkerWindow - 1;
-                    //nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
-                    MoveToBunker();
+                    nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    //MoveToBunker();
                 }
 
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
@@ -155,6 +153,13 @@ public class PlayerController : MonoBehaviour
                 agent.SetDestination(raycastHit.point);
             }
         }
+        if (agent.velocity.magnitude > 0.15f) //움직이고 있을 때.
+        {
+            PlayerPrefs.SetFloat("p_x", transform.position.x);
+            PlayerPrefs.SetFloat("p_y", transform.position.y);
+            PlayerPrefs.SetFloat("p_z", transform.position.z);
+        }
+
         // 일시정지 상태일 때 목적지 값 변경 (현재 위치로)
         if (timeController.isPause)
         {
@@ -203,5 +208,42 @@ public class PlayerController : MonoBehaviour
     {
         character.stemina -= i;
         Debug.Log($"stemina : {character.stemina}");
+    }
+
+
+    public bool IsPointerOverUIObject(Vector2 touchPos)
+    {
+        PointerEventData eventDataCurrentPosition
+            = new PointerEventData(EventSystem.current);
+
+        eventDataCurrentPosition.position = touchPos;
+
+        List<RaycastResult> results = new List<RaycastResult>();
+
+
+        EventSystem.current
+        .RaycastAll(eventDataCurrentPosition, results);
+
+        return results.Count > 0;
+    }
+
+    private bool IsPointerOverUIObject()
+    {
+        // get current pointer position and raycast it
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+
+        // check if the target is in the UI
+        foreach (RaycastResult r in results)
+        {
+            bool isUIClick = r.gameObject.transform.IsChildOf(this.ui.transform);
+            if (isUIClick)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

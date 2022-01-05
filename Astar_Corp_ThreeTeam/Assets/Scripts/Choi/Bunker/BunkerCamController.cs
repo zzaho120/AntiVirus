@@ -2,84 +2,164 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.EventSystems;
+
+public enum Mode
+{ 
+    None,
+    Touch,
+    Mouse
+}
 
 public class BunkerCamController : MonoBehaviour
 {
+    public BunkerMgr bunkerMgr;
     public MultiTouch multiTouch;
-  
-    float duration = 5; // This will be your time in seconds.
+    public Vector3 centerPos;
+
+    float duration = 2; // This will be your time in seconds.
     float smoothness = 0.02f; // This will determine the smoothness of the lerp. Smaller values are smoother. Really it's the time between updates.
 
-    GameObject currentObject;
+    public GameObject currentObject;
     Camera camera;
 
     public bool isZoomIn;
     IEnumerator coroutine;
     Vector3 positionToLook;
-    Vector3 centerPos;
-
+    
     public bool isCurrentEmpty;
 
     public Action OpenWindow;
     public Action CloseWindow;
 
+    public Mode currentMode;
+
     // Start is called before the first frame update
     void Start()
     {
         camera = Camera.main;
-        centerPos = new Vector3(2.412f, 0f, 0f);
+        currentMode = Mode.None;
+        isCurrentEmpty = true;
+
+        centerPos = new Vector3(3.53f, 1f, -0.8213f);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (multiTouch.Tap) currentMode = Mode.Touch;
+        else if( Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) currentMode = Mode.Mouse;
 
-        if (multiTouch.Tap == true)
+        if (currentMode != Mode.None)
         {
+            //Debug.Log("들어왓슴");
+            //Debug.Log($"isZoomIn : {isZoomIn}");
+            //Debug.Log($"isCurrentEmpty : {isCurrentEmpty}");
             if (isZoomIn && isCurrentEmpty)//빈방 줌아웃.
             {
                 RaycastHit hit;
-                Ray ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
-
-                if (Physics.Raycast(ray, out hit))
+                Ray ray;
+                //터치.
+                if (currentMode == Mode.Touch)
                 {
-                    //비어있을때.
-                    if (hit.collider.gameObject.GetComponent<BunkerBase>() != null
-                        && hit.collider.gameObject.GetComponent<GardenRoom>() == null
-                        && hit.collider.gameObject.GetComponent<OperatingRoom>() == null
-                        && hit.collider.gameObject.GetComponent<StoreRoom>() == null)
+                    ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
+                    if (Physics.Raycast(ray, out hit))
                     {
-                        
-                        isZoomIn = false;
-                        CloseWindow();
-                        positionToLook = centerPos;
+                        //비어있을때.
+                        if (hit.collider.gameObject.GetComponent<BunkerBase>() != null
+                            && hit.collider.gameObject.GetComponent<GardenRoom>() == null
+                            && hit.collider.gameObject.GetComponent<OperatingRoom>() == null
+                            && hit.collider.gameObject.GetComponent<StoreRoom>() == null)
+                        {
 
-                        if (coroutine != null) StopCoroutine(coroutine);
-                        coroutine = ZoomOut();
-                        StartCoroutine(coroutine);
+                            isZoomIn = false;
+                            CloseWindow();
+                            positionToLook = centerPos;
+                            currentObject = null;
+
+                            if (coroutine != null) StopCoroutine(coroutine);
+                            coroutine = ZoomOut();
+                            StartCoroutine(coroutine);
+                        }
+                        
                     }
                 }
+                //마우스.
+                else if (currentMode == Mode.Mouse)
+                {
+                    ray = camera.ScreenPointToRay(Input.mousePosition);
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        //비어있을때.
+                        if (hit.collider.gameObject.GetComponent<BunkerBase>() != null
+                            && hit.collider.gameObject.GetComponent<GardenRoom>() == null
+                            && hit.collider.gameObject.GetComponent<OperatingRoom>() == null
+                            && hit.collider.gameObject.GetComponent<StoreRoom>() == null)
+                        {
+
+                            isZoomIn = false;
+                            CloseWindow();
+                            positionToLook = centerPos;
+                            currentObject = null;
+
+                            if (coroutine != null) StopCoroutine(coroutine);
+                            coroutine = ZoomOut();
+                            StartCoroutine(coroutine);
+                        }
+                        else if (hit.collider.gameObject.GetComponent<GardenRoom>() != null)
+                        { 
+                        
+                        }
+                    }
+                }
+
             }
 
-            else if(!isZoomIn)//줌인.
+            else if (!isZoomIn)//줌인.
             {
                 RaycastHit hit;
-                Ray ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
-
-                if (Physics.Raycast(ray, out hit))
+                Ray ray;
+                //터치.
+                if (currentMode == Mode.Touch)
                 {
-                    if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
-                    {
-                        Invoke("CompleteZoomIn", 0.2f);
-                        positionToLook = hit.collider.transform.position;
+                    ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
 
-                        if (coroutine != null) StopCoroutine(coroutine);
-                        coroutine = ZoomIn();
-                        StartCoroutine(coroutine);
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
+                        {
+                            Invoke("CompleteZoomIn", 0.2f);
+                            positionToLook = hit.collider.transform.position;
+                            currentObject = hit.collider.transform.gameObject;
+
+                            if (coroutine != null) StopCoroutine(coroutine);
+                            coroutine = ZoomIn();
+                            StartCoroutine(coroutine);
+                        }
+                    }
+                }
+                //마우스.
+                else if (currentMode == Mode.Mouse)
+                {
+                    ray = camera.ScreenPointToRay(Input.mousePosition);
+
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
+                        {
+                            Invoke("CompleteZoomIn", 0.2f);
+                            positionToLook = hit.collider.transform.position;
+                            currentObject = hit.collider.transform.gameObject;
+
+                            if (coroutine != null) StopCoroutine(coroutine);
+                            coroutine = ZoomIn();
+                            StartCoroutine(coroutine);
+                        }
                     }
                 }
             }
         }
+        currentMode = Mode.None;
     }
 
     public void CompleteZoomIn()
@@ -94,12 +174,14 @@ public class BunkerCamController : MonoBehaviour
         float progress = 0; //This float will serve as the 3rd parameter of the lerp function.
         float increment = smoothness / duration; //The amount of change to apply.
 
-        float t = 0f;
-        while (progress < 0.2)
+        while (progress < 1)
         {
-            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, 15f, progress);
-            Quaternion lookOnLook = Quaternion.LookRotation(positionToLook - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, progress);
+            camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, 0.4f, progress);
+            //Quaternion lookOnLook = Quaternion.LookRotation(positionToLook - transform.position);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, progress);
+            var x = Mathf.Lerp(transform.position.x, currentObject.transform.position.x, progress);
+            var y = Mathf.Lerp(transform.position.y, currentObject.transform.position.y, progress);
+            transform.position = new Vector3(x, y, transform.position.z);
 
             progress += increment;
 
@@ -111,12 +193,15 @@ public class BunkerCamController : MonoBehaviour
     {
         float progress = 0; //This float will serve as the 3rd parameter of the lerp function.
         float increment = smoothness / duration; //The amount of change to apply.
-        while (progress < 0.2)
+        while (progress < 1)
         {
-            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, 60f, progress);
-            Quaternion lookOnLook = Quaternion.LookRotation(positionToLook - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, progress);
-           
+            camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, 5f, progress);
+            //Quaternion lookOnLook = Quaternion.LookRotation(positionToLook - transform.position);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, progress);
+            var x = Mathf.Lerp(transform.position.x, centerPos.x, progress);
+            var y = Mathf.Lerp(transform.position.y, centerPos.y, progress);
+            transform.position = new Vector3(x, y, transform.position.z);
+
             progress += increment;
 
             yield return new WaitForSeconds(smoothness);

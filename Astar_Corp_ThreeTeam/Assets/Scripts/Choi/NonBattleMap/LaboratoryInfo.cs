@@ -138,6 +138,8 @@ public class LaboratoryInfo : MonoBehaviour
                         var level = element.Value.virusPanalty[virusType].penaltyLevel;
                         element.Value.virusPanalty[virusType].Calculation(level + 1);
                     }
+                    Debug.Log($"level : {playerDataMgr.currentSquad[0].virusPanalty[virusType].level}");
+                    Debug.Log($"gauge : {playerDataMgr.currentSquad[0].virusPanalty[virusType].gauge}");
                 }
 
                 if (step != 1)
