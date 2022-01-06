@@ -10,6 +10,7 @@ public enum BunkerKinds
     Garden,
     OperatingRoom,
     Store,
+    Garage,
 }
 
 public class BunkerMgr : MonoBehaviour
@@ -20,6 +21,8 @@ public class BunkerMgr : MonoBehaviour
     public SquadMgr squadMgr;
     public InventoryMgr inventoryMgr;
 
+    //public GameObject bunkerGroup;
+
     public Camera camera;
     public GameObject selectedBunker;
     public BunkerKinds currentBunkerKind;
@@ -28,6 +31,7 @@ public class BunkerMgr : MonoBehaviour
     public GameObject gardenPrefab;
     public GameObject operatingRoomPrefab;
     public GameObject storePrefab;
+    public GameObject garagePrefab;
     public List<GameObject> bunkerObjs;
 
     int bunkerCount;
@@ -83,6 +87,9 @@ public class BunkerMgr : MonoBehaviour
                     case BunkerKinds.Store:
                         CreateStore();
                         break;
+                    case BunkerKinds.Garage:
+                        CreateGarage();
+                        break;
                 }
                 Debug.Log($"{str} :{bunkerKinds.ToString()}");
             }
@@ -132,6 +139,11 @@ public class BunkerMgr : MonoBehaviour
                     currentBunkerKind = BunkerKinds.Store;
                     camController.isCurrentEmpty = false;
                 }
+                else if (hitInfo.collider.gameObject.GetComponent<Garage>() != null)
+                {
+                    currentBunkerKind = BunkerKinds.Garage;
+                    camController.isCurrentEmpty = false;
+                }
                 else
                 {
                     currentBunkerKind = BunkerKinds.None;
@@ -169,6 +181,11 @@ public class BunkerMgr : MonoBehaviour
                     currentBunkerKind = BunkerKinds.Store;
                     camController.isCurrentEmpty = false;
                 }
+                else if (hitInfo.collider.gameObject.GetComponent<Garage>() != null)
+                {
+                    currentBunkerKind = BunkerKinds.Garage;
+                    camController.isCurrentEmpty = false;
+                }
                 else
                 {
                     currentBunkerKind = BunkerKinds.None;
@@ -195,6 +212,12 @@ public class BunkerMgr : MonoBehaviour
         {
             inventoryMgr.Init();
             currentWinId = (int)BunkerWindows.InventoryWindow - 1;
+            windowManager.Open(currentWinId);
+        }
+        else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Garage)
+        {
+            inventoryMgr.Init();
+            currentWinId = (int)BunkerWindows.GarageWindow - 1;
             windowManager.Open(currentWinId);
         }
     }
@@ -230,11 +253,13 @@ public class BunkerMgr : MonoBehaviour
         PlayerPrefs.SetInt(str, (int)currentBunkerKind);
 
         var go = Instantiate(gardenPrefab, selectedBunker.transform.position, Quaternion.identity);
+        
         var script = go.GetComponent<GardenRoom>();
         script.bunkerId = currentBunkerIndex;
 
         Destroy(selectedBunker);
         selectedBunker = go;
+        bunkerObjs[script.bunkerId] = go;
         camController.currentObject = selectedBunker;
 
         OpenWindow();
@@ -255,6 +280,7 @@ public class BunkerMgr : MonoBehaviour
 
         Destroy(selectedBunker);
         selectedBunker = go;
+        bunkerObjs[script.bunkerId] = go;
         camController.currentObject = selectedBunker;
 
         OpenWindow();
@@ -274,6 +300,27 @@ public class BunkerMgr : MonoBehaviour
 
         Destroy(selectedBunker);
         selectedBunker = go;
+        bunkerObjs[script.bunkerId] = go;
+        camController.currentObject = selectedBunker;
+
+        OpenWindow();
+    }
+
+    public void CreateGarage()
+    {
+        if (selectedBunker == null) return;
+        currentBunkerKind = BunkerKinds.Garage;
+
+        string str = $"BunkerKind{currentBunkerIndex}";
+        PlayerPrefs.SetInt(str, (int)currentBunkerKind);
+
+        var go = Instantiate(garagePrefab, selectedBunker.transform.position, Quaternion.identity);
+        var script = go.GetComponent<Garage>();
+        script.bunkerId = currentBunkerIndex;
+
+        Destroy(selectedBunker);
+        selectedBunker = go;
+        bunkerObjs[script.bunkerId] = go;
         camController.currentObject = selectedBunker;
 
         OpenWindow();

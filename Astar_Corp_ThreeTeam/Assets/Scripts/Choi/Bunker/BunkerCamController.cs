@@ -14,6 +14,7 @@ public enum Mode
 public class BunkerCamController : MonoBehaviour
 {
     public BunkerMgr bunkerMgr;
+    public LockMgr lockMgr;
     public MultiTouch multiTouch;
     public Vector3 centerPos;
 
@@ -21,7 +22,7 @@ public class BunkerCamController : MonoBehaviour
     float smoothness = 0.02f; // This will determine the smoothness of the lerp. Smaller values are smoother. Really it's the time between updates.
 
     public GameObject currentObject;
-    Camera camera;
+    public Camera camera;
 
     public bool isZoomIn;
     IEnumerator coroutine;
@@ -128,7 +129,7 @@ public class BunkerCamController : MonoBehaviour
                     {
                         if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
                         {
-                            Invoke("CompleteZoomIn", 0.2f);
+                            Invoke("CompleteZoomIn", .6f);
                             positionToLook = hit.collider.transform.position;
                             currentObject = hit.collider.transform.gameObject;
 
@@ -147,7 +148,7 @@ public class BunkerCamController : MonoBehaviour
                     {
                         if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
                         {
-                            Invoke("CompleteZoomIn", 0.2f);
+                            Invoke("CompleteZoomIn", .6f);
                             positionToLook = hit.collider.transform.position;
                             currentObject = hit.collider.transform.gameObject;
 
@@ -174,7 +175,8 @@ public class BunkerCamController : MonoBehaviour
         float progress = 0; //This float will serve as the 3rd parameter of the lerp function.
         float increment = smoothness / duration; //The amount of change to apply.
 
-        while (progress < 1)
+        lockMgr.CloseLockImg();
+        while (progress < .35)
         {
             camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, 0.4f, progress);
             //Quaternion lookOnLook = Quaternion.LookRotation(positionToLook - transform.position);
@@ -191,9 +193,10 @@ public class BunkerCamController : MonoBehaviour
 
     IEnumerator ZoomOut()
     {
+        lockMgr.OpenLockImg();
         float progress = 0; //This float will serve as the 3rd parameter of the lerp function.
         float increment = smoothness / duration; //The amount of change to apply.
-        while (progress < 1)
+        while (progress < .35)
         {
             camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, 5f, progress);
             //Quaternion lookOnLook = Quaternion.LookRotation(positionToLook - transform.position);

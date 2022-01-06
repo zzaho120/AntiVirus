@@ -486,6 +486,8 @@ public class PlayerDataMgr : MonoBehaviour
             stat.character = character;
             stat.character.id = info.characterId;
 
+            //이거 추가함.
+            if (!stat.virusPanalty.ContainsKey("E")) stat.VirusPanaltyInit();
             stat.virusPanalty["E"].penaltyGauge = saveData.gaugeE[num];
             stat.virusPanalty["B"].penaltyGauge = saveData.gaugeB[num];
             stat.virusPanalty["P"].penaltyGauge = saveData.gaugeP[num];
