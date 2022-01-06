@@ -139,4 +139,11 @@ public class BattlePlayerMgr : MonoBehaviour
             }
         }
     }
+
+    public void RemovePlayer(PlayerableChar playerableChar)
+    {
+        var idx = playerableChars.IndexOf(playerableChar);
+        playerableChars.RemoveAt(idx);
+        Destroy(playerableChar.gameObject);
+    }
 }

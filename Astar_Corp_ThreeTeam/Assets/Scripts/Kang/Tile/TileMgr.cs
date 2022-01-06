@@ -59,13 +59,13 @@ public class TileMgr : MonoBehaviour
             for (var j = 0; j < MAX_X_IDX; ++j)
             {
                 var go = Instantiate(tilePrefab, new Vector3(j, 0, i), Quaternion.identity);
-
+                go.transform.SetParent(tiles.transform);
                 if (Random.Range(0, 100) < 5)
                 {
+                    if ((i > 9 && i < 12) && (j > 9 && j < 12)) continue;
                     var wallGo = Instantiate(wallPrefab, new Vector3(j, 1, i), Quaternion.identity);
                     wallGo.transform.SetParent(walls.transform);
                 }
-                go.transform.SetParent(tiles.transform);
             }
         }
     }

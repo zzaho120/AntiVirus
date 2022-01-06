@@ -42,8 +42,7 @@ public class BattleMonsterMgr : MonoBehaviour
     public void CheckEndTurn(object empty)
     {
         monsterIdx++;
-
-        if (monsterIdx == monsters.Count)
+        if (monsterIdx >= monsters.Count)
             EventBusMgr.Publish(EventType.ChangeTurn);
     }
 
@@ -66,5 +65,12 @@ public class BattleMonsterMgr : MonoBehaviour
             if (monster.target == null)
                 monster.ren.material.color = Color.red;
         }
+    }
+
+    public void RemoveMonster(MonsterChar monster)
+    {
+        var idx = monsters.IndexOf(monster);
+        monsters.RemoveAt(idx);
+        Destroy(monster.gameObject);
     }
 }

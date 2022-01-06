@@ -32,10 +32,7 @@ public class MonsterChar : BattleChar
         window.SetMsgText($"{monsterStats.gameObject.name} is damaged {dmg}Point - HP : {monsterStats.currentHp}");
 
         if (monsterStats.currentHp == 0)
-        {
-            BattleMgr.Instance.monsterMgr.monsters.Remove(this);
-            Destroy(gameObject);
-        }
+            EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 1 });
     }
 
     public void MonsterUpdate()

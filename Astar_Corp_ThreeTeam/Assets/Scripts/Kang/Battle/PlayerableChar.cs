@@ -338,12 +338,11 @@ public class PlayerableChar : BattleChar
             characterStats.virusPanalty[virusType].Calculation(monsterStats.virusLevel);
         }
 
-
         var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-        window.SetMsgText($"{characterStats.gameObject.name} is damaged {dmg} Point - HP : {characterStats.currentHp}");
+        window.SetMsgText($"Player is damaged {dmg} Point - HP : {characterStats.currentHp}");
 
         if (characterStats.currentHp == 0)
-            Destroy(gameObject);
+            EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 0 });
     }
 
     public void ReloadWeapon()

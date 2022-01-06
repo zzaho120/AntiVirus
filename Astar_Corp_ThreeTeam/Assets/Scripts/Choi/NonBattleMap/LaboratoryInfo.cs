@@ -51,6 +51,7 @@ public class LaboratoryInfo : MonoBehaviour
             var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
             playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
         }
+        playerDataMgr.virusAreaType = virusType;
 
         if (other.gameObject.CompareTag("Player") && player != null)
         {
@@ -58,7 +59,6 @@ public class LaboratoryInfo : MonoBehaviour
 
             if (distance < radiusZone3 && isActiveZone3)
             {
-                Debug.Log("!");
                 playerDataMgr.virusAreaLevel = 1;
 
                 timer += Time.deltaTime;
@@ -93,7 +93,6 @@ public class LaboratoryInfo : MonoBehaviour
             }
             else if (distance < radiusZone2 && isActiveZone2)
             {
-                Debug.Log("!");
                 playerDataMgr.virusAreaLevel = 2;
                 timer += Time.deltaTime;
                 if (timer > 1)
@@ -127,7 +126,6 @@ public class LaboratoryInfo : MonoBehaviour
             }
             else if (distance < radiusZone1)
             {
-                Debug.Log("!");
                 playerDataMgr.virusAreaLevel = 3;
                 timer += Time.deltaTime;
                 if (timer > 1)

@@ -71,17 +71,13 @@ public class BattleMgr : Singleton<BattleMgr>
         sightMgr.Init();
         aStar.Init();
 
-        // 프로토타입용
-        if (playerDataMgr != null)
-        {
-
-        }
-
         turn = BattleTurn.Player;
         var window = battleWindowMgr.Open((int)BattleWindows.TurnNotice - 1).GetComponent<TurnNoticeWindow>();
         window.NoticeTurn(turn);
 
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
+        EventBusMgr.Subscribe(EventType.DestroyChar, DestroyChar);
+
         EventBusMgr.Publish(EventType.StartPlayer);
     }
 
@@ -113,5 +109,32 @@ public class BattleMgr : Singleton<BattleMgr>
                 break;
         }
         window.NoticeTurn(turn);
+    }
+
+    public void DestroyChar(object[] param)
+    {
+        var tempType = (int)param[1];
+        switch (tempType)
+        {
+            case 0:
+                var player = (PlayerableChar)param[0];
+                playerMgr.RemovePlayer(player);
+                break;
+            case 1:
+                var monster = (MonsterChar)param[0];
+                monsterMgr.RemoveMonster(monster);
+                break;
+        }
+
+        CheckGameover();
+    }
+
+    private void CheckGameover()
+    {
+        if (playerMgr.playerableChars.Count == 0 || monsterMgr.monsters.Count == 0)
+        {
+            Time.timeScale = 0;
+            // 여기에 창 추가
+        }
     }
 }

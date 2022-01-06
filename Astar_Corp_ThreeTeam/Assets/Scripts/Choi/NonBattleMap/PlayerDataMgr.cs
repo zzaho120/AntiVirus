@@ -72,6 +72,7 @@ public class PlayerDataMgr : MonoBehaviour
 
     // 주수, 프로토 타입용
     public int virusAreaLevel;
+    public string virusAreaType;
 
     private void Start()
     {
