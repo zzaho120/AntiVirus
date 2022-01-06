@@ -37,6 +37,8 @@ public class TrunkMgr : MonoBehaviour
         var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
         playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
 
+        Debug.Log($"Count : {playerDataMgr.currentEquippables.Count}");
+        
         int i = 0;
         foreach (var element in playerDataMgr.currentEquippables)
         {

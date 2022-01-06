@@ -29,10 +29,10 @@ public class PlayerController : MonoBehaviour
     //public GameObject panel;  //나중에 Fadeout 효과 넣을때
     [HideInInspector]
     public bool isMove;//지은.
+    public bool isBunkerClikable;
 
     float pX, pY, pZ;
     bool saveMode;
-
     float originAgentSpeed;
     
     // to set layers
@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
             }
             if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
             {
-                if (raycastHit.collider.gameObject.name.Equals("Bunker"))
+                if (raycastHit.collider.gameObject.name.Equals("Bunker") && isBunkerClikable)
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
                     pY = raycastHit.collider.gameObject.transform.position.y;
@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
             {
                 // 벙커로 이동
-                if (raycastHit.collider.gameObject.name.Equals("Bunker"))
+                if (raycastHit.collider.gameObject.name.Equals("Bunker") && isBunkerClikable)
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
                     pY = raycastHit.collider.gameObject.transform.position.y;

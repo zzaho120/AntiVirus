@@ -11,8 +11,7 @@ public class NonBattleMgr : MonoBehaviour
     public List<GameObject> virusZones1;
 
     public GameObject monsterAreaPrefab;
-    public GameObject eliteMonsterPrefab;
-
+    
     //연구소 영역.
     float Zone2Magnifi;
     float Zone3Magnifi;
@@ -21,9 +20,7 @@ public class NonBattleMgr : MonoBehaviour
     //몬스터 영역.
     int monsterAreaCount;
     MonsterPool poolInfo;
-    //엘리트 몬스터.
-    int eliteMonsterCount;
-
+    
     //마크 관리.
     public List<Vector3> markList;
 
@@ -40,8 +37,7 @@ public class NonBattleMgr : MonoBehaviour
         poolInfo = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
         monsterAreaCount = poolInfo.pools.Length;
         //monsterAreaCount = 5;
-        eliteMonsterCount = 5;
-
+        
         Zone2Magnifi = 2f;
         Zone3Magnifi = 4f;
 
@@ -142,40 +138,6 @@ public class NonBattleMgr : MonoBehaviour
                 go.transform.SetParent(GameObject.Find("MonsterArea").transform);   // 부모오브젝트 설정
                 //go.transform.localScale = new Vector3(randScale, randScale, randScale);
             }
-            //EliteMonster 생성.
-            for (int j = 0; j < eliteMonsterCount; j++)
-            {
-                int randX;
-                int randomIndex;
-                Vector3 position;
-
-                var radius = monsterAreaPrefab.GetComponent<SphereCollider>().radius;
-
-                var eliteMonsterLayer = LayerMask.GetMask("EliteMonster");
-                var facilitiesLayer = LayerMask.GetMask("facilities");
-                var virusZone = LayerMask.GetMask("VirusZone");
-                var playerLayer = LayerMask.GetMask("Player");
-                var boundaryLayer = LayerMask.GetMask("Boundary");
-                do
-                {
-                randomIndex = UnityEngine.Random.Range(0, laboratoryObjs.Count);
-                var randLaboratoryPos = laboratoryObjs[randomIndex].transform.position;
-
-                randX = UnityEngine.Random.Range(10, 20);
-                var pos = Random.onUnitSphere * randX + randLaboratoryPos;
-                position = new Vector3(pos.x, 0, pos.z);
-
-                } while ((Physics.OverlapSphere(position, radius, playerLayer).Length != 0)
-                || (Physics.OverlapSphere(position, radius, eliteMonsterLayer).Length != 0)
-                || (Physics.OverlapSphere(position, radius, boundaryLayer).Length != 0));
-
-                string str = $"EliteMonsterX{j}";
-                PlayerPrefs.SetFloat(str, position.x);
-                str = $"EliteMonsterZ{j}";
-                PlayerPrefs.SetFloat(str, position.z);
-                
-                var go = Instantiate(eliteMonsterPrefab, position, Quaternion.identity);
-            }
         }
         else//이어하기.
         {
@@ -235,18 +197,6 @@ public class NonBattleMgr : MonoBehaviour
                 str = $"MonsterAreaScale{j}";
                 var randScale = PlayerPrefs.GetInt(str);
                 //go.transform.localScale = new Vector3(randScale, randScale, randScale);
-            }
-            //EliteMonster 생성.
-            for (int j = 0; j < eliteMonsterCount; j++)
-            {
-                string str = $"EliteMonsterX{j}";
-                var randX = PlayerPrefs.GetFloat(str);
-
-                str = $"EliteMonsterZ{j}";
-                var randZ = PlayerPrefs.GetFloat(str);
-
-                var go = Instantiate(eliteMonsterPrefab, new Vector3(randX, 0, randZ), Quaternion.identity);             // 부모오브젝트
-
             }
         }
 
