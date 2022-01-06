@@ -58,7 +58,10 @@ public class LaboratoryInfo : MonoBehaviour
 
             if (distance < radiusZone3 && isActiveZone3)
             {
-                timer+=Time.deltaTime;
+                Debug.Log("!");
+                playerDataMgr.virusAreaLevel = 1;
+
+                timer += Time.deltaTime;
                 if (timer > 1)
                 {
                     timer = 0;
@@ -90,6 +93,8 @@ public class LaboratoryInfo : MonoBehaviour
             }
             else if (distance < radiusZone2 && isActiveZone2)
             {
+                Debug.Log("!");
+                playerDataMgr.virusAreaLevel = 2;
                 timer += Time.deltaTime;
                 if (timer > 1)
                 {
@@ -122,6 +127,8 @@ public class LaboratoryInfo : MonoBehaviour
             }
             else if (distance < radiusZone1)
             {
+                Debug.Log("!");
+                playerDataMgr.virusAreaLevel = 3;
                 timer += Time.deltaTime;
                 if (timer > 1)
                 {
@@ -159,6 +166,7 @@ public class LaboratoryInfo : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        Debug.Log(other.gameObject.tag);
         if (other.gameObject.CompareTag("Player") && player != null)
         {
             Debug.Log("플레이어가 나갔습니다.");

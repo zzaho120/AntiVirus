@@ -18,11 +18,15 @@ public class BattleMgr : Singleton<BattleMgr>
     public WindowManager battleWindowMgr;
     public SightMgr sightMgr;
     public AStar aStar;
+    public PlayerDataMgr playerDataMgr;
 
     [Header("Turn")]
     public BattleTurn turn;
     public int turnCount;
     public int fieldVirusLevel;
+
+    [Header("Prefabs")]
+    public GameObject playerPrefab;
 
     public override void Awake()
     {
@@ -34,6 +38,27 @@ public class BattleMgr : Singleton<BattleMgr>
         playerMgr = GameObject.FindWithTag("Player").GetComponent<BattlePlayerMgr>();
         monsterMgr = GameObject.FindWithTag("BattleMonster").GetComponent<BattleMonsterMgr>();
         battleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
+
+        var playerDataMgrObj = GameObject.FindWithTag("PlayerDataMgr");
+        var isExistDataMgr = playerDataMgrObj != null;
+        if (isExistDataMgr)
+        {
+            playerDataMgr = GameObject.FindWithTag("PlayerDataMgr").GetComponent<PlayerDataMgr>();
+
+            var vectorList = new List<Vector3>();
+            vectorList.Add(new Vector3(11, 1, 11));
+            vectorList.Add(new Vector3(10, 1, 11));
+            vectorList.Add(new Vector3(11, 1, 10));
+            vectorList.Add(new Vector3(10, 1, 10));
+
+            for (var idx = 0; idx < playerDataMgr.battleSquad.Count; ++idx)
+            {
+                var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.identity);
+                player.transform.SetParent(playerMgr.transform);
+                var playerableChar = player.GetComponent<PlayerableChar>();
+                playerableChar.characterStats = playerDataMgr.battleSquad[idx];
+            }
+        }
     }
 
     public void Start()
@@ -44,12 +69,17 @@ public class BattleMgr : Singleton<BattleMgr>
         sightMgr.Init();
         aStar.Init();
 
+        // 프로토타입용
+        if (playerDataMgr != null)
+        {
+
+        }
+
         turn = BattleTurn.Player;
         var window = battleWindowMgr.Open((int)BattleWindows.TurnNotice - 1).GetComponent<TurnNoticeWindow>();
         window.NoticeTurn(turn);
 
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
-
         EventBusMgr.Publish(EventType.StartPlayer);
     }
 

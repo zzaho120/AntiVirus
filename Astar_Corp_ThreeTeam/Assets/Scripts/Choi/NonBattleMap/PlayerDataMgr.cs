@@ -70,7 +70,10 @@ public class PlayerDataMgr : MonoBehaviour
     public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();//현재 캐릭터들.
     public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.
 
-    private void Awake()
+    // 주수, 프로토 타입용
+    public int virusAreaLevel;
+
+    private void Start()
     {
         scriptableMgr = ScriptableMgr.Instance;
         

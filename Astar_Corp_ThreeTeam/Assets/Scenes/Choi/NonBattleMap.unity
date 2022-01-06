@@ -1141,7 +1141,7 @@ GameObject:
   - component: {fileID: 151139221}
   m_Layer: 15
   m_Name: Character
-  m_TagString: PlayerSight
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1496,7 +1496,6 @@ GameObject:
   - component: {fileID: 222362389}
   - component: {fileID: 222362388}
   - component: {fileID: 222362387}
-  - component: {fileID: 222362385}
   - component: {fileID: 222362386}
   m_Layer: 15
   m_Name: Player
@@ -1505,34 +1504,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &222362385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 222362384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e8ac4f8f3897b2479cbc9e85ef90bb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  None: 0
-  B1: 0
-  B2: 0
-  B3: 0
-  E1: 0
-  E2: 0
-  E3: 0
-  I1: 0
-  I2: 0
-  I3: 0
-  P1: 0
-  P2: 0
-  P3: 0
-  T1: 0
-  T2: 0
-  T3: 0
 --- !u!195 &222362386
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2223,7 +2194,7 @@ GameObject:
   - component: {fileID: 321093387}
   m_Layer: 15
   m_Name: PlayerSights
-  m_TagString: Untagged
+  m_TagString: PlayerSight
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5187,7 +5158,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 222362387}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: "\uC784\uC2DC\uC804\uD22C\uC885\uB8CC"
+        m_MethodName: ChangeBattleScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7596,6 +7567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: []
+  virusAreaLevel: 0
 --- !u!4 &1127415632
 Transform:
   m_ObjectHideFlags: 0

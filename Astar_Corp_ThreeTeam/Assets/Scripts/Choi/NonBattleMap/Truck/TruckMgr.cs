@@ -94,8 +94,4 @@ public class TruckMgr : MonoBehaviour
 
         RemainingNum.text = (4 - playerDataMgr.battleSquad.Count).ToString();
     }
-
-    
-
-
 }

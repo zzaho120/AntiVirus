@@ -164,6 +164,15 @@ public class PlayerController : MonoBehaviour
                     // 렌더러가 활성화 되어있을때만 유효하게
                     if (raycastHit.collider.GetComponent<MeshRenderer>().enabled)
                     {
+                        pX = raycastHit.collider.gameObject.transform.position.x;
+                        pY = raycastHit.collider.gameObject.transform.position.y;
+                        pZ = raycastHit.collider.gameObject.transform.position.z;
+
+                        saveMode = false;
+                        PlayerPrefs.SetFloat("p_x", pX);
+                        PlayerPrefs.SetFloat("p_y", pY);
+                        PlayerPrefs.SetFloat("p_z", pZ);
+
                         var windowId = (int)Windows.MonsterWindow - 1;
                         nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
 
@@ -233,21 +242,13 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void 임시전투종료()
+    public void ChangeBattleScene()
     {
         Debug.Log("전투");
-
         timeController.PauseTime();
         timeController.isPause = false;
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene("BattleMap");
     }
-
-    //IEnumerator CoLoadScene()
-    //{
-    //    yield return new WaitForSeconds(0.3f);
-    //    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    //}
 
     public void MoveToBunker()
     {
