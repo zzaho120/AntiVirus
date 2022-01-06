@@ -21,13 +21,15 @@ public class BunkerMgr : MonoBehaviour
     public SquadMgr squadMgr;
     public InventoryMgr inventoryMgr;
 
-    //public GameObject bunkerGroup;
+    public GameObject createButton;
+    public GameObject destroyButton;
 
     public Camera camera;
     public GameObject selectedBunker;
     public BunkerKinds currentBunkerKind;
     int currentWinId;
 
+    public GameObject emptyPrefab;
     public GameObject gardenPrefab;
     public GameObject operatingRoomPrefab;
     public GameObject storePrefab;
@@ -46,7 +48,7 @@ public class BunkerMgr : MonoBehaviour
         //PlayerPrefs.DeleteAll();
         camController.OpenWindow = OpenWindow;
         camController.CloseWindow = CloseWindow;
-
+        
         currentWinId = -1;
         currentBunkerKind = BunkerKinds.None;
 
@@ -117,6 +119,11 @@ public class BunkerMgr : MonoBehaviour
             {
                 if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
                 {
+                    if (camController.isZoomIn)
+                    {
+                        if(createButton.activeSelf) createButton.SetActive(false);
+                    }
+
                     var script = hitInfo.collider.gameObject.GetComponent<BunkerBase>();
                     currentBunkerIndex = script.bunkerId;
 
@@ -126,26 +133,36 @@ public class BunkerMgr : MonoBehaviour
                 //현재 벙커 종류.
                 if (hitInfo.collider.gameObject.GetComponent<GardenRoom>() != null)
                 {
+                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+
                     currentBunkerKind = BunkerKinds.Garden;
                     camController.isCurrentEmpty = false;
                 }
                 else if (hitInfo.collider.gameObject.GetComponent<OperatingRoom>() != null)
                 {
+                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+
                     currentBunkerKind = BunkerKinds.OperatingRoom;
                     camController.isCurrentEmpty = false;
                 }
                 else if (hitInfo.collider.gameObject.GetComponent<StoreRoom>() != null)
                 {
+                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+
                     currentBunkerKind = BunkerKinds.Store;
                     camController.isCurrentEmpty = false;
                 }
                 else if (hitInfo.collider.gameObject.GetComponent<Garage>() != null)
                 {
+                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+
                     currentBunkerKind = BunkerKinds.Garage;
                     camController.isCurrentEmpty = false;
                 }
                 else
                 {
+                    if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
+                    
                     currentBunkerKind = BunkerKinds.None;
                     camController.isCurrentEmpty = true;
                 }
@@ -159,6 +176,11 @@ public class BunkerMgr : MonoBehaviour
             {
                 if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
                 {
+                    if (camController.isZoomIn)
+                    {
+                        if (createButton.activeSelf) createButton.SetActive(false);
+                    }
+
                     var script = hitInfo.collider.gameObject.GetComponent<BunkerBase>();
                     currentBunkerIndex = script.bunkerId;
 
@@ -168,26 +190,36 @@ public class BunkerMgr : MonoBehaviour
                 //현재 벙커 종류.
                 if (hitInfo.collider.gameObject.GetComponent<GardenRoom>() != null)
                 {
+                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+
                     currentBunkerKind = BunkerKinds.Garden;
                     camController.isCurrentEmpty = false;
                 }
                 else if (hitInfo.collider.gameObject.GetComponent<OperatingRoom>() != null)
                 {
+                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+
                     currentBunkerKind = BunkerKinds.OperatingRoom;
                     camController.isCurrentEmpty = false;
                 }
                 else if (hitInfo.collider.gameObject.GetComponent<StoreRoom>() != null)
                 {
+                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+
                     currentBunkerKind = BunkerKinds.Store;
                     camController.isCurrentEmpty = false;
                 }
                 else if (hitInfo.collider.gameObject.GetComponent<Garage>() != null)
                 {
+                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+
                     currentBunkerKind = BunkerKinds.Garage;
                     camController.isCurrentEmpty = false;
                 }
                 else
                 {
+                    if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
+                    
                     currentBunkerKind = BunkerKinds.None;
                     camController.isCurrentEmpty = true;
                 }
@@ -245,8 +277,9 @@ public class BunkerMgr : MonoBehaviour
 
     public void CreateGarden()
     {
-        Debug.Log($"selectedBunker is null :{selectedBunker == null}");
         if (selectedBunker == null) return;
+        if (createButton.activeSelf) createButton.SetActive(false);
+        if(!destroyButton.activeSelf) destroyButton.SetActive(true);
         currentBunkerKind = BunkerKinds.Garden;
 
         string str = $"BunkerKind{currentBunkerIndex}";
@@ -268,7 +301,9 @@ public class BunkerMgr : MonoBehaviour
     public void CreateOperatingRoom()
     {
         if (selectedBunker == null) return;
-        
+        if (createButton.activeSelf) createButton.SetActive(false);
+        if (!destroyButton.activeSelf) destroyButton.SetActive(true);
+
         currentBunkerKind = BunkerKinds.OperatingRoom;
 
         string str = $"BunkerKind{currentBunkerIndex}";
@@ -289,6 +324,9 @@ public class BunkerMgr : MonoBehaviour
     public void CreateStore()
     {
         if (selectedBunker == null) return;
+        if (createButton.activeSelf) createButton.SetActive(false);
+        if (!destroyButton.activeSelf) destroyButton.SetActive(true);
+
         currentBunkerKind = BunkerKinds.Store;
 
         string str = $"BunkerKind{currentBunkerIndex}";
@@ -309,6 +347,9 @@ public class BunkerMgr : MonoBehaviour
     public void CreateGarage()
     {
         if (selectedBunker == null) return;
+        if (createButton.activeSelf) createButton.SetActive(false);
+        if (!destroyButton.activeSelf) destroyButton.SetActive(true);
+
         currentBunkerKind = BunkerKinds.Garage;
 
         string str = $"BunkerKind{currentBunkerIndex}";
@@ -324,6 +365,29 @@ public class BunkerMgr : MonoBehaviour
         camController.currentObject = selectedBunker;
 
         OpenWindow();
+    }
+
+    public void Destroy()
+    {
+        if (selectedBunker == null) return;
+        if (!createButton.activeSelf) createButton.SetActive(true);
+        //if (destroyButton.activeSelf) destroyButton.SetActive(false);
+
+        currentBunkerKind = BunkerKinds.None;
+
+        string str = $"BunkerKind{currentBunkerIndex}";
+        PlayerPrefs.SetInt(str, (int)currentBunkerKind);
+
+        var go = Instantiate(emptyPrefab, selectedBunker.transform.position, Quaternion.identity);
+        var script = go.GetComponent<BunkerBase>();
+        script.bunkerId = currentBunkerIndex;
+
+        Destroy(selectedBunker);
+        selectedBunker = go;
+        bunkerObjs[script.bunkerId] = go;
+        camController.currentObject = selectedBunker;
+
+        CloseWindow();
     }
 
     public void ExitBunker()

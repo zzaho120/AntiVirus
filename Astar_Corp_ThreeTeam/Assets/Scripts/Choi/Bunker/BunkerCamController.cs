@@ -213,6 +213,8 @@ public class BunkerCamController : MonoBehaviour
 
     public void Exit()
     {
+        if (bunkerMgr.destroyButton.activeSelf) bunkerMgr.destroyButton.SetActive(false);
+
         isZoomIn = false;
         positionToLook = centerPos;
 
