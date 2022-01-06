@@ -13,6 +13,7 @@ public class MonsterPool : PoolManager
     {
         //StartCoroutine(Init());
         testZone = GameObject.Find("MonsterArea").GetComponentsInChildren<Transform>();
+        //Debug.Log(testZone.Length);
         
         isMaxPool = new bool[testZone.Length];
         monsterNum = new int[testZone.Length];
@@ -56,7 +57,7 @@ public class MonsterPool : PoolManager
         var randY = Random.Range(-3f, 3f);
 
         var ps = pools[poolNum].Pool.Get();
-        ps.transform.position = testZone[poolNum].position + new Vector3(randX, ps.transform.position.y, randY);
+        ps.transform.position = testZone[poolNum + 1].position + new Vector3(randX, ps.transform.position.y, randY);
 
         //int randNum = Random.Range(0, 9);
         //int randPool = Random.Range(0, pools.Length);
@@ -84,8 +85,8 @@ public class MonsterPool : PoolManager
         //}
     }
 
-    private void OnGUI()
-    {
-        GUILayout.Label("Count Inactive: " + pools[0].Pool.CountInactive);
-    }
+    //private void OnGUI()
+    //{
+    //    GUILayout.Label("Count Inactive: " + pools[0].Pool.CountInactive);
+    //}
 }

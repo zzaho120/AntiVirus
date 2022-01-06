@@ -24,10 +24,10 @@ public class NonBattlePopUps : GenericWindow
 		base.Close();
 	}
 
-	public void OnNext()
-	{
-		base.OnNextWindow();
-	}
+	//public void OnNextWindow()
+	//{
+	//	base.OnNextWindow();
+	//}
 
 	//public WindowManager manager;
 

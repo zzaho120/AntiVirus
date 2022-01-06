@@ -31,15 +31,13 @@ public class NonBattleMgr : MonoBehaviour
     float timer;
 
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         //PlayerPrefs.DeleteAll();
-        
+
         // 수진
         // 몬스터 영역 수 설정
-        //poolInfo = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
-        //monsterAreaCount = poolInfo.pools.Length;
-
+        monsterAreaCount = poolInfo.pools.Length;
         //monsterAreaCount = 5;
         eliteMonsterCount = 5;
 

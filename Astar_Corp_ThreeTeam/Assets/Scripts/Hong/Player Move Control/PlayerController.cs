@@ -20,10 +20,14 @@ public class PlayerController : MonoBehaviour
     public MultiTouch multiTouch;
     public NonBattleMgr manager;
 
+    private NonBattlePopUps nonBattlePopUps;
+    public WindowManager windowManager;
+
     private NavMeshAgent agent;
     private TimeController timeController;
 
-    public GameObject panel;
+    //public GameObject panel;  //나중에 Fadeout 효과 넣을때
+    [HideInInspector]
     public bool isMove;//지은.
 
     float pX, pY, pZ;
@@ -62,9 +66,7 @@ public class PlayerController : MonoBehaviour
         saveMode = true;
     }
 
-    //private WindowManager windowManager;
-    private NonBattlePopUps nonBattlePopUps;
-    public WindowManager windowManager;
+
 
     void Update()
     {
@@ -79,23 +81,28 @@ public class PlayerController : MonoBehaviour
             RaycastHit raycastHit;
             groundLayerMask = LayerMask.GetMask("Ground");
             int facilitiesLayer = LayerMask.GetMask("Facilities");
+            //int monsterLayer = LayerMask.GetMask("EliteMonster");
 
             // 전투발생
-            if (Physics.Raycast(ray, out raycastHit))
+            if (Physics.Raycast(ray, out raycastHit, 100, LayerMask.GetMask("EliteMonster")))
             {
                 //Debug.Log(raycastHit.collider.name);
+
                 if (raycastHit.collider.CompareTag("Enemy"))
                 {
                     // 렌더러가 활성화 되어있을때만 유효하게
                     if (raycastHit.collider.GetComponent<MeshRenderer>().enabled)
-                        Debug.Log("전투 발생");
-                    return;
+                    {
+                        var windowId = (int)Windows.MonsterWindow - 1;
+                        nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+
+                        timeController.PauseTime();
+                        timeController.isPause = true;
+                    }
                 }
             }
             if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
             {
-                //Debug.Log(raycastHit.collider.name);
-
                 if (raycastHit.collider.gameObject.name.Equals("Bunker"))
                 {
                     pX = raycastHit.collider.gameObject.transform.position.x;
@@ -146,6 +153,25 @@ public class PlayerController : MonoBehaviour
             RaycastHit raycastHit;
             groundLayerMask = LayerMask.GetMask("Ground");
             int facilitiesLayer = LayerMask.GetMask("Facilities");
+
+            //전투발생
+            if (Physics.Raycast(ray, out raycastHit, 100, LayerMask.GetMask("EliteMonster")))
+            {
+                //Debug.Log(raycastHit.collider.name);
+
+                if (raycastHit.collider.CompareTag("Enemy"))
+                {
+                    // 렌더러가 활성화 되어있을때만 유효하게
+                    if (raycastHit.collider.GetComponent<MeshRenderer>().enabled)
+                    {
+                        var windowId = (int)Windows.MonsterWindow - 1;
+                        nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+
+                        timeController.PauseTime();
+                        timeController.isPause = true;
+                    }
+                }
+            }
             if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
             {
                 // 벙커로 이동
@@ -206,6 +232,22 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+
+    public void 임시전투종료()
+    {
+        Debug.Log("전투");
+
+        timeController.PauseTime();
+        timeController.isPause = false;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    //IEnumerator CoLoadScene()
+    //{
+    //    yield return new WaitForSeconds(0.3f);
+    //    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    //}
 
     public void MoveToBunker()
     {

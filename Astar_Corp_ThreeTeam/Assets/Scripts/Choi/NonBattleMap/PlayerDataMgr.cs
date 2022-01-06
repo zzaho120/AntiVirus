@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;   //테스터
 using System.Linq;
+
 
 public class CharacterDetail
 {
@@ -37,6 +39,9 @@ public class CharacterDetail
 
 public class PlayerDataMgr : MonoBehaviour
 {
+    //테스트 출력
+    public Text[] text;
+
     //플레이어 데이터.
     public PlayerSaveData saveData = new PlayerSaveData();
     string filePath;
@@ -520,5 +525,14 @@ public class PlayerDataMgr : MonoBehaviour
 
         characterInfos.OrderBy(x => x.Key);
         PlayerSaveLoadSystem.Save(saveData);
+    }
+
+    public void BattleStartTester()
+    {
+        foreach (var chars in battleSquad)
+        {
+            Debug.Log("Selected Character : " + chars.Value.Name);
+            //Debug.Log(battleSquad.Count);
+        }
     }
 }
