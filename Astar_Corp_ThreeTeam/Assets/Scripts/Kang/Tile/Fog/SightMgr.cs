@@ -61,7 +61,6 @@ public class SightMgr : MonoBehaviour
         MAX_Z_IDX = TileMgr.MAX_Z_IDX;
         InitFog();
         UpdateFog();
-
     }
 
     private void InitFog()
@@ -359,8 +358,6 @@ public class SightMgr : MonoBehaviour
             foreach (var tile in list)
             {
                 tile.tileBase.EnableDisplay(tile.isInSight);
-
-                tile.tileBase.SetHighlight();
             }
         }
     }
@@ -378,27 +375,14 @@ public class SightMgr : MonoBehaviour
 
         var curTileIdx = playerableChars[playerIdx].currentTile.tileIdx;
 
-        switch (player.direction)
-        {
-            case DirectionType.Top:
-                UpdateTopFront(curTileIdx, playerIdx);
-                break;
-            case DirectionType.Bot:
-                UpdateBotFront(curTileIdx, playerIdx);
-                break;
-            case DirectionType.Left:
-                UpdateLeftFront(curTileIdx, playerIdx);
-                break;
-            case DirectionType.Right:
-                UpdateRightFront(curTileIdx, playerIdx);
-                break;
-        }
+        UpdateFrontDirection(curTileIdx, playerIdx, player.direction);
 
         UpdateObj();
     }
 
     private void UpdateFrontDirection(Vector3 curTileIdx, int playerIdx, DirectionType direction)
     {
+        var advanceCenter = 0;
         for (var i = 1; i < MaxFrontTile; ++i)
         {
             var maxSide = 0;
@@ -424,218 +408,85 @@ public class SightMgr : MonoBehaviour
                     break;
             }
 
-        }
-    }
-    private void UpdateTopFront(Vector3 curTileIdx, int playerIdx)
-    {
-        var maxI = 0;
-        for (var i = 1; i < MaxFrontTile; ++i)
-        {
-            var maxJ = 0;
-            if (i == 1 || i == 2)
-                maxJ = 2;
-            else if (i > 2)
-                maxJ = i;
+            var isCorrectX = -1 < centerIdx.x && centerIdx.x < TileMgr.MAX_X_IDX;
+            var isCorrectZ = -1 < centerIdx.y && centerIdx.y < TileMgr.MAX_Z_IDX;
 
-            var addTileIdx = new Vector2(curTileIdx.x, curTileIdx.z + i);
-            if (addTileIdx.y > TileMgr.MAX_Z_IDX)
+            if (!(isCorrectX && isCorrectZ))
                 break;
-            maxI = i;
+            advanceCenter = i;
 
-            foreach (var sightTile in totalSightDics[addTileIdx])
-            {
-                sightTile.tileBase.accuracy = maxJ;
-                frontSightList[playerIdx].Add(sightTile);
-            }
+            RegistFrontSight(centerIdx, playerIdx, maxSide);
 
-            for (var j = 1; j < maxJ; ++j)
+            for (var j = 1; j < maxSide; ++j)
             {
-                addTileIdx = new Vector2(curTileIdx.x - j, curTileIdx.z + i);
-                foreach (var sightTile in totalSightDics[addTileIdx])
+                var sideTileIdx1 = Vector2.zero;
+                var sideTileIdx2 = Vector2.zero;
+                switch (direction)
                 {
-                    sightTile.tileBase.accuracy = maxJ;
-                    frontSightList[playerIdx].Add(sightTile);
+                    case DirectionType.Top:
+                        sideTileIdx1 = new Vector2(curTileIdx.x - j, curTileIdx.z + i);
+                        sideTileIdx2 = new Vector2(curTileIdx.x + j, curTileIdx.z + i);
+                        break;
+                    case DirectionType.Bot:
+                        sideTileIdx1 = new Vector2(curTileIdx.x - j, curTileIdx.z - i);
+                        sideTileIdx2 = new Vector2(curTileIdx.x + j, curTileIdx.z - i);
+                        break;
+                    case DirectionType.Left:
+                        sideTileIdx1 = new Vector2(curTileIdx.x - i, curTileIdx.z - j);
+                        sideTileIdx2 = new Vector2(curTileIdx.x - i, curTileIdx.z + j);
+                        break;
+                    case DirectionType.Right:
+                        sideTileIdx1 = new Vector2(curTileIdx.x + i, curTileIdx.z - j);
+                        sideTileIdx2 = new Vector2(curTileIdx.x + i, curTileIdx.z + j);
+                        break;
                 }
-                addTileIdx = new Vector2(curTileIdx.x + j, curTileIdx.z + i);
-                foreach (var sightTile in totalSightDics[addTileIdx])
-                {
-                    sightTile.tileBase.accuracy = maxJ;
-                    frontSightList[playerIdx].Add(sightTile);
-                }
+
+                RegistFrontSight(sideTileIdx1, playerIdx, maxSide);
+                RegistFrontSight(sideTileIdx2, playerIdx, maxSide);
             }
         }
+
         var startTileIdx = new Vector2(curTileIdx.x, curTileIdx.z);
-
-        var val = 0;
-        if (maxI < 2)
-            val = 1;
+        var endSide = 0;
+        if (advanceCenter < 2)
+            endSide = 1;
         else
-            val = maxI - 1;
+            endSide = advanceCenter - 1;
 
-        for (var i = -val; i <= val; ++i)
+        for (var i = -endSide; i <= endSide; ++i)
         {
-            var endTileIdx = new Vector2(Mathf.Clamp(startTileIdx.x + i, 0, MAX_X_IDX), Mathf.Clamp(startTileIdx.y + maxI, 0, MAX_Z_IDX));
+            var endTileIdx = Vector2.zero;
+            switch (direction)
+            {
+                case DirectionType.Top:
+                    endTileIdx = new Vector2(Mathf.Clamp(startTileIdx.x + i, 0, MAX_X_IDX), Mathf.Clamp(startTileIdx.y + advanceCenter, 0, MAX_Z_IDX));
+                    break;
+                case DirectionType.Bot:
+                    endTileIdx = new Vector2(Mathf.Clamp(startTileIdx.x + i, 0, MAX_X_IDX), Mathf.Clamp(startTileIdx.y - advanceCenter, 0, MAX_Z_IDX));
+                    break;
+                case DirectionType.Left:
+                    endTileIdx = new Vector2(Mathf.Clamp(startTileIdx.x - advanceCenter, 0, MAX_X_IDX), Mathf.Clamp(startTileIdx.y + i, 0, MAX_Z_IDX));
+                    break;
+                case DirectionType.Right:
+                    endTileIdx = new Vector2(Mathf.Clamp(startTileIdx.x + advanceCenter, 0, MAX_X_IDX), Mathf.Clamp(startTileIdx.y + i, 0, MAX_Z_IDX));
+                    break;
+            }
             CastRayTile(endTileIdx, startTileIdx, MaxFrontTile, playerIdx);
         }
     }
 
-    private void UpdateBotFront(Vector3 curTileIdx, int playerIdx)
+    private void RegistFrontSight(Vector2 registTileIdx, int playerIdx, int accuracy)
     {
-        var maxI = 0;
-        for (var i = 1; i < MaxFrontTile; ++i)
+        if (totalSightDics.ContainsKey(registTileIdx))
         {
-            var maxJ = 0;
-            if (i == 1 || i == 2)
-                maxJ = 2;
-            else if (i > 2)
-                maxJ = i;
-
-            var addTileIdx = new Vector2(curTileIdx.x, curTileIdx.z - i);
-            if (addTileIdx.y < 0)
-                break;
-            maxI = i;
-
-            foreach (var sightTile in totalSightDics[addTileIdx])
+            foreach (var sightTile in totalSightDics[registTileIdx])
             {
-                sightTile.tileBase.accuracy = maxJ;
+                sightTile.tileBase.accuracy = accuracy;
                 frontSightList[playerIdx].Add(sightTile);
             }
-
-            for (var j = 1; j < maxJ; ++j)
-            {
-                addTileIdx = new Vector2(curTileIdx.x - j, curTileIdx.z - i);
-                foreach (var sightTile in totalSightDics[addTileIdx])
-                {
-                    sightTile.tileBase.accuracy = maxJ;
-                    frontSightList[playerIdx].Add(sightTile);
-                }
-                addTileIdx = new Vector2(curTileIdx.x + j, curTileIdx.z - i);
-                foreach (var sightTile in totalSightDics[addTileIdx])
-                {
-                    sightTile.tileBase.accuracy = maxJ;
-                    frontSightList[playerIdx].Add(sightTile);
-                }
-            }
-        }
-        var startTileIdx = new Vector2(curTileIdx.x, curTileIdx.z);
-
-        var val = 0;
-        if (maxI < 2)
-            val = 1;
-        else
-            val = maxI - 1;
-
-        for (var i = -val; i <= val; ++i)
-        {
-            var endTileIdx = new Vector2(Mathf.Clamp(startTileIdx.x + i, 0, MAX_X_IDX), Mathf.Clamp(startTileIdx.y - maxI, 0, MAX_Z_IDX));
-            CastRayTile(endTileIdx, startTileIdx, MaxFrontTile, playerIdx);
         }
     }
 
-    private void UpdateLeftFront(Vector3 curTileIdx, int playerIdx)
-    {
-        var maxJ = 0;
-        for (var i = 1; i < MaxFrontTile; ++i)
-        {
-            var maxI = 0;
-            if (i == 1 || i == 2)
-                maxI = 2;
-            else if (i > 2)
-                maxI = i;
-
-            var addTileIdx = new Vector2(curTileIdx.x - i, curTileIdx.z);
-            if (addTileIdx.x < 0)
-                break;
-            maxJ = i;
-
-            foreach (var sightTile in totalSightDics[addTileIdx])
-            {
-                sightTile.tileBase.accuracy = maxI;
-                frontSightList[playerIdx].Add(sightTile);
-            }
-
-            for (var j = 1; j < maxI; ++j)
-            {
-                addTileIdx = new Vector2(curTileIdx.x - i, curTileIdx.z - j);
-                foreach (var sightTile in totalSightDics[addTileIdx])
-                {
-                    sightTile.tileBase.accuracy = maxI;
-                    frontSightList[playerIdx].Add(sightTile);
-                }
-                addTileIdx = new Vector2(curTileIdx.x - i, curTileIdx.z + j);
-                foreach (var sightTile in totalSightDics[addTileIdx])
-                {
-                    sightTile.tileBase.accuracy = maxI;
-                    frontSightList[playerIdx].Add(sightTile);
-                }
-            }
-        }
-        var startTileIdx = new Vector2(curTileIdx.x, curTileIdx.z);
-
-        var val = 0;
-        if (maxJ < 2)
-            val = 1;
-        else
-            val = maxJ - 1;
-
-        for (var i = -val; i <= val; ++i)
-        {
-            var endTileIdx = new Vector2(Mathf.Clamp(startTileIdx.x - maxJ, 0, MAX_X_IDX), Mathf.Clamp(startTileIdx.y + i, 0, MAX_Z_IDX));
-            CastRayTile(endTileIdx, startTileIdx, MaxFrontTile, playerIdx);
-        }
-    }
-    private void UpdateRightFront(Vector3 curTileIdx, int playerIdx)
-    {
-        var maxJ = 0;
-        for (var i = 1; i < MaxFrontTile; ++i)
-        {
-            var maxI = 0;
-            if (i == 1 || i == 2)
-                maxI = 2;
-            else if (i > 2)
-                maxI = i;
-
-            var addTileIdx = new Vector2(curTileIdx.x + i, curTileIdx.z);
-            if (addTileIdx.x > TileMgr.MAX_X_IDX)
-                break;
-            maxJ = i;
-
-            foreach (var sightTile in totalSightDics[addTileIdx])
-            {
-                sightTile.tileBase.accuracy = maxI;
-                frontSightList[playerIdx].Add(sightTile);
-            }
-
-            for (var j = 1; j < maxI; ++j)
-            {
-                addTileIdx = new Vector2(curTileIdx.x + i, curTileIdx.z - j);
-                foreach (var sightTile in totalSightDics[addTileIdx])
-                {
-                    sightTile.tileBase.accuracy = maxI;
-                    frontSightList[playerIdx].Add(sightTile);
-                }
-                addTileIdx = new Vector2(curTileIdx.x + i, curTileIdx.z + j);
-                foreach (var sightTile in totalSightDics[addTileIdx])
-                {
-                    sightTile.tileBase.accuracy = maxI;
-                    frontSightList[playerIdx].Add(sightTile);
-                }
-            }
-        }
-        var startTileIdx = new Vector2(curTileIdx.x, curTileIdx.z);
-
-        var val = 0;
-        if (maxJ < 2)
-            val = 1;
-        else
-            val = maxJ - 1;
-
-        for (var i = -val; i <= val; ++i)
-        {
-            var endTileIdx = new Vector2(Mathf.Clamp(startTileIdx.x + maxJ, 0, MAX_X_IDX), Mathf.Clamp(startTileIdx.y + i, 0, MAX_Z_IDX));
-            CastRayTile(endTileIdx, startTileIdx, MaxFrontTile, playerIdx);
-        }
-    }
     public List<SightTileBase> GetFrontSight(PlayerableChar player)
     {
         for (var idx = 0; idx < frontSightList.Count; ++idx)

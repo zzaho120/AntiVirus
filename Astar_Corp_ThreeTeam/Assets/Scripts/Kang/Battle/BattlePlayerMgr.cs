@@ -18,6 +18,7 @@ public class BattlePlayerMgr : MonoBehaviour
 
         EventBusMgr.Subscribe(EventType.StartPlayer, StartTurn);
         EventBusMgr.Subscribe(EventType.EndPlayer, CheckEndTurn);
+        EventBusMgr.Subscribe(EventType.DetectAlert, DetectAlert);
     }
 
     public void StartTurn(object empty)
@@ -33,24 +34,39 @@ public class BattlePlayerMgr : MonoBehaviour
                 levelList.Add(character.GetVirusLevel(monster));
             }
 
-            for (var i = 0; i < levelList.Count; ++i)
+            var virusLevelDics = new Dictionary<string, int>();
+            for (var idx = 0; idx < levelList.Count; ++idx)
             {
-                var virusType = monsters[i].monsterStats.virus.id;
+                var virusType = monsters[idx].monsterStats.virus.id;
 
-                if (levelList[i] < 1)
+                if (levelList[idx] < 1)
                     continue;
 
+                if (!virusLevelDics.ContainsKey(virusType))
+                    virusLevelDics.Add(virusType, levelList[idx]);
+                else if (virusLevelDics[virusType] < levelList[idx])
+                    virusLevelDics[virusType] = levelList[idx];
+            }
 
-                var maxLevel = int.MinValue;
-                // 각 바이러스의 최고레벨을 적용하자!
-                for (var j = 0; j < levelList.Count; ++j)
+            foreach (var pair in virusLevelDics)
+            {
+                switch (pair.Key)
                 {
-                    if (i == j || levelList[j] < 1)
-                        continue;
-
-                    if (virusType == monsters[j].monsterStats.virus.id)
-                    {
-                    }
+                    case "1":
+                        character.characterStats.virusPanalty["E"].Calculation(pair.Value);
+                        break;
+                    case "2":
+                        character.characterStats.virusPanalty["B"].Calculation(pair.Value);
+                        break;
+                    case "3":
+                        character.characterStats.virusPanalty["P"].Calculation(pair.Value);
+                        break;
+                    case "4":
+                        character.characterStats.virusPanalty["I"].Calculation(pair.Value);
+                        break;
+                    case "5":
+                        character.characterStats.virusPanalty["T"].Calculation(pair.Value);
+                        break;
                 }
             }
         }
@@ -61,11 +77,66 @@ public class BattlePlayerMgr : MonoBehaviour
         var turnEndCount = 0; 
         foreach (var player in playerableChars)
         {
-            if (player.status == PlayerStatus.TurnEnd || player.status == PlayerStatus.Alert)
+            if (player.status == PlayerState.TurnEnd || player.status == PlayerState.Alert)
                 turnEndCount++;
         }
 
         if (turnEndCount == playerableChars.Count)
             EventBusMgr.Publish(EventType.ChangeTurn);
+    }
+
+    public void DetectAlert(object[] param)
+    {
+        var boolList = (bool[])param[0];
+        var curMonster = (MonsterChar)param[1];
+        for (var playerIdx = 0; playerIdx < playerableChars.Count; ++playerIdx)
+        {
+            var player = playerableChars[playerIdx];
+            var alertList = player.alertList;
+
+            if (boolList[playerIdx])
+            {
+                var isCheck = false;
+                if (alertList.Exists(checkMonster => checkMonster == curMonster))
+                    isCheck = true;
+
+                if (!isCheck)
+                {
+                    var weapon = player.characterStats.weapon;
+                    if (weapon.CheckAvailBullet)
+                    {
+                        if (weapon.CheckAvailShot(player.AP, PlayerState.Alert))
+                        {
+                            var isHit = weapon.CheckAlertAccuracy(curMonster.currentTile.accuracy);
+                            player.AP -= weapon.GetWeaponAP(PlayerState.Attack);
+
+                            if (isHit)
+                                curMonster.GetDamage(player.characterStats.weapon.Damage);
+                            else
+                            {
+                                var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
+                                window.SetMsgText($"You missed {curMonster.name}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (weapon.CheckReloadAP(player.AP))
+                            player.ReloadWeapon();
+                    }
+
+                    player.alertList.Add(curMonster);
+                }
+            }
+            else
+            {
+                if (alertList.Exists(checkMonster => checkMonster == curMonster))
+                {
+                    var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
+                    window.SetMsgText($"You missed {curMonster.name}");
+                    alertList.Remove(curMonster);
+                }
+            }
+        }
     }
 }

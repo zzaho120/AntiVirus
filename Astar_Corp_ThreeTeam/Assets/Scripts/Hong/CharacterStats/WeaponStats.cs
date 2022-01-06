@@ -15,6 +15,25 @@ public class WeaponStats
 
     public Weapon mainWeapon;
     public Weapon subWeapon;
+    
+    public Weapon curWeapon
+    {
+        get
+        {
+            switch (type)
+            {
+                case WeaponType.Main:
+                    return mainWeapon;
+                case WeaponType.Sub:
+                    return subWeapon;
+            }
+            return null;
+        }
+    }
+
+    // 사격 횟수
+    [HideInInspector]
+    public int fireCount;
 
     // 명중률
     [HideInInspector]
@@ -46,9 +65,9 @@ public class WeaponStats
             switch (type)
             {
                 case WeaponType.Main:
-                    return mainWeapon.bullet;
+                    return MainWeaponBullet;
                 case WeaponType.Sub:
-                    return subWeapon.bullet;
+                    return SubWeaponBullet;
             }
             return 0;
         }
@@ -57,18 +76,23 @@ public class WeaponStats
             switch (type)
             {
                 case WeaponType.Main:
-                    mainWeapon.bullet = value;
+                    MainWeaponBullet = value;
                     break;
                 case WeaponType.Sub:
-                    subWeapon.bullet = value;
+                    SubWeaponBullet = value;
                     break;
             }
         }
     }
 
+    public bool CheckAvailBullet
+    {
+        get => WeaponBullet > 0;
+    }
+
     // 명중률 감소
     [HideInInspector] 
-    public int AccurRateDec;
+    public int AccurRate_dec;
 
     // 무게
     [HideInInspector] 
@@ -94,13 +118,11 @@ public class WeaponStats
             {
                 // 데미지
                 var damage = Random.Range(mainWeapon.min_damage, mainWeapon.max_damage + 1);
-                //this.damage = damage;
                 return damage;
             }
             else if (type == WeaponType.Sub)
             {
                 var damage = Random.Range(subWeapon.min_damage, subWeapon.max_damage + 1);
-                //this.damage = damage;
                 return damage;
             }
             else
@@ -130,10 +152,6 @@ public class WeaponStats
                 // 명중률
                 AccurRate_base = mainWeapon.accur_Rate_Base;
 
-                // 데미지
-                //var damage = Random.Range(mainWeapon.min_damage, mainWeapon.max_damage + 1);
-                //this.damage = damage;
-
                 // 크뎀
                 CritDmg = mainWeapon.crit_Damage;
 
@@ -141,7 +159,7 @@ public class WeaponStats
                 MainWeaponBullet = mainWeapon.bullet;
 
                 // 명중률 감소
-                AccurRateDec = mainWeapon.accur_Rate_Dec;
+                AccurRate_dec = mainWeapon.accur_Rate_Dec;
 
                 // 무게
                 Weight = mainWeapon.weight;
@@ -174,7 +192,7 @@ public class WeaponStats
                 SubWeaponBullet = subWeapon.bullet;
 
                 // 명중률 감소
-                AccurRateDec = subWeapon.accur_Rate_Dec;
+                AccurRate_dec = subWeapon.accur_Rate_Dec;
 
                 // 무게
                 Weight = subWeapon.weight;
@@ -190,27 +208,133 @@ public class WeaponStats
                 OverRange_Penalty = subWeapon.overRange_Penalty;
                 UnderRange_Penalty = subWeapon.underRange_Penalty;
             }
-            // 탄알 개수
 
         }
         else
         {
             Debug.LogError("무기 장착해");
-            //return 0;
         }
     }
+    public void StartTurn()
+    {
+        fireCount = 0;
+    }
 
+    public int Reload()
+    {
+        WeaponBullet = curWeapon.bullet;
+        return LoadAp;
+    }
 
-    // 기존
-    //private int damage;
-    //public int Damage { get => damage; }
-    //
-    //private bool critical;
-    //public bool Critical { get => critical; }
-    //
-    //public AttackStats(int damage, bool critical)
-    //{
-    //    this.damage = damage;
-    //    this.critical = critical;
-    //}
+    public bool CheckAttackAccuracy(int accuracy)
+    {
+        var totalAccuracy = CalCulateAccuracy(accuracy, AccurRate_base);
+        var result = Random.Range(0, 100) < totalAccuracy;
+        fireCount++;
+        WeaponBullet--;
+        return result;
+    }
+
+    public bool CheckAlertAccuracy(int accuracy)
+    {
+        var totalAccuracy = CalCulateAccuracy(accuracy, (int)(AccurRate_alert - (AccurRate_dec * fireCount)));
+        var result = Random.Range(0, 100) < totalAccuracy;
+        fireCount++;
+        return result;
+    }
+
+    public int CalCulateAccuracy(int accuracy, int accurRate)
+    {
+        var totalAccuracy = 0;
+        switch (Range)
+        {
+            case 1: // 근거리
+                if (0 < accuracy && accuracy < 5)
+                    totalAccuracy = accurRate;
+                else
+                    totalAccuracy = accurRate - 30 * (accuracy - 4);
+                break;
+
+            case 2: // 중거리
+                if (3 < accuracy && accuracy < 8)
+                    totalAccuracy = accurRate;
+                else if (accuracy < 4)
+                    totalAccuracy = accurRate - 10 * (4 - accuracy);
+                else if (accuracy > 7)
+                    totalAccuracy = accurRate - 15 * (accuracy - 8);
+                break;
+
+            case 3: // 원거리
+                if (6 < accuracy && accuracy < 11)
+                    totalAccuracy = accurRate;
+                else if (accuracy < 7)
+                    totalAccuracy = accurRate - 15 * (7 - accuracy);
+                else if (accuracy > 10)
+                    totalAccuracy = accurRate - 10 * (accuracy - 10);
+                break;
+
+            case 4: // 근접무기
+                if (1 == accuracy)
+                    totalAccuracy = accurRate;
+                else
+                    totalAccuracy = 0;
+                break;
+        }
+        return totalAccuracy;
+    }
+
+    public bool CheckAvailShot(int AP, PlayerState state)
+    {
+        var result = false;
+
+        if (fireCount == 0)
+        {
+            if ((AP - FirstShotAp) >= 0)
+                result = true;
+        }
+        else
+        {
+            switch (state)
+            {
+                case PlayerState.Attack:
+                    if ((AP - AimShotAp) >= 0)
+                        result = true;
+                    break;
+                case PlayerState.Alert:
+                    if ((AP - AlertShotAp) >= 0)
+                        result = true;
+                    break;
+            }
+        }
+        return result;
+    }
+
+    public int GetWeaponAP(PlayerState state)
+    {
+        var result = 0;
+        if (fireCount == 0)
+            result = FirstShotAp;
+        else
+        {
+            switch (state)
+            {
+                case PlayerState.Attack:
+                    result = AimShotAp;
+                    break;
+                case PlayerState.Alert:
+                    result = AlertShotAp;
+                    break;
+            }
+        }
+        return result;
+    }
+
+    public bool CheckReloadAP(int AP)
+    {
+        if ((AP - LoadAp) >= 0)
+            return true;
+
+        return false;
+    }
+
 }

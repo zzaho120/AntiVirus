@@ -10,6 +10,7 @@ public class MonsterChar : BattleChar
     public int recognition;
     public PlayerableChar target;
     public BattleMonsterFSM fsm;
+    public MeshRenderer ren;
 
     public override void Init()
     {
@@ -18,6 +19,7 @@ public class MonsterChar : BattleChar
         monsterStats.Init();
         fsm = new BattleMonsterFSM();
         fsm.Init(this);
+        ren = GetComponent<MeshRenderer>();
     }
 
     public void GetDamage(int dmg)
@@ -26,7 +28,8 @@ public class MonsterChar : BattleChar
         hp -= dmg;
         monsterStats.currentHp = Mathf.Clamp(hp, 0, hp);
 
-        Debug.Log($"{monsterStats.gameObject.name}은 {dmg} 데미지를 입어 {monsterStats.currentHp}가 되었다.");
+        var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
+        window.SetMsgText($"{monsterStats.gameObject.name} is damaged {dmg}Point - HP : {monsterStats.currentHp}");
 
         if (monsterStats.currentHp == 0)
         {
@@ -53,5 +56,35 @@ public class MonsterChar : BattleChar
                 transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 1, tile.tileIdx.z);
             }
         }
+
+        var boolList = CheckFrontSight();
+        foreach (var elem in boolList)
+        {
+            if (elem)
+            {
+                EventBusMgr.Publish(EventType.DetectAlert, new object[] { boolList, this });
+                break;
+            }
+        }
+
+    }
+
+    public bool[] CheckFrontSight()
+    {
+        var frontSights = BattleMgr.Instance.sightMgr.frontSightList;
+        var playerChars = BattleMgr.Instance.playerMgr.playerableChars;
+
+        var boolList = new bool[frontSights.Count];
+
+        for (var playerIdx = 0; playerIdx < frontSights.Count; ++playerIdx)
+        {
+            if (playerChars[playerIdx].status != PlayerState.Alert)
+                continue;
+
+            if (frontSights[playerIdx].Exists(sightTile => sightTile.tileBase == currentTile))
+                boolList[playerIdx] = true;
+        }
+
+        return boolList;
     }
 }

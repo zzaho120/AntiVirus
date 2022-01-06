@@ -1,1 +1,1 @@
-public enum BattleWindows{None,Panel,Panel1,Panel2}
+public enum BattleWindows{None,Msg,PlayerAction,BattleInfo,TurnNotice}

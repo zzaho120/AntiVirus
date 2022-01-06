@@ -178,4 +178,9 @@ public class CharacterStats : MonoBehaviour
         weapon.Init();
         VirusPanaltyInit();
     }
+
+    public void StartTurn()
+    {
+        weapon.StartTurn();
+    }
 }

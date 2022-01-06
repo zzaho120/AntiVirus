@@ -15,7 +15,7 @@ public class BattleMgr : Singleton<BattleMgr>
     public TileMgr tileMgr;
     public BattlePlayerMgr playerMgr;
     public BattleMonsterMgr monsterMgr;
-    public WindowManager BattleWindowMgr;
+    public WindowManager battleWindowMgr;
     public SightMgr sightMgr;
     public AStar aStar;
 
@@ -33,7 +33,7 @@ public class BattleMgr : Singleton<BattleMgr>
         sightMgr = GameObject.FindWithTag("FogMgr").GetComponent<SightMgr>();
         playerMgr = GameObject.FindWithTag("Player").GetComponent<BattlePlayerMgr>();
         monsterMgr = GameObject.FindWithTag("BattleMonster").GetComponent<BattleMonsterMgr>();
-        BattleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
+        battleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
     }
 
     public void Start()
@@ -43,9 +43,11 @@ public class BattleMgr : Singleton<BattleMgr>
         monsterMgr.Init();
         sightMgr.Init();
         aStar.Init();
-        BattleWindowMgr.Open(0);
 
         turn = BattleTurn.Player;
+        var window = battleWindowMgr.Open((int)BattleWindows.TurnNotice - 1).GetComponent<TurnNoticeWindow>();
+        window.NoticeTurn(turn);
+
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
 
         EventBusMgr.Publish(EventType.StartPlayer);
@@ -65,6 +67,8 @@ public class BattleMgr : Singleton<BattleMgr>
 
     public void OnChangeTurn(object empty)
     {
+        var windowId = (int)BattleWindows.TurnNotice - 1;
+        var window = battleWindowMgr.Open(windowId).GetComponent<TurnNoticeWindow>();
         switch (turn)
         {
             case BattleTurn.Player:
@@ -76,5 +80,6 @@ public class BattleMgr : Singleton<BattleMgr>
                 EventBusMgr.Publish(EventType.StartPlayer);
                 break;
         }
+        window.NoticeTurn(turn);
     }
 }

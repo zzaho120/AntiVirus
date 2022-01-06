@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public class PlayerActionWindow : GenericWindow
 {
     public List<GameObject> buttons;
+    public GameObject reloadBtn;
+    public GameObject cancelBtn;
     public PlayerableChar curChar;
     public GameObject directionBtns;
-    public bool isDetailMenu;
     public bool inited;
     public override void Open()
     {
@@ -31,6 +32,7 @@ public class PlayerActionWindow : GenericWindow
     {
         Close();
     }
+
     public void OnClickMoveBtn()
     {
         curChar.MoveMode();
@@ -41,6 +43,7 @@ public class PlayerActionWindow : GenericWindow
     {
         curChar.AttackMode();
         OnActiveDirectionBtns(false, true);
+        cancelBtn.SetActive(true);
     }
 
     public void OnClickDirectionBtn(int direction)
@@ -49,21 +52,15 @@ public class PlayerActionWindow : GenericWindow
         BattleMgr.Instance.sightMgr.UpdateFrontSight(curChar);
         Close();
 
-        if (curChar.status == PlayerStatus.Alert || curChar.status == PlayerStatus.Wait)
+        if (curChar.status == PlayerState.Alert || curChar.AP <= 0)
             curChar.EndPlayer();
+        else if (curChar.status == PlayerState.Move)
+            curChar.WaitPlayer();
     }
 
     public void OnClickCancelBtn()
     {
-        if (isDetailMenu)
-        {
-            foreach (var btn in buttons)
-            {
-                btn.SetActive(true);
-            }
-        }
-        else
-            Close();
+        curChar.SetNonSelected();
     }
 
     public void OnClickTurnEndBtn()
@@ -75,6 +72,7 @@ public class PlayerActionWindow : GenericWindow
     {
         curChar.AlertMode();
         OnActiveDirectionBtns(false, true);
+        cancelBtn.SetActive(true);
     }
 
     public void OnActiveDirectionBtns(bool enableBtns, bool enableDir)
@@ -84,5 +82,20 @@ public class PlayerActionWindow : GenericWindow
             btn.SetActive(enableBtns);
         }
         directionBtns.SetActive(enableDir);
+    }
+
+    public void OnClickReloadBtn()
+    {
+        curChar.ReloadWeapon();
+        curChar.SetNonSelected();
+    }
+
+    public void EnableReloadBtn()
+    {
+        var weapon = curChar.characterStats.weapon;
+        if (weapon.WeaponBullet < weapon.curWeapon.bullet)
+            reloadBtn.SetActive(true);
+        else
+            reloadBtn.SetActive(false);
     }
 }

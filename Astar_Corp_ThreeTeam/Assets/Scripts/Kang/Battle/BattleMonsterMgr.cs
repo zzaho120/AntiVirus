@@ -57,8 +57,14 @@ public class BattleMonsterMgr : MonoBehaviour
                 var dist = Vector3.Distance(monster.currentTile.tileIdx, player.currentTile.tileIdx);
 
                 if (monster.recognition > dist)
+                {
                     monster.target = player;
+                    monster.ren.material.color = Color.cyan;
+                }
             }
+
+            if (monster.target == null)
+                monster.ren.material.color = Color.red;
         }
     }
 }

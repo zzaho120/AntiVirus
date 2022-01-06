@@ -49,7 +49,7 @@ public class BattleMoveState : StateBase
 
         if (target.tileIdx != nextTile)
         {
-            if (timer < 0.1f)
+            if (timer < .5f)
             {
                 timer += Time.deltaTime;
 
@@ -67,9 +67,6 @@ public class BattleMoveState : StateBase
     private void SetPath()
     {
         var aStar = BattleMgr.Instance.aStar;
-
-        Debug.Log(monster.tileIdx);
-        Debug.Log(target);
         aStar.InitAStar(monster.tileIdx, target.currentTile.tileIdx);
         pathList = aStar.pathList;
     }

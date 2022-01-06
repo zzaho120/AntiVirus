@@ -6,12 +6,16 @@ public class BattleInfoWindow : GenericWindow
 {
     public BattleInfoPanel monsterInfoPanel;
     public BattleInfoPanel playerInfoPanel;
+    public GameObject confirmBtn;
+    public PlayerableChar curPlayer;
+    public MonsterChar curMonster;
     private bool inited = false;
     public override void Open()
     {
         base.Open();
         monsterInfoPanel.gameObject.SetActive(false);
         playerInfoPanel.gameObject.SetActive(false);
+        confirmBtn.SetActive(false);
 
         if (!inited)
         {
@@ -30,15 +34,29 @@ public class BattleInfoWindow : GenericWindow
         Close();
     }
 
-    public void EnableMonsterInfo(bool isEnable, MonsterChar monster)
+    public void EnableMonsterInfo(bool isEnable, MonsterChar monster, WeaponStats weapon)
     {
         monsterInfoPanel.gameObject.SetActive(isEnable);
-        monsterInfoPanel.SetInfoMonster(monster);
+        monsterInfoPanel.SetInfoMonster(monster, weapon);
+        confirmBtn.SetActive(true);
+        curMonster = monster;
 
     }
     public void EnablePlayerInfo(bool isEnable, PlayerableChar player)
     {
         playerInfoPanel.gameObject.SetActive(isEnable);
         playerInfoPanel.SetInfoPlayer(player);
+        curPlayer = player;
+    }
+
+    public void OnClickConfirmBtn()
+    {
+        var tileIdx = new Vector2(curMonster.tileIdx.x, curMonster.tileIdx.z);
+        if (BattleMgr.Instance.sightMgr.GetFrontSight(curPlayer).Exists(x => x.tileBase == curMonster.currentTile))
+            curPlayer.ActionAttack(curMonster);
+
+        curPlayer = null;
+        curMonster = null;
+        Close();
     }
 }

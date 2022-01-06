@@ -47,11 +47,12 @@ public class BattleIdleState : StateBase
                     nextTile = pathList.Pop().tileBase.tileIdx;
             }
 
-            if (timer < 0.1f)
+            if (timer < .5f)
             {
                 timer += Time.deltaTime;
                 monster.MoveTile(nextTile);
-                BattleMgr.Instance.sightMgr.UpdateFog();
+                if (BattleMgr.Instance.turn == BattleTurn.Enemy)
+                    BattleMgr.Instance.sightMgr.UpdateFog();
             }
             else
             {

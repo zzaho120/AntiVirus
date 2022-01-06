@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class BattleBasicMenu : GenericWindow
+public class MsgWindow : GenericWindow
 {
+    public TextMeshProUGUI msgText;
+
     public override void Open()
     {
         base.Open();
+        Invoke("Close", 2f);
     }
 
     public override void Close()
@@ -14,8 +18,8 @@ public class BattleBasicMenu : GenericWindow
         base.Close();
     }
 
-    public void OnClickStartTurn()
+    public void SetMsgText(string msg)
     {
-        EventBusMgr.Publish(EventType.StartPlayer);
+        msgText.text = msg;
     }
 }

@@ -146,7 +146,7 @@ public class AStar : MonoBehaviour
             return;
         }
 
-        var minF = Int32.MinValue;
+        var minF = int.MinValue;
         int openIdx = 0;
 
         for (int idx = 0; idx < openList.Count; ++idx)
