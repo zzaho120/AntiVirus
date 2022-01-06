@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ResultWindow : GenericWindow
 {
@@ -9,10 +10,15 @@ public class ResultWindow : GenericWindow
     public TextMeshProUGUI[] nameText;
     public TextMeshProUGUI[] stats;
 
-    private void Start()
+    BattleMgr battleMgr;
+    BattlePlayerMgr playerData;
+
+    public void UpdateCharInfo()
     {
-        BattleMgr battleMgr = BattleMgr.Instance;
-        BattlePlayerMgr playerData = battleMgr.playerMgr;
+        battleMgr = BattleMgr.Instance;
+        playerData = battleMgr.playerMgr;
+
+        Debug.Log(playerData.playerableChars.Count);
 
         // 임시 캐릭 정보 불러오기
         for (int i = 0; i < playerData.playerableChars.Count; i++)
@@ -20,5 +26,17 @@ public class ResultWindow : GenericWindow
             nameText[i].text = playerData.playerableChars[i].characterStats.Name;
             stats[i].text = "HP : " + playerData.playerableChars[i].characterStats.currentHp.ToString();
         }
+    }
+
+    public void SaveSquadInfo()
+    {
+
+        StartCoroutine(CoLoadBunker());
+    }
+
+    private IEnumerator CoLoadBunker()
+    {
+        yield return new WaitForSeconds(0.3f);
+        SceneManager.LoadScene("Bunker");
     }
 }

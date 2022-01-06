@@ -18,7 +18,7 @@ public class BattleMgr : Singleton<BattleMgr>
     public WindowManager battleWindowMgr;
     public SightMgr sightMgr;
     public AStar aStar;
-    public PlayerDataMgr playerDataMgr;
+    public PlayerDataMgr playerDataMgr;     // 여기 저장하기위해
 
     [Header("Turn")]
     public BattleTurn turn;
@@ -38,7 +38,9 @@ public class BattleMgr : Singleton<BattleMgr>
         playerMgr = GameObject.FindWithTag("Player").GetComponent<BattlePlayerMgr>();
         monsterMgr = GameObject.FindWithTag("BattleMonster").GetComponent<BattleMonsterMgr>();
         battleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
-
+        
+        // 비전투씬에서 넘어온 플레이어데이터매니저가 있으면
+        // 아래 코드가 동작함
         var playerDataMgrObj = GameObject.FindWithTag("PlayerDataMgr");
         var isExistDataMgr = playerDataMgrObj != null;
         if (isExistDataMgr)
