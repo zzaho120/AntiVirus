@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using UnityEditor;
-using UnityEditorInternal;
 using System.IO;
 using System.Text;
+using UnityEditorInternal;
 
 [CustomEditor(typeof(WindowManager))]
 public class WindowManagerEditor : Editor
