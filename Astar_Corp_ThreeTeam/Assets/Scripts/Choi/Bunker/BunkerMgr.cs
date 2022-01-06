@@ -328,6 +328,6 @@ public class BunkerMgr : MonoBehaviour
 
     public void ExitBunker()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("NonBattleMap");
     }
 }
