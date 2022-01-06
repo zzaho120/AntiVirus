@@ -9,8 +9,10 @@ public enum BattleTurn
     Enemy
 }
 
-public class BattleMgr : Singleton<BattleMgr>
+public class BattleMgr : MonoBehaviour
 {
+    public static BattleMgr Instance;
+
     public CommandMgr commandMgr;
     public TileMgr tileMgr;
     public BattlePlayerMgr playerMgr;
@@ -28,9 +30,9 @@ public class BattleMgr : Singleton<BattleMgr>
     [Header("Prefabs")]
     public GameObject playerPrefab;
 
-    public override void Awake()
+    public void Awake()
     {
-        base.Awake();
+        Instance = this;
         commandMgr = new CommandMgr();
 
         tileMgr = GameObject.FindWithTag("TileMgr").GetComponent<TileMgr>();
@@ -133,8 +135,7 @@ public class BattleMgr : Singleton<BattleMgr>
     {
         if (playerMgr.playerableChars.Count == 0 || monsterMgr.monsters.Count == 0)
         {
-            Time.timeScale = 0;
-            // 여기에 창 추가
+            battleWindowMgr.Open((int)BattleWindows.ResultWindow - 1);
         }
     }
 }

@@ -37,6 +37,6 @@ public class ResultWindow : GenericWindow
     private IEnumerator CoLoadBunker()
     {
         yield return new WaitForSeconds(0.3f);
-        SceneManager.LoadScene("Bunker");
+        SceneManager.LoadScene("NonBattleMap");
     }
 }
