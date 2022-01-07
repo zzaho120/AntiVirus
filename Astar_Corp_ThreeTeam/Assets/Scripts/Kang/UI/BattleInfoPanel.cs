@@ -25,6 +25,7 @@ public class BattleInfoPanel : MonoBehaviour
         foreach (var elem in stats.virusPanalty)
         {
             sb.Append($"virus {elem.Key} : Lv.{elem.Value.penaltyLevel} / {elem.Value.penaltyGauge}\n");
+            sb.Append($"Reduction {elem.Key} : Lv.{elem.Value.reductionLevel} / {elem.Value.reductionGauge}\n");
         }
 
         infoText.text = sb.ToString();

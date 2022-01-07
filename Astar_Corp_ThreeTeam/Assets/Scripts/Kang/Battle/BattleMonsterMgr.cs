@@ -36,7 +36,8 @@ public class BattleMonsterMgr : MonoBehaviour
 
     public void TurnUpdate()
     {
-        monsters[monsterIdx].MonsterUpdate();
+        if (monsterIdx < monsters.Count)
+            monsters[monsterIdx].MonsterUpdate();
     }
 
     public void CheckEndTurn(object empty)
@@ -64,6 +65,8 @@ public class BattleMonsterMgr : MonoBehaviour
 
             if (monster.target == null)
                 monster.ren.material.color = Color.red;
+
+            Debug.Log(monster.target);
         }
     }
 

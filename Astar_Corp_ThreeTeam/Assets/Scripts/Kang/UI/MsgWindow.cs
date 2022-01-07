@@ -10,7 +10,7 @@ public class MsgWindow : GenericWindow
     public override void Open()
     {
         base.Open();
-        Invoke("Close", 2f);
+        Invoke("Close", 4f);
     }
 
     public override void Close()

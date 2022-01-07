@@ -58,5 +58,7 @@ public class FSM : MonoBehaviour
             curState = states[stateNum];
             curState.Enter();
         }
+
+        Debug.Log("state : " + curState);
     }
 }

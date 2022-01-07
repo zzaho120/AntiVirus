@@ -38,7 +38,7 @@ public class VirusPenalty
         this.virus = virus;
         penaltyGauge = 0;
         penaltyLevel = 0;
-        reductionLevel = 0;
+        reductionLevel = 1;
     }
 
     public void Calculation(int virusLevel)

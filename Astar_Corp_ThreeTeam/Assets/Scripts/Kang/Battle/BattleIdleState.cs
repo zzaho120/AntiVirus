@@ -68,10 +68,10 @@ public class BattleIdleState : StateBase
 
     private void SetPath()
     {
-        var randomX = Random.Range(-moveRange, moveRange);
-        var randomZ = Random.Range(-moveRange, moveRange);
+        //var randomX = Random.Range(-moveRange, moveRange);
+        //var randomZ = Random.Range(-moveRange, moveRange);
         var currentTile = monster.currentTile.tileIdx;
-        var endTile = new Vector3(Mathf.Clamp(currentTile.x + randomX, 0, 23), 0, Mathf.Clamp(currentTile.z + randomZ, 0, 23));
+        var endTile = new Vector3(Mathf.Clamp(currentTile.x - 12, 0, 23), 0, currentTile.z);
         timer = 0;
 
         if (BattleMgr.Instance.sightMgr.totalSightDics.ContainsKey(new Vector2(endTile.x, endTile.z)))

@@ -50,10 +50,10 @@ public class BattleMgr : MonoBehaviour
             playerDataMgr = GameObject.FindWithTag("PlayerDataMgr").GetComponent<PlayerDataMgr>();
 
             var vectorList = new List<Vector3>();
-            vectorList.Add(new Vector3(11, 1, 11));
-            vectorList.Add(new Vector3(10, 1, 11));
-            vectorList.Add(new Vector3(11, 1, 10));
-            vectorList.Add(new Vector3(10, 1, 10));
+            vectorList.Add(new Vector3(7, 1, 8));
+            vectorList.Add(new Vector3(6, 1, 8));
+            vectorList.Add(new Vector3(7, 1, 7));
+            vectorList.Add(new Vector3(6, 1, 7));
 
             for (var idx = 0; idx < playerDataMgr.battleSquad.Count; ++idx)
             {
@@ -97,20 +97,21 @@ public class BattleMgr : MonoBehaviour
 
     public void OnChangeTurn(object empty)
     {
-        var windowId = (int)BattleWindows.TurnNotice - 1;
-        var window = battleWindowMgr.Open(windowId).GetComponent<TurnNoticeWindow>();
-        switch (turn)
-        {
-            case BattleTurn.Player:
-                turn = BattleTurn.Enemy;
-                EventBusMgr.Publish(EventType.StartEnemy);
-                break;
-            case BattleTurn.Enemy:
-                turn = BattleTurn.Player;
-                EventBusMgr.Publish(EventType.StartPlayer);
-                break;
-        }
-        window.NoticeTurn(turn);
+        Invoke("ChangeTurn", 3f);
+        //var windowId = (int)BattleWindows.TurnNotice - 1;
+        //var window = battleWindowMgr.Open(windowId).GetComponent<TurnNoticeWindow>();
+        //switch (turn)
+        //{
+        //    case BattleTurn.Player:
+        //        turn = BattleTurn.Enemy;
+        //        EventBusMgr.Publish(EventType.StartEnemy);
+        //        break;
+        //    case BattleTurn.Enemy:
+        //        turn = BattleTurn.Player;
+        //        EventBusMgr.Publish(EventType.StartPlayer);
+        //        break;
+        //}
+        //window.NoticeTurn(turn);
     }
 
     public void DestroyChar(object[] param)
@@ -129,6 +130,24 @@ public class BattleMgr : MonoBehaviour
         }
 
         CheckGameover();
+    }
+
+    private void ChangeTurn()
+    {
+        var windowId = (int)BattleWindows.TurnNotice - 1;
+        var window = battleWindowMgr.Open(windowId).GetComponent<TurnNoticeWindow>();
+        switch (turn)
+        {
+            case BattleTurn.Player:
+                turn = BattleTurn.Enemy;
+                EventBusMgr.Publish(EventType.StartEnemy);
+                break;
+            case BattleTurn.Enemy:
+                turn = BattleTurn.Player;
+                EventBusMgr.Publish(EventType.StartPlayer);
+                break;
+        }
+        window.NoticeTurn(turn);
     }
 
     private void CheckGameover()

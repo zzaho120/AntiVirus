@@ -6,8 +6,7 @@ public enum BattleMonState
 {
     Idle,
     Move,
-    Attack,
-    EndTurn
+    Attack
 }
 
 
