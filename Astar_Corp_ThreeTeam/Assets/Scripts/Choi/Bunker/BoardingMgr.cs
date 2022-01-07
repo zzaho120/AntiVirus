@@ -16,14 +16,11 @@ public class BoardingMgr : MonoBehaviour
     int currentIndex;
     int currentSeatNum;
 
-    PlayerDataMgr playerDataMgr;
+    public PlayerDataMgr playerDataMgr;
     Color originColor;
 
     private void Start()
     {
-        var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
-        playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-
         int i = 0;
         foreach (var element in playerDataMgr.currentSquad)
         {

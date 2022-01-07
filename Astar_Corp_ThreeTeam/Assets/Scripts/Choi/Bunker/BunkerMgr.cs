@@ -18,8 +18,17 @@ public class BunkerMgr : MonoBehaviour
     public MultiTouch multiTouch;
     public BunkerCamController camController;
     public WindowManager windowManager;
-    public SquadMgr squadMgr;
+    
+    [Header("Managers")]
+    public StoreMgr storeMgr;
     public InventoryMgr inventoryMgr;
+    public SquadMgr squadMgr;
+    public ConstructionMgr constructionMgr;
+    public LockMgr lockMgr;
+    public GarageMgr garageMgr;
+    public TrunkMgr trunkMgr;
+    public BoardingMgr boardingMgr;
+    PlayerDataMgr playerDataMgr;
 
     public GameObject createButton;
     public GameObject destroyButton;
@@ -45,7 +54,14 @@ public class BunkerMgr : MonoBehaviour
 
     private void Start()
     {
-        //PlayerPrefs.DeleteAll();
+        var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
+        playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
+
+        inventoryMgr.playerDataMgr = playerDataMgr;
+        squadMgr.playerDataMgr = playerDataMgr;
+        trunkMgr.playerDataMgr = playerDataMgr;
+        boardingMgr.playerDataMgr = playerDataMgr;
+
         camController.OpenWindow = OpenWindow;
         camController.CloseWindow = CloseWindow;
         
@@ -101,6 +117,7 @@ public class BunkerMgr : MonoBehaviour
             currentBunkerIndex = -1;
             currentBunkerKind = BunkerKinds.None;
 
+            if (destroyButton.activeSelf) destroyButton.SetActive(false);
         }
     }
 
@@ -371,7 +388,7 @@ public class BunkerMgr : MonoBehaviour
     {
         if (selectedBunker == null) return;
         if (!createButton.activeSelf) createButton.SetActive(true);
-        //if (destroyButton.activeSelf) destroyButton.SetActive(false);
+        if (destroyButton.activeSelf) destroyButton.SetActive(false);
 
         currentBunkerKind = BunkerKinds.None;
 

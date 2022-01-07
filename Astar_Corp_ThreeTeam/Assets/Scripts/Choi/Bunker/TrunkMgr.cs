@@ -27,18 +27,13 @@ public class TrunkMgr : MonoBehaviour
     List<int> trunkDiscardedIndex = new List<int>();
     List<int> storageDiscardedIndex = new List<int>();
     
-    PlayerDataMgr playerDataMgr;
+    public PlayerDataMgr playerDataMgr;
     Color originColor;
     int currentIndex;
     InvenKind currentInvenKind;
 
     private void Start()
     {
-        var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
-        playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-
-        Debug.Log($"Count : {playerDataMgr.currentEquippables.Count}");
-        
         int i = 0;
         foreach (var element in playerDataMgr.currentEquippables)
         {

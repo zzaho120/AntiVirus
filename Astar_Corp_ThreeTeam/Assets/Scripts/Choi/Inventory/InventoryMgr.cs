@@ -57,14 +57,11 @@ public class InventoryMgr : MonoBehaviour
 
     EquipType equipType;
 
-    PlayerDataMgr playerDataMgr;
+    public PlayerDataMgr playerDataMgr;
 
     // Start is called before the first frame update
     void Start()
     {
-        var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
-        playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-
         //아이템 데이터.
         itemData = new Dictionary<string, ItemType>();
         foreach (var element in playerDataMgr.equippableList)

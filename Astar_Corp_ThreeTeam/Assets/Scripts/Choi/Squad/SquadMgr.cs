@@ -27,13 +27,10 @@ public class SquadMgr : MonoBehaviour
     GameObject currentSelected;
     int currentIndex;
 
-    PlayerDataMgr playerDataMgr;
+    public PlayerDataMgr playerDataMgr;
     // Start is called before the first frame update
     void Start()
     {
-        var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
-        playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-
         SquadData = new Dictionary<int, string>();
 
         string str = "SquadNum";

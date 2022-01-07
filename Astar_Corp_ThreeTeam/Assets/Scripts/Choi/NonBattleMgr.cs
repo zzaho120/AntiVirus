@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NonBattleMgr : MonoBehaviour
 {
@@ -9,38 +10,36 @@ public class NonBattleMgr : MonoBehaviour
     public List<GameObject> randomLaboratory;
     public List<GameObject> laboratoryObjs;
     public List<GameObject> virusZones1;
+    public WindowManager windowManager;
 
     public GameObject monsterAreaPrefab;
-    
+
     //연구소 영역.
     float Zone2Magnifi;
     float Zone3Magnifi;
     string[] virusType = { "E", "B", "P", "I", "T" };
-    
+
     //몬스터 영역.
     int monsterAreaCount;
     MonsterPool poolInfo;
-    
+
     //마크 관리.
     public List<Vector3> markList;
 
     PlayerController playerController;
+    TimeController timeController;
     float timer;
 
     // Start is called before the first frame update
     private void Awake()
     {
-        //PlayerPrefs.DeleteAll();
-
         // 수진
         // 몬스터 영역 수 설정
         poolInfo = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
         monsterAreaCount = poolInfo.pools.Length;
-        //monsterAreaCount = 5;
-        
+
         Zone2Magnifi = 2f;
         Zone3Magnifi = 4f;
-
 
         //처음 시작할때.
         if (!PlayerPrefs.HasKey("MonsterAreaX0"))
@@ -64,7 +63,7 @@ public class NonBattleMgr : MonoBehaviour
                 var virusZone1 = element.transform.GetChild(3).gameObject;
 
                 var script = virusZone1.GetComponent<LaboratoryInfo>();
-                int randomNum = (!script.isSpareLab)? 10 : 8;
+                int randomNum = (!script.isSpareLab) ? 10 : 8;
 
                 virusZone3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
                 virusZone2.transform.localScale = new Vector3(randomNum * Zone2Magnifi, randomNum * Zone2Magnifi, randomNum * Zone2Magnifi);
@@ -78,14 +77,14 @@ public class NonBattleMgr : MonoBehaviour
                 string str = $"VirusZone1Scale{i}";
                 PlayerPrefs.SetInt(str, randomNum);
 
-                script.isActiveZone2 = (Random.Range(0, 2) == 0)? true : false;
+                script.isActiveZone2 = (Random.Range(0, 2) == 0) ? true : false;
                 if (!script.isActiveZone2) virusZone2.SetActive(false);
-                    
-                if(script.isActiveZone2) script.isActiveZone3 = (Random.Range(0, 2) == 0) ? true : false;
+
+                if (script.isActiveZone2) script.isActiveZone3 = (Random.Range(0, 2) == 0) ? true : false;
                 if (!script.isActiveZone3) virusZone3.SetActive(false);
-                
+
                 str = $"Laboratory{i}Zone2";
-                int num = (script.isActiveZone2 == true)? 1 : 0;
+                int num = (script.isActiveZone2 == true) ? 1 : 0;
                 PlayerPrefs.SetInt(str, num);
                 str = $"Laboratory{i}Zone3";
                 num = (script.isActiveZone3 == true) ? 1 : 0;
@@ -94,7 +93,7 @@ public class NonBattleMgr : MonoBehaviour
                 script.virusType = randomVirusType[i];
                 str = $"Laboratory{i}VirusType";
                 PlayerPrefs.SetString(str, randomVirusType[i]);
-                
+
                 i++;
             }
 
@@ -105,7 +104,7 @@ public class NonBattleMgr : MonoBehaviour
                 int randScale;
                 int randomIndex;
                 Vector3 position;
-            
+
                 var radius = monsterAreaPrefab.GetComponent<SphereCollider>().radius;
                 var monsterAreaLayer = LayerMask.GetMask("MonsterArea");
                 var facilitiesLayer = LayerMask.GetMask("facilities");
@@ -116,24 +115,24 @@ public class NonBattleMgr : MonoBehaviour
                 {
                     randomIndex = UnityEngine.Random.Range(0, virusZones1.Count);
                     var randLaboratoryPos = virusZones1[randomIndex].transform.position;
-            
+
                     randX = UnityEngine.Random.Range(10, 20);
                     var pos = Random.onUnitSphere * randX + randLaboratoryPos;
                     position = new Vector3(pos.x, 0, pos.z);
                     randScale = UnityEngine.Random.Range(6, 10);
-            
+
                 } while ((Physics.OverlapSphere(position, radius * randScale, monsterAreaLayer).Length != 0)
                 || (Physics.OverlapSphere(position, radius * randScale, playerLayer).Length != 0)
                 || (Physics.OverlapSphere(position, radius * randScale, boundaryLayer).Length != 0)
                 /*|| (Physics.OverlapSphere(position, radius * randScale, virusZone).Length == 0)*/);
-            
+
                 string str = $"MonsterAreaX{j}";
                 PlayerPrefs.SetFloat(str, position.x);
                 str = $"MonsterAreaZ{j}";
                 PlayerPrefs.SetFloat(str, position.z);
                 str = $"MonsterAreaScale{j}";
                 PlayerPrefs.SetInt(str, randScale);
-            
+
                 var go = Instantiate(monsterAreaPrefab, position, Quaternion.identity);
                 go.transform.SetParent(GameObject.Find("MonsterArea").transform);   // 부모오브젝트 설정
                 //go.transform.localScale = new Vector3(randScale, randScale, randScale);
@@ -168,7 +167,7 @@ public class NonBattleMgr : MonoBehaviour
                 script.radiusZone1 = radius * virusZone1.transform.lossyScale.x;
 
                 str = $"Laboratory{i}Zone2";
-                int num  = PlayerPrefs.GetInt(str);
+                int num = PlayerPrefs.GetInt(str);
                 if (num == 0) virusZone2.SetActive(false);
                 else script.isActiveZone2 = true;
 
@@ -188,10 +187,10 @@ public class NonBattleMgr : MonoBehaviour
             {
                 string str = $"MonsterAreaX{j}";
                 var randX = PlayerPrefs.GetFloat(str);
-            
+
                 str = $"MonsterAreaZ{j}";
                 var randZ = PlayerPrefs.GetFloat(str);
-            
+
                 var go = Instantiate(monsterAreaPrefab, new Vector3(randX, 0, randZ), Quaternion.identity);
                 go.transform.SetParent(GameObject.Find("MonsterArea").transform);   // 부모오브젝트 설정
                 str = $"MonsterAreaScale{j}";
@@ -201,6 +200,11 @@ public class NonBattleMgr : MonoBehaviour
         }
 
         playerController = player.GetComponent<PlayerController>();
+        playerController.manager = this;
+
+        timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
+        playerController.timeController = timeController;
+
 
         //마크 관리.
         markList = new List<Vector3>();
@@ -219,6 +223,41 @@ public class NonBattleMgr : MonoBehaviour
         }
 
         return randomVirusType;
+    }
+
+    public void MoveToBunker()
+    {
+        SceneManager.LoadScene("Bunker");
+    }
+
+    public void OpenBunkerPopup()
+    {
+        var windowId = (int)Windows.BunkerWindow - 1;
+        var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+    }
+
+    public void CloseBunkerPopup()
+    {
+        var windowId = (int)Windows.BunkerWindow - 1;
+        windowManager.windows[windowId].Close();
+    }
+
+    public void OpenLaboratoryPopup()
+    {
+        var windowId = (int)Windows.LaboratoryWindow - 1;
+        var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+    }
+
+    public void CloseLaboratoryPopup()
+    {
+        var windowId = (int)Windows.LaboratoryWindow - 1;
+        windowManager.windows[windowId].Close();
+    }
+
+    public void OpenMonsterPopup()
+    {
+        var windowId = (int)Windows.MonsterWindow - 1;
+        var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
     }
 
     public void Restart()

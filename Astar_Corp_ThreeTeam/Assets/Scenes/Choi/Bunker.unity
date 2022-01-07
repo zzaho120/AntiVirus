@@ -6179,6 +6179,7 @@ MonoBehaviour:
   trunkContent: {fileID: 1030303354}
   storageContent: {fileID: 1330692057}
   prefab: {fileID: 8748402502875618923, guid: 7cb5b19b00875c34d9cb1f5e0fb6ab83, type: 3}
+  playerDataMgr: {fileID: 0}
 --- !u!114 &674514985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6198,6 +6199,7 @@ MonoBehaviour:
   - {fileID: 1253351014}
   - {fileID: 799244986}
   - {fileID: 1649588212}
+  playerDataMgr: {fileID: 0}
 --- !u!114 &674514986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8944,6 +8946,7 @@ MonoBehaviour:
   singleButtonObj: {fileID: 712362515}
   mainWeaponQuick: {fileID: 1589596425}
   subWeaponQuick: {fileID: 1376183754}
+  playerDataMgr: {fileID: 0}
 --- !u!1 &975157464
 GameObject:
   m_ObjectHideFlags: 0
@@ -10930,8 +10933,14 @@ MonoBehaviour:
   multiTouch: {fileID: 2014355437}
   camController: {fileID: 2070607377}
   windowManager: {fileID: 1806515129}
-  squadMgr: {fileID: 1783857595}
+  storeMgr: {fileID: 485626628}
   inventoryMgr: {fileID: 923966205}
+  squadMgr: {fileID: 1783857595}
+  constructionMgr: {fileID: 352373999}
+  lockMgr: {fileID: 1067994591}
+  garageMgr: {fileID: 674514986}
+  trunkMgr: {fileID: 674514984}
+  boardingMgr: {fileID: 674514985}
   createButton: {fileID: 1101897137}
   destroyButton: {fileID: 267667440}
   camera: {fileID: 2070607375}
@@ -12462,6 +12471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: []
   virusAreaLevel: 0
+  virusAreaType: 
 --- !u!114 &1487112769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15267,6 +15277,7 @@ MonoBehaviour:
   SquadParents: {fileID: 2014223678}
   SquadPrefab: {fileID: 8164446922713111453, guid: 55b0c8068624112458f0e38f464eb211, type: 3}
   SquadGOs: []
+  playerDataMgr: {fileID: 0}
 --- !u!1 &1794150438
 GameObject:
   m_ObjectHideFlags: 0
