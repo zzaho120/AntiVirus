@@ -5,7 +5,6 @@ using UnityEngine;
 public class LaboratoryInfo : MonoBehaviour
 {
     public bool isSpareLab;
-    public InfectedCharTest squadUI;
 
     public float radiusZone1;
     public float radiusZone2;

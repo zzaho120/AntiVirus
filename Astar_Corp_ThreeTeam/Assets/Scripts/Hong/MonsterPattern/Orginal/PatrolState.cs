@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class PatrolState : EliteMonsterState
+public class PatrolState : StateBase
 {
     private float startTime;
     private float moveRange = 5f;  // 이동 범위 설정
