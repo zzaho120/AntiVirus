@@ -223,4 +223,11 @@ public class PlayerController : MonoBehaviour
     {
         transform.position = agent.nextPosition;
     }
+
+    public void ChangeBattleScene()
+    {
+        timeController.PauseTime();
+        timeController.isPause = false;
+        SceneManager.LoadScene("BattleMap");
+    }
 }

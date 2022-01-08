@@ -114,11 +114,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileIdx: {x: 0, y: 0, z: 0}
   currentTile: {fileID: 0}
-  moveDistance: 5
-  sightDistance: 5
-  isMove: 0
-  isTurnOver: 0
   characterStats: {fileID: 1857170361929857884}
+  AP: 0
+  sightDistance: 3
+  status: 0
+  isSelected: 0
+  direction: 0
+  alertList: []
 --- !u!114 &1857170361929857884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,10 +134,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 0}
-  antibody: {fileID: 0}
-  weapon: {fileID: 0}
+  weapon:
+    type: 0
+    mainWeapon: {fileID: 0}
+    subWeapon: {fileID: 0}
+    fireCount: 0
+    AccurRate_base: 0
+    CritDmg: 0
+    MainWeaponBullet: 0
+    SubWeaponBullet: 0
+    AccurRate_dec: 0
+    Weight: 0
+    FirstShotAp: 0
+    AlertShotAp: 0
+    AimShotAp: 0
+    LoadAp: 0
+    Range: 0
+    OverRange_Penalty: 0
+    UnderRange_Penalty: 0
+  skills:
+    activeSkills: []
+    passiveSkills: []
   maxHp: 0
   currentHp: 0
+  sensivity: 0
+  avoidRate: 0
+  concentration: 0
   willpower: 0
-  stamina: 0
+  critRate: 0
   level: 0

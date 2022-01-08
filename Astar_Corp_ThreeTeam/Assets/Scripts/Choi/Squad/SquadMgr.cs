@@ -29,7 +29,7 @@ public class SquadMgr : MonoBehaviour
 
     public PlayerDataMgr playerDataMgr;
     // Start is called before the first frame update
-    void Start()
+    public void Init()
     {
         SquadData = new Dictionary<int, string>();
 

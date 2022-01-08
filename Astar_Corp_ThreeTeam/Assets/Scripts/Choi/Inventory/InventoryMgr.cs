@@ -59,8 +59,7 @@ public class InventoryMgr : MonoBehaviour
 
     public PlayerDataMgr playerDataMgr;
 
-    // Start is called before the first frame update
-    void Start()
+    public void Init()
     {
         //아이템 데이터.
         itemData = new Dictionary<string, ItemType>();
@@ -95,7 +94,7 @@ public class InventoryMgr : MonoBehaviour
         AllDisplay();
     }
 
-    public void Init()
+    public void Refresh()
     {
         if (playerDataMgr == null)
         {

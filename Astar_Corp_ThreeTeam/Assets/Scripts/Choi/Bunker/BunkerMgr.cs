@@ -19,15 +19,14 @@ public class BunkerMgr : MonoBehaviour
     public BunkerCamController camController;
     public WindowManager windowManager;
     
-    [Header("Managers")]
-    public StoreMgr storeMgr;
-    public InventoryMgr inventoryMgr;
-    public SquadMgr squadMgr;
-    public ConstructionMgr constructionMgr;
-    public LockMgr lockMgr;
-    public GarageMgr garageMgr;
-    public TrunkMgr trunkMgr;
-    public BoardingMgr boardingMgr;
+    StoreMgr storeMgr;
+    InventoryMgr inventoryMgr;
+    SquadMgr squadMgr;
+    TrunkMgr trunkMgr;
+    BoardingMgr boardingMgr;
+    HospitalMgr hospitalMgr;
+    AgitMgr agitMgr;
+    PubMgr pubMgr;
     PlayerDataMgr playerDataMgr;
 
     public GameObject createButton;
@@ -52,15 +51,37 @@ public class BunkerMgr : MonoBehaviour
 
     public Mode currentMode;
 
-    private void Start()
+    private void Awake()
     {
-        var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
-        playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
+        playerDataMgr = GameObject.FindGameObjectWithTag("PlayerDataMgr").GetComponent<PlayerDataMgr>();
+        storeMgr = GameObject.FindGameObjectWithTag("StoreMgr").GetComponent<StoreMgr>();
+        inventoryMgr = GameObject.FindGameObjectWithTag("InventoryMgr").GetComponent<InventoryMgr>();
+        squadMgr = GameObject.FindGameObjectWithTag("SquadMgr").GetComponent<SquadMgr>();
+        trunkMgr = GameObject.FindGameObjectWithTag("GarbageMgr").GetComponent<TrunkMgr>();
+        boardingMgr = GameObject.FindGameObjectWithTag("GarbageMgr").GetComponent<BoardingMgr>();
+        hospitalMgr = GameObject.FindGameObjectWithTag("HospitalMgr").GetComponent<HospitalMgr>();
+        agitMgr = GameObject.FindGameObjectWithTag("AgitMgr").GetComponent<AgitMgr>();
+        pubMgr = GameObject.FindGameObjectWithTag("PubMgr").GetComponent<PubMgr>();
 
         inventoryMgr.playerDataMgr = playerDataMgr;
         squadMgr.playerDataMgr = playerDataMgr;
         trunkMgr.playerDataMgr = playerDataMgr;
         boardingMgr.playerDataMgr = playerDataMgr;
+        hospitalMgr.playerDataMgr = playerDataMgr;
+        agitMgr.playerDataMgr = playerDataMgr;
+        pubMgr.playerDataMgr = playerDataMgr;
+    }
+
+    private void Start()
+    {
+        storeMgr.Init();
+        inventoryMgr.Init();
+        squadMgr.Init();
+        trunkMgr.Init();
+        boardingMgr.Init();
+        hospitalMgr.Init();
+        agitMgr.Init();
+        pubMgr.Init();
 
         camController.OpenWindow = OpenWindow;
         camController.CloseWindow = CloseWindow;
@@ -259,13 +280,13 @@ public class BunkerMgr : MonoBehaviour
         }
         else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Garden)
         {
-            inventoryMgr.Init();
+            inventoryMgr.Refresh();
             currentWinId = (int)BunkerWindows.InventoryWindow - 1;
             windowManager.Open(currentWinId);
         }
         else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Garage)
         {
-            inventoryMgr.Init();
+            inventoryMgr.Refresh();
             currentWinId = (int)BunkerWindows.GarageWindow - 1;
             windowManager.Open(currentWinId);
         }

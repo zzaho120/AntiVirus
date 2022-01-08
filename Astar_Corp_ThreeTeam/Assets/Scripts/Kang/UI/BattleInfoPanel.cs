@@ -19,13 +19,16 @@ public class BattleInfoPanel : MonoBehaviour
         sb.Append($"Level : {stats.level}\n");
         sb.Append($"HP : {stats.currentHp}\n");
         sb.Append($"AP : {player.AP}\n");
-        sb.Append($"AP : {player.characterStats.weapon.curWeapon.name}\n");
-        sb.Append($"Bullet : {stats.weapon.MainWeaponBullet}\n");
+        sb.Append($"Wp : {player.characterStats.weapon.curWeapon.name}\n");
+        sb.Append($"Bullet : {stats.weapon.MainWeaponBullet}\n\n");
 
         foreach (var elem in stats.virusPanalty)
         {
-            sb.Append($"virus {elem.Key} : Lv.{elem.Value.penaltyLevel} / {elem.Value.penaltyGauge}\n");
-            sb.Append($"Reduction {elem.Key} : Lv.{elem.Value.reductionLevel} / {elem.Value.reductionGauge}\n");
+            sb.Append($"Virus {elem.Key} : Lv.{elem.Value.penaltyLevel} / {elem.Value.penaltyGauge}\n");
+            sb.Append($"Reduction {elem.Key} : Lv.{elem.Value.reductionLevel} / {elem.Value.reductionGauge}\n\n");
+
+            if (elem.Key.Equals("B"))
+                break;
         }
 
         infoText.text = sb.ToString();
