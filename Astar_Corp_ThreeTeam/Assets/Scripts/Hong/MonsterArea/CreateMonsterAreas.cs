@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreateMonsters : MonoBehaviour
+public class CreateMonsterAreas : MonoBehaviour
 {
     // 수정 --> NonBattleMgr 수정 완료되면 싱글톤으로 사용할 듯? 그때 Instance 해서 불러오는 걸로 수정하기
     private NonBattleMgr nonBattleMgr;
@@ -13,7 +13,7 @@ public class CreateMonsters : MonoBehaviour
     MonsterPool poolInfo;
 
     //private void Init()   // --> 나중에 NonBattleMgr 수정 완료되면 수정
-    private void Awake()
+    public void Init()
     {
         nonBattleMgr = GameObject.Find("NonBattleMgr").GetComponent<NonBattleMgr>();
 

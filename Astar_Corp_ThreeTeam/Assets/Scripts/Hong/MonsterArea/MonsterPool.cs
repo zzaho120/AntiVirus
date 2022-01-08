@@ -7,11 +7,9 @@ public class MonsterPool : PoolManager
     private Transform[] testZone;
     private int[] monsterNum;
     private bool[] isMaxPool;
-    //private bool[] isNextCreate;
 
-    private void Start()
+    public void Init()
     {
-        //StartCoroutine(Init());
         testZone = GameObject.Find("MonsterArea").GetComponentsInChildren<Transform>();
         //Debug.Log(testZone.Length);
         
@@ -22,7 +20,6 @@ public class MonsterPool : PoolManager
         InvokeRepeating("GetMonstersFromPool", 0.5f, 3f);
     }
 
-    //private IEnumerator GetMonstersFromPool()
     private void GetMonstersFromPool()
     {
         for (int i = 0; i < pools.Length; i++)

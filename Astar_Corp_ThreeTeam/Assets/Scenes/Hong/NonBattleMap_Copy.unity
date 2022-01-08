@@ -1042,6 +1042,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 118890368}
   m_CullTransparentMesh: 1
+--- !u!1 &125492676
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 125492677}
+  m_Layer: 0
+  m_Name: Managers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &125492677
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125492676}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 399.5742, y: 230.24966, z: 5.2661767}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 265384975}
+  - {fileID: 1127415632}
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &129246624
 GameObject:
   m_ObjectHideFlags: 0
@@ -1568,8 +1601,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ui: {fileID: 21315275}
   multiTouch: {fileID: 1347654473}
-  manager: {fileID: 265384974}
-  timeController: {fileID: 0}
+  timeController: {fileID: 1736774805}
   isMove: 0
   isBunkerClikable: 0
   groundLayerMask:
@@ -2101,6 +2133,8 @@ GameObject:
   - component: {fileID: 265384975}
   - component: {fileID: 265384974}
   - component: {fileID: 265384976}
+  - component: {fileID: 265384977}
+  - component: {fileID: 265384978}
   m_Layer: 0
   m_Name: NonBattleMgr
   m_TagString: NonBattleMgr
@@ -2146,13 +2180,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 265384973}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.207096, y: 3.2833014, z: 1.861444}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -397.3671, y: -226.96637, z: -3.4047327}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_Father: {fileID: 125492677}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &265384976
 MonoBehaviour:
@@ -2167,6 +2201,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monsterAreaPrefab: {fileID: 4146300767638515646, guid: 3deb746a735bbf543b6f908ff5db420e, type: 3}
+--- !u!114 &265384977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265384973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2a68d2a4b680fe4c9cacd4860cc3d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windowManager: {fileID: 21315280}
+--- !u!114 &265384978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265384973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32c62cc01a788114bb99b244fdceec0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  randomLaboratory:
+  - {fileID: 1571112875}
+  - {fileID: 1164423717}
+  - {fileID: 607121801}
+  - {fileID: 1882893049}
+  laboratoryObjs:
+  - {fileID: 749191546}
+  - {fileID: 1603195583}
+  - {fileID: 494312420}
+  - {fileID: 1520432025}
+  Zone2Magnifi: 2
+  Zone3Magnifi: 4
 --- !u!1 &295189797
 GameObject:
   m_ObjectHideFlags: 0
@@ -3556,7 +3627,7 @@ PrefabInstance:
     - target: {fileID: 11463840, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 222362387}
+      objectReference: {fileID: 265384977}
     - target: {fileID: 11463840, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -3567,7 +3638,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11463840, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PlayerController, Assembly-CSharp
+      value: PopUpMgr, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 11463840, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -5648,18 +5719,18 @@ PrefabInstance:
     - target: {fileID: 11463840, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 222362387}
+      objectReference: {fileID: 265384977}
     - target: {fileID: 11463840, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11463840, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: MoveToLaboratory
+      value: MoveToLab
       objectReference: {fileID: 0}
     - target: {fileID: 11463840, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PlayerController, Assembly-CSharp
+      value: PopUpMgr, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 11463840, guid: 37bd0ea9c8b6a440ab8d028808012fa4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -7480,13 +7551,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1127415630}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -399.5742, y: -230.24966, z: -5.2661767}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_Father: {fileID: 125492677}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1127415633
 MonoBehaviour:
@@ -13494,8 +13565,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 265384974}
-        m_TargetAssemblyTypeName: NonBattleMgr, Assembly-CSharp
+      - m_Target: {fileID: 265384977}
+        m_TargetAssemblyTypeName: PopUpMgr, Assembly-CSharp
         m_MethodName: Restart
         m_Mode: 1
         m_Arguments:

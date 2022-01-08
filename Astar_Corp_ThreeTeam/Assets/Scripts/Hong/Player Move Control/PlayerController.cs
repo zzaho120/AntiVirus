@@ -11,7 +11,10 @@ public class PlayerController : MonoBehaviour
 
     public CharacterInfo character;
     public MultiTouch multiTouch;
-    public NonBattleMgr manager;
+
+    // 수정
+    private GameObject nonBattleMgr;
+    private PopUpMgr popUpMgr;
 
     //private NonBattlePopUps nonBattlePopUps;
     //public WindowManager windowManager;
@@ -34,6 +37,10 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        // 수정
+        nonBattleMgr = GameObject.Find("NonBattleMgr");
+        popUpMgr = nonBattleMgr.GetComponent<PopUpMgr>();
+
         if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")))
         {
             pX = PlayerPrefs.GetFloat("p_x");
@@ -43,7 +50,9 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            transform.position = manager.bunkerPos.position;
+            // 수정
+            //transform.position = manager.bunkerPos.position;
+            transform.position = nonBattleMgr.GetComponent<NonBattleMgr>().bunkerPos.position;
         }
 
         agent = GetComponent<NavMeshAgent>();
@@ -71,7 +80,7 @@ public class PlayerController : MonoBehaviour
                     // 렌더러가 활성화 되어있을때만 유효하게
                     if (raycastHit.collider.GetComponent<MeshRenderer>().enabled)
                     {
-                        manager.OpenMonsterPopup();
+                        popUpMgr.OpenMonsterPopup();
 
                         timeController.PauseTime();
                         timeController.isPause = true;
@@ -92,7 +101,7 @@ public class PlayerController : MonoBehaviour
                     PlayerPrefs.SetFloat("p_z", pZ);
 
                     //벙커 팝업창
-                    manager.OpenBunkerPopup();
+                    popUpMgr.OpenBunkerPopup();
                 }
                 else if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
                 {
@@ -106,7 +115,7 @@ public class PlayerController : MonoBehaviour
                     //PlayerPrefs.SetFloat("p_z", pZ);
 
                     //연구소 팝업창
-                    manager.OpenLaboratoryPopup();
+                    popUpMgr.OpenLaboratoryPopup();
                 }
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
                    raycastHit.collider.gameObject.name.Equals("Plane"))
@@ -146,7 +155,7 @@ public class PlayerController : MonoBehaviour
                         PlayerPrefs.SetFloat("p_y", pY);
                         PlayerPrefs.SetFloat("p_z", pZ);
 
-                        manager.OpenMonsterPopup();
+                        popUpMgr.OpenMonsterPopup();
 
                         timeController.PauseTime();
                         timeController.isPause = true;
@@ -168,7 +177,7 @@ public class PlayerController : MonoBehaviour
                     PlayerPrefs.SetFloat("p_z", pZ);
 
                     //벙커 팝업창
-                    manager.OpenBunkerPopup();
+                    popUpMgr.OpenBunkerPopup();
                 }
                 // 연구소로 이동
                 else if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
@@ -183,7 +192,7 @@ public class PlayerController : MonoBehaviour
                     //PlayerPrefs.SetFloat("p_z", pZ);
 
                     //연구소 팝업창
-                    manager.OpenLaboratoryPopup();
+                    popUpMgr.OpenLaboratoryPopup();
                 }
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
                    raycastHit.collider.gameObject.name.Equals("Plane"))
