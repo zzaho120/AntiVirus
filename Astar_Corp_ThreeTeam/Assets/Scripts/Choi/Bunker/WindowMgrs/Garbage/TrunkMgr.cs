@@ -32,7 +32,7 @@ public class TrunkMgr : MonoBehaviour
     int currentIndex;
     InvenKind currentInvenKind;
 
-    private void Start()
+    public void Init()
     {
         int i = 0;
         foreach (var element in playerDataMgr.currentEquippables)

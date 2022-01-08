@@ -24,7 +24,8 @@ public class StoreMgr : MonoBehaviour
     int inventoryIndex;
 
     string currentItem;
-    void Start()
+
+    public void Init()
     {
         storeItemData = new Dictionary<int, string>();
         storeItemData.Add(0, "»¡°£Æ÷¼Ç");

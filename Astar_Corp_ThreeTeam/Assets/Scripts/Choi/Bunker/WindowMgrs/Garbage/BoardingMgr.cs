@@ -19,7 +19,7 @@ public class BoardingMgr : MonoBehaviour
     public PlayerDataMgr playerDataMgr;
     Color originColor;
 
-    private void Start()
+    public void Init()
     {
         int i = 0;
         foreach (var element in playerDataMgr.currentSquad)
