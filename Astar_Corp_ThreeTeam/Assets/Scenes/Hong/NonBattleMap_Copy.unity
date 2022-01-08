@@ -1569,7 +1569,7 @@ MonoBehaviour:
   ui: {fileID: 21315275}
   multiTouch: {fileID: 1347654473}
   manager: {fileID: 265384974}
-  windowManager: {fileID: 21315280}
+  timeController: {fileID: 0}
   isMove: 0
   isBunkerClikable: 0
   groundLayerMask:
@@ -2087,7 +2087,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7397f79eb6198e4faf1df5b49195e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squadUI: {fileID: 0}
   laboratoryPos: {x: 0, y: 0, z: 0}
   virusZone2Radius: 0
   virusType: 
@@ -2101,6 +2100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 265384975}
   - component: {fileID: 265384974}
+  - component: {fileID: 265384976}
   m_Layer: 0
   m_Name: NonBattleMgr
   m_TagString: NonBattleMgr
@@ -2137,7 +2137,7 @@ MonoBehaviour:
   - {fileID: 248932855}
   - {fileID: 928438528}
   - {fileID: 2087562603}
-  monsterAreaPrefab: {fileID: 4146300767638515646, guid: 3deb746a735bbf543b6f908ff5db420e, type: 3}
+  windowManager: {fileID: 21315280}
   markList: []
 --- !u!4 &265384975
 Transform:
@@ -2154,6 +2154,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &265384976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265384973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b68a7351702794f4eb6cfc47bd88a80d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterAreaPrefab: {fileID: 4146300767638515646, guid: 3deb746a735bbf543b6f908ff5db420e, type: 3}
 --- !u!1 &295189797
 GameObject:
   m_ObjectHideFlags: 0
@@ -6319,7 +6332,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7397f79eb6198e4faf1df5b49195e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squadUI: {fileID: 0}
   laboratoryPos: {x: 0, y: 0, z: 0}
   virusZone2Radius: 0
   virusType: 
@@ -6671,7 +6683,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7397f79eb6198e4faf1df5b49195e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squadUI: {fileID: 0}
   laboratoryPos: {x: 0, y: 0, z: 0}
   virusZone2Radius: 0
   virusType: 
@@ -14168,7 +14179,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7397f79eb6198e4faf1df5b49195e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squadUI: {fileID: 0}
   laboratoryPos: {x: 0, y: 0, z: 0}
   virusZone2Radius: 0
   virusType: 
