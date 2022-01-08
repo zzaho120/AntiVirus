@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class CreateLabArea : MonoBehaviour
 {
+    // 바이러스 영역
+    public List<GameObject> virusZones1;
+
+    //연구소 영역.
     public List<GameObject> randomLaboratory;
     public List<GameObject> laboratoryObjs;
 
-    //연구소 영역.
     public float Zone2Magnifi = 2f;
     public float Zone3Magnifi = 4f;
 
+    // 바이러스들
     string[] virusType = { "E", "B", "P", "I", "T" };
 
-    public void CreateLabs()
+    public void Init()
     {
         //처음 시작할때.
         if (!PlayerPrefs.HasKey("MonsterAreaX0"))
@@ -21,7 +25,7 @@ public class CreateLabArea : MonoBehaviour
             var randomVirusType = RandomVirusType();
 
             //예비 연구소.
-            int randomLaboratoryIndex = UnityEngine.Random.Range(0, randomLaboratory.Count);
+            int randomLaboratoryIndex = Random.Range(0, randomLaboratory.Count);
             randomLaboratory[randomLaboratoryIndex].SetActive(true);
             string laboratoryIndexStr = "randomLaboratoryIndex";
             PlayerPrefs.SetInt(laboratoryIndexStr, randomLaboratoryIndex);

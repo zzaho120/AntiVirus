@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerControllerNew : MonoBehaviour
 {
-    public NonBattleMgr manager;
+    //private NonBattleMgr manager;
     public float speed;
     public bool isMove;
     // Start is called before the first frame update

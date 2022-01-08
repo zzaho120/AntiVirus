@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class CreateMonsterAreas : MonoBehaviour
 {
-    // 수정 --> NonBattleMgr 수정 완료되면 싱글톤으로 사용할 듯? 그때 Instance 해서 불러오는 걸로 수정하기
     private NonBattleMgr nonBattleMgr;
 
     //몬스터 영역.
     public GameObject monsterAreaPrefab;
-    int monsterAreaCount;
-    MonsterPool poolInfo;
+    private MonsterPool poolInfo;
+    private int monsterAreaCount;
 
-    //private void Init()   // --> 나중에 NonBattleMgr 수정 완료되면 수정
     public void Init()
     {
-        nonBattleMgr = GameObject.Find("NonBattleMgr").GetComponent<NonBattleMgr>();
+        nonBattleMgr = NonBattleMgr.Instance;
 
         // 몬스터 영역 수 설정
         poolInfo = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
@@ -40,13 +38,13 @@ public class CreateMonsterAreas : MonoBehaviour
                 var boundaryLayer = LayerMask.GetMask("Boundary");
                 do
                 {
-                    randomIndex = UnityEngine.Random.Range(0, nonBattleMgr.virusZones1.Count);
-                    var randLaboratoryPos = nonBattleMgr.virusZones1[randomIndex].transform.position;
+                    randomIndex = Random.Range(0, nonBattleMgr.laboratoryArea.virusZones1.Count);
+                    var randLaboratoryPos = nonBattleMgr.laboratoryArea.virusZones1[randomIndex].transform.position;
 
-                    randX = UnityEngine.Random.Range(10, 20);
+                    randX = Random.Range(10, 20);
                     var pos = Random.onUnitSphere * randX + randLaboratoryPos;
                     position = new Vector3(pos.x, 0, pos.z);
-                    randScale = UnityEngine.Random.Range(6, 10);
+                    randScale = Random.Range(6, 10);
 
                 } while ((Physics.OverlapSphere(position, radius * randScale, monsterAreaLayer).Length != 0)
                 || (Physics.OverlapSphere(position, radius * randScale, playerLayer).Length != 0)
