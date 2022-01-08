@@ -30,6 +30,9 @@ public class BattleMgr : MonoBehaviour
     [Header("Prefabs")]
     public GameObject playerPrefab;
 
+    [Header("ProtoType")]
+    public MonsterChar virusMonster;
+
     public void Awake()
     {
         Instance = this;
@@ -88,6 +91,8 @@ public class BattleMgr : MonoBehaviour
         switch (turn)
         {
             case BattleTurn.Player:
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                    monsterMgr.RemoveMonster(virusMonster);
                 break;
             case BattleTurn.Enemy:
                 monsterMgr.TurnUpdate();
@@ -157,4 +162,5 @@ public class BattleMgr : MonoBehaviour
             battleWindowMgr.Open((int)BattleWindows.ResultWindow - 1);
         }
     }
+    
 }

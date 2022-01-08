@@ -71,7 +71,7 @@ public class PlayerableChar : BattleChar
                                     playerAction.curChar = this;
                                     playerAction.EnableReloadBtn();
 
-                                    ren.material.color = Color.red;
+                                    ren.material.color = Color.green;
                                 }
                                 else
                                     SetNonSelected();
