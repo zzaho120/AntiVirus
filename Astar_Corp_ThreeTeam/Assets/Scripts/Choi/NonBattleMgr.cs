@@ -10,7 +10,7 @@ public class NonBattleMgr : MonoBehaviour
     // 벙커 위치 담기
     public Transform bunkerPos;
 
-    [Header("New Class")]
+    //[Header("Public Class")]
     public CreateLabArea laboratoryArea;
     public CreateMonsterAreas monsterArea;
     public MonsterPool monsterPool;
