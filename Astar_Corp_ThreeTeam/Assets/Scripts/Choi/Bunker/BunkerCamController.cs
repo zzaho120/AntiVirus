@@ -32,6 +32,7 @@ public class BunkerCamController : MonoBehaviour
 
     public Action OpenWindow;
     public Action CloseWindow;
+    public Action<Mode, GameObject> SetBunkerKind;
 
     public Mode currentMode;
 
@@ -53,13 +54,11 @@ public class BunkerCamController : MonoBehaviour
 
         if (currentMode != Mode.None)
         {
-            //Debug.Log("µÈæÓø”Ωø");
-            //Debug.Log($"isZoomIn : {isZoomIn}");
-            //Debug.Log($"isCurrentEmpty : {isCurrentEmpty}");
             if (isZoomIn && isCurrentEmpty)//∫ÛπÊ ¡‹æ∆øÙ.
             {
                 RaycastHit hit;
                 Ray ray;
+
                 //≈Õƒ°.
                 if (currentMode == Mode.Touch)
                 {
@@ -68,11 +67,8 @@ public class BunkerCamController : MonoBehaviour
                     {
                         //∫ÒæÓ¿÷¿ª∂ß.
                         if (hit.collider.gameObject.GetComponent<BunkerBase>() != null
-                            && hit.collider.gameObject.GetComponent<GardenRoom>() == null
-                            && hit.collider.gameObject.GetComponent<OperatingRoom>() == null
-                            && hit.collider.gameObject.GetComponent<StoreRoom>() == null)
+                            && hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None"))
                         {
-
                             isZoomIn = false;
                             CloseWindow();
                             positionToLook = centerPos;
@@ -93,11 +89,8 @@ public class BunkerCamController : MonoBehaviour
                     {
                         //∫ÒæÓ¿÷¿ª∂ß.
                         if (hit.collider.gameObject.GetComponent<BunkerBase>() != null
-                            && hit.collider.gameObject.GetComponent<GardenRoom>() == null
-                            && hit.collider.gameObject.GetComponent<OperatingRoom>() == null
-                            && hit.collider.gameObject.GetComponent<StoreRoom>() == null)
+                            && hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None"))
                         {
-
                             isZoomIn = false;
                             CloseWindow();
                             positionToLook = centerPos;
@@ -107,13 +100,8 @@ public class BunkerCamController : MonoBehaviour
                             coroutine = ZoomOut();
                             StartCoroutine(coroutine);
                         }
-                        else if (hit.collider.gameObject.GetComponent<GardenRoom>() != null)
-                        { 
-                        
-                        }
                     }
                 }
-
             }
 
             else if (!isZoomIn)//¡‹¿Œ.
@@ -129,6 +117,10 @@ public class BunkerCamController : MonoBehaviour
                     {
                         if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
                         {
+                            SetBunkerKind(currentMode, hit.collider.gameObject);
+                            if (hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None")) isCurrentEmpty = true;
+                            else isCurrentEmpty = false;
+
                             Invoke("CompleteZoomIn", .6f);
                             positionToLook = hit.collider.transform.position;
                             currentObject = hit.collider.transform.gameObject;
@@ -148,6 +140,10 @@ public class BunkerCamController : MonoBehaviour
                     {
                         if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
                         {
+                            SetBunkerKind(currentMode, hit.collider.gameObject);
+                            if (hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None")) isCurrentEmpty = true;
+                            else isCurrentEmpty = false;
+
                             Invoke("CompleteZoomIn", .6f);
                             positionToLook = hit.collider.transform.position;
                             currentObject = hit.collider.transform.gameObject;

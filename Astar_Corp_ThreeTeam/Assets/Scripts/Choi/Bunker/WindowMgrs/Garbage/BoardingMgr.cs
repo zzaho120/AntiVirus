@@ -21,6 +21,21 @@ public class BoardingMgr : MonoBehaviour
 
     public void Init()
     {
+        //삭제.
+        if (characters.Count != 0)
+        {
+            foreach (var element in characters)
+            {
+                Destroy(element.Value);
+            }
+            characters.Clear();
+
+            ListContent.transform.DetachChildren();
+        }
+        if (characterInfo.Count != 0) characterInfo.Clear();
+        if (isBoarding.Count != 0) isBoarding.Clear();
+
+        //생성.
         int i = 0;
         foreach (var element in playerDataMgr.currentSquad)
         {
@@ -90,6 +105,7 @@ public class BoardingMgr : MonoBehaviour
         var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
         child.GetComponent<Text>().text = characterInfo[currentIndex].character.name.Substring(0,3);
         isBoarding[currentSeatNum] = currentIndex;
+        playerDataMgr.boardingSquad.Add(currentSeatNum, playerDataMgr.currentSquad[currentIndex]);
     }
 
     public void GetOffTheCar()

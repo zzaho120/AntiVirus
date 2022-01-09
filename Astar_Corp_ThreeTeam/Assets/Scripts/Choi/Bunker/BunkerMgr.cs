@@ -7,9 +7,11 @@ using UnityEngine.SceneManagement;
 public enum BunkerKinds
 {
     None,
-    Garden,
-    OperatingRoom,
+    Agit,
+    Pub,
     Store,
+    CarCenter,
+    Hospital,
     Garage,
 }
 
@@ -19,14 +21,11 @@ public class BunkerMgr : MonoBehaviour
     public BunkerCamController camController;
     public WindowManager windowManager;
     
-    StoreMgr storeMgr;
-    InventoryMgr inventoryMgr;
-    SquadMgr squadMgr;
-    TrunkMgr trunkMgr;
-    BoardingMgr boardingMgr;
-    HospitalMgr hospitalMgr;
     AgitMgr agitMgr;
     PubMgr pubMgr;
+    StoreMgr storeMgr;
+    HospitalMgr hospitalMgr;
+    GarageMgr garageMgr;
     PlayerDataMgr playerDataMgr;
 
     public GameObject createButton;
@@ -37,10 +36,13 @@ public class BunkerMgr : MonoBehaviour
     public BunkerKinds currentBunkerKind;
     int currentWinId;
 
+    [Header("Prefabs")]
     public GameObject emptyPrefab;
-    public GameObject gardenPrefab;
-    public GameObject operatingRoomPrefab;
+    public GameObject agitPrefab;
+    public GameObject pubPrefab;
     public GameObject storePrefab;
+    public GameObject carCenterPrefab;
+    public GameObject hospitalPrefab;
     public GameObject garagePrefab;
     public List<GameObject> bunkerObjs;
 
@@ -54,37 +56,29 @@ public class BunkerMgr : MonoBehaviour
     private void Awake()
     {
         playerDataMgr = GameObject.FindGameObjectWithTag("PlayerDataMgr").GetComponent<PlayerDataMgr>();
-        storeMgr = GameObject.FindGameObjectWithTag("StoreMgr").GetComponent<StoreMgr>();
-        inventoryMgr = GameObject.FindGameObjectWithTag("InventoryMgr").GetComponent<InventoryMgr>();
-        squadMgr = GameObject.FindGameObjectWithTag("SquadMgr").GetComponent<SquadMgr>();
-        trunkMgr = GameObject.FindGameObjectWithTag("GarbageMgr").GetComponent<TrunkMgr>();
-        boardingMgr = GameObject.FindGameObjectWithTag("GarbageMgr").GetComponent<BoardingMgr>();
-        hospitalMgr = GameObject.FindGameObjectWithTag("HospitalMgr").GetComponent<HospitalMgr>();
         agitMgr = GameObject.FindGameObjectWithTag("AgitMgr").GetComponent<AgitMgr>();
         pubMgr = GameObject.FindGameObjectWithTag("PubMgr").GetComponent<PubMgr>();
+        storeMgr = GameObject.FindGameObjectWithTag("StoreMgr").GetComponent<StoreMgr>();
+        hospitalMgr = GameObject.FindGameObjectWithTag("HospitalMgr").GetComponent<HospitalMgr>();
+        garageMgr = GameObject.FindGameObjectWithTag("GarageMgr").GetComponent<GarageMgr>();
 
-        inventoryMgr.playerDataMgr = playerDataMgr;
-        squadMgr.playerDataMgr = playerDataMgr;
-        trunkMgr.playerDataMgr = playerDataMgr;
-        boardingMgr.playerDataMgr = playerDataMgr;
-        hospitalMgr.playerDataMgr = playerDataMgr;
         agitMgr.playerDataMgr = playerDataMgr;
         pubMgr.playerDataMgr = playerDataMgr;
+        hospitalMgr.playerDataMgr = playerDataMgr;
+        garageMgr.playerDataMgr = playerDataMgr;
     }
 
     private void Start()
     {
-        storeMgr.Init();
-        inventoryMgr.Init();
-        squadMgr.Init();
-        trunkMgr.Init();
-        boardingMgr.Init();
-        hospitalMgr.Init();
         agitMgr.Init();
         pubMgr.Init();
+        storeMgr.Init();
+        hospitalMgr.Init();
+        garageMgr.Init();
 
         camController.OpenWindow = OpenWindow;
         camController.CloseWindow = CloseWindow;
+        camController.SetBunkerKind = SetBunkerKind;
         
         currentWinId = -1;
         currentBunkerKind = BunkerKinds.None;
@@ -117,21 +111,28 @@ public class BunkerMgr : MonoBehaviour
                 {
                     case BunkerKinds.None:
                         break;
-                    case BunkerKinds.Garden:
-                        CreateGarden();
+                    case BunkerKinds.Agit:
+                        Create(1);
                         break;
-                    case BunkerKinds.OperatingRoom:
-                        CreateOperatingRoom();
+                    case BunkerKinds.Pub:
+                        Create(2);
                         break;
                     case BunkerKinds.Store:
-                        CreateStore();
+                        Create(3);
+                        break;
+                    case BunkerKinds.CarCenter:
+                        Create(4);
+                        break;
+                    case BunkerKinds.Hospital:
+                        Create(5);
                         break;
                     case BunkerKinds.Garage:
-                        CreateGarage();
+                        Create(6);
                         break;
                 }
-                Debug.Log($"{str} :{bunkerKinds.ToString()}");
             }
+            CloseWindow();
+
             selectedBunker = null;
 
 
@@ -142,259 +143,188 @@ public class BunkerMgr : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (multiTouch.Tap) currentMode = Mode.Touch;
-        else if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) currentMode = Mode.Mouse;
+        Debug.Log($"currentBunkerIndex : {currentBunkerIndex}");
+    }
 
-        Ray ray;
+    public void SetBunkerKind(Mode currentMode, GameObject bunker)
+    {
         if (currentMode == Mode.Touch)
         {
-            ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
+            var script = bunker.GetComponent<BunkerBase>();
+            currentBunkerIndex = script.bunkerId;
+            var bunkerName = script.bunkerName;
+            selectedBunker = bunker;
 
-            if (Physics.Raycast(ray, out RaycastHit hitInfo))
+            
+
+            //ÇöÀç º¡Ä¿ Á¾·ù.
+            if (!bunkerName.Equals("None"))
             {
-                if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
+                if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+
+                switch (bunkerName)
                 {
-                    if (camController.isZoomIn)
-                    {
-                        if(createButton.activeSelf) createButton.SetActive(false);
-                    }
-
-                    var script = hitInfo.collider.gameObject.GetComponent<BunkerBase>();
-                    currentBunkerIndex = script.bunkerId;
-
-                    selectedBunker = hitInfo.collider.gameObject;
+                    case "Agit":
+                        currentBunkerKind = BunkerKinds.Agit;
+                        break;
+                    case "Pub":
+                        currentBunkerKind = BunkerKinds.Pub;
+                        break;
+                    case "Store":
+                        currentBunkerKind = BunkerKinds.Store;
+                        break;
+                    case "CarCenter":
+                        currentBunkerKind = BunkerKinds.CarCenter;
+                        break;
+                    case "Hospital":
+                        currentBunkerKind = BunkerKinds.Hospital;
+                        break;
+                    case "Garage":
+                        currentBunkerKind = BunkerKinds.Garage;
+                        break;
                 }
+            }
+            else
+            {
+                if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
 
-                //ÇöÀç º¡Ä¿ Á¾·ù.
-                if (hitInfo.collider.gameObject.GetComponent<GardenRoom>() != null)
-                {
-                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
-
-                    currentBunkerKind = BunkerKinds.Garden;
-                    camController.isCurrentEmpty = false;
-                }
-                else if (hitInfo.collider.gameObject.GetComponent<OperatingRoom>() != null)
-                {
-                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
-
-                    currentBunkerKind = BunkerKinds.OperatingRoom;
-                    camController.isCurrentEmpty = false;
-                }
-                else if (hitInfo.collider.gameObject.GetComponent<StoreRoom>() != null)
-                {
-                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
-
-                    currentBunkerKind = BunkerKinds.Store;
-                    camController.isCurrentEmpty = false;
-                }
-                else if (hitInfo.collider.gameObject.GetComponent<Garage>() != null)
-                {
-                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
-
-                    currentBunkerKind = BunkerKinds.Garage;
-                    camController.isCurrentEmpty = false;
-                }
-                else
-                {
-                    if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
-                    
-                    currentBunkerKind = BunkerKinds.None;
-                    camController.isCurrentEmpty = true;
-                }
+                currentBunkerKind = BunkerKinds.None;
             }
         }
         else if (currentMode == Mode.Mouse)
         {
-            ray = camera.ScreenPointToRay(Input.mousePosition);
+            var script = bunker.GetComponent<BunkerBase>();
+            currentBunkerIndex = script.bunkerId;
+            var bunkerName = script.bunkerName;
+            selectedBunker = bunker;
 
-            if (Physics.Raycast(ray, out RaycastHit hitInfo))
+            //ÇöÀç º¡Ä¿ Á¾·ù.
+            if (!bunkerName.Equals("None"))
             {
-                if (hitInfo.collider.gameObject.GetComponent<BunkerBase>() != null)
+                if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+
+                switch (bunkerName)
                 {
-                    if (camController.isZoomIn)
-                    {
-                        if (createButton.activeSelf) createButton.SetActive(false);
-                    }
-
-                    var script = hitInfo.collider.gameObject.GetComponent<BunkerBase>();
-                    currentBunkerIndex = script.bunkerId;
-
-                    selectedBunker = hitInfo.collider.gameObject;
+                    case "Agit":
+                        currentBunkerKind = BunkerKinds.Agit;
+                        break;
+                    case "Pub":
+                        currentBunkerKind = BunkerKinds.Pub;
+                        break;
+                    case "Store":
+                        currentBunkerKind = BunkerKinds.Store;
+                        break;
+                    case "CarCenter":
+                        currentBunkerKind = BunkerKinds.CarCenter;
+                        break;
+                    case "Hospital":
+                        currentBunkerKind = BunkerKinds.Hospital;
+                        break;
+                    case "Garage":
+                        currentBunkerKind = BunkerKinds.Garage;
+                        break;
                 }
+                Debug.Log("ºóº¡Ä¿ ¾Æ´Ô");
+            }
+            else
+            {
+                if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
 
-                //ÇöÀç º¡Ä¿ Á¾·ù.
-                if (hitInfo.collider.gameObject.GetComponent<GardenRoom>() != null)
-                {
-                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+                currentBunkerKind = BunkerKinds.None;
 
-                    currentBunkerKind = BunkerKinds.Garden;
-                    camController.isCurrentEmpty = false;
-                }
-                else if (hitInfo.collider.gameObject.GetComponent<OperatingRoom>() != null)
-                {
-                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
-
-                    currentBunkerKind = BunkerKinds.OperatingRoom;
-                    camController.isCurrentEmpty = false;
-                }
-                else if (hitInfo.collider.gameObject.GetComponent<StoreRoom>() != null)
-                {
-                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
-
-                    currentBunkerKind = BunkerKinds.Store;
-                    camController.isCurrentEmpty = false;
-                }
-                else if (hitInfo.collider.gameObject.GetComponent<Garage>() != null)
-                {
-                    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
-
-                    currentBunkerKind = BunkerKinds.Garage;
-                    camController.isCurrentEmpty = false;
-                }
-                else
-                {
-                    if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
-                    
-                    currentBunkerKind = BunkerKinds.None;
-                    camController.isCurrentEmpty = true;
-                }
+                Debug.Log("ºóº¡Ä¿ÀÓ");
             }
         }
-        currentMode = Mode.None;
     }
 
     public void OpenWindow()
     {
-        if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Store)
+        Debug.Log($"currentBunkerKind : {currentBunkerKind.ToString()}");
+        switch (currentBunkerKind)
         {
-            currentWinId = (int)BunkerWindows.StoreWindow - 1;
-            windowManager.Open(currentWinId);
+            case BunkerKinds.Agit:
+                agitMgr.Init();
+                currentWinId = (int)BunkerWindows.AgitWindow - 1;
+                break;
+            case BunkerKinds.Pub:
+                currentWinId = (int)BunkerWindows.PubWindow - 1;
+                break;
+            case BunkerKinds.Store:
+                currentWinId = (int)BunkerWindows.StoreWindow - 1;
+                break;
+            case BunkerKinds.CarCenter:
+                currentWinId = (int)BunkerWindows.CarCenterWindow - 1;
+                break;
+            case BunkerKinds.Hospital:
+                currentWinId = (int)BunkerWindows.HospitalWindow - 1;
+                break;
+            case BunkerKinds.Garage:
+                garageMgr.Init();
+                currentWinId = (int)BunkerWindows.GarageWindow - 1;
+                break;
         }
-        else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.OperatingRoom)
-        {
-            currentWinId = (int)BunkerWindows.SquadWindow - 1;
-            windowManager.Open(currentWinId);
-        }
-        else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Garden)
-        {
-            inventoryMgr.Refresh();
-            currentWinId = (int)BunkerWindows.InventoryWindow - 1;
-            windowManager.Open(currentWinId);
-        }
-        else if (camController.isZoomIn && currentBunkerKind == BunkerKinds.Garage)
-        {
-            inventoryMgr.Refresh();
-            currentWinId = (int)BunkerWindows.GarageWindow - 1;
-            windowManager.Open(currentWinId);
-        }
+        windowManager.Open(currentWinId);
     }
 
     public void OpenConstructionWin()
     {
         if (!camController.isZoomIn)
         {
-            currentWinId = (int)BunkerWindows.ConstructionWindow - 1;
+            currentWinId = (int)BunkerWindows.UpgradeWindow - 1;
             windowManager.Open(currentWinId);
         }
     }
 
     public void CloseWindow()
     {
-        if (/*!camController.isZoomIn &&*/ currentWinId != -1)
+        if (currentWinId != -1)
         {
-            if (currentBunkerKind == BunkerKinds.OperatingRoom)
-                squadMgr.characterListUI.SetActive(false);
             windowManager.windows[currentWinId].Close();
             currentWinId = -1;
         }
     }
 
-
-    public void CreateGarden()
+    public void Create(int index)
     {
         if (selectedBunker == null) return;
         if (createButton.activeSelf) createButton.SetActive(false);
         if(!destroyButton.activeSelf) destroyButton.SetActive(true);
-        currentBunkerKind = BunkerKinds.Garden;
+
+        GameObject go = null;
+        switch (index)
+        {
+            case 1:
+                currentBunkerKind = BunkerKinds.Agit;
+                go = Instantiate(agitPrefab, selectedBunker.transform.position, Quaternion.identity);
+                break;
+            case 2:
+                currentBunkerKind = BunkerKinds.Pub;
+                go = Instantiate(pubPrefab, selectedBunker.transform.position, Quaternion.identity);
+                break;
+            case 3:
+                currentBunkerKind = BunkerKinds.Store;
+                go = Instantiate(storePrefab, selectedBunker.transform.position, Quaternion.identity);
+                break;
+            case 4:
+                currentBunkerKind = BunkerKinds.CarCenter;
+                go = Instantiate(carCenterPrefab, selectedBunker.transform.position, Quaternion.identity);
+                break;
+            case 5:
+                currentBunkerKind = BunkerKinds.Hospital;
+                go = Instantiate(hospitalPrefab, selectedBunker.transform.position, Quaternion.identity);
+                break;
+            case 6:
+                currentBunkerKind = BunkerKinds.Garage;
+                go = Instantiate(garagePrefab, selectedBunker.transform.position, Quaternion.identity);
+                break;
+        }
 
         string str = $"BunkerKind{currentBunkerIndex}";
         PlayerPrefs.SetInt(str, (int)currentBunkerKind);
 
-        var go = Instantiate(gardenPrefab, selectedBunker.transform.position, Quaternion.identity);
-        
-        var script = go.GetComponent<GardenRoom>();
-        script.bunkerId = currentBunkerIndex;
-
-        Destroy(selectedBunker);
-        selectedBunker = go;
-        bunkerObjs[script.bunkerId] = go;
-        camController.currentObject = selectedBunker;
-
-        OpenWindow();
-    }
-
-    public void CreateOperatingRoom()
-    {
-        if (selectedBunker == null) return;
-        if (createButton.activeSelf) createButton.SetActive(false);
-        if (!destroyButton.activeSelf) destroyButton.SetActive(true);
-
-        currentBunkerKind = BunkerKinds.OperatingRoom;
-
-        string str = $"BunkerKind{currentBunkerIndex}";
-        PlayerPrefs.SetInt(str, (int)currentBunkerKind);
-
-        var go = Instantiate(operatingRoomPrefab, selectedBunker.transform.position, Quaternion.identity);
-        var script = go.GetComponent<OperatingRoom>();
-        script.bunkerId = currentBunkerIndex;
-
-        Destroy(selectedBunker);
-        selectedBunker = go;
-        bunkerObjs[script.bunkerId] = go;
-        camController.currentObject = selectedBunker;
-
-        OpenWindow();
-    }
-
-    public void CreateStore()
-    {
-        if (selectedBunker == null) return;
-        if (createButton.activeSelf) createButton.SetActive(false);
-        if (!destroyButton.activeSelf) destroyButton.SetActive(true);
-
-        currentBunkerKind = BunkerKinds.Store;
-
-        string str = $"BunkerKind{currentBunkerIndex}";
-        PlayerPrefs.SetInt(str, (int)currentBunkerKind);
-
-        var go = Instantiate(storePrefab, selectedBunker.transform.position, Quaternion.identity);
-        var script = go.GetComponent<StoreRoom>();
-        script.bunkerId = currentBunkerIndex;
-
-        Destroy(selectedBunker);
-        selectedBunker = go;
-        bunkerObjs[script.bunkerId] = go;
-        camController.currentObject = selectedBunker;
-
-        OpenWindow();
-    }
-
-    public void CreateGarage()
-    {
-        if (selectedBunker == null) return;
-        if (createButton.activeSelf) createButton.SetActive(false);
-        if (!destroyButton.activeSelf) destroyButton.SetActive(true);
-
-        currentBunkerKind = BunkerKinds.Garage;
-
-        string str = $"BunkerKind{currentBunkerIndex}";
-        PlayerPrefs.SetInt(str, (int)currentBunkerKind);
-
-        var go = Instantiate(garagePrefab, selectedBunker.transform.position, Quaternion.identity);
-        var script = go.GetComponent<Garage>();
+        var script = go.GetComponent<BunkerBase>();
         script.bunkerId = currentBunkerIndex;
 
         Destroy(selectedBunker);

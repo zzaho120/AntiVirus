@@ -1,1 +1,1 @@
-public enum BunkerWindows{None,StoreWindow,InventoryWindow,SquadWindow,ConstructionWindow,GarageWindow}
+public enum BunkerWindows{None,AgitWindow,PubWindow,StoreWindow,CarCenterWindow,HospitalWindow,GarageWindow,UpgradeWindow}

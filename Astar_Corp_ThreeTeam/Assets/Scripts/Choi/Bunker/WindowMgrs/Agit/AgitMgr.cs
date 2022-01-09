@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class AgitMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
+    public SkillWinMgr skillWinMgr;
+    public EquipmentMgr equipmentMgr;
 
     public GameObject characterListContent;
     public GameObject characterPrefab;
@@ -22,17 +24,12 @@ public class AgitMgr : MonoBehaviour
     public Text sensitivityTxt;
     public Text willpowerTxt;
 
-    SkillWinMgr skillWinMgr;
-
     // 리스트 순서 / PlayerDataMgr Key
     Dictionary<int, int> characterInfo = new Dictionary<int, int>();
     int currentIndex;
     Color originColor;
     public void Init()
     {
-        //하위매니저.
-        //skillWinMgr = GameObject.FindGameObjectWithTag("SkillWinMgr").GetComponent<SkillWinMgr>();
-
         //이전 정보 삭제.
         if (characterObjs.Count != 0)
         {
@@ -74,10 +71,18 @@ public class AgitMgr : MonoBehaviour
             i++;
         }
 
-        //skillWinMgr.playerDataMgr = playerDataMgr;
-        //skillWinMgr.characterInfo = characterInfo;
+        skillWinMgr.playerDataMgr = playerDataMgr;
+        skillWinMgr.Init();
 
-        currentIndex = -1;
+        equipmentMgr.playerDataMgr = playerDataMgr;
+        equipmentMgr.Init();
+
+        if (!charcterListWin.activeSelf) charcterListWin.SetActive(true);
+        if (characterInfoWin.activeSelf) characterInfoWin.SetActive(false);
+        if (skillWinMgr.skillPage.activeSelf) skillWinMgr.skillPage.SetActive(false);
+        if (equipmentMgr.equipmentWin.activeSelf) equipmentMgr.equipmentWin.SetActive(false);
+
+          currentIndex = -1;
         originColor = characterPrefab.GetComponent<Image>().color;
     }
 
@@ -90,9 +95,9 @@ public class AgitMgr : MonoBehaviour
         //characterObjs[currentIndex].GetComponent<Image>().color = Color.red;
 
         currentIndex = index;
+        skillWinMgr.currentIndex = currentIndex;
+        equipmentMgr.currentIndex = currentIndex;
         OpenCharacterInfo();
-
-        //skillWinMgr.currentIndex = currentIndex;
     }
 
     public void OpenCharacterInfo()
@@ -113,5 +118,30 @@ public class AgitMgr : MonoBehaviour
     {
         characterInfoWin.SetActive(false);
         charcterListWin.SetActive(true);
+    }
+
+    public void OpenSkillPage()
+    {
+        characterInfoWin.SetActive(false);
+        skillWinMgr.OpenSkillPage();
+    }
+
+    public void CloseSkillPage()
+    {
+        skillWinMgr.CloseSkillPage();
+        characterInfoWin.SetActive(true);
+    }
+
+    public void OpenEquipmentWin()
+    {
+        characterInfoWin.SetActive(false);
+        equipmentMgr.equipmentWin.SetActive(true);
+        equipmentMgr.OpenEquipWin1();
+    }
+
+    public void CloseEquipmentWin()
+    {
+        equipmentMgr.CloseEquipWin1();
+        characterInfoWin.SetActive(true);
     }
 }

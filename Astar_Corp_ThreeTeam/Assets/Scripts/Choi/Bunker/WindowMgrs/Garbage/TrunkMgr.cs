@@ -34,6 +34,18 @@ public class TrunkMgr : MonoBehaviour
 
     public void Init()
     {
+        if (storageList.Count != 0)
+        {
+            foreach (var element in storageList)
+            {
+                Destroy(element.Value);
+            }
+            storageList.Clear();
+            storageContent.transform.DetachChildren();
+        }
+        if (storageWeaponInfo.Count != 0) storageWeaponInfo.Clear();
+        if (storageConsumableInfo.Count != 0) storageConsumableInfo.Clear();
+
         int i = 0;
         foreach (var element in playerDataMgr.currentEquippables)
         {

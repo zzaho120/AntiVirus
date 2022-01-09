@@ -28,12 +28,9 @@ public class PlayerSaveData
     public List<int> levelT { get; set; }
 
     //±âÅ¸.
-    public List<string> antivirus { get; set; }
     public List<string> mainWeapon { get; set; }
-    public List<int> mainWeaponNum { get; set; }
     public List<string> subWeapon { get; set; }
-    public List<int> subWeaponNum { get; set; }
-
+  
     public List<string> activeSkillList { get; set; }
     public List<string> passiveSkillList { get; set; }
 

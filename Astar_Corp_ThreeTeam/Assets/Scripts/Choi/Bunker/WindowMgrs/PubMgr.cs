@@ -9,7 +9,9 @@ public class PubMgr : MonoBehaviour
 
     public GameObject mainWin;
     public GameObject recruitmentWin;
+    public GameObject hintCollectionWin;
 
+    //용병 모집 창.
     public GameObject characterListContent;
     public GameObject characterPrefab;
     public GameObject DetailInfoWin;
@@ -19,8 +21,14 @@ public class PubMgr : MonoBehaviour
     public Text willPowerTxt;
     Dictionary<int, GameObject> characterObjs = new Dictionary<int, GameObject>();
 
+    //힌트 수집 창.
+    public List<GameObject> hintList;
+    public GameObject hintPopup;
+    public Text hintContents;
+
     int pubLevel;
     int currentIndex;
+    int currentHintIndex;
     Color originColor;
 
     List<string> characterName = new List<string>();
@@ -29,6 +37,7 @@ public class PubMgr : MonoBehaviour
     {
         if (!mainWin.activeSelf) mainWin.SetActive(true);
         if (recruitmentWin.activeSelf) recruitmentWin.SetActive(false);
+        if (hintCollectionWin.activeSelf) hintCollectionWin.SetActive(false);
 
         //이전 정보 삭제.
         if (characterObjs.Count != 0)
@@ -98,6 +107,12 @@ public class PubMgr : MonoBehaviour
             stat.weapon.mainWeapon = null;
             stat.weapon.subWeapon =  null;
 
+            stat.skills = new CharacterSkillList();
+            stat.skills.activeSkills = new List<ActiveSkill>();
+            for (int k = 0; k < 5; k++) stat.skills.activeSkills.Add(null);
+            stat.skills.passiveSkills = new List<PassiveSkill>();
+            for (int k = 0; k < 5; k++) stat.skills.passiveSkills.Add(null);
+
             int num = j;
             soliders.Add(num, stat);
         }
@@ -127,6 +142,7 @@ public class PubMgr : MonoBehaviour
         }
 
         currentIndex = -1;
+        currentHintIndex = -1;
         originColor = characterPrefab.GetComponent<Image>().color;
     }
 
@@ -153,7 +169,12 @@ public class PubMgr : MonoBehaviour
 
     public void Hire()
     {
+        string squadNum = "SquadNum";
+        int currentNum = PlayerPrefs.HasKey(squadNum) ? PlayerPrefs.GetInt(squadNum) : 0;
+        playerDataMgr.AddCharacter(currentNum, soliders[currentIndex]);
+
         Refresh();
+        DetailInfoWin.SetActive(false);
     }
 
     public void Refresh()
@@ -163,10 +184,36 @@ public class PubMgr : MonoBehaviour
         currentIndex = -1;
     }
 
+    //힌트 수집 창 관련.
+    public void SelectHint(int index)
+    {
+        if (currentHintIndex != -1) hintList[currentHintIndex].GetComponent<Image>().color = Color.white;
+
+        currentHintIndex = index;
+        hintList[currentHintIndex].GetComponent<Image>().color = Color.red;
+    }
+
+    public void OpenHintPopup()
+    {
+        if (currentHintIndex == -1) return;
+
+        if (!hintPopup.activeSelf) hintPopup.SetActive(true);
+        hintContents.text = "랜덤 힌트 내용";
+    }
+
+    public void CloseHintPopup()
+    {
+        hintList[currentHintIndex].GetComponent<Image>().color = Color.white;
+        currentHintIndex = -1;
+
+        if (hintPopup.activeSelf) hintPopup.SetActive(false);
+    }
+    
     //창이동.
     public void MoveToMainWin()
     {
-        recruitmentWin.SetActive(false);
+        if (recruitmentWin.activeSelf) recruitmentWin.SetActive(false);
+        if (hintCollectionWin.activeSelf) hintCollectionWin.SetActive(false);
         mainWin.SetActive(true);
     }
 
@@ -174,5 +221,18 @@ public class PubMgr : MonoBehaviour
     {
         mainWin.SetActive(false);
         recruitmentWin.SetActive(true);
+    }
+
+    public void MoveToHintCollectionWin()
+    {
+        mainWin.SetActive(false);
+        hintCollectionWin.SetActive(true);
+        if (hintPopup.activeSelf) hintPopup.SetActive(false);
+
+        foreach (var element in hintList)
+        {
+            if (element.GetComponent<Image>().color == Color.red)
+                element.GetComponent<Image>().color = Color.white;
+        }
     }
 }

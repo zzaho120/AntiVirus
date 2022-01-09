@@ -11,7 +11,9 @@ public class CharacterSkillList
     public List<PassiveSkill> passiveSkills;
 
     private ScriptableMgr scriptableMgr;
-    
+
+    public CharacterSkillList() { }
+
     public CharacterSkillList(string skillId)
     {
         scriptableMgr = ScriptableMgr.Instance;

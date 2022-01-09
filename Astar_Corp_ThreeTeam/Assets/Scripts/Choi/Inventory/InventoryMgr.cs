@@ -117,9 +117,6 @@ public class InventoryMgr : MonoBehaviour
         characterContent.transform.DetachChildren();
 
         int j = 0;
-        //string str = "SquadNum";
-        //int squadNum = PlayerPrefs.GetInt(str);
-
         foreach (var element in currentSquad)
         {
             var go = Instantiate(characterPrefab, characterContent.transform);
@@ -127,9 +124,6 @@ public class InventoryMgr : MonoBehaviour
             int num = j;
             button.onClick.AddListener(delegate { SelectCharacter(element.Key); });
             characterGOs.Add(go);
-
-            //Debug.Log($"element.Key : {element.Key}");
-            //Debug.Log($"character.name : {element.Value.character.name}");
 
             if (element.Value.character.name == string.Empty) characterData.Add(element.Key, null);
             else characterData.Add(element.Key, element.Value.character.name);
@@ -242,22 +236,19 @@ public class InventoryMgr : MonoBehaviour
 
     public void SelectCharacter(int i)
     {
-        Debug.Log("캐릭터변경");
         if (detailWin.activeSelf == true) detailWin.SetActive(false);
         currentCharacter = characterData[i];
         currentIndex = i;
-
-        Debug.Log($"currentIndex : {currentIndex}");
 
         if (currentCharacter != null)
         {
             currentCharacterTxt.text = currentCharacter;
 
-            if (playerDataMgr.characterStats[currentIndex].weapon.mainWeapon != null)
+            if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
             {
                 var child = mainWeaponQuick.transform.GetChild(0);
                 var detailInfo = child.GetComponent<Text>();
-                detailInfo.text = $"+{playerDataMgr.characterInfos[currentIndex].mainWeaponNum}";
+                detailInfo.text = $"+1";
             }
             else
             {
@@ -266,11 +257,11 @@ public class InventoryMgr : MonoBehaviour
                 detailInfo.text = null;
             }
 
-            if (playerDataMgr.characterStats[currentIndex].weapon.subWeapon != null)
+            if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null)
             {
                 var child = subWeaponQuick.transform.GetChild(0);
                 var detailInfo = child.GetComponent<Text>();
-                detailInfo.text = $"+{playerDataMgr.characterInfos[currentIndex].subWeaponNum}";
+                detailInfo.text = $"+1";
             }
             else
             {
@@ -355,21 +346,20 @@ public class InventoryMgr : MonoBehaviour
                     //이미 아이템이 있으면 인벤토리에 넣음.
                     Disarm();
 
-                    playerDataMgr.characterInfos[currentIndex].mainWeapon = currentItem;
-                    playerDataMgr.characterInfos[currentIndex].mainWeaponNum = items[currentItem];
+                    playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon = playerDataMgr.equippableList[currentItem];
+                    //playerDataMgr.characterStats[currentIndex].mainWeaponNum = items[currentItem];
                     var equip = playerDataMgr.currentEquippables[currentItem];
-                    playerDataMgr.characterStats[currentIndex].weapon.mainWeapon = equip;
+                    playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon = equip;
 
                     var child = mainWeaponQuick.transform.GetChild(0);
                     var detailInfo = child.GetComponent<Text>();
-                    detailInfo.text = $"+{playerDataMgr.characterInfos[currentIndex].mainWeaponNum}";
+                    detailInfo.text = $"+1";
 
                     playerDataMgr.currentEquippables.Remove(currentItem);
                     playerDataMgr.currentEquippablesNum.Remove(currentItem);
 
-                    var index = playerDataMgr.characterInfos[currentIndex].saveId;
+                    var index =currentIndex;
                     playerDataMgr.saveData.mainWeapon[index] = currentItem;
-                    playerDataMgr.saveData.mainWeaponNum[index] = items[currentItem];
                     index = playerDataMgr.saveData.equippableList.IndexOf(currentItem);
                     playerDataMgr.saveData.equippableList.Remove(currentItem);
                     playerDataMgr.saveData.equippableNumList.RemoveAt(index);
@@ -382,21 +372,20 @@ public class InventoryMgr : MonoBehaviour
                     Debug.Log("보조무기 장착");
                     Disarm();
 
-                    playerDataMgr.characterInfos[currentIndex].subWeapon = currentItem;
-                    playerDataMgr.characterInfos[currentIndex].subWeaponNum = items[currentItem];
+                    playerDataMgr.currentSquad[currentIndex].weapon.subWeapon = playerDataMgr.equippableList[currentItem];
+                    //playerDataMgr.characterStats[currentIndex].subWeaponNum = items[currentItem];
                     var equip = playerDataMgr.currentEquippables[currentItem];
-                    playerDataMgr.characterStats[currentIndex].weapon.subWeapon = equip;
+                    playerDataMgr.currentSquad[currentIndex].weapon.subWeapon = equip;
 
                     var child = subWeaponQuick.transform.GetChild(0);
                     var detailInfo = child.GetComponent<Text>();
-                    detailInfo.text = $"+{playerDataMgr.characterInfos[currentIndex].subWeaponNum}";
+                    detailInfo.text = $"+1";
 
                     playerDataMgr.currentEquippables.Remove(currentItem);
                     playerDataMgr.currentEquippablesNum.Remove(currentItem);
 
-                    var index = playerDataMgr.characterInfos[currentIndex].saveId;
+                    var index = currentIndex;
                     playerDataMgr.saveData.subWeapon[index] = currentItem;
-                    playerDataMgr.saveData.subWeaponNum[index] = items[currentItem];
                     index = playerDataMgr.saveData.equippableList.IndexOf(currentItem);
                     playerDataMgr.saveData.equippableList.Remove(currentItem);
                     playerDataMgr.saveData.equippableNumList.RemoveAt(index);
@@ -433,18 +422,18 @@ public class InventoryMgr : MonoBehaviour
     public void EquipQuickDisplay()
     {
         if (currentCharacter == null) return;
-        else if (playerDataMgr.characterStats[currentIndex].weapon.mainWeapon == null && equipType == EquipType.MainWeapon) return;
-        else if (playerDataMgr.characterStats[currentIndex].weapon.subWeapon == null && equipType == EquipType.SubWeapon) return;
+        else if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon == null && equipType == EquipType.MainWeapon) return;
+        else if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon == null && equipType == EquipType.SubWeapon) return;
 
         string name;
         switch (equipType)
         {
             case EquipType.MainWeapon:
-                name = playerDataMgr.characterStats[currentIndex].weapon.mainWeapon.name;
+                name = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name;
                 detailInfoName.text = name;
                 break;
             case EquipType.SubWeapon:
-                name = playerDataMgr.characterStats[currentIndex].weapon.subWeapon.name;
+                name = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.name;
                 detailInfoName.text = name;
                 break;
         }
@@ -460,40 +449,35 @@ public class InventoryMgr : MonoBehaviour
 
     public void Disarm()
     {
-        if (playerDataMgr.characterInfos[currentIndex].mainWeapon != null && equipType == EquipType.MainWeapon)
+        if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null && equipType == EquipType.MainWeapon)
         {
-            var id = playerDataMgr.characterInfos[currentIndex].mainWeapon;
-            var num = playerDataMgr.characterInfos[currentIndex].mainWeaponNum;
+            var id = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.id;
+            //var num = playerDataMgr.characterStats[currentIndex].weapon.mainWeaponNum;
 
             playerDataMgr.saveData.equippableList.Add(id);
-            playerDataMgr.saveData.equippableNumList.Add(num);
+            playerDataMgr.saveData.equippableNumList.Add(1);
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
-            playerDataMgr.characterInfos[currentIndex].mainWeapon = null;
-            playerDataMgr.characterInfos[currentIndex].mainWeaponNum = 0;
-            playerDataMgr.characterStats[currentIndex].weapon.mainWeapon = null;
+            playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon = null;
             playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
-            playerDataMgr.currentEquippablesNum.Add(id, num);
+            playerDataMgr.currentEquippablesNum.Add(id, 1);
 
-            items.Add(id, num);
+            items.Add(id, 1);
         }
-        else if (playerDataMgr.characterInfos[currentIndex].subWeapon != null && equipType == EquipType.SubWeapon)
+        else if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null && equipType == EquipType.SubWeapon)
         {
-            var id = playerDataMgr.characterInfos[currentIndex].subWeapon;
-            var num = playerDataMgr.characterInfos[currentIndex].subWeaponNum;
+            var id = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.id;
+            //var num = playerDataMgr.characterStats[currentIndex].subWeaponNum;
 
             playerDataMgr.saveData.equippableList.Add(id);
-            playerDataMgr.saveData.equippableNumList.Add(num);
+            playerDataMgr.saveData.equippableNumList.Add(1);
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
-            playerDataMgr.characterInfos[currentIndex].subWeapon = null;
-            playerDataMgr.characterInfos[currentIndex].subWeaponNum = 0;
-            playerDataMgr.characterStats[currentIndex].weapon.subWeapon = null;
+            playerDataMgr.currentSquad[currentIndex].weapon.subWeapon = null;
             playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
-            playerDataMgr.currentEquippablesNum.Add(id, num);
+            playerDataMgr.currentEquippablesNum.Add(id, 1);
 
-            items.Add(id, num);
-
+            items.Add(id, 1);
         }
     }
 
