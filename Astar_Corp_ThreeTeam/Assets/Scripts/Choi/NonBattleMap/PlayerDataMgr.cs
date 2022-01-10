@@ -39,8 +39,6 @@ public class PlayerDataMgr : MonoBehaviour
     public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();    //현재 소유한 캐릭터들.
     public Dictionary<int, CharacterStats> boardingSquad = new Dictionary<int, CharacterStats>();   //트럭에 탑승한 캐릭터들.
     public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();     //전투에 나갈 캐릭터들.
-
-
     private void Start()
     {
         //PlayerPrefs.DeleteAll();

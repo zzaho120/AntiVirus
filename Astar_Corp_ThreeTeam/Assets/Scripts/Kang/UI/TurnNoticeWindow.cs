@@ -6,7 +6,7 @@ using UnityEngine;
 public class TurnNoticeWindow : GenericWindow
 {
     public TextMeshProUGUI noticeText;
-    private float maxTime = 4f;
+    private float maxTime = 2f;
 
     public override void Open()
     {

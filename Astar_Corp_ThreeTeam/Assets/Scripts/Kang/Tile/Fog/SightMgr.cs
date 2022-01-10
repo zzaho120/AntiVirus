@@ -129,8 +129,6 @@ public class SightMgr : MonoBehaviour
             if (player != curPlayer)
                 UpdateFrontSight(player);
         }
-
-        UpdateObj();
     }
 
     private void InitAllSight()

@@ -30,7 +30,6 @@ public class ResultWindow : GenericWindow
 
     public void SaveSquadInfo()
     {
-
         StartCoroutine(CoLoadBunker());
     }
 

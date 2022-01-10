@@ -30,9 +30,6 @@ public class BattleMgr : MonoBehaviour
     [Header("Prefabs")]
     public GameObject playerPrefab;
 
-    [Header("ProtoType")]
-    public MonsterChar virusMonster;
-
     public void Awake()
     {
         Instance = this;
@@ -101,11 +98,9 @@ public class BattleMgr : MonoBehaviour
         switch (turn)
         {
             case BattleTurn.Player:
-                if (Input.GetKeyDown(KeyCode.Alpha1))
-                    monsterMgr.RemoveMonster(virusMonster);
                 break;
             case BattleTurn.Enemy:
-                monsterMgr.TurnUpdate();
+                monsterMgr.UpdateTurn();
                 break;
         }
     }
@@ -113,6 +108,24 @@ public class BattleMgr : MonoBehaviour
     public void OnChangeTurn(object empty)
     {
         Invoke("ChangeTurn", 1f);
+    }
+
+    private void ChangeTurn()
+    {
+        var windowId = (int)BattleWindows.TurnNotice - 1;
+        var window = battleWindowMgr.Open(windowId).GetComponent<TurnNoticeWindow>();
+        switch (turn)
+        {
+            case BattleTurn.Player:
+                turn = BattleTurn.Enemy;
+                EventBusMgr.Publish(EventType.StartEnemy);
+                break;
+            case BattleTurn.Enemy:
+                turn = BattleTurn.Player;
+                EventBusMgr.Publish(EventType.StartPlayer);
+                break;
+        }
+        window.NoticeTurn(turn);
     }
 
     public void DestroyChar(object[] param)
@@ -133,23 +146,6 @@ public class BattleMgr : MonoBehaviour
         CheckGameover();
     }
 
-    private void ChangeTurn()
-    {
-        var windowId = (int)BattleWindows.TurnNotice - 1;
-        var window = battleWindowMgr.Open(windowId).GetComponent<TurnNoticeWindow>();
-        switch (turn)
-        {
-            case BattleTurn.Player:
-                turn = BattleTurn.Enemy;
-                EventBusMgr.Publish(EventType.StartEnemy);
-                break;
-            case BattleTurn.Enemy:
-                turn = BattleTurn.Player;
-                EventBusMgr.Publish(EventType.StartPlayer);
-                break;
-        }
-        window.NoticeTurn(turn);
-    }
 
     private void CheckGameover()
     {

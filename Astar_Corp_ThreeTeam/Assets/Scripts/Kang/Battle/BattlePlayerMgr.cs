@@ -23,52 +23,10 @@ public class BattlePlayerMgr : MonoBehaviour
 
     public void StartTurn(object empty)
     {
-        var monsters = BattleMgr.Instance.monsterMgr.monsters;
         foreach (var character in playerableChars)
         {
             character.StartTurn();
-
-            var levelList = new List<int>();
-            foreach (var monster in monsters)
-            {
-                levelList.Add(character.GetVirusLevel(monster));
-            }
-
-            var virusLevelDics = new Dictionary<string, int>();
-            for (var idx = 0; idx < levelList.Count; ++idx)
-            {
-                var virusType = monsters[idx].monsterStats.virus.id;
-
-                if (levelList[idx] < 1)
-                    continue;
-
-                if (!virusLevelDics.ContainsKey(virusType))
-                    virusLevelDics.Add(virusType, levelList[idx]);
-                else if (virusLevelDics[virusType] < levelList[idx])
-                    virusLevelDics[virusType] = levelList[idx];
-            }
-
-            foreach (var pair in virusLevelDics)
-            {
-                switch (pair.Key)
-                {
-                    case "1":
-                        character.characterStats.virusPanalty["E"].Calculation(pair.Value);
-                        break;
-                    case "2":
-                        character.characterStats.virusPanalty["B"].Calculation(pair.Value);
-                        break;
-                    case "3":
-                        character.characterStats.virusPanalty["P"].Calculation(pair.Value);
-                        break;
-                    case "4":
-                        character.characterStats.virusPanalty["I"].Calculation(pair.Value);
-                        break;
-                    case "5":
-                        character.characterStats.virusPanalty["T"].Calculation(pair.Value);
-                        break;
-                }
-            }
+            CalculateVirusAllChar(character);
         }
     }
 
@@ -145,5 +103,51 @@ public class BattlePlayerMgr : MonoBehaviour
         var idx = playerableChars.IndexOf(playerableChar);
         playerableChars.RemoveAt(idx);
         Destroy(playerableChar.gameObject);
+    }
+
+    private void CalculateVirusAllChar(PlayerableChar character)
+    {
+        var levelList = new List<int>();
+        var monsters = BattleMgr.Instance.monsterMgr.monsters;
+        foreach (var monster in monsters)
+        {
+            levelList.Add(character.GetVirusLevel(monster));
+        }
+
+        var virusLevelDics = new Dictionary<string, int>();
+        for (var idx = 0; idx < levelList.Count; ++idx)
+        {
+            var virusType = monsters[idx].monsterStats.virus.id;
+
+            if (levelList[idx] < 1)
+                continue;
+
+            if (!virusLevelDics.ContainsKey(virusType))
+                virusLevelDics.Add(virusType, levelList[idx]);
+            else if (virusLevelDics[virusType] < levelList[idx])
+                virusLevelDics[virusType] = levelList[idx];
+        }
+
+        foreach (var pair in virusLevelDics)
+        {
+            switch (pair.Key)
+            {
+                case "1":
+                    character.characterStats.virusPanalty["E"].Calculation(pair.Value);
+                    break;
+                case "2":
+                    character.characterStats.virusPanalty["B"].Calculation(pair.Value);
+                    break;
+                case "3":
+                    character.characterStats.virusPanalty["P"].Calculation(pair.Value);
+                    break;
+                case "4":
+                    character.characterStats.virusPanalty["I"].Calculation(pair.Value);
+                    break;
+                case "5":
+                    character.characterStats.virusPanalty["T"].Calculation(pair.Value);
+                    break;
+            }
+        }
     }
 }

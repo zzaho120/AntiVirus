@@ -72,6 +72,8 @@ public class PlayerableChar : BattleChar
                                     playerAction.EnableReloadBtn();
 
                                     ren.material.color = Color.green;
+
+                                    CameraController.instance.SetFollowObject(transform);
                                 }
                                 else
                                     SetNonSelected();
@@ -298,6 +300,7 @@ public class PlayerableChar : BattleChar
         if (status != PlayerState.Alert)
             status = PlayerState.TurnEnd;
         ren.material.color = Color.gray;
+        CameraController.instance.SetFollowObject(null);
         EventBusMgr.Publish(EventType.EndPlayer);
     }
 
@@ -371,5 +374,6 @@ public class PlayerableChar : BattleChar
         ren.material.color = Color.white;
         isSelected = false;
         status = PlayerState.Wait;
+        CameraController.instance.SetFollowObject(null);
     }
 }

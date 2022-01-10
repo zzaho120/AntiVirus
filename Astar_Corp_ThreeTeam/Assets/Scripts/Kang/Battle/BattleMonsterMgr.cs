@@ -34,7 +34,7 @@ public class BattleMonsterMgr : MonoBehaviour
         RecognizePlayer();
     }
 
-    public void TurnUpdate()
+    public void UpdateTurn()
     {
         if (monsterIdx < monsters.Count)
             monsters[monsterIdx].MonsterUpdate();
@@ -44,7 +44,12 @@ public class BattleMonsterMgr : MonoBehaviour
     {
         monsterIdx++;
         if (monsterIdx >= monsters.Count)
+        {
+            CameraController.Instance.SetFollowObject(null);
             EventBusMgr.Publish(EventType.ChangeTurn);
+        }
+        else
+            CameraController.Instance.SetFollowObject(monsters[monsterIdx].transform);
     }
 
     private void RecognizePlayer()
