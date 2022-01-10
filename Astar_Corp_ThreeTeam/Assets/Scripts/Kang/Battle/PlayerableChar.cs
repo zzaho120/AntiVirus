@@ -36,7 +36,7 @@ public class PlayerableChar : BattleChar
     {
         base.Init();
         ren = GetComponent<MeshRenderer>();
-        //characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
+        characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
         characterStats.weapon.mainWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/AssaultRifle_01"));
         characterStats.weapon.subWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/FireAxe_01"));
         //¼öÁ¤

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BattleIdleState : StateBase
 {
-    private int moveRange = 8;
+    private int moveRange = 4;
     private Vector3 nextTile;
     private Stack<AStarTile> pathList;
     private MonsterChar monster;
@@ -68,10 +68,10 @@ public class BattleIdleState : StateBase
 
     private void SetPath()
     {
-        //var randomX = Random.Range(-moveRange, moveRange);
-        //var randomZ = Random.Range(-moveRange, moveRange);
+        var randomX = Random.Range(-moveRange, moveRange);
+        var randomZ = Random.Range(-moveRange, moveRange);
         var currentTile = monster.currentTile.tileIdx;
-        var endTile = new Vector3(Mathf.Clamp(currentTile.x - 12, 0, 23), 0, currentTile.z);
+        var endTile = new Vector3(Mathf.Clamp(randomX, 0, randomZ), 0, currentTile.z);
         timer = 0;
 
         if (BattleMgr.Instance.sightMgr.totalSightDics.ContainsKey(new Vector2(endTile.x, endTile.z)))
