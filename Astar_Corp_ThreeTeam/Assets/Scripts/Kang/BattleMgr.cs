@@ -43,20 +43,21 @@ public class BattleMgr : MonoBehaviour
         playerMgr = GameObject.FindWithTag("Player").GetComponent<BattlePlayerMgr>();
         monsterMgr = GameObject.FindWithTag("BattleMonster").GetComponent<BattleMonsterMgr>();
         battleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
-        
+
         // 비전투씬에서 넘어온 플레이어데이터매니저가 있으면
         // 아래 코드가 동작함
+
+        var vectorList = new List<Vector3>();
+        vectorList.Add(new Vector3(7, 1, 8));
+        vectorList.Add(new Vector3(6, 1, 8));
+        vectorList.Add(new Vector3(7, 1, 7));
+        vectorList.Add(new Vector3(6, 1, 7));
+
         var playerDataMgrObj = GameObject.FindWithTag("PlayerDataMgr");
         var isExistDataMgr = playerDataMgrObj != null;
         if (isExistDataMgr)
         {
             playerDataMgr = GameObject.FindWithTag("PlayerDataMgr").GetComponent<PlayerDataMgr>();
-
-            var vectorList = new List<Vector3>();
-            vectorList.Add(new Vector3(7, 1, 8));
-            vectorList.Add(new Vector3(6, 1, 8));
-            vectorList.Add(new Vector3(7, 1, 7));
-            vectorList.Add(new Vector3(6, 1, 7));
 
             for (var idx = 0; idx < playerDataMgr.battleSquad.Count; ++idx)
             {
@@ -64,6 +65,15 @@ public class BattleMgr : MonoBehaviour
                 player.transform.SetParent(playerMgr.transform);
                 var playerableChar = player.GetComponent<PlayerableChar>();
                 playerableChar.characterStats = playerDataMgr.battleSquad[idx];
+            }
+        }
+        else
+        {
+            for (var idx = 0; idx < 4; ++idx)
+            {
+                var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.identity);
+                player.transform.SetParent(playerMgr.transform);
+                var playerableChar = player.GetComponent<PlayerableChar>();
             }
         }
     }
@@ -102,21 +112,7 @@ public class BattleMgr : MonoBehaviour
 
     public void OnChangeTurn(object empty)
     {
-        Invoke("ChangeTurn", 3f);
-        //var windowId = (int)BattleWindows.TurnNotice - 1;
-        //var window = battleWindowMgr.Open(windowId).GetComponent<TurnNoticeWindow>();
-        //switch (turn)
-        //{
-        //    case BattleTurn.Player:
-        //        turn = BattleTurn.Enemy;
-        //        EventBusMgr.Publish(EventType.StartEnemy);
-        //        break;
-        //    case BattleTurn.Enemy:
-        //        turn = BattleTurn.Player;
-        //        EventBusMgr.Publish(EventType.StartPlayer);
-        //        break;
-        //}
-        //window.NoticeTurn(turn);
+        Invoke("ChangeTurn", 1f);
     }
 
     public void DestroyChar(object[] param)

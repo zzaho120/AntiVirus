@@ -87,8 +87,6 @@ public class PlayerDataMgr : MonoBehaviour
             {
                 string str = "Continue";
                 PlayerPrefs.SetInt(str, 1);
-
-                
             }
             //이어하기.
             else
@@ -115,10 +113,10 @@ public class PlayerDataMgr : MonoBehaviour
 
                 //테스트용.
                 //////////////////////////////
-                foreach (var element in equippableList)
-                {
-                    currentEquippables.Add(element.Key, element.Value);
-                }
+                //foreach (var element in equippableList)
+                //{
+                //    currentEquippables.Add(element.Key, element.Value);
+                //}
                 //////////////////////////////
 
                 //캐릭터 설정.
