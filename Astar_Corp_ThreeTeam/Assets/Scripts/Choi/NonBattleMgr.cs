@@ -10,10 +10,11 @@ public class NonBattleMgr : MonoBehaviour
     // 벙커 위치 담기
     public Transform bunkerPos;
 
-    //[Header("Public Class")]
+    [Header("Public Class")]
     public CreateLabArea laboratoryArea;
     public CreateMonsterAreas monsterArea;
     public MonsterPool monsterPool;
+    public PlayerController playerController;
 
     private void Awake()
     {
@@ -23,6 +24,7 @@ public class NonBattleMgr : MonoBehaviour
         laboratoryArea = Instance.GetComponent<CreateLabArea>();
         monsterArea = Instance.GetComponent<CreateMonsterAreas>();
         monsterPool = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
+        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
     private void Start()
@@ -31,6 +33,12 @@ public class NonBattleMgr : MonoBehaviour
         laboratoryArea.Init();
         monsterArea.Init();
         monsterPool.Init();
+        playerController.Init();
+    }
+
+    private void Update()
+    {
+        playerController.ActivePlayer();
     }
 
     // PlayerPrefs 삭제 테스터

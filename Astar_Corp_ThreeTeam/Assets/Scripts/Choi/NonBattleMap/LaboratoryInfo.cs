@@ -50,7 +50,6 @@ public class LaboratoryInfo : MonoBehaviour
             var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
             playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
         }
-        playerDataMgr.virusAreaType = virusType;
 
         if (other.gameObject.CompareTag("Player") && player != null)
         {
@@ -58,8 +57,6 @@ public class LaboratoryInfo : MonoBehaviour
 
             if (distance < radiusZone3 && isActiveZone3)
             {
-                playerDataMgr.virusAreaLevel = 1;
-
                 timer += Time.deltaTime;
                 if (timer > 1)
                 {
@@ -92,7 +89,6 @@ public class LaboratoryInfo : MonoBehaviour
             }
             else if (distance < radiusZone2 && isActiveZone2)
             {
-                playerDataMgr.virusAreaLevel = 2;
                 timer += Time.deltaTime;
                 if (timer > 1)
                 {
@@ -125,7 +121,6 @@ public class LaboratoryInfo : MonoBehaviour
             }
             else if (distance < radiusZone1)
             {
-                playerDataMgr.virusAreaLevel = 3;
                 timer += Time.deltaTime;
                 if (timer > 1)
                 {
@@ -163,7 +158,7 @@ public class LaboratoryInfo : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log(other.gameObject.tag);
+        //Debug.Log(other.gameObject.tag);
         if (other.gameObject.CompareTag("Player") && player != null)
         {
             Debug.Log("플레이어가 나갔습니다.");

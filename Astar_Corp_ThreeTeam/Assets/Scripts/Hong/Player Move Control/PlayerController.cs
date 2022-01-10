@@ -20,7 +20,8 @@ public class PlayerController : MonoBehaviour
     //public WindowManager windowManager;
     public TimeController timeController;
 
-    private NavMeshAgent agent;
+    [HideInInspector]
+    public NavMeshAgent agent;
 
     //public GameObject panel;  //나중에 Fadeout 효과 넣을때
     [HideInInspector]
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     LayerMask groundLayerMask;
 
-    void Start()
+    public void Init()
     {
         // 수정
         nonBattleMgr = GameObject.Find("NonBattleMgr");
@@ -61,7 +62,8 @@ public class PlayerController : MonoBehaviour
         saveMode = true;
     }
 
-    void Update()
+    //void Update()
+    public void ActivePlayer()
     {
         // 뉴인풋시스템
         if (Input.touchCount == 1 && !EventSystem.current.IsPointerOverGameObject())

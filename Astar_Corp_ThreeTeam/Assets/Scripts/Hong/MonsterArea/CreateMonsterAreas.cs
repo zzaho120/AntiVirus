@@ -39,12 +39,30 @@ public class CreateMonsterAreas : MonoBehaviour
                 do
                 {
                     randomIndex = Random.Range(0, nonBattleMgr.laboratoryArea.virusZones1.Count);
-                    var randLaboratoryPos = nonBattleMgr.laboratoryArea.virusZones1[randomIndex].transform.position;
-
-                    randX = Random.Range(10, 20);
+                    var randLaboratoryPos = nonBattleMgr.laboratoryArea.virusZones1[randomIndex].transform.position;    // 연구소 위치 임의로 가져옴
+                    
+                    //randX = Random.Range(10, 20);
+                    randX = Random.Range(40, 80);
                     var pos = Random.onUnitSphere * randX + randLaboratoryPos;
                     position = new Vector3(pos.x, 0, pos.z);
                     randScale = Random.Range(6, 10);
+
+                    //if (randomIndex == 0)
+                    //{
+                    //
+                    //}
+                    //else if (randomIndex == 1)
+                    //{
+                    //
+                    //}
+                    //else if (randomIndex == 2)
+                    //{
+                    //
+                    //}
+                    //else
+                    //{
+                    //
+                    //}
 
                 } while ((Physics.OverlapSphere(position, radius * randScale, monsterAreaLayer).Length != 0)
                 || (Physics.OverlapSphere(position, radius * randScale, playerLayer).Length != 0)

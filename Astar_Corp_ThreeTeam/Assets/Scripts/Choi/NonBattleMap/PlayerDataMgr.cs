@@ -34,10 +34,6 @@ public class PlayerDataMgr : MonoBehaviour
     public Dictionary<int, CharacterStats> boardingSquad = new Dictionary<int, CharacterStats>();//트럭에 탑승한 캐릭터들.
     public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.
 
-    // 주수, 프로토 타입용
-    public int virusAreaLevel;
-    public string virusAreaType;
-
     private void Start()
     {
         scriptableMgr = ScriptableMgr.Instance;
