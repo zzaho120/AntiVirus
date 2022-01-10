@@ -8,6 +8,7 @@ public class AgitMgr : MonoBehaviour
     public PlayerDataMgr playerDataMgr;
     public SkillWinMgr skillWinMgr;
     public EquipmentMgr equipmentMgr;
+    public ToleranceMgr toleranceMgr;
 
     public GameObject characterListContent;
     public GameObject characterPrefab;
@@ -71,18 +72,26 @@ public class AgitMgr : MonoBehaviour
             i++;
         }
 
+        currentIndex = -1;
+        skillWinMgr.currentIndex = currentIndex;
+        equipmentMgr.currentIndex = currentIndex;
+        toleranceMgr.currentIndex = currentIndex;
+
         skillWinMgr.playerDataMgr = playerDataMgr;
         skillWinMgr.Init();
 
         equipmentMgr.playerDataMgr = playerDataMgr;
         equipmentMgr.Init();
 
+        toleranceMgr.playerDataMgr = playerDataMgr;
+        toleranceMgr.Init();
+
         if (!charcterListWin.activeSelf) charcterListWin.SetActive(true);
         if (characterInfoWin.activeSelf) characterInfoWin.SetActive(false);
         if (skillWinMgr.skillPage.activeSelf) skillWinMgr.skillPage.SetActive(false);
         if (equipmentMgr.equipmentWin.activeSelf) equipmentMgr.equipmentWin.SetActive(false);
+        if (toleranceMgr.toleranceWin.activeSelf) toleranceMgr.toleranceWin.SetActive(false);
 
-          currentIndex = -1;
         originColor = characterPrefab.GetComponent<Image>().color;
     }
 
@@ -97,6 +106,8 @@ public class AgitMgr : MonoBehaviour
         currentIndex = index;
         skillWinMgr.currentIndex = currentIndex;
         equipmentMgr.currentIndex = currentIndex;
+        equipmentMgr.RefreshEquipList();
+        toleranceMgr.currentIndex = currentIndex; 
         OpenCharacterInfo();
     }
 
@@ -114,6 +125,7 @@ public class AgitMgr : MonoBehaviour
         willpowerTxt.text = $"정신력 {character.willpower}";
     }
 
+    //창 관리.
     public void CloseCharacterInfo()
     {
         characterInfoWin.SetActive(false);
@@ -141,7 +153,19 @@ public class AgitMgr : MonoBehaviour
 
     public void CloseEquipmentWin()
     {
-        equipmentMgr.CloseEquipWin1();
+        equipmentMgr.equipmentWin.SetActive(false);
+        characterInfoWin.SetActive(true);
+    }
+
+    public void OpenToleranceWin()
+    {
+        characterInfoWin.SetActive(false);
+        toleranceMgr.toleranceWin.SetActive(true);
+    }
+
+    public void CloseToleranceWin()
+    {
+        toleranceMgr.toleranceWin.SetActive(false);
         characterInfoWin.SetActive(true);
     }
 }

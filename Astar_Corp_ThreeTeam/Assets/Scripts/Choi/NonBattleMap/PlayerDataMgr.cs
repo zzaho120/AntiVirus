@@ -34,8 +34,13 @@ public class PlayerDataMgr : MonoBehaviour
     public Dictionary<int, CharacterStats> boardingSquad = new Dictionary<int, CharacterStats>();//트럭에 탑승한 캐릭터들.
     public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.
 
+    // 주수, 프로토 타입용
+    public int virusAreaLevel;
+    public string virusAreaType;
+
     private void Start()
     {
+        //PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
@@ -52,6 +57,7 @@ public class PlayerDataMgr : MonoBehaviour
             saveData.id = new List<string>();
             saveData.name = new List<string>();
             saveData.hp = new List<int>();
+            saveData.maxHp = new List<int>();
             saveData.sensitivity = new List<int>();
             saveData.concentration = new List<int>();
             saveData.willPower = new List<int>();
@@ -81,12 +87,22 @@ public class PlayerDataMgr : MonoBehaviour
         var obj = FindObjectsOfType<PlayerDataMgr>();
         if (obj.Length == 1)
         {
-            DontDestroyOnLoad(gameObject);
             //처음하기.
             if (!PlayerPrefs.HasKey("Continue"))
             {
                 string str = "Continue";
                 PlayerPrefs.SetInt(str, 1);
+
+                //테스트용.
+                //////////////////////////////
+                foreach (var element in equippableList)
+                {
+                    saveData.equippableList.Add(element.Key);
+                    saveData.equippableNumList.Add(1);
+                    currentEquippables.Add(element.Key, element.Value);
+                }
+                PlayerSaveLoadSystem.Save(saveData);
+                //////////////////////////////
             }
             //이어하기.
             else
@@ -111,14 +127,6 @@ public class PlayerDataMgr : MonoBehaviour
                     k++;
                 }
 
-                //테스트용.
-                //////////////////////////////
-                //foreach (var element in equippableList)
-                //{
-                //    currentEquippables.Add(element.Key, element.Value);
-                //}
-                //////////////////////////////
-
                 //캐릭터 설정.
                 for (int i = 0; i < saveData.name.Count; i++)
                 {
@@ -126,6 +134,7 @@ public class PlayerDataMgr : MonoBehaviour
                     CharacterStats stat = new CharacterStats();
                     stat.VirusPanaltyInit();
                     stat.currentHp = saveData.hp[i];
+                    stat.maxHp = saveData.maxHp[i];
                     stat.sensivity = saveData.sensitivity[i];
                     stat.concentration = saveData.concentration[i];
                     stat.willpower = saveData.willPower[i];
@@ -175,6 +184,7 @@ public class PlayerDataMgr : MonoBehaviour
             saveData.id.Add(stat.character.id);
             saveData.name.Add(stat.character.name);
             saveData.hp.Add(stat.currentHp);
+            saveData.maxHp.Add(stat.maxHp);
             saveData.sensitivity.Add(stat.sensivity);
             saveData.concentration.Add(stat.concentration);
             saveData.willPower.Add(stat.willpower);
@@ -213,6 +223,7 @@ public class PlayerDataMgr : MonoBehaviour
             saveData.id[num] = stat.character.id;
             saveData.name[num] = stat.character.name;
             saveData.hp[num] = stat.currentHp;
+            saveData.maxHp[num] = stat.maxHp;
             saveData.sensitivity[num] = stat.sensivity;
             saveData.concentration[num] =stat.concentration;
             saveData.willPower[num] =stat.willpower;

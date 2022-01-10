@@ -143,11 +143,6 @@ public class BunkerMgr : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        Debug.Log($"currentBunkerIndex : {currentBunkerIndex}");
-    }
-
     public void SetBunkerKind(Mode currentMode, GameObject bunker)
     {
         if (currentMode == Mode.Touch)
@@ -258,6 +253,7 @@ public class BunkerMgr : MonoBehaviour
                 currentWinId = (int)BunkerWindows.CarCenterWindow - 1;
                 break;
             case BunkerKinds.Hospital:
+                hospitalMgr.Init();
                 currentWinId = (int)BunkerWindows.HospitalWindow - 1;
                 break;
             case BunkerKinds.Garage:

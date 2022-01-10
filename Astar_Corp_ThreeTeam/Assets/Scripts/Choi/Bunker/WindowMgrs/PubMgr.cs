@@ -83,7 +83,7 @@ public class PubMgr : MonoBehaviour
             var character = playerDataMgr.characterList[key];
             stat.level = 0;
             stat.currentHp = Random.Range(character.min_Hp, character.max_Hp);
-            stat.maxHp = character.max_Hp;
+            stat.maxHp = stat.currentHp;
             stat.sensivity = Random.Range(character.min_Sensitivity, character.max_Sensitivity);
             stat.concentration = Random.Range(character.min_Concentration, character.max_Concentration);
             stat.willpower = Random.Range(character.min_Willpower, character.max_Willpower);
@@ -172,6 +172,7 @@ public class PubMgr : MonoBehaviour
         string squadNum = "SquadNum";
         int currentNum = PlayerPrefs.HasKey(squadNum) ? PlayerPrefs.GetInt(squadNum) : 0;
         playerDataMgr.AddCharacter(currentNum, soliders[currentIndex]);
+        PlayerPrefs.SetInt(squadNum, currentNum + 1);
 
         Refresh();
         DetailInfoWin.SetActive(false);

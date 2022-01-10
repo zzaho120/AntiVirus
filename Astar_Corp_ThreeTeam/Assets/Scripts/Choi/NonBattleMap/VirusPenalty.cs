@@ -73,4 +73,9 @@ public class VirusPenalty
                 penaltyGauge = maxGauge;
         }
     }
+
+    public int GetMaxGauge()
+    { 
+        return expGauge * (reductionLevel + 1);
+    }
 }

@@ -43,16 +43,7 @@ public class EquipmentMgr : MonoBehaviour
     public void Init()
     {
         OpenEquipWin1();
-        mainWeaponTxt.text =
-            (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null) ?
-            playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name : "비어있음";
-        subWeaponTxt.text =
-            (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null) ?
-            playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.name : "비어있음";
-        //utilityItemTxt.text =
-        //            (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null) ?
-        //            playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name : "비어있음";
-
+        
         if (itemObjs.Count != 0)
         {
             foreach (var element in itemObjs)
@@ -73,7 +64,7 @@ public class EquipmentMgr : MonoBehaviour
             button.onClick.AddListener(delegate { SelectItem(num); });
 
             var child = go.transform.GetChild(0).gameObject;
-            child.GetComponent<Text>().text = element.Key;
+            child.GetComponent<Text>().text = element.Value.name;
 
             itemObjs.Add(num,go);
             itemInfo.Add(num, element.Key);
@@ -83,6 +74,22 @@ public class EquipmentMgr : MonoBehaviour
 
         currentItemIndex = -1;
         currentKind = EquipKind.None;
+    }
+
+    public void RefreshEquipList()
+    {
+        if (currentIndex != -1)
+        {
+            mainWeaponTxt.text =
+                (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null) ?
+                playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name : "비어있음";
+            subWeaponTxt.text =
+                (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null) ?
+                playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.name : "비어있음";
+            //utilityItemTxt.text =
+            //            (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null) ?
+            //            playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name : "비어있음";
+        }
     }
 
     public void SelectEquipKind(int kind)
@@ -118,69 +125,7 @@ public class EquipmentMgr : MonoBehaviour
         if(!WeaponWin.activeSelf) WeaponWin.SetActive(true);
         if (!SpecCompareWin.activeSelf) SpecCompareWin.SetActive(true);
 
-        var key = itemInfo[currentItemIndex];
-        var weapon = playerDataMgr.currentEquippables[key];
-        string selectedWeaStr = $"기본 명중률 : {weapon.accur_Rate_Base}% \n" +
-            $"데미지 : {weapon.min_damage} ~ {weapon.max_damage} \n" +
-            $"탄창 클립수 : {weapon.bullet} \n" +
-            $"명중률 감소 : {weapon.accur_Rate_Dec}%";
-        weaponSpecTxt.text = selectedWeaStr;
-
-        Weapon currentWeapon;
-        if (currentKind == EquipKind.MainWeapon)
-        {
-            if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
-            {
-                currentWeapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
-                string str = $"기본 명중률 : {currentWeapon.accur_Rate_Base}% \n" +
-                   $"데미지 : {currentWeapon.min_damage} ~ {currentWeapon.max_damage} \n" +
-                   $"탄창 클립수 : {currentWeapon.bullet} \n" +
-                   $"명중률 감소 : {currentWeapon.accur_Rate_Dec}%";
-                currentWeaSpecTxt.text = str;
-
-                str = $"기본 명중률 : {currentWeapon.accur_Rate_Base - weapon.accur_Rate_Base}% \n" +
-                   $"데미지 : {currentWeapon.min_damage - weapon.min_damage} ~ {currentWeapon.max_damage - weapon.max_damage} \n" +
-                   $"탄창 클립수 : {currentWeapon.bullet - weapon.bullet} \n" +
-                   $"명중률 감소 : {currentWeapon.accur_Rate_Dec - weapon.accur_Rate_Dec}%";
-                changeWeaSpecTxt.text = str;
-            }
-            else
-            {
-                string str = $"기본 명중률 : -% \n" +
-                   $"데미지 : - \n" +
-                   $"탄창 클립수 : - \n" +
-                   $"명중률 감소 : -%";
-                currentWeaSpecTxt.text = str;
-                changeWeaSpecTxt.text = selectedWeaStr;
-            }
-        }
-        else if (currentKind == EquipKind.SubWeapon)
-        {
-            if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null)
-            {
-                currentWeapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
-                string str = $"기본 명중률 : {currentWeapon.accur_Rate_Base}% \n" +
-                   $"데미지 : {currentWeapon.min_damage} ~ {currentWeapon.max_damage} \n" +
-                   $"탄창 클립수 : {currentWeapon.bullet} \n" +
-                   $"명중률 감소 : {currentWeapon.accur_Rate_Dec}%";
-                currentWeaSpecTxt.text = str;
-
-                str = $"기본 명중률 : {currentWeapon.accur_Rate_Base - weapon.accur_Rate_Base}% \n" +
-                   $"데미지 : {currentWeapon.min_damage - weapon.min_damage} ~ {currentWeapon.max_damage - weapon.max_damage} \n" +
-                   $"탄창 클립수 : {currentWeapon.bullet - weapon.bullet} \n" +
-                   $"명중률 감소 : {currentWeapon.accur_Rate_Dec - weapon.accur_Rate_Dec}%";
-                changeWeaSpecTxt.text = str;
-            }
-            else
-            {
-                string str = $"기본 명중률 : -% \n" +
-                   $"데미지 : - \n" +
-                   $"탄창 클립수 : - \n" +
-                   $"명중률 감소 : -%";
-                currentWeaSpecTxt.text = str;
-                changeWeaSpecTxt.text = selectedWeaStr;
-            }
-        }
+        RefreshSpec();
     }
 
     public void Equip()
@@ -203,7 +148,8 @@ public class EquipmentMgr : MonoBehaviour
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
             Destroy(itemObjs[currentItemIndex]);
-            itemInfo.Remove(currentItemIndex);
+
+            mainWeaponTxt.text = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name;
         }
         else if (currentKind == EquipKind.SubWeapon)
         {
@@ -222,8 +168,14 @@ public class EquipmentMgr : MonoBehaviour
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
             Destroy(itemObjs[currentItemIndex]);
-            itemInfo.Remove(currentItemIndex);
+
+            subWeaponTxt.text = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.name;
         }
+        RefreshSpec();
+        itemInfo.Remove(currentItemIndex);
+        currentItemIndex = -1;
+        //if (WeaponWin.activeSelf) WeaponWin.SetActive(false);
+        //if (SpecCompareWin.activeSelf) SpecCompareWin.SetActive(false);
     }
 
     public void Disarm()
@@ -254,16 +206,78 @@ public class EquipmentMgr : MonoBehaviour
         }
     }
 
+    public void RefreshSpec()
+    {
+        var key = itemInfo[currentItemIndex];
+        var weapon = playerDataMgr.equippableList[key];
+        string selectedWeaStr = $"기본 명중률 : {weapon.accur_Rate_Base}% \n" +
+            $"데미지 : {weapon.min_damage} ~ {weapon.max_damage} \n" +
+            $"탄창 클립수 : {weapon.bullet} \n" +
+            $"명중률 감소 : {weapon.accur_Rate_Dec}%";
+        weaponSpecTxt.text = selectedWeaStr;
+
+        Weapon currentWeapon;
+        if (currentKind == EquipKind.MainWeapon)
+        {
+            if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
+            {
+                currentWeapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
+                string str = $"기본 명중률 : {currentWeapon.accur_Rate_Base}%\n" +
+                   $"데미지 : {currentWeapon.min_damage} ~ {currentWeapon.max_damage}\n" +
+                   $"탄창 클립수 : {currentWeapon.bullet}\n" +
+                   $"명중률 감소 : {currentWeapon.accur_Rate_Dec}%";
+                currentWeaSpecTxt.text = str;
+
+                str = $"기본 명중률 : {weapon.accur_Rate_Base - currentWeapon.accur_Rate_Base}%\n" +
+                   $"데미지 : {weapon.min_damage - currentWeapon.min_damage} ~ {weapon.max_damage - currentWeapon.max_damage}\n" +
+                   $"탄창 클립수 : {weapon.bullet - currentWeapon.bullet} \n" +
+                   $"명중률 감소 : {weapon.accur_Rate_Dec - currentWeapon.accur_Rate_Dec}%";
+                changeWeaSpecTxt.text = str;
+            }
+            else
+            {
+                string str = $"기본 명중률 : -% \n" +
+                   $"데미지 : - \n" +
+                   $"탄창 클립수 : - \n" +
+                   $"명중률 감소 : -%";
+                currentWeaSpecTxt.text = str;
+                changeWeaSpecTxt.text = selectedWeaStr;
+            }
+        }
+        else if (currentKind == EquipKind.SubWeapon)
+        {
+            if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null)
+            {
+                currentWeapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
+                string str = $"기본 명중률 : {currentWeapon.accur_Rate_Base}%\n" +
+                   $"데미지 : {currentWeapon.min_damage} ~ {currentWeapon.max_damage}\n" +
+                   $"탄창 클립수 : {currentWeapon.bullet}\n" +
+                   $"명중률 감소 : {currentWeapon.accur_Rate_Dec}%";
+                currentWeaSpecTxt.text = str;
+
+                str = $"기본 명중률 : {weapon.accur_Rate_Base - currentWeapon.accur_Rate_Base}%\n" +
+                   $"데미지 : {weapon.min_damage - currentWeapon.min_damage} ~ {weapon.max_damage - currentWeapon.max_damage}\n" +
+                   $"탄창 클립수 : {weapon.bullet - currentWeapon.bullet}\n" +
+                   $"명중률 감소 : {weapon.accur_Rate_Dec - currentWeapon.accur_Rate_Dec}%";
+                changeWeaSpecTxt.text = str;
+            }
+            else
+            {
+                string str = $"기본 명중률 : -% \n" +
+                   $"데미지 : - \n" +
+                   $"탄창 클립수 : - \n" +
+                   $"명중률 감소 : -%";
+                currentWeaSpecTxt.text = str;
+                changeWeaSpecTxt.text = selectedWeaStr;
+            }
+        }
+    }
+
     //창 설정.
     public void OpenEquipWin1()
     {
         if (equipmentWin2.activeSelf) equipmentWin2.SetActive(false);
         if (!equipmentWin1.activeSelf) equipmentWin1.SetActive(true);
-    }
-
-    public void CloseEquipWin1()
-    {
-        equipmentWin1.SetActive(false);
     }
 
     public void OpenEquipWin2()
@@ -273,5 +287,18 @@ public class EquipmentMgr : MonoBehaviour
 
         if (WeaponWin.activeSelf) WeaponWin.SetActive(false);
         if (SpecCompareWin.activeSelf) SpecCompareWin.SetActive(false);
+    }
+
+    public void CloseEquipWin2()
+    {
+        if (currentItemIndex != -1)
+        {
+            if (itemObjs[currentItemIndex].GetComponent<Image>().color == Color.red)
+                itemObjs[currentItemIndex].GetComponent<Image>().color = Color.white;
+            currentItemIndex = -1;
+        }
+
+        equipmentWin2.SetActive(false);
+        equipmentWin1.SetActive(true);
     }
 }

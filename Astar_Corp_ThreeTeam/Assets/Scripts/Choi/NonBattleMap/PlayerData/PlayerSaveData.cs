@@ -9,6 +9,7 @@ public class PlayerSaveData
     public List<string> id { get; set; }
     public List<string> name { get; set; }
     public List<int> hp { get; set; }
+    public List<int> maxHp { get; set; }
     public List<int> sensitivity { get; set; }
     public List<int> concentration { get; set; }
     public List<int> willPower { get; set; }
