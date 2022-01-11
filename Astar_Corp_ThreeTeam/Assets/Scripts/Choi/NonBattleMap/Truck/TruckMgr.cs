@@ -32,8 +32,6 @@ public class TruckMgr : MonoBehaviour
 
     public void Init()
     {
-
-
         if (playerDataMgr == null)
         {
             var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
