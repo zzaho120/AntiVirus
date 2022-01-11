@@ -20,7 +20,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public Dictionary<string, PassiveSkill> passiveSkillList = new Dictionary<string, PassiveSkill>();
     ScriptableMgr scriptableMgr;
 
-    //아이템 데이터.
+    //아지트 아이템 데이터.
     public Dictionary<string, Weapon> currentEquippables = new Dictionary<string, Weapon>();
     public Dictionary<string, int> currentEquippablesNum = new Dictionary<string, int>();
     public Dictionary<string, Consumable> currentConsumables = new Dictionary<string, Consumable>();
@@ -64,6 +64,15 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.subWeapon = new List<string>();
             saveData.activeSkillList = new List<string>();
             saveData.passiveSkillList = new List<string>();
+
+            saveData.bagEquippableList = new List<string>();
+            saveData.bagEquippableNumList = new List<int>();
+            saveData.bagEquippableNum = new List<int>();
+
+            saveData.bagConsumableList = new List<string>();
+            saveData.bagConsumableNumList = new List<int>();
+            saveData.bagConsumableNum = new List<int>();
+
             saveData.equippableList = new List<string>();
             saveData.equippableNumList = new List<int>();
             saveData.consumableList = new List<string>();
@@ -80,6 +89,11 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.levelP = new List<int>();
             saveData.levelI = new List<int>();
             saveData.levelT = new List<int>();
+
+            saveData.truckEquippableList = new List<string>();
+            saveData.truckEquippableNumList = new List<int>();
+            saveData.truckConsumableList = new List<string>();
+            saveData.truckConsumableNumList = new List<int>();
         }
 
         var obj = FindObjectsOfType<PlayerDataMgr>();
@@ -96,9 +110,21 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 foreach (var element in equippableList)
                 {
                     saveData.equippableList.Add(element.Key);
-                    saveData.equippableNumList.Add(1);
+                    int random = Random.Range(1, 3);
+                    saveData.equippableNumList.Add(random);
                     currentEquippables.Add(element.Key, element.Value);
+                    currentEquippablesNum.Add(element.Key, random);
                 }
+
+                foreach (var element in consumableList)
+                {
+                    saveData.consumableList.Add(element.Key);
+                    int random = Random.Range(1, 3);
+                    saveData.consumableNumList.Add(random);
+                    currentConsumables.Add(element.Key, element.Value);
+                    currentConsumablesNum.Add(element.Key, random);
+                }
+
                 PlayerSaveLoadSystem.Save(saveData);
                 //////////////////////////////
             }
@@ -122,6 +148,23 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     currentConsumables.Add(element, consumableList[element]);
                     int num = k;
                     currentConsumablesNum.Add(element, saveData.consumableNumList[num]);
+                    k++;
+                }
+                //트럭.
+                k = 0;
+                foreach (var element in saveData.truckEquippableList)
+                {
+                    truckEquippables.Add(element, equippableList[element]);
+                    int num = k;
+                    truckEquippablesNum.Add(element, saveData.truckEquippableNumList[num]);
+                    k++;
+                }
+                k = 0;
+                foreach (var element in saveData.truckConsumableList)
+                {
+                    truckConsumables.Add(element, consumableList[element]);
+                    int num = k;
+                    truckConsumablesNum.Add(element, saveData.truckConsumableNumList[num]);
                     k++;
                 }
 

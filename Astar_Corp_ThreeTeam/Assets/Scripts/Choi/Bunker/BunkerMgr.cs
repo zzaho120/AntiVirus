@@ -55,7 +55,7 @@ public class BunkerMgr : MonoBehaviour
 
     private void Awake()
     {
-        playerDataMgr = GameObject.FindGameObjectWithTag("PlayerDataMgr").GetComponent<PlayerDataMgr>();
+        playerDataMgr = PlayerDataMgr.Instance;
         agitMgr = GameObject.FindGameObjectWithTag("AgitMgr").GetComponent<AgitMgr>();
         pubMgr = GameObject.FindGameObjectWithTag("PubMgr").GetComponent<PubMgr>();
         storeMgr = GameObject.FindGameObjectWithTag("StoreMgr").GetComponent<StoreMgr>();

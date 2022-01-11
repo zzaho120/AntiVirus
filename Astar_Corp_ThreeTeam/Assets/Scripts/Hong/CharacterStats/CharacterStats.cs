@@ -62,6 +62,8 @@ public class CharacterStats : MonoBehaviour
     [HideInInspector]
     public Dictionary<string, VirusPenalty> virusPanalty = new Dictionary<string, VirusPenalty>();
 
+    //°¡¹æ.
+    public Dictionary<string, int> bag = new Dictionary<string, int>();
 
     public string Name 
     { 

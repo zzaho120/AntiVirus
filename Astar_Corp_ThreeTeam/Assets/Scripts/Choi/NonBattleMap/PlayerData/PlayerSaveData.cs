@@ -28,6 +28,15 @@ public class PlayerSaveData
     public List<int> levelI { get; set; }
     public List<int> levelT { get; set; }
 
+    //각 유저의 가방.
+    public List<string> bagEquippableList { get; set; }
+    public List<int> bagEquippableNumList { get; set; }
+    public List<int> bagEquippableNum { get; set; } //몇개 가지고 있는지.
+
+    public List<string> bagConsumableList { get; set; }
+    public List<int> bagConsumableNumList { get; set; }
+    public List<int> bagConsumableNum { get; set; } //몇개 가지고 있는지.
+
     //기타.
     public List<string> mainWeapon { get; set; }
     public List<string> subWeapon { get; set; }
@@ -35,8 +44,15 @@ public class PlayerSaveData
     public List<string> activeSkillList { get; set; }
     public List<string> passiveSkillList { get; set; }
 
+    //아지트 데이터.
     public List<string> equippableList { get; set; }
     public List<int> equippableNumList { get; set; }
     public List<string> consumableList { get; set; }
     public List<int> consumableNumList { get; set; }
+
+    //트럭 데이터.
+    public List<string> truckEquippableList { get; set; }
+    public List<int> truckEquippableNumList { get; set; }
+    public List<string> truckConsumableList { get; set; }
+    public List<int> truckConsumableNumList { get; set; }
 }
