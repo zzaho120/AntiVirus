@@ -4,11 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;   //테스터
 using System.Linq;
 
-public class PlayerDataMgr : MonoBehaviour
+public class PlayerDataMgr : Singleton<PlayerDataMgr>
 {
-    //테스트 출력
-    public Text[] text;
-
     //플레이어 데이터.
     public PlayerSaveData saveData = new PlayerSaveData();
     string filePath;
