@@ -33,8 +33,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public Dictionary<string, int> truckConsumablesNum = new Dictionary<string, int>();
 
     //캐릭터 데이터.
-
-    private void Start()
+    public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.    private void Start()
     {
         //PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
