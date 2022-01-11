@@ -44,10 +44,6 @@ public class SightMgr : MonoBehaviour
         new List<Dictionary<Vector2, List<SightTileBase>>>();
 
     private List<PlayerableChar> playerableChars;
-
-    private int checkTime = 0;
-    private int playerCheck = 0;
-    private int rayCheck = 0;
     private bool inited = false;
 
     private int MAX_X_IDX;
@@ -133,9 +129,6 @@ public class SightMgr : MonoBehaviour
 
     private void InitAllSight()
     {
-        checkTime = 0;
-        playerCheck = 0;
-        rayCheck = 0;
         foreach (var list in sightList)
         {
             list.Clear();
@@ -176,9 +169,6 @@ public class SightMgr : MonoBehaviour
 
                     for (var j = -sightDistance; j <= sightDistance; ++j)
                     {
-                        checkTime++;
-                        playerCheck++;
-
                         if (curTileIdx.x + j < 0)
                             continue;
 
@@ -283,7 +273,6 @@ public class SightMgr : MonoBehaviour
 
         while (true)
         {
-            rayCheck++;
             if (DistPow(current, start) > sightDist * sightDist)
                 break;
 
@@ -340,9 +329,6 @@ public class SightMgr : MonoBehaviour
 
     private void UpdateObj()
     {
-        var tileDics = BattleMgr.Instance.tileMgr.tileDics;
-        var wallDics = BattleMgr.Instance.tileMgr.wallDics;
-
         foreach (var list in sightList)
         {
             foreach (var tile in list)
