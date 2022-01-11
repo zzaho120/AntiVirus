@@ -22,7 +22,6 @@ public class FSM : MonoBehaviour
     {
         if (curState != null)
             curState.Update();
-
         //Debug.Log(states.Count);
     }
 
@@ -43,8 +42,6 @@ public class FSM : MonoBehaviour
             curState = states[stateNum];
             curState.Enter();
         }
-
-        //Debug.Log(state);
     }
 
     public void ChangeState(int state)

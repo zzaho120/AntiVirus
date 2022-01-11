@@ -71,14 +71,14 @@ public class BattleIdleState : StateBase
         var randomX = Random.Range(-moveRange, moveRange);
         var randomZ = Random.Range(-moveRange, moveRange);
         var currentTile = monster.currentTile.tileIdx;
-        var endTile = new Vector3(Mathf.Clamp(randomX, 0, randomZ), 0, currentTile.z);
+        var endTile = new Vector3(Mathf.Clamp(currentTile.x - randomX, 0, currentTile.x - randomX), 0, Mathf.Clamp(currentTile.z - randomZ, 0, currentTile.z - randomZ));
         timer = 0;
 
         if (BattleMgr.Instance.sightMgr.totalSightDics.ContainsKey(new Vector2(endTile.x, endTile.z)))
         {
-            var aStar = BattleMgr.Instance.aStar;
-            aStar.InitAStar(currentTile, endTile);
-            pathList = aStar.pathList;
+            var pathMgr = BattleMgr.Instance.pathMgr;
+            pathMgr.InitAStar(currentTile, endTile);
+            pathList = pathMgr.pathList;
         }
     }
 }

@@ -17,7 +17,7 @@ public class AStarTile
 }
 
 
-public class AStar : MonoBehaviour
+public class PathMgr : MonoBehaviour
 {
     private Vector3 startIdx;
     private Vector3 endIdx;

@@ -25,8 +25,6 @@ public class CameraController : MonoBehaviour
 
     [Header("Min / Max")]
     public Vector2 zoomInOut;
-    public Vector2 moveX;
-    public Vector2 moveZ;
      
     void Start()
     {
@@ -51,8 +49,8 @@ public class CameraController : MonoBehaviour
         var horizontal = Input.GetAxisRaw("Horizontal");
         var vertical = Input.GetAxisRaw("Vertical");
 
-        var newX = Mathf.Clamp(destPosition.x + horizontal * moveSpeed, moveX.x, moveX.y);
-        var newZ = Mathf.Clamp(destPosition.z + vertical * moveSpeed, moveZ.x, moveZ.y);
+        var newX = Mathf.Clamp(destPosition.x + horizontal * moveSpeed, 0, TileMgr.MAX_X_IDX);
+        var newZ = Mathf.Clamp(destPosition.z + vertical * moveSpeed, 0, TileMgr.MAX_Z_IDX);
         destPosition = new Vector3(newX, 0, newZ);
 
         transform.position = Vector3.Lerp(transform.position, destPosition, moveTime * Time.deltaTime);

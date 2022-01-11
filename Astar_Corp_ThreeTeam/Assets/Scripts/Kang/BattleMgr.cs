@@ -19,7 +19,7 @@ public class BattleMgr : MonoBehaviour
     public BattleMonsterMgr monsterMgr;
     public WindowManager battleWindowMgr;
     public SightMgr sightMgr;
-    public AStar aStar;
+    public PathMgr pathMgr;
     public PlayerDataMgr playerDataMgr;     // 여기 저장하기위해
 
     [Header("Turn")]
@@ -40,6 +40,7 @@ public class BattleMgr : MonoBehaviour
         playerMgr = GameObject.FindWithTag("Player").GetComponent<BattlePlayerMgr>();
         monsterMgr = GameObject.FindWithTag("BattleMonster").GetComponent<BattleMonsterMgr>();
         battleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
+        pathMgr = GameObject.FindWithTag("PathMgr").GetComponent<PathMgr>();
 
         // 비전투씬에서 넘어온 플레이어데이터매니저가 있으면
         // 아래 코드가 동작함
@@ -81,7 +82,7 @@ public class BattleMgr : MonoBehaviour
         playerMgr.Init();
         monsterMgr.Init();
         sightMgr.Init();
-        aStar.Init();
+        pathMgr.Init();
 
         turn = BattleTurn.Player;
         var window = battleWindowMgr.Open((int)BattleWindows.TurnNotice - 1).GetComponent<TurnNoticeWindow>();

@@ -66,8 +66,8 @@ public class BattleMoveState : StateBase
 
     private void SetPath()
     {
-        var aStar = BattleMgr.Instance.aStar;
-        aStar.InitAStar(monster.tileIdx, target.currentTile.tileIdx);
-        pathList = aStar.pathList;
+        var pathMgr = BattleMgr.Instance.pathMgr;
+        pathMgr.InitAStar(monster.tileIdx, target.currentTile.tileIdx);
+        pathList = pathMgr.pathList;
     }
 }

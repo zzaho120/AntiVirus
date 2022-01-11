@@ -124,7 +124,7 @@ public class PlayerableChar : BattleChar
 
     private IEnumerator CoMove()
     {
-        var path = BattleMgr.Instance.aStar.pathList;
+        var path = BattleMgr.Instance.pathMgr.pathList;
         while (path.Count > 0)
         {
             var aStarTile = path.Pop();
@@ -233,7 +233,7 @@ public class PlayerableChar : BattleChar
 
     private void ActionMove(TileBase tileBase)
     {
-        BattleMgr.Instance.aStar.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
+        BattleMgr.Instance.pathMgr.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
         MoveMode();
         StartCoroutine(CoMove());
     }
