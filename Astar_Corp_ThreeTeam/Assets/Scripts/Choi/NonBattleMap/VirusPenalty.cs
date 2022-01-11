@@ -58,6 +58,25 @@ public class VirusPenalty
         }
     }
 
+    public void ReductionCalculation(int gauge)
+    {
+        penaltyGauge -= gauge;
+        var previousMax = expGauge * penaltyLevel;
+        if (penaltyGauge < 0)
+        {
+            if (penaltyLevel != 1)
+            {
+                penaltyGauge += previousMax;
+                penaltyLevel--;
+            }
+            else if (penaltyLevel == 1)
+            {
+                penaltyGauge = 0;
+                penaltyLevel = 0;
+            }
+        }
+    }
+
     public void GetReductionExp()
     {
         reductionGauge += virus.exp * penaltyLevel;
@@ -76,6 +95,6 @@ public class VirusPenalty
 
     public int GetMaxGauge()
     { 
-        return expGauge * (reductionLevel + 1);
+        return expGauge * (penaltyLevel + 1);
     }
 }

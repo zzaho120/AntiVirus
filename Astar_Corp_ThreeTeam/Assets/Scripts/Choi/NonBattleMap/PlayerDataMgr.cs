@@ -29,6 +29,12 @@ public class PlayerDataMgr : MonoBehaviour
     public Dictionary<string, Consumable> currentConsumables = new Dictionary<string, Consumable>();
     public Dictionary<string, int> currentConsumablesNum = new Dictionary<string, int>();
 
+    //트럭 데이터.
+    public Dictionary<string, Weapon> truckEquippables = new Dictionary<string, Weapon>();
+    public Dictionary<string, int> truckEquippablesNum = new Dictionary<string, int>();
+    public Dictionary<string, Consumable> truckConsumables = new Dictionary<string, Consumable>();
+    public Dictionary<string, int> truckConsumablesNum = new Dictionary<string, int>();
+
     //캐릭터 데이터.
     public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();//현재 소유한 캐릭터들.
     public Dictionary<int, CharacterStats> boardingSquad = new Dictionary<int, CharacterStats>();//트럭에 탑승한 캐릭터들.

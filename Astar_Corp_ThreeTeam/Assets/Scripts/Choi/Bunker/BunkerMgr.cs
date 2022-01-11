@@ -152,8 +152,6 @@ public class BunkerMgr : MonoBehaviour
             var bunkerName = script.bunkerName;
             selectedBunker = bunker;
 
-            
-
             //현재 벙커 종류.
             if (!bunkerName.Equals("None"))
             {

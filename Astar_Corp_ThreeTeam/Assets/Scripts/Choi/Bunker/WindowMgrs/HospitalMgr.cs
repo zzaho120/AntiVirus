@@ -16,6 +16,7 @@ public class HospitalMgr : MonoBehaviour
     public Slider pVirusSlider;
     public Slider iVirusSlider;
     public Slider tVirusSlider;
+    public Dictionary<string, Slider> sliders = new Dictionary<string, Slider>();
 
     public PlayerDataMgr playerDataMgr;
 
@@ -23,13 +24,27 @@ public class HospitalMgr : MonoBehaviour
     // 리스트 순서 / PlayerDataMgr Key
     Dictionary<int, int> characterInfo = new Dictionary<int, int>();
     int currentIndex;
+    string currentVirus;
     Color originColor;
-
-
 
     public void Init()
     {
-        //이전 정보 삭제.
+        if (sliders.Count == 0) 
+        {
+            sliders.Add("E", eVirusSlider);
+            sliders.Add("B", bVirusSlider);
+            sliders.Add("P", pVirusSlider);
+            sliders.Add("I", iVirusSlider);
+            sliders.Add("T", tVirusSlider);
+        }
+
+        foreach (var element in sliders)
+        {
+            if (element.Value.transform.GetChild(0).GetComponent<Image>().color == Color.red)
+                element.Value.transform.GetChild(0).GetComponent<Image>().color = Color.white;
+        }
+
+        //이전 정보 삭제.   
         if (characterObjs.Count != 0)
         {
             foreach (var element in characterObjs)
@@ -62,6 +77,7 @@ public class HospitalMgr : MonoBehaviour
         }
 
         currentIndex = -1;
+        currentVirus = null;
         originColor = characterPrefab.GetComponent<Image>().color;
     }
 
@@ -83,12 +99,16 @@ public class HospitalMgr : MonoBehaviour
         var character = playerDataMgr.currentSquad[key];
         
         //테스트.
-        character.currentHp = 20;
-        hpSlider.value = (float)character.currentHp / character.maxHp;
+        //character.currentHp = 20;
+        //hpSlider.value = (float)character.currentHp / character.maxHp;
 
         //테스트.
-        character.virusPanalty["E"].penaltyGauge = 30;
-        
+        //character.virusPanalty["E"].penaltyGauge = 30;
+        //character.virusPanalty["B"].penaltyGauge = 50;
+        //character.virusPanalty["P"].penaltyGauge = 100;
+        //character.virusPanalty["I"].penaltyGauge = 140;
+        //character.virusPanalty["T"].penaltyGauge = 180;
+
         eVirusSlider.value = (float)character.virusPanalty["E"].penaltyGauge / character.virusPanalty["E"].GetMaxGauge();
         bVirusSlider.value = (float)character.virusPanalty["B"].penaltyGauge / character.virusPanalty["B"].GetMaxGauge();
         pVirusSlider.value = (float)character.virusPanalty["P"].penaltyGauge / character.virusPanalty["P"].GetMaxGauge();
@@ -96,35 +116,54 @@ public class HospitalMgr : MonoBehaviour
         tVirusSlider.value = (float)character.virusPanalty["T"].penaltyGauge / character.virusPanalty["T"].GetMaxGauge();
     }
 
+    public void SelectVirus(string str)
+    {
+        GameObject child;
+        if (currentVirus != null)
+        {
+            child = sliders[currentVirus].transform.GetChild(0).gameObject;
+            child.GetComponent<Image>().color = Color.white;
+        }
+
+        currentVirus = str;
+        child = sliders[currentVirus].transform.GetChild(0).gameObject;
+        child.GetComponent<Image>().color = Color.red;
+    }
+
     public void RecoveryHp()
     {
         if (currentIndex == -1) return;
         //돈도 부족하면 리턴.
 
-        int key = characterInfo[currentIndex];
+        //int key = characterInfo[currentIndex];
 
-        int loss = playerDataMgr.currentSquad[key].maxHp - playerDataMgr.currentSquad[key].currentHp;
-        int recoveryAmount = Mathf.FloorToInt(loss * 0.1f);
-        playerDataMgr.currentSquad[key].currentHp += recoveryAmount;
-        if (playerDataMgr.currentSquad[key].currentHp >= playerDataMgr.currentSquad[key].maxHp)
-            playerDataMgr.currentSquad[key].currentHp = playerDataMgr.currentSquad[key].maxHp;
+        //int loss = playerDataMgr.currentSquad[key].maxHp - playerDataMgr.currentSquad[key].currentHp;
+        //int recoveryAmount = Mathf.FloorToInt(loss * 0.1f);
+        //playerDataMgr.currentSquad[key].currentHp += recoveryAmount;
+        //if (playerDataMgr.currentSquad[key].currentHp >= playerDataMgr.currentSquad[key].maxHp)
+        //    playerDataMgr.currentSquad[key].currentHp = playerDataMgr.currentSquad[key].maxHp;
+
+        //playerDataMgr.saveData.hp[key] = playerDataMgr.currentSquad[key].currentHp;
+        //PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
         //체력 UI변경.
-        hpSlider.value = (float)playerDataMgr.currentSquad[key].currentHp / playerDataMgr.currentSquad[key].maxHp;
+        //hpSlider.value = (float)playerDataMgr.currentSquad[key].currentHp / playerDataMgr.currentSquad[key].maxHp;
     }
 
     public void RecoveryVirusGauge()
     {
         if (currentIndex == -1) return;
+        if (currentVirus == null) return;
         //돈도 부족하면 리턴.
 
         int key = characterInfo[currentIndex];
 
-        //int recoveryAmount = Mathf.FloorToInt(loss * 0.1f);
-        //playerDataMgr.currentSquad[key].currentHp += recoveryAmount;
-        //if (playerDataMgr.currentSquad[key].currentHp >= playerDataMgr.currentSquad[key].maxHp)
-        //    playerDataMgr.currentSquad[key].currentHp = playerDataMgr.currentSquad[key].maxHp;
-        ////체력 UI변경.
-        //hpSlider.value = (float)playerDataMgr.currentSquad[key].currentHp / playerDataMgr.currentSquad[key].maxHp;
-
+        //var gauge = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge;
+        //int recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
+        //playerDataMgr.currentSquad[key].virusPanalty[currentVirus].ReductionCalculation(recoveryAmount);
+        ////UI변경.
+        //sliders[currentVirus].value 
+        //    = (float)playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge 
+        //    / playerDataMgr.currentSquad[key].virusPanalty[currentVirus].GetMaxGauge();
     }
 }

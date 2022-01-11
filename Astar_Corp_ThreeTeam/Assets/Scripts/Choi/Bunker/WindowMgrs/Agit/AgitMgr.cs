@@ -9,6 +9,7 @@ public class AgitMgr : MonoBehaviour
     public SkillWinMgr skillWinMgr;
     public EquipmentMgr equipmentMgr;
     public ToleranceMgr toleranceMgr;
+    public BagMgr bagMgr;
 
     public GameObject characterListContent;
     public GameObject characterPrefab;
@@ -76,6 +77,7 @@ public class AgitMgr : MonoBehaviour
         skillWinMgr.currentIndex = currentIndex;
         equipmentMgr.currentIndex = currentIndex;
         toleranceMgr.currentIndex = currentIndex;
+        bagMgr.currentIndex = currentIndex;
 
         skillWinMgr.playerDataMgr = playerDataMgr;
         skillWinMgr.Init();
@@ -86,11 +88,15 @@ public class AgitMgr : MonoBehaviour
         toleranceMgr.playerDataMgr = playerDataMgr;
         toleranceMgr.Init();
 
+        bagMgr.playerDataMgr = playerDataMgr;
+        bagMgr.Init();
+
         if (!charcterListWin.activeSelf) charcterListWin.SetActive(true);
         if (characterInfoWin.activeSelf) characterInfoWin.SetActive(false);
         if (skillWinMgr.skillPage.activeSelf) skillWinMgr.skillPage.SetActive(false);
         if (equipmentMgr.equipmentWin.activeSelf) equipmentMgr.equipmentWin.SetActive(false);
         if (toleranceMgr.toleranceWin.activeSelf) toleranceMgr.toleranceWin.SetActive(false);
+        if (bagMgr.bagWin.activeSelf) bagMgr.bagWin.SetActive(false);
 
         originColor = characterPrefab.GetComponent<Image>().color;
     }
@@ -107,7 +113,8 @@ public class AgitMgr : MonoBehaviour
         skillWinMgr.currentIndex = currentIndex;
         equipmentMgr.currentIndex = currentIndex;
         equipmentMgr.RefreshEquipList();
-        toleranceMgr.currentIndex = currentIndex; 
+        toleranceMgr.currentIndex = currentIndex;
+        bagMgr.currentIndex = currentIndex;
         OpenCharacterInfo();
     }
 
@@ -166,6 +173,18 @@ public class AgitMgr : MonoBehaviour
     public void CloseToleranceWin()
     {
         toleranceMgr.toleranceWin.SetActive(false);
+        characterInfoWin.SetActive(true);
+    }
+
+    public void OpenBagWin()
+    {
+        characterInfoWin.SetActive(false);
+        bagMgr.bagWin.SetActive(true);
+    }
+
+    public void CloseBagWin()
+    {
+        bagMgr.bagWin.SetActive(false);
         characterInfoWin.SetActive(true);
     }
 }
