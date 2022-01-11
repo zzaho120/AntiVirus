@@ -78,10 +78,12 @@ public class CharacterSO
 
                     character.exp                   = int.Parse(splitData[31]);
                     character.resistance            = int.Parse(splitData[32]);
+                    character.virusDec              = int.Parse(splitData[33]);
+                    
 
                     // 무기 리스트
                     // 디버프 리스트
-                    string[] weapon = splitData[33].Split('*');
+                    string[] weapon = splitData[34].Split('*');
                     for (int i = 0; i < weapon.Length; i++)
                     {
                         //Debug.Log(debuff[i]);

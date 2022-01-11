@@ -154,9 +154,9 @@ public class MonsterStats : MonoBehaviour
         }
     }
 
-    private int resistCharge
+    private int virusCharge
     {
-        get { return virus.resistCharge; }
+        get { return virus.virusCharge; }
     }
 
     //private void Awake()

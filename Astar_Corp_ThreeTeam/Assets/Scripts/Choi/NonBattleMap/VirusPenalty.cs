@@ -23,14 +23,17 @@ public class VirusPenalty
     private readonly int expGauge = 100; 
     private readonly int maxLevel = 5; 
 
-    public int CurrentReduction
-    {
-        get => virus.resistDec * reductionLevel;
-    }
+    // 홍수진 스탯수정
+    //public int CurrentReduction
+    //{
+    //    get => virus.resistDec * reductionLevel;
+    //}
     
     public int GetPenaltyGauge(int paneltyLevel)
     {
-        return virus.resistCharge * paneltyLevel;
+        // 홍수진 스탯수정
+        //return virus.resistCharge * paneltyLevel;
+        return virus.virusCharge * paneltyLevel;
     }
 
     public VirusPenalty(Virus virus)
@@ -43,8 +46,9 @@ public class VirusPenalty
 
     public void Calculation(int virusLevel)
     {
-        penaltyGauge += (GetPenaltyGauge(virusLevel) - CurrentReduction);
-        Debug.Log($"{virus.name} 바이러스 페널티 {GetPenaltyGauge(virusLevel) - CurrentReduction}를 입혀서 {penaltyLevel}레벨 {penaltyGauge}가 됐습니다.");
+        // 홍수진 스탯수정
+        //penaltyGauge += (GetPenaltyGauge(virusLevel) - CurrentReduction);
+        //Debug.Log($"{virus.name} 바이러스 페널티 {GetPenaltyGauge(virusLevel) - CurrentReduction}를 입혀서 {penaltyLevel}레벨 {penaltyGauge}가 됐습니다.");
         var maxGauge = expGauge * (penaltyLevel + 1);
         if (penaltyGauge >= maxGauge)
         {
