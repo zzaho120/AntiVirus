@@ -6,11 +6,18 @@ using UnityEngine.UI;
 
 public class TruckMgr : MonoBehaviour
 {
+    [Header("Truck Squad")]
     public GameObject TruckWin;
     public GameObject Contents;
     public GameObject TruckUnitPrefab;
-    public List<GameObject> TruckUnitGOs = new List<GameObject>();
     public Text RemainingNum;
+    [HideInInspector]
+    public List<GameObject> TruckUnitGOs = new List<GameObject>();
+
+    [Header("Selected Characters")]
+    public GameObject selectedCharPrefab;
+    public GameObject selectedChars;
+    private TextMeshProUGUI charInfoTxt;
 
     PlayerDataMgr playerDataMgr;
     
@@ -19,11 +26,14 @@ public class TruckMgr : MonoBehaviour
         var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
         playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
 
+        
         Init();
     }
 
     public void Init()
     {
+
+
         if (playerDataMgr == null)
         {
             var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
@@ -43,6 +53,7 @@ public class TruckMgr : MonoBehaviour
             Contents.transform.DetachChildren();
         }
 
+        // CurrentSquad Setting
         foreach (var element in playerDataMgr.currentSquad)
         {
             var go = Instantiate(TruckUnitPrefab, Contents.transform);
@@ -60,6 +71,10 @@ public class TruckMgr : MonoBehaviour
     {
         TruckWin.SetActive(true);
         Init();
+
+        // MemberSelectPopup 창에서 띄울 캐릭터 정보 텍스트
+        // 해당 팝업창이 Open 될때 Find
+        charInfoTxt = GameObject.Find("CharacterInfo").GetComponentInChildren<TextMeshProUGUI>();
     }
 
     public void Close()
@@ -93,5 +108,20 @@ public class TruckMgr : MonoBehaviour
         selectedChild.color = Color.red;
 
         RemainingNum.text = (4 - playerDataMgr.battleSquad.Count).ToString();
+
+        //클릭 시 옆에 캐릭터 정보 표시
+        charInfoTxt.text = playerDataMgr.battleSquad[num].Name + "\n" +
+            "Hp : " + playerDataMgr.battleSquad[num].currentHp;
+    }
+
+    public void PrintSelectedChars()
+    {
+        // BattleSquad Setting
+        foreach (var element in playerDataMgr.battleSquad)
+        {
+            var go = Instantiate(selectedCharPrefab, selectedChars.transform);
+            var goName = go.GetComponentInChildren<TextMeshProUGUI>();
+            goName.text = element.Value.character.name;
+        }
     }
 }

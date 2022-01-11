@@ -19,6 +19,9 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     // 스킬 관련
     public Dictionary<string, ActiveSkill> activeSkillList = new Dictionary<string, ActiveSkill>();
     public Dictionary<string, PassiveSkill> passiveSkillList = new Dictionary<string, PassiveSkill>();
+
+    // 트럭 관련
+    public Dictionary<string, Truck> truckList = new Dictionary<string, Truck>();
     #endregion
 
     public override void Awake()
@@ -44,7 +47,7 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
             consumableList.Add(cousumable.id, cousumable);
         }
 
-        // 4. Equippable
+        // 4. Equippable -> Weapon
         string equippableSOPath = "Choi/Datas/Weapons";
         Weapon[] equippableArr = Resources.LoadAll<Weapon>(equippableSOPath);
         foreach (var equippable in equippableArr)
@@ -83,60 +86,78 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         {
             passiveSkillList.Add($"{skill.id}", skill);
         }
+
+        // 9. Trucks
+        string truckSOPath = "Choi/Datas/Trucks";
+        Truck[] truckArr = Resources.LoadAll<Truck>(truckSOPath);
+        foreach (var truck in truckArr)
+        {
+            truckList.Add($"{truck.id}", truck);
+        }
     }
 
+    /// <summary>
+    /// 매개변수 입력 팁; CHAR_0000
+    /// </summary>
     public Character GetCharacter(string id)
     {
         return (Character)Instantiate(characterList[id]);
     }
 
+    /// <summary>
+    /// 매개변수 입력 팁; CON_0000
+    /// </summary>
     public Consumable GetConsumable(string id)
     {
         return Instantiate(consumableList[id]);
     }
 
+    /// <summary>
+    /// 매개변수 입력 팁; WEP_0000
+    /// 장비템 같지만 무기입니다
+    /// </summary>
     public Weapon GetEquippable(string id)
     {
         return Instantiate(equippableList[id]);
     }
 
+    /// <summary>
+    /// 매개변수 입력 팁; MON_0000
+    /// </summary>
     public Monster GetMonster(string id)
     {
         return Instantiate(monsterList[id]);
     }
 
     /// <summary>
-    /// 매개변수 입력 팁;
-    /// E1, B2, P3, I4, T5
+    /// 매개변수 입력 팁; VIR_0000
     /// </summary>
     public Virus GetVirus(string id)
     {
         return Instantiate(virusList[id]);
     }
 
+    /// <summary>
+    /// 매개변수 입력 팁; ASK_0000
+    /// </summary>
     public ActiveSkill GetActiveSkill(string id)
     {
         return Instantiate(activeSkillList[id]);
     }
 
+    /// <summary>
+    /// 매개변수 입력 팁; PSK_0000
+    /// </summary>
     public PassiveSkill GetPassiveSkill(string id)
     {
         return Instantiate(passiveSkillList[id]);
     }
 
-    //private void Update()
-    //{
-    //    //var testChar = GetCharacter("1");
-    //    //Debug.Log(testChar.name);
-    //
-    //    var testVirus = GetVirus("E2");
-    //    var testVirus = GetVirus("B5");
-    //    Debug.Log($"{testVirus.name} Hp : {testVirus.hp}");
-    //}
-
-    //public T GetData<T>(string id)
-    //{
-    //
-    //    return (Character)Instantiate(characterList[id]);
-    //}
+    /// <summary>
+    /// 매개변수 입력 팁; TRU_0000
+    /// </summary>
+    public Truck GetTruck(string id)
+    {
+        return Instantiate(truckList[id]);
+    }
 }

@@ -36,13 +36,10 @@ public class PlayerDataMgr : MonoBehaviour
     public Dictionary<string, int> truckConsumablesNum = new Dictionary<string, int>();
 
     //캐릭터 데이터.
-    public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();//현재 소유한 캐릭터들.
-    public Dictionary<int, CharacterStats> boardingSquad = new Dictionary<int, CharacterStats>();//트럭에 탑승한 캐릭터들.
-    public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.
+    public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();    //현재 소유한 캐릭터들.
+    public Dictionary<int, CharacterStats> boardingSquad = new Dictionary<int, CharacterStats>();   //트럭에 탑승한 캐릭터들.
+    public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();     //전투에 나갈 캐릭터들.
 
-    // 주수, 프로토 타입용
-    public int virusAreaLevel;
-    public string virusAreaType;
 
     private void Start()
     {
@@ -179,7 +176,7 @@ public class PlayerDataMgr : MonoBehaviour
         }
     }
 
-    public void AddCharacter(int num,CharacterStats stat)
+    public void AddCharacter(int num, CharacterStats stat)
     {
         string str = "SquadNum";
         int totalSquadNum = (PlayerPrefs.HasKey(str)) ? PlayerPrefs.GetInt(str) : 0;
@@ -266,14 +263,5 @@ public class PlayerDataMgr : MonoBehaviour
         }
 
         PlayerSaveLoadSystem.Save(saveData);
-    }
-
-    public void BattleStartTester()
-    {
-        foreach (var chars in battleSquad)
-        {
-            Debug.Log("Selected Character : " + chars.Value.Name);
-            //Debug.Log(battleSquad.Count);
-        }
     }
 }
