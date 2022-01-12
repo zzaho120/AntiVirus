@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class StartBattle : MonoBehaviour
 {
-    //private bool isBattle;
-    //private NonBattlePopUps nonBattlePopUps;
     public WindowManager windowManager;
     private TimeController timeController;
+
+    [HideInInspector]
+    public bool isMonsterAtk;
+    // True: 몬스터 선공, False: 플레이어 선공
 
     private void Start()
     {
@@ -16,36 +18,35 @@ public class StartBattle : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
         if (other.CompareTag("Enemy"))
         {
             // 렌더러가 활성화 되어있을때만 유효하게
             if (other.GetComponent<MeshRenderer>().enabled)
             {
+                // 몬스터 공격 앞뒤 판단
+                GameObject target = other.gameObject;
+                Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
+                // 플레이어 앞
+                if (Vector3.Dot(transform.forward, dirToTarget) > 0) 
+                {
+                    //Debug.Log("앞");
+                    isMonsterAtk = false;
+                }
+                // 플레이어 뒤
+                else 
+                {
+                    //Debug.Log("뒤");
+                    isMonsterAtk = true;
+                }
+
+                // 전투 팝업창 띄우기
                 var windowId = (int)Windows.MonsterWindow - 1;
                 var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
 
+                // 전체맵 일시정지
                 timeController.PauseTime();
                 timeController.isPause = true;
             }
-
-            // 나중에 전투 구현되면
-            //if (!isBattle)
-            //{
-            //    Debug.Log("전투 발생");
-            //    isBattle = true;
-            //}
-            //
-            //else
-            //    return;
         }
     }
-
-    // Stay 시에도 전투발생 처리 ? 
-
-    //public void CreateSquad()
-    //{
-    //    var windowId = (int)Windows.MemberSelectPopup - 1;
-    //    var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
-    //}
 }

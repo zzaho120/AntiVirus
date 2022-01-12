@@ -17,16 +17,19 @@ public class TruckMgr : MonoBehaviour
     [Header("Selected Characters")]
     public GameObject selectedCharPrefab;
     public GameObject selectedChars;
+    public GameObject truckEquips;
+    public GameObject truckConsums;
     private TextMeshProUGUI charInfoTxt;
+
+    [Header("Truck Inventory")]
+    public GameObject equipTruckItem;
+    public GameObject consumTruckItem;
 
     PlayerDataMgr playerDataMgr;
     
     void Start()
     {
-        var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
-        playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-
-        
+        playerDataMgr = PlayerDataMgr.Instance;
         Init();
     }
 
@@ -34,8 +37,7 @@ public class TruckMgr : MonoBehaviour
     {
         if (playerDataMgr == null)
         {
-            var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
-            playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
+            playerDataMgr = PlayerDataMgr.Instance;
         }
 
         RemainingNum.text = (4 - playerDataMgr.battleSquad.Count).ToString();
@@ -112,7 +114,9 @@ public class TruckMgr : MonoBehaviour
             "Hp : " + playerDataMgr.battleSquad[num].currentHp;
     }
 
-    public void PrintSelectedChars()
+    private bool isItemInit;
+
+    public void TruckUISetting()
     {
         // BattleSquad Setting
         foreach (var element in playerDataMgr.battleSquad)
@@ -120,6 +124,67 @@ public class TruckMgr : MonoBehaviour
             var go = Instantiate(selectedCharPrefab, selectedChars.transform);
             var goName = go.GetComponentInChildren<TextMeshProUGUI>();
             goName.text = element.Value.character.name;
+
+            var button = go.GetComponent<Button>();
+            button.onClick.AddListener(delegate { SelectCharInventory(element.Key); });
         }
+
+        if (!isItemInit)
+        {
+            Debug.Log("Init Items");
+
+            // 트럭 장비템 출력
+            foreach (var element in playerDataMgr.truckEquippables)
+            {
+                var go = Instantiate(TruckUnitPrefab, truckEquips.transform);
+                go.AddComponent<Button>();
+
+                var goName = go.GetComponentInChildren<Text>();
+                if (goName != null)
+                    goName.text = element.Value.name;
+            }
+
+            // 트럭 소비템 출력
+            foreach (var element in playerDataMgr.truckConsumables)
+            {
+                var go = Instantiate(TruckUnitPrefab, truckConsums.transform);
+                go.AddComponent<Button>();
+
+                var goName = go.GetComponentInChildren<Text>();
+                if (goName != null)
+                    goName.text = element.Value.name;
+            }
+
+            isItemInit = true;
+        }
+    }
+
+    // 트럭 아이템 카테고리 선택 (장비 vs 소비)
+    public void SelectItemType(int value)
+    {
+        var conImg = consumTruckItem.GetComponent<Image>();
+        var wepImg = equipTruckItem.GetComponent<Image>();
+
+        if (value == 0)
+        {
+            if (conImg.enabled)
+                conImg.enabled = false;
+
+            wepImg.enabled = true;
+        }
+        else if (value == 1)
+        {
+            //if (wepImg.enabled)
+            //    wepImg.enabled = false;
+
+            conImg.enabled = true;
+        }
+    }
+
+    private void SelectCharInventory(int key)
+    {
+        // 임시로
+        var charName = GameObject.Find("Char Name").GetComponent<TextMeshProUGUI>();
+        charName.text = playerDataMgr.battleSquad[key].character.name;
     }
 }
