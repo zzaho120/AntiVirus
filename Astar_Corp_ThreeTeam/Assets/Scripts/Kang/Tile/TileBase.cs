@@ -21,6 +21,7 @@ public class TileBase : MonoBehaviour
     [Header("RunTime")]
     public GameObject charObj;
     public TileBase wallTile;
+    public List<HintBase> hintObj = new List<HintBase>();
 
     public TileBase(TileBase copy)
     {
@@ -46,19 +47,20 @@ public class TileBase : MonoBehaviour
     {
         var ren = tileObj.GetComponent<MeshRenderer>();
 
+        ren.material.color = Color.white;
         if (isEnabled)
-        {
             ren.material = materials[0];
-            ren.material.color = Color.white;
-        }
         else
-        {
             ren.material = materials[1];
-            ren.material.color = Color.white;
-        }
 
         if (charObj != null)
+        {
             charObj.GetComponent<MeshRenderer>().enabled = isEnabled;
+        }
+        foreach (var hint in hintObj)
+        {
+            hint.hintObj.GetComponent<MeshRenderer>().enabled = isEnabled;
+        }
     }
 
     public void SetHighlight()
@@ -69,5 +71,16 @@ public class TileBase : MonoBehaviour
 
             ren.material.color = Color.red;
         }
+    }
+
+    public void AddHint(HintBase hint)
+    {
+        hintObj.Add(hint);
+    }
+
+    public void RemoveHint(HintBase hint)
+    {
+        // 해당하는 힌트가 그 타일에 있냐?
+        hintObj.Remove(hint);
     }
 }

@@ -44,12 +44,12 @@ public class SightMgr : MonoBehaviour
         new List<Dictionary<Vector2, List<SightTileBase>>>();
 
     private List<PlayerableChar> playerableChars;
-    private bool inited = false;
 
     private int MAX_X_IDX;
     private int MAX_Z_IDX;
 
-    private readonly int MaxFrontTile = 8;
+    private readonly int MaxFrontTile = 9;
+    private readonly int MaxSideFrontTile = 7;
     public void Init()
     {
         playerableChars = BattleMgr.Instance.playerMgr.playerableChars;
@@ -124,6 +124,8 @@ public class SightMgr : MonoBehaviour
         {
             if (player != curPlayer)
                 UpdateFrontSight(player);
+            else
+                UpdateObj();
         }
     }
 
@@ -372,8 +374,12 @@ public class SightMgr : MonoBehaviour
             var maxSide = 0;
             if (i < 3)
                 maxSide = 2;
-            else
+            else if (i < MaxSideFrontTile)
                 maxSide = i;
+            else if (i == MaxFrontTile - 2)
+                maxSide = 5;
+            else if (i == MaxFrontTile - 1)
+                maxSide = 3;
 
             var centerIdx = Vector2.zero;
             switch (direction)
@@ -390,6 +396,8 @@ public class SightMgr : MonoBehaviour
                 case DirectionType.Right:
                     centerIdx = new Vector2(curTileIdx.x + i, curTileIdx.z);
                     break;
+                case DirectionType.None:
+                    return;
             }
 
             var isCorrectX = -1 < centerIdx.x && centerIdx.x < TileMgr.MAX_X_IDX;
@@ -497,15 +505,7 @@ public class SightMgr : MonoBehaviour
                 sightTile.Init();
             }
         }
+
         frontSightList[playerIdx].Clear();
-        InitPlayerSight();
-        foreach (var frontSight in frontSightList)
-        {
-            foreach (var tile in frontSight)
-            {
-                tile.isInSight = true;
-            }
-        }
-        UpdateObj();
     }
 }

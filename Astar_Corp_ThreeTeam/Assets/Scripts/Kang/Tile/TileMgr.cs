@@ -14,8 +14,8 @@ public class TileMgr : MonoBehaviour
     public Dictionary<Vector3, TileBase> tileDics = new Dictionary<Vector3, TileBase>();
     public Dictionary<Vector3, TileBase> wallDics = new Dictionary<Vector3, TileBase>();
 
-    public static int MAX_X_IDX = 24;
-    public static int MAX_Z_IDX = 24;
+    public static int MAX_X_IDX = 30;
+    public static int MAX_Z_IDX = 30;
  
     public void Init()
     {
@@ -60,12 +60,6 @@ public class TileMgr : MonoBehaviour
             {
                 var go = Instantiate(tilePrefab, new Vector3(j, 0, i), Quaternion.identity);
                 go.transform.SetParent(tiles.transform);
-                //if (Random.Range(0, 100) < 5)
-                //{
-                //    if ((i > 9 && i < 12) && (j > 9 && j < 12)) continue;
-                //    var wallGo = Instantiate(wallPrefab, new Vector3(j, 1, i), Quaternion.identity);
-                //    wallGo.transform.SetParent(walls.transform);
-                //}
             }
         }
     }

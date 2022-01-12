@@ -11,7 +11,7 @@ public enum PlayerState
     TurnEnd
 }
 
-public class PlayerableChar : BattleChar
+public class PlayerableChar : BattleTile
 {
     [Header("Character")]
     public CharacterStats characterStats;

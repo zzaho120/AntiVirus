@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterChar : BattleChar
+public class MonsterChar : BattleTile
 {
     [Header("Character")]
     public MonsterStats monsterStats;
@@ -15,7 +15,7 @@ public class MonsterChar : BattleChar
     public override void Init()
     {
         base.Init();
-        monsterStats.monster = (Monster)Instantiate(Resources.Load("Choi/Datas/Monsters/1"));
+        monsterStats.monster = (Monster)Instantiate(Resources.Load("Choi/Datas/Monsters/Bear"));
         monsterStats.Init();
         fsm = new BattleMonsterFSM();
         fsm.Init(this);
@@ -46,6 +46,7 @@ public class MonsterChar : BattleChar
         {
             if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
             {
+                CreateHint(HintType.Footprint, nextIdx);
                 currentTile.charObj = null;
                 tileIdx = nextIdx;
                 currentTile = tile;
@@ -64,6 +65,38 @@ public class MonsterChar : BattleChar
             }
         }
 
+    }
+
+    private void CreateHint(HintType hintType, Vector3 nextIdx)
+    {
+        var directionIdx = nextIdx - currentTile.tileIdx;
+        var hintMgr = BattleMgr.Instance.hintMgr;
+        var directionType = DirectionType.None;
+        if (directionIdx.x != 0)
+        {
+            switch (directionIdx.x)
+            {
+                case 1:
+                    directionType = DirectionType.Right;
+                    break;
+                case -1:
+                    directionType = DirectionType.Left;
+                    break;
+            }    
+        }
+        else if (directionIdx.z != 0)
+        {
+            switch (directionIdx.z)
+            {
+                case 1:
+                    directionType = DirectionType.Top;
+                    break;
+                case -1:
+                    directionType = DirectionType.Bot;
+                    break;
+            }
+        }
+        hintMgr.AddPrint(hintType, directionType, currentTile.tileIdx);
     }
 
     public bool[] CheckFrontSight()

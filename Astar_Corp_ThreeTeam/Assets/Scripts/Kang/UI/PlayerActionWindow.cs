@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PlayerActionWindow : GenericWindow
 {
     public List<GameObject> buttons;
+    public GameObject moveBtn;
     public GameObject reloadBtn;
     public GameObject cancelBtn;
     public PlayerableChar curChar;
@@ -15,6 +16,15 @@ public class PlayerActionWindow : GenericWindow
     {
         base.Open();
         OnActiveDirectionBtns(true, false);
+
+        if (BattleMgr.Instance.turnCount == 0)
+        {
+            foreach (var btn in buttons)
+            {
+                btn.gameObject.SetActive(false);
+            }
+        }
+
 
         if (!inited)
         {

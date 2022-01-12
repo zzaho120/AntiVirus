@@ -20,9 +20,11 @@ public class BattleMgr : MonoBehaviour
     public WindowManager battleWindowMgr;
     public SightMgr sightMgr;
     public PathMgr pathMgr;
-    public PlayerDataMgr playerDataMgr;     // 여기 저장하기위해
+    public HintMgr hintMgr;
+    public PlayerDataMgr playerDataMgr;     // 여기 저장하기 위해
 
     [Header("Turn")]
+    public BattleTurn startTurn;
     public BattleTurn turn;
     public int turnCount;
     public int fieldVirusLevel;
@@ -41,15 +43,16 @@ public class BattleMgr : MonoBehaviour
         monsterMgr = GameObject.FindWithTag("BattleMonster").GetComponent<BattleMonsterMgr>();
         battleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
         pathMgr = GameObject.FindWithTag("PathMgr").GetComponent<PathMgr>();
+        hintMgr = GameObject.FindWithTag("HintMgr").GetComponent<HintMgr>();
 
         // 비전투씬에서 넘어온 플레이어데이터매니저가 있으면
         // 아래 코드가 동작함
 
         var vectorList = new List<Vector3>();
         vectorList.Add(new Vector3(7, 1, 8));
-        vectorList.Add(new Vector3(6, 1, 8));
-        vectorList.Add(new Vector3(7, 1, 7));
-        vectorList.Add(new Vector3(6, 1, 7));
+        //vectorList.Add(new Vector3(6, 1, 8));
+        //vectorList.Add(new Vector3(7, 1, 7));
+        //vectorList.Add(new Vector3(6, 1, 7));
 
         var playerDataMgrObj = GameObject.FindWithTag("PlayerDataMgr");
         var isExistDataMgr = playerDataMgrObj != null;
@@ -67,7 +70,7 @@ public class BattleMgr : MonoBehaviour
         }
         else
         {
-            for (var idx = 0; idx < 4; ++idx)
+            for (var idx = 0; idx < vectorList.Count; ++idx)
             {
                 var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.identity);
                 player.transform.SetParent(playerMgr.transform);
@@ -83,8 +86,9 @@ public class BattleMgr : MonoBehaviour
         monsterMgr.Init();
         sightMgr.Init();
         pathMgr.Init();
+        hintMgr.Init();
 
-        turn = BattleTurn.Player;
+        turn = startTurn;
         var window = battleWindowMgr.Open((int)BattleWindows.TurnNotice - 1).GetComponent<TurnNoticeWindow>();
         window.NoticeTurn(turn);
 
@@ -126,6 +130,8 @@ public class BattleMgr : MonoBehaviour
                 EventBusMgr.Publish(EventType.StartPlayer);
                 break;
         }
+        if (startTurn == turn)
+            turnCount++;
         window.NoticeTurn(turn);
     }
 
@@ -155,5 +161,4 @@ public class BattleMgr : MonoBehaviour
             battleWindowMgr.Open((int)BattleWindows.ResultWindow - 1);
         }
     }
-    
 }

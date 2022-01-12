@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleChar : MonoBehaviour
+public class BattleTile : MonoBehaviour
 {
     [Header("Tile")]
     public Vector3 tileIdx;
