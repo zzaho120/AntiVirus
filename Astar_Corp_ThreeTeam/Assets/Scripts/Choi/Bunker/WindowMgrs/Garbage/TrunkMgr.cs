@@ -16,6 +16,12 @@ public class TrunkMgr : MonoBehaviour
     public GameObject storageContent;
     public GameObject prefab;
 
+    [Header("팝업창 관련")]
+    public GameObject popupWin;
+    public Text itemNameTxt;
+    public Text itemNumTxt;
+    public Slider slider;
+
     Dictionary<string, GameObject> truckList = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> storageList = new Dictionary<string,  GameObject>();
 
@@ -36,6 +42,8 @@ public class TrunkMgr : MonoBehaviour
 
     public void Init()
     {
+        ClosePopup();
+
         if (storageList.Count != 0)
         {
             foreach (var element in storageList)
@@ -142,9 +150,35 @@ public class TrunkMgr : MonoBehaviour
             i++;
         }
 
-        originColor = new Color(255, 192, 0);
+        originColor = prefab.GetComponent<Image>().color;
         currentKey = null;
         currentInvenKind = InvenKind.None;
+    }
+
+    public void NumAdjustment()
+    {
+        if (truckWeaponInfo.ContainsKey(currentKey))
+        {
+            itemNameTxt.text = truckWeaponInfo[currentKey].name;
+            slider.maxValue = truckWeaponNumInfo[currentKey];
+        }
+        else if (truckConsumableInfo.ContainsKey(currentKey))
+        {
+            itemNameTxt.text = truckConsumableInfo[currentKey].name;
+            slider.maxValue = truckConsumableNumInfo[currentKey];
+        }
+        else if (storageWeaponInfo.ContainsKey(currentKey))
+        {
+            itemNameTxt.text = storageWeaponInfo[currentKey].name;
+            slider.maxValue = storageWeaponNumInfo[currentKey];
+        }
+        else if (storageConsumableInfo.ContainsKey(currentKey))
+        {
+            itemNameTxt.text = storageConsumableInfo[currentKey].name;
+            slider.maxValue = storageConsumableNumInfo[currentKey];
+        }
+
+        itemNumTxt.text = $"{slider.value}개";
     }
 
     public void SelectItem(string key, InvenKind kind)
@@ -164,8 +198,8 @@ public class TrunkMgr : MonoBehaviour
         }
         currentKey = key;
         currentInvenKind = kind;
-
-        Debug.Log($"currentKey : {currentKey}");
+        slider.value = 0;
+        OpenPopup();
 
         if (currentInvenKind == InvenKind.Storage)
         {
@@ -174,7 +208,6 @@ public class TrunkMgr : MonoBehaviour
         }
         else if (currentInvenKind == InvenKind.Truck)
         {
-            if (truckList[currentKey] == null) Debug.Log("비어있습니다.");
             var image = truckList[currentKey].GetComponent<Image>();
             image.color = Color.red;
         }
@@ -183,7 +216,8 @@ public class TrunkMgr : MonoBehaviour
     public void MoveToTrunk()
     {
         if (currentKey == null) return;
-        
+        OpenPopup();
+
         if (storageWeaponInfo.ContainsKey(currentKey))
         {
             //json.
@@ -363,6 +397,7 @@ public class TrunkMgr : MonoBehaviour
     public void MoveToStorage()
     {
         if (currentKey == null) return;
+        OpenPopup();
 
         if (truckWeaponInfo.ContainsKey(currentKey))
         {
@@ -538,5 +573,16 @@ public class TrunkMgr : MonoBehaviour
                 playerDataMgr.truckConsumablesNum[id]--;
             }
         }
+    }
+
+    //창 관련.
+    public void OpenPopup()
+    {
+        popupWin.SetActive(true);
+    }
+
+    public void ClosePopup()
+    {
+        if (popupWin.activeSelf) popupWin.SetActive(false);
     }
 }

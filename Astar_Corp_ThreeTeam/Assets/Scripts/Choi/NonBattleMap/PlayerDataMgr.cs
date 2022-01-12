@@ -169,6 +169,8 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     k++;
                 }
 
+                int equippableSum = 0;
+                int consumableSum = 0;
                 //캐릭터 설정.
                 for (int i = 0; i < saveData.name.Count; i++)
                 {
@@ -203,6 +205,18 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     {
                         if (element == null) continue;
                         stat.skills.passiveSkills.Add(passiveSkillList[element]);
+                    }
+
+                    for (int j = 0; j < saveData.bagEquippableNum[i]; j++)
+                    {
+                        stat.bag.Add(saveData.bagEquippableList[equippableSum + j], saveData.bagEquippableNumList[equippableSum + j]);
+                        equippableSum += j;
+                    }
+
+                    for (int j = 0; j < saveData.bagConsumableNum[i]; j++)
+                    {
+                        stat.bag.Add(saveData.bagConsumableList[consumableSum + j], saveData.bagConsumableNumList[consumableSum + j]);
+                        consumableSum += j;
                     }
 
                     currentSquad.Add(i, stat);
@@ -258,48 +272,50 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.passiveSkillList.Add(passiveSkillStr); 
             }
 
+            saveData.bagEquippableNum.Add(0);
+
             currentSquad.Add(num, stat);
         }
-        else //기존거 변경.
-        {
-            saveData.id[num] = stat.character.id;
-            saveData.name[num] = stat.character.name;
-            saveData.hp[num] = stat.currentHp;
-            saveData.maxHp[num] = stat.maxHp;
-            saveData.sensitivity[num] = stat.sensivity;
-            saveData.concentration[num] =stat.concentration;
-            saveData.willPower[num] =stat.willpower;
+        //else //기존거 변경.
+        //{
+        //    saveData.id[num] = stat.character.id;
+        //    saveData.name[num] = stat.character.name;
+        //    saveData.hp[num] = stat.currentHp;
+        //    saveData.maxHp[num] = stat.maxHp;
+        //    saveData.sensitivity[num] = stat.sensivity;
+        //    saveData.concentration[num] =stat.concentration;
+        //    saveData.willPower[num] =stat.willpower;
 
-            saveData.gaugeE[num] = stat.virusPanalty["E"].penaltyGauge;
-            saveData.gaugeB[num] = stat.virusPanalty["B"].penaltyGauge;
-            saveData.gaugeP[num] = stat.virusPanalty["P"].penaltyGauge;
-            saveData.gaugeI[num] = stat.virusPanalty["I"].penaltyGauge;
-            saveData.gaugeT[num] = stat.virusPanalty["T"].penaltyGauge;
+        //    saveData.gaugeE[num] = stat.virusPanalty["E"].penaltyGauge;
+        //    saveData.gaugeB[num] = stat.virusPanalty["B"].penaltyGauge;
+        //    saveData.gaugeP[num] = stat.virusPanalty["P"].penaltyGauge;
+        //    saveData.gaugeI[num] = stat.virusPanalty["I"].penaltyGauge;
+        //    saveData.gaugeT[num] = stat.virusPanalty["T"].penaltyGauge;
 
-            saveData.levelE[num] = stat.virusPanalty["E"].penaltyLevel;
-            saveData.levelB[num] = stat.virusPanalty["B"].penaltyLevel;
-            saveData.levelP[num] = stat.virusPanalty["P"].penaltyLevel;
-            saveData.levelI[num] = stat.virusPanalty["I"].penaltyLevel;
-            saveData.levelT[num] = stat.virusPanalty["T"].penaltyLevel;
+        //    saveData.levelE[num] = stat.virusPanalty["E"].penaltyLevel;
+        //    saveData.levelB[num] = stat.virusPanalty["B"].penaltyLevel;
+        //    saveData.levelP[num] = stat.virusPanalty["P"].penaltyLevel;
+        //    saveData.levelI[num] = stat.virusPanalty["I"].penaltyLevel;
+        //    saveData.levelT[num] = stat.virusPanalty["T"].penaltyLevel;
 
-            string mainWeaponStr = (stat.weapon.mainWeapon != null) ? stat.weapon.mainWeapon.id : null;
-            saveData.mainWeapon[num] = mainWeaponStr;
-            string subWeaponStr = (stat.weapon.subWeapon != null) ? stat.weapon.subWeapon.id : null;
-            saveData.subWeapon[num] = subWeaponStr;
+        //    string mainWeaponStr = (stat.weapon.mainWeapon != null) ? stat.weapon.mainWeapon.id : null;
+        //    saveData.mainWeapon[num] = mainWeaponStr;
+        //    string subWeaponStr = (stat.weapon.subWeapon != null) ? stat.weapon.subWeapon.id : null;
+        //    saveData.subWeapon[num] = subWeaponStr;
 
-            for (int k = 0; k < 5; k++)
-            {
-                string activeSkillStr = (stat.skills.activeSkills[k] != null) ? stat.skills.activeSkills[k].id : null;
-                saveData.activeSkillList[num * 5 + k] = activeSkillStr;
-            }
-            for (int k = 0; k < 5; k++)
-            {
-                string passiveSkillStr = (stat.skills.passiveSkills[k] != null) ? stat.skills.passiveSkills[k].id : null;
-                saveData.passiveSkillList[num * 5 + k] =passiveSkillStr;
-            }
+        //    for (int k = 0; k < 5; k++)
+        //    {
+        //        string activeSkillStr = (stat.skills.activeSkills[k] != null) ? stat.skills.activeSkills[k].id : null;
+        //        saveData.activeSkillList[num * 5 + k] = activeSkillStr;
+        //    }
+        //    for (int k = 0; k < 5; k++)
+        //    {
+        //        string passiveSkillStr = (stat.skills.passiveSkills[k] != null) ? stat.skills.passiveSkills[k].id : null;
+        //        saveData.passiveSkillList[num * 5 + k] =passiveSkillStr;
+        //    }
 
-            currentSquad[num] = stat;
-        }
+        //    currentSquad[num] = stat;
+        //}
 
         PlayerSaveLoadSystem.Save(saveData);
     }
