@@ -115,6 +115,7 @@ public class AgitMgr : MonoBehaviour
         equipmentMgr.RefreshEquipList();
         toleranceMgr.currentIndex = currentIndex;
         bagMgr.currentIndex = currentIndex;
+        bagMgr.Init();
         OpenCharacterInfo();
     }
 
