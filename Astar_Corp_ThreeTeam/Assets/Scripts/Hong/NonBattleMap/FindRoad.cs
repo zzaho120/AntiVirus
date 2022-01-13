@@ -9,14 +9,16 @@ public class FindRoad : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MyCollisions();
+        //MyCollisions();
     }
 
     void MyCollisions()
     {
+        // 수정
+        var box = GetComponent<BoxCollider>();
+
         Collider[] hitColliders = Physics.OverlapBox(
-            GetComponentInChildren<CapsuleCollider>().center + transform.parent.position,
-            GetComponentInChildren<CapsuleCollider>(). / 2,
+            box.center + transform.parent.position, box.size / 2,
             Quaternion.identity,
             layer);
 
@@ -28,11 +30,15 @@ public class FindRoad : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(
-            GetComponent<BoxCollider>().center + transform.parent.position,
-            GetComponent<BoxCollider>().size);
-    }
+    //void OnDrawGizmos()
+    //{
+    //    //Gizmos.color = Color.red;
+    //    //Gizmos.DrawWireCube(
+    //    //    GetComponent<BoxCollider>().center + transform.parent.position,
+    //    //    GetComponent<BoxCollider>().size / 2);
+    //
+    //    // Gizmos 테스터
+    //    Gizmos.color = Color.yellow;
+    //    Gizmos.DrawSphere(transform.position, 3f);
+    //}
 }

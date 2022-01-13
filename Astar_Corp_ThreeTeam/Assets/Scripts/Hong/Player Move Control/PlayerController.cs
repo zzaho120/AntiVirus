@@ -12,16 +12,14 @@ public class PlayerController : MonoBehaviour
     public CharacterInfo character;
     public MultiTouch multiTouch;
 
-    // 수정
-    private GameObject nonBattleMgr;
+    private NonBattleMgr nonBattleMgr;
     private PopUpMgr popUpMgr;
 
-    //private NonBattlePopUps nonBattlePopUps;
-    //public WindowManager windowManager;
     public TimeController timeController;
 
     [HideInInspector]
     public NavMeshAgent agent;
+    private NavMeshSetting nav; //내비 테스터
 
     //public GameObject panel;  //나중에 Fadeout 효과 넣을때
     [HideInInspector]
@@ -38,8 +36,10 @@ public class PlayerController : MonoBehaviour
 
     public void Init()
     {
+        nav = GetComponent<NavMeshSetting>();
+
         // 수정
-        nonBattleMgr = GameObject.Find("NonBattleMgr");
+        nonBattleMgr = NonBattleMgr.Instance;
         popUpMgr = nonBattleMgr.GetComponent<PopUpMgr>();
 
         if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")))
@@ -51,9 +51,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // 수정
-            //transform.position = manager.bunkerPos.position;
-            transform.position = nonBattleMgr.GetComponent<NonBattleMgr>().bunkerPos.position;
+            transform.position = nonBattleMgr.bunkerPos.position;
         }
 
         agent = GetComponent<NavMeshAgent>();
@@ -197,13 +195,16 @@ public class PlayerController : MonoBehaviour
                     popUpMgr.OpenLaboratoryPopup();
                 }
                 else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
-                   raycastHit.collider.gameObject.name.Equals("Plane"))
+                   raycastHit.collider.gameObject.name.Equals("Plane") ||
+                        raycastHit.collider.gameObject.CompareTag("Road"))
                 {
+                    nav.targetPos = raycastHit.point;
                     agent.SetDestination(raycastHit.point);
                 }
             }
             else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
             {
+                nav.targetPos = raycastHit.point;
                 agent.SetDestination(raycastHit.point);
             }
         }
