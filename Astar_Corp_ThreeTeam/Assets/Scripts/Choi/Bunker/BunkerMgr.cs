@@ -68,7 +68,7 @@ public class BunkerMgr : MonoBehaviour
         pubMgr.playerDataMgr = playerDataMgr;
         hospitalMgr.playerDataMgr = playerDataMgr;
         garageMgr.playerDataMgr = playerDataMgr;
-        carCenterMgr.playerDataMgr = playerDataMgr;
+        //carCenterMgr.playerDataMgr = playerDataMgr;
     }
 
     private void Start()
@@ -78,7 +78,7 @@ public class BunkerMgr : MonoBehaviour
         storeMgr.Init();
         hospitalMgr.Init();
         garageMgr.Init();
-        carCenterMgr.Init();
+        //carCenterMgr.Init();
 
         camController.OpenWindow = OpenWindow;
         camController.CloseWindow = CloseWindow;

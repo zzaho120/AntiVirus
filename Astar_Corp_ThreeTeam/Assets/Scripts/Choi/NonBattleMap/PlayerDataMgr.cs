@@ -238,7 +238,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         //인원 추가.
         if (num > totalSquadNum - 1)
         {
-            saveData.id.Add(stat.character.name);
+            saveData.id.Add(stat.character.id);
             saveData.name.Add(stat.character.name);
             saveData.hp.Add(stat.currentHp);
             saveData.maxHp.Add(stat.maxHp);

@@ -46,6 +46,8 @@ public class BagMgr : MonoBehaviour
 
     public void Init()
     {
+        ClosePopup();
+
         //이전 정보 삭제.
         if (storageObjs.Count != 0)
         {
