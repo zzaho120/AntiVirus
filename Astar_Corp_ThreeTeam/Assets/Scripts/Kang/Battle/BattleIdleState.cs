@@ -42,7 +42,7 @@ public class BattleIdleState : StateBase
             {
                 isSetPath = true; 
                 if (pathList.Count == 0)
-                    EventBusMgr.Publish(EventType.EndEnemy);
+                    EventBusMgr.Publish(EventType.EndEnemy, new object[] { monster.tileIdx });
                 else
                     nextTile = pathList.Pop().tileBase.tileIdx;
             }

@@ -64,7 +64,6 @@ public class MonsterChar : BattleTile
                 break;
             }
         }
-
     }
 
     private void CreateHint(HintType hintType, Vector3 nextIdx)

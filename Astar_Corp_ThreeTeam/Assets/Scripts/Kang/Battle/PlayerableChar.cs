@@ -19,9 +19,10 @@ public class PlayerableChar : BattleTile
     [Header("Value")]
     public int AP;
     public int sightDistance;
+    public int audibleDistance = 4;
     public PlayerState status;
     public bool isSelected;
-
+    
     public DirectionType direction;
 
     private Dictionary<TileBase, int> moveDics =

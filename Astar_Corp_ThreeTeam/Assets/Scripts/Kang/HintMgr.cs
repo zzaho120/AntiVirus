@@ -64,4 +64,39 @@ public class HintMgr : MonoBehaviour
             Destroy(hint.gameObject);
         }
     }
+
+    public void CheckRader(Vector3 monster)
+    {
+        var playerableChar = BattleMgr.Instance.playerMgr.playerableChars;
+
+        var min = (-1, 10000);
+        for (var idx = 0; idx < playerableChar.Count; ++idx)
+        {
+            var vector = playerableChar[idx].tileIdx - monster;
+            var absSum = (int)(Mathf.Abs(vector.x) + Mathf.Abs(vector.z));
+
+            if (playerableChar[idx].audibleDistance * 3 > absSum)
+            {
+                if (min.Item2 > absSum)
+                {
+                    min.Item1 = idx;
+                    min.Item2 = absSum;
+                }
+            }
+        }
+
+        if (min.Item1 == -1)
+            return;
+
+        var level = 0;
+        var audible = playerableChar[min.Item1].audibleDistance;
+        if (audible > min.Item2)
+            level = 3;
+        else if (audible * 2 > min.Item2)
+            level = 2;
+        else if (audible * 3 > min.Item2)
+            level = 1;
+        var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.RaderWindow - 1) as RaderWindow;
+        window.StartRader(playerableChar[min.Item1].tileIdx, monster, level);
+    }
 }

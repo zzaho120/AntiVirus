@@ -40,13 +40,14 @@ public class BattleMonsterMgr : MonoBehaviour
             monsters[monsterIdx].MonsterUpdate();
     }
 
-    public void CheckEndTurn(object empty)
+    public void CheckEndTurn(object[] param)
     {
         monsterIdx++;
+        BattleMgr.Instance.hintMgr.CheckRader((Vector3)param[0]);
         if (monsterIdx >= monsters.Count)
         {
-            CameraController.Instance.SetFollowObject(null);
-            EventBusMgr.Publish(EventType.ChangeTurn);
+            //CameraController.Instance.SetFollowObject(null);
+            //EventBusMgr.Publish(EventType.ChangeTurn);
         }
         else
             CameraController.Instance.SetFollowObject(monsters[monsterIdx].transform);
