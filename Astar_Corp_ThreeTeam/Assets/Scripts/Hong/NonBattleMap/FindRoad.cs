@@ -14,9 +14,12 @@ public class FindRoad : MonoBehaviour
 
     void MyCollisions()
     {
+        // ¼öÁ¤
+        var capsule = GetComponentInChildren<CapsuleCollider>();
+
         Collider[] hitColliders = Physics.OverlapBox(
-            GetComponentInChildren<CapsuleCollider>().center + transform.parent.position,
-            GetComponentInChildren<CapsuleCollider>(). / 2,
+            capsule.center + transform.parent.position,
+            GetComponent<BoxCollider>().size / 2,
             Quaternion.identity,
             layer);
 

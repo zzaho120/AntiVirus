@@ -89,10 +89,8 @@ public class BattleMgr : MonoBehaviour
         hintMgr.Init();
 
         turn = startTurn;
-        //var window = battleWindowMgr.Open((int)BattleWindows.TurnNotice - 1).GetComponent<TurnNoticeWindow>();
-        //window.NoticeTurn(turn);
-
-        battleWindowMgr.Open((int)BattleWindows.RaderWindow - 1);
+        var window = battleWindowMgr.Open((int)BattleWindows.TurnNotice - 1).GetComponent<TurnNoticeWindow>();
+        window.NoticeTurn(turn);
 
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
         EventBusMgr.Subscribe(EventType.DestroyChar, DestroyChar);

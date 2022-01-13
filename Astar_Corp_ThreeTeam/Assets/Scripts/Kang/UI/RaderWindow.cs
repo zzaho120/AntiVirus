@@ -7,16 +7,37 @@ public class RaderWindow : GenericWindow
 {
     public RectTransform raderImage;
     public List<Image> raderLevels;
-    public float maxTime;
+    public static readonly float maxTime = 3f;
     public float alphaSpeed;
     public override void Open()
     {
         base.Open();
+        raderImage.anchoredPosition = new Vector2(0, 0);
+        raderImage.rotation = Quaternion.identity;
+        raderImage.localScale = Vector3.one;
     }
 
     public override void Close()
     {
         base.Close();
+    }
+
+    public void StartRader(Vector3 player, Vector3 monster, int level)
+    {
+        var dir = (monster - player).normalized;
+        var newPos = new Vector2(dir.x, dir.z);
+        Debug.Log(newPos);
+        var rot = Quaternion.FromToRotation(raderImage.up, newPos);
+
+        rot.x = 0;
+        rot.y = 0;
+
+        raderImage.rotation = rot;
+
+        raderImage.position = Camera.main.WorldToScreenPoint(player);
+        raderImage.anchoredPosition += newPos * 200;
+
+        StartCoroutine(CoAlphaRader(level));
     }
 
     public IEnumerator CoAlphaRader(int level)
@@ -41,7 +62,7 @@ public class RaderWindow : GenericWindow
 
             for (var idx = 0; idx < level; ++idx)
             {
-                var color = raderLevels[idx].color; 
+                var color = raderLevels[idx].color;
                 raderLevels[idx].color = new Color(color.r, color.g, color.b, alpha);
             }
 
@@ -49,20 +70,5 @@ public class RaderWindow : GenericWindow
         }
 
         Close();
-    }
-
-    public void StartRader(Vector3 player, Vector3 monster, int level)
-    {
-        var dir = player - monster;
-
-        var rot = Quaternion.FromToRotation(raderImage.up, dir);
-
-        raderImage.rotation = rot;
-
-        var newPos = new Vector2(dir.x, dir.z).normalized;
-        Debug.Log(newPos);
-        raderImage.anchoredPosition -= newPos * 200;
-
-        StartCoroutine(CoAlphaRader(level));
     }
 }
