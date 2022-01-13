@@ -31,11 +31,13 @@ public class PlayerSaveData
     //각 유저의 가방.
     public List<string> bagEquippableList { get; set; }
     public List<int> bagEquippableNumList { get; set; }
-    public List<int> bagEquippableNum { get; set; } //몇개 가지고 있는지.
+    public List<int> bagEquippableFirstIndex { get; set; }
+    public List<int> bagEquippableLastIndex { get; set; }
 
     public List<string> bagConsumableList { get; set; }
     public List<int> bagConsumableNumList { get; set; }
-    public List<int> bagConsumableNum { get; set; } //몇개 가지고 있는지.
+    public List<int> bagConsumableFirstIndex { get; set; }
+    public List<int> bagConsumableLastIndex { get; set; }
 
     //기타.
     public List<string> mainWeapon { get; set; }

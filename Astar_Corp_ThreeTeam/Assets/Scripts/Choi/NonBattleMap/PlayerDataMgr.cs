@@ -34,8 +34,8 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public Dictionary<string, int> truckConsumablesNum = new Dictionary<string, int>();
 
     //캐릭터 데이터.
-    public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>(); 
-    public Dictionary<int, CharacterStats> boardingSquad = new Dictionary<int, CharacterStats>();
+    public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();
+    public Dictionary<int, CharacterStats> boardingSquad = new Dictionary<int, CharacterStats>();//트럭에 있는 캐릭터들.
     public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.
                                                                                                
     private void Start()
@@ -70,11 +70,13 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
             saveData.bagEquippableList = new List<string>();
             saveData.bagEquippableNumList = new List<int>();
-            saveData.bagEquippableNum = new List<int>();
+            saveData.bagEquippableFirstIndex = new List<int>();
+            saveData.bagEquippableLastIndex = new List<int>();
 
             saveData.bagConsumableList = new List<string>();
             saveData.bagConsumableNumList = new List<int>();
-            saveData.bagConsumableNum = new List<int>();
+            saveData.bagConsumableFirstIndex = new List<int>();
+            saveData.bagConsumableLastIndex = new List<int>();
 
             saveData.equippableList = new List<string>();
             saveData.equippableNumList = new List<int>();
@@ -171,13 +173,12 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     k++;
                 }
 
-                int equippableSum = 0;
-                int consumableSum = 0;
                 //캐릭터 설정.
                 for (int i = 0; i < saveData.name.Count; i++)
                 {
                     //게임상 관리하기 쉽도록.
                     CharacterStats stat = new CharacterStats();
+                    stat.saveId = i;
                     stat.VirusPanaltyInit();
                     stat.currentHp = saveData.hp[i];
                     stat.maxHp = saveData.maxHp[i];
@@ -209,18 +210,16 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                         stat.skills.passiveSkills.Add(passiveSkillList[element]);
                     }
 
-                    for (int j = 0; j < saveData.bagEquippableNum[i]; j++)
+                    for (int j = saveData.bagEquippableFirstIndex[i]; j < saveData.bagEquippableLastIndex[i]; j++)
                     {
-                        stat.bag.Add(saveData.bagEquippableList[equippableSum + j], saveData.bagEquippableNumList[equippableSum + j]);
-                        equippableSum += j;
+                        stat.bag.Add(saveData.bagEquippableList[j], saveData.bagEquippableNumList[j]);
                     }
 
-                    for (int j = 0; j < saveData.bagConsumableNum[i]; j++)
+                    for (int j = saveData.bagConsumableFirstIndex[i]; j < saveData.bagConsumableLastIndex[i]; j++)
                     {
-                        stat.bag.Add(saveData.bagConsumableList[consumableSum + j], saveData.bagConsumableNumList[consumableSum + j]);
-                        consumableSum += j;
+                        stat.bag.Add(saveData.bagConsumableList[j], saveData.bagConsumableNumList[j]);
                     }
-
+                    
                     currentSquad.Add(i, stat);
                 }
             }
@@ -239,7 +238,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         //인원 추가.
         if (num > totalSquadNum - 1)
         {
-            saveData.id.Add(stat.character.id);
+            saveData.id.Add(stat.character.name);
             saveData.name.Add(stat.character.name);
             saveData.hp.Add(stat.currentHp);
             saveData.maxHp.Add(stat.maxHp);
@@ -274,8 +273,24 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.passiveSkillList.Add(passiveSkillStr); 
             }
 
-            saveData.bagEquippableNum.Add(0);
+            if (num == 0)
+            {
+                saveData.bagEquippableFirstIndex.Add(0);
+                saveData.bagEquippableLastIndex.Add(0);
+                saveData.bagConsumableFirstIndex.Add(0);
+                saveData.bagConsumableLastIndex.Add(0);
+            }
+            else
+            {
+                int preFirstIndex = saveData.bagEquippableFirstIndex[num - 1];
+                saveData.bagEquippableFirstIndex.Add(preFirstIndex);
+                saveData.bagEquippableLastIndex.Add(preFirstIndex);
+                preFirstIndex = saveData.bagConsumableFirstIndex[num - 1];
+                saveData.bagConsumableFirstIndex.Add(preFirstIndex);
+                saveData.bagConsumableLastIndex.Add(preFirstIndex);
+            }
 
+            stat.saveId = num;
             currentSquad.Add(num, stat);
         }
         //else //기존거 변경.
