@@ -18,6 +18,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public Dictionary<string, Virus> virusList = new Dictionary<string, Virus>();
     public Dictionary<string, ActiveSkill> activeSkillList = new Dictionary<string, ActiveSkill>();
     public Dictionary<string, PassiveSkill> passiveSkillList = new Dictionary<string, PassiveSkill>();
+    public Dictionary<string, Truck> truckList = new Dictionary<string, Truck>();
     ScriptableMgr scriptableMgr;
 
     //아지트 아이템 데이터.
@@ -49,6 +50,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         virusList = scriptableMgr.virusList;
         activeSkillList = scriptableMgr.activeSkillList;
         passiveSkillList = scriptableMgr.passiveSkillList;
+        truckList = scriptableMgr.truckList;
 
         filePath = @$"{Application.persistentDataPath}\PlayerData.json";
         if (saveData.id == null)

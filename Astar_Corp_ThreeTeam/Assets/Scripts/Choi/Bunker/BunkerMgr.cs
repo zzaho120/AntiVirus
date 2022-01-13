@@ -27,6 +27,7 @@ public class BunkerMgr : MonoBehaviour
     HospitalMgr hospitalMgr;
     GarageMgr garageMgr;
     PlayerDataMgr playerDataMgr;
+    CarCenterMgr carCenterMgr;  //¼öÁø
 
     public GameObject createButton;
     public GameObject destroyButton;
@@ -61,11 +62,13 @@ public class BunkerMgr : MonoBehaviour
         storeMgr = GameObject.FindGameObjectWithTag("StoreMgr").GetComponent<StoreMgr>();
         hospitalMgr = GameObject.FindGameObjectWithTag("HospitalMgr").GetComponent<HospitalMgr>();
         garageMgr = GameObject.FindGameObjectWithTag("GarageMgr").GetComponent<GarageMgr>();
+        carCenterMgr = GameObject.Find("CarCenterMgr").GetComponent<CarCenterMgr>();
 
         agitMgr.playerDataMgr = playerDataMgr;
         pubMgr.playerDataMgr = playerDataMgr;
         hospitalMgr.playerDataMgr = playerDataMgr;
         garageMgr.playerDataMgr = playerDataMgr;
+        carCenterMgr.playerDataMgr = playerDataMgr;
     }
 
     private void Start()
@@ -75,6 +78,7 @@ public class BunkerMgr : MonoBehaviour
         storeMgr.Init();
         hospitalMgr.Init();
         garageMgr.Init();
+        carCenterMgr.Init();
 
         camController.OpenWindow = OpenWindow;
         camController.CloseWindow = CloseWindow;
