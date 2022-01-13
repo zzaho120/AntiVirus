@@ -28,6 +28,7 @@ public class AgitMgr : MonoBehaviour
 
     // 리스트 순서 / PlayerDataMgr Key
     Dictionary<int, int> characterInfo = new Dictionary<int, int>();
+    bool isDeleteMode;
     int currentIndex;
     Color originColor;
     public void Init()
@@ -62,7 +63,7 @@ public class AgitMgr : MonoBehaviour
                 = $"분과";
             //go.transform.GetChild(5).GetComponent<Slider>().value
             //   = element.Value.currentHp/ element.Value.maxHp;
-
+            
             int num = i;
             var button = go.AddComponent<Button>();
             button.onClick.AddListener(delegate { SelectCharacter(num); });
@@ -99,6 +100,7 @@ public class AgitMgr : MonoBehaviour
         if (bagMgr.bagWin.activeSelf) bagMgr.bagWin.SetActive(false);
 
         originColor = characterPrefab.GetComponent<Image>().color;
+        isDeleteMode = false;
     }
 
     public void SelectCharacter(int index)
@@ -117,6 +119,157 @@ public class AgitMgr : MonoBehaviour
         bagMgr.currentIndex = currentIndex;
         bagMgr.Init();
         OpenCharacterInfo();
+    }
+
+    public void EnableCheckBox()
+    {
+        if (!isDeleteMode)
+        {
+            isDeleteMode = true;
+            foreach (var element in characterObjs)
+            {
+                element.GetComponent<Button>().enabled = false;
+
+                var go = element.transform.GetChild(6).gameObject;
+                var toggle = go.GetComponent<Toggle>().isOn = false;
+                go.SetActive(true);
+            }
+        }
+    }
+
+    public void DisableCheckBox()
+    {
+        isDeleteMode = false;
+        foreach (var element in characterObjs)
+        {
+            element.GetComponent<Button>().enabled = true;
+
+            var go = element.transform.GetChild(6).gameObject;
+            go.SetActive(false);
+        }
+    }
+
+    public void AllCheckBox(bool value)
+    {
+        if (!isDeleteMode) return;
+        foreach (var element in characterObjs)
+        {
+            var go = element.transform.GetChild(6).gameObject;
+            var toggle = go.GetComponent<Toggle>().isOn = value;
+        }
+    }
+
+    public void CheckAll()
+    {
+        AllCheckBox(true);
+    }
+
+    public void UncheckAll()
+    {
+        AllCheckBox(false);
+    }
+
+    public void Fire()
+    {
+        if (isAnythingChecked() == false) return;
+
+        int count = characterObjs.Count;
+        for (int i = count -1; i > -1; --i)
+        {
+            var toggle = characterObjs[i].transform.GetChild(6).GetComponent<Toggle>();
+            if (toggle.isOn)
+            {
+                Destroy(characterObjs[i]);
+                characterObjs.RemoveAt(i);
+
+                //데이터 삭제.
+                playerDataMgr.saveData.id.RemoveAt(i);
+                playerDataMgr.saveData.name.RemoveAt(i);
+                playerDataMgr.saveData.hp.RemoveAt(i);
+                playerDataMgr.saveData.maxHp.RemoveAt(i);
+                playerDataMgr.saveData.sensitivity.RemoveAt(i);
+                playerDataMgr.saveData.concentration.RemoveAt(i);
+                playerDataMgr.saveData.willPower.RemoveAt(i);
+
+                playerDataMgr.saveData.gaugeE.RemoveAt(i);
+                playerDataMgr.saveData.gaugeB.RemoveAt(i);
+                playerDataMgr.saveData.gaugeP.RemoveAt(i);
+                playerDataMgr.saveData.gaugeI.RemoveAt(i);
+                playerDataMgr.saveData.gaugeT.RemoveAt(i);
+
+                playerDataMgr.saveData.levelE.RemoveAt(i);
+                playerDataMgr.saveData.levelB.RemoveAt(i);
+                playerDataMgr.saveData.levelP.RemoveAt(i);
+                playerDataMgr.saveData.levelI.RemoveAt(i);
+                playerDataMgr.saveData.levelT.RemoveAt(i);
+
+                int firstIndex = playerDataMgr.saveData.bagEquippableFirstIndex[i];
+                int lastIndex = playerDataMgr.saveData.bagEquippableLastIndex[i];
+                int difference = lastIndex - firstIndex;
+                for (int j = i; j < playerDataMgr.saveData.bagEquippableFirstIndex.Count; j++)
+                {
+                    playerDataMgr.saveData.bagEquippableFirstIndex[j] -= difference;
+                    playerDataMgr.saveData.bagEquippableLastIndex[j] -= difference;
+                }
+
+                for (int j = firstIndex; j < lastIndex; j++)
+                {
+                    playerDataMgr.saveData.bagEquippableList.RemoveAt(i);
+                    playerDataMgr.saveData.bagEquippableNumList.RemoveAt(i);
+                }
+                playerDataMgr.saveData.bagEquippableFirstIndex.RemoveAt(i);
+                playerDataMgr.saveData.bagEquippableLastIndex.RemoveAt(i);
+                
+                firstIndex = playerDataMgr.saveData.bagConsumableFirstIndex[i];
+                lastIndex = playerDataMgr.saveData.bagConsumableLastIndex[i];
+                difference = lastIndex - firstIndex;
+                for (int j = i; j < playerDataMgr.saveData.bagConsumableFirstIndex.Count; j++)
+                {
+                    playerDataMgr.saveData.bagConsumableFirstIndex[j] -= difference;
+                    playerDataMgr.saveData.bagConsumableLastIndex[j] -= difference;
+                }
+
+                for (int j = firstIndex; j < lastIndex; j++)
+                {
+                    playerDataMgr.saveData.bagConsumableList.RemoveAt(i);
+                    playerDataMgr.saveData.bagConsumableNumList.RemoveAt(i);
+                }
+                playerDataMgr.saveData.bagConsumableFirstIndex.RemoveAt(i);
+                playerDataMgr.saveData.bagConsumableLastIndex.RemoveAt(i);
+
+                playerDataMgr.saveData.mainWeapon.RemoveAt(i);
+                playerDataMgr.saveData.subWeapon.RemoveAt(i);
+                
+                int activeSkillNum = playerDataMgr.activeSkillList.Count;
+                
+                for (int j = activeSkillNum-1; j>-1; j--) 
+                {
+                    playerDataMgr.saveData.activeSkillList.RemoveAt(i * activeSkillNum + j); 
+                }
+
+                int passiveSkillNum = playerDataMgr.passiveSkillList.Count;
+                for (int j = passiveSkillNum-1; j >-1; j--)
+                {
+                    playerDataMgr.saveData.passiveSkillList.RemoveAt(i * passiveSkillNum + j);
+                }
+
+                playerDataMgr.currentSquad.Remove(i);
+
+                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+            }
+        }
+        playerDataMgr.RefreshCurrentSquad();
+    }
+
+    bool isAnythingChecked()
+    {
+        if (!isDeleteMode) return false;
+        foreach (var element in characterObjs)
+        {
+            var go = element.transform.GetChild(6).gameObject;
+            if (go.GetComponent<Toggle>().isOn == true) return true;
+        }
+        return false;
     }
 
     public void OpenCharacterInfo()
