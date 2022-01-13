@@ -7,6 +7,7 @@ public class BattleMonsterMgr : MonoBehaviour
     public List<MonsterChar> monsters;
     public int monsterIdx;
     private List<PlayerableChar> playerableChars;
+    public MonsterChar curMonster;
     public void Init()
     {
         monsters.Clear();
@@ -17,7 +18,7 @@ public class BattleMonsterMgr : MonoBehaviour
             monsters.Add(monster);
         }
 
-        EventBusMgr.Subscribe(EventType.EndEnemy, CheckEndTurn);
+        EventBusMgr.Subscribe(EventType.EndEnemy, SetEndTurn);
         EventBusMgr.Subscribe(EventType.StartEnemy, StartEnemy);
 
         playerableChars = BattleMgr.Instance.playerMgr.playerableChars;
@@ -31,26 +32,35 @@ public class BattleMonsterMgr : MonoBehaviour
         {
             monster.fsm.ChangeState((int)BattleMonState.Idle);
         }
+        curMonster = monsters[0];
         RecognizePlayer();
     }
 
     public void UpdateTurn()
     {
-        if (monsterIdx < monsters.Count)
-            monsters[monsterIdx].MonsterUpdate();
+        if (curMonster != null)
+            curMonster.MonsterUpdate();
     }
 
-    public void CheckEndTurn(object[] param)
+    public void SetEndTurn(object[] param)
     {
         monsterIdx++;
+        curMonster = null;
         BattleMgr.Instance.hintMgr.CheckRader((Vector3)param[0]);
+
+        Invoke("CheckEndTurn", RaderWindow.maxTime);
+    }
+
+    private void CheckEndTurn()
+    {
         if (monsterIdx >= monsters.Count)
         {
-            //CameraController.Instance.SetFollowObject(null);
-            //EventBusMgr.Publish(EventType.ChangeTurn);
+            EventBusMgr.Publish(EventType.ChangeTurn);
         }
         else
-            CameraController.Instance.SetFollowObject(monsters[monsterIdx].transform);
+        {
+            curMonster = monsters[monsterIdx];
+        }
     }
 
     private void RecognizePlayer()
@@ -71,8 +81,6 @@ public class BattleMonsterMgr : MonoBehaviour
 
             if (monster.target == null)
                 monster.ren.material.color = Color.red;
-
-            Debug.Log(monster.target);
         }
     }
 
