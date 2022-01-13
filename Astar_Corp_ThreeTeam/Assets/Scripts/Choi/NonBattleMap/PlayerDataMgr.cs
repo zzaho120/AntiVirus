@@ -40,7 +40,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                                                                                                
     private void Start()
     {
-        //PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
@@ -227,6 +227,60 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    public void RefreshCurrentSquad()
+    {
+        currentSquad.Clear();
+        //캐릭터 설정.
+        for (int i = 0; i < saveData.name.Count; i++)
+        {
+            //게임상 관리하기 쉽도록.
+            CharacterStats stat = new CharacterStats();
+            stat.saveId = i;
+            stat.VirusPanaltyInit();
+            stat.currentHp = saveData.hp[i];
+            stat.maxHp = saveData.maxHp[i];
+            stat.sensivity = saveData.sensitivity[i];
+            stat.concentration = saveData.concentration[i];
+            stat.willpower = saveData.willPower[i];
+            stat.character = characterList[saveData.id[i]];
+            stat.character.id = saveData.id[i];
+
+            stat.weapon = new WeaponStats();
+            stat.weapon.mainWeapon = (saveData.mainWeapon[i] == null) ? null : equippableList[saveData.mainWeapon[i]];
+            stat.weapon.subWeapon = (saveData.subWeapon[i] == null) ? null : equippableList[saveData.subWeapon[i]];
+
+            List<string> activeSkill = new List<string>();
+            int activeSkillNum = activeSkillList.Count;
+            for (int j = 0; j < activeSkillNum; j++) { activeSkill.Add(saveData.activeSkillList[i * activeSkillNum + j]); }
+            foreach (var element in activeSkill)
+            {
+                if (element == null) continue;
+                stat.skills.activeSkills.Add(activeSkillList[element]);
+            }
+
+            List<string> passiveSkill = new List<string>();
+            int passiveSkillNum = passiveSkillList.Count;
+            for (int j = 0; j < passiveSkillNum; j++) { passiveSkill.Add(saveData.passiveSkillList[i * passiveSkillNum + j]); }
+            foreach (var element in passiveSkill)
+            {
+                if (element == null) continue;
+                stat.skills.passiveSkills.Add(passiveSkillList[element]);
+            }
+
+            for (int j = saveData.bagEquippableFirstIndex[i]; j < saveData.bagEquippableLastIndex[i]; j++)
+            {
+                stat.bag.Add(saveData.bagEquippableList[j], saveData.bagEquippableNumList[j]);
+            }
+
+            for (int j = saveData.bagConsumableFirstIndex[i]; j < saveData.bagConsumableLastIndex[i]; j++)
+            {
+                stat.bag.Add(saveData.bagConsumableList[j], saveData.bagConsumableNumList[j]);
+            }
+
+            currentSquad.Add(i, stat);
         }
     }
 

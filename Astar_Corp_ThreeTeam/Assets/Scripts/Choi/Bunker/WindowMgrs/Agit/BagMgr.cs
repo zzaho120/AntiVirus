@@ -246,6 +246,7 @@ public class BagMgr : MonoBehaviour
     public void MoveToBag(int itemNum)
     {
         if (currentKey == null) return;
+        if (itemNum == 0) return;
         OpenPopup();
 
         if (storageWeaponInfo.ContainsKey(currentKey))
@@ -254,7 +255,7 @@ public class BagMgr : MonoBehaviour
             int index = 0;
             var id = storageWeaponInfo[currentKey].id;
 
-            index = playerDataMgr.currentSquad[currentIndex].saveId;
+            index = currentIndex;
 
             int firstIndex = playerDataMgr.saveData.bagEquippableFirstIndex[index];
             int lastIndex = playerDataMgr.saveData.bagEquippableLastIndex[index];
@@ -277,8 +278,8 @@ public class BagMgr : MonoBehaviour
 
                 for (int i = index + 1; i < playerDataMgr.saveData.id.Count; i++)
                 {
-                    playerDataMgr.saveData.bagEquippableFirstIndex[index]++;
-                    playerDataMgr.saveData.bagEquippableLastIndex[index]++;
+                    playerDataMgr.saveData.bagEquippableFirstIndex[i]++;
+                    playerDataMgr.saveData.bagEquippableLastIndex[i]++;
                 }
             }
             else
@@ -380,8 +381,8 @@ public class BagMgr : MonoBehaviour
 
                 for (int i = index + 1; i < playerDataMgr.saveData.id.Count; i++)
                 {
-                    playerDataMgr.saveData.bagConsumableFirstIndex[index]++;
-                    playerDataMgr.saveData.bagConsumableLastIndex[index]++;
+                    playerDataMgr.saveData.bagConsumableFirstIndex[i]++;
+                    playerDataMgr.saveData.bagConsumableLastIndex[i]++;
                 }
             }
             else
@@ -499,8 +500,8 @@ public class BagMgr : MonoBehaviour
 
                 for (int i = index + 1; i < playerDataMgr.saveData.id.Count; i++)
                 {
-                    playerDataMgr.saveData.bagEquippableFirstIndex[index]--;
-                    playerDataMgr.saveData.bagEquippableLastIndex[index]--;
+                    playerDataMgr.saveData.bagEquippableFirstIndex[i]--;
+                    playerDataMgr.saveData.bagEquippableLastIndex[i]--;
                 }
             }
             else playerDataMgr.saveData.bagEquippableNumList[containIndex] -= itemNum;
@@ -582,7 +583,7 @@ public class BagMgr : MonoBehaviour
                 playerDataMgr.saveData.consumableNumList[index] += itemNum;
             }
 
-            index = playerDataMgr.currentSquad[currentIndex].saveId;
+            index = currentIndex;
             int firstIndex = playerDataMgr.saveData.bagConsumableFirstIndex[index];
             int lastIndex = playerDataMgr.saveData.bagConsumableLastIndex[index];
 
@@ -603,8 +604,8 @@ public class BagMgr : MonoBehaviour
 
                 for (int i = index + 1; i < playerDataMgr.saveData.id.Count; i++)
                 {
-                    playerDataMgr.saveData.bagConsumableFirstIndex[index]--;
-                    playerDataMgr.saveData.bagConsumableLastIndex[index]--;
+                    playerDataMgr.saveData.bagConsumableFirstIndex[i]--;
+                    playerDataMgr.saveData.bagConsumableLastIndex[i]--;
                 }
             }
             else playerDataMgr.saveData.bagConsumableNumList[containIndex] -= itemNum;
