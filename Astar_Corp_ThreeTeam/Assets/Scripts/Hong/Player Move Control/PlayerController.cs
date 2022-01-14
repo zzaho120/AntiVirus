@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     //public GameObject panel;  //나중에 Fadeout 효과 넣을때
     [HideInInspector]
     public bool isMove;//지은.
-    public bool isBunkerClikable;
+    public bool isBunkerClikable = true;    // 시야관련
 
     float pX, pY, pZ;
     bool saveMode;
@@ -38,7 +38,6 @@ public class PlayerController : MonoBehaviour
     {
         nav = GetComponent<NavMeshSetting>();
 
-        // 수정
         nonBattleMgr = NonBattleMgr.Instance;
         popUpMgr = nonBattleMgr.GetComponent<PopUpMgr>();
 
@@ -54,7 +53,7 @@ public class PlayerController : MonoBehaviour
             transform.position = nonBattleMgr.bunkerPos.position;
         }
 
-        agent = GetComponent<NavMeshAgent>();
+        agent = GetComponentInChildren<NavMeshAgent>();
 
         isMove = false;
         saveMode = true;
@@ -117,16 +116,16 @@ public class PlayerController : MonoBehaviour
                     //연구소 팝업창
                     popUpMgr.OpenLaboratoryPopup();
                 }
-                else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
-                   raycastHit.collider.gameObject.name.Equals("Plane"))
-                {
-                    agent.SetDestination(raycastHit.point);
-                }
+                //else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
+                //   raycastHit.collider.gameObject.name.Equals("Plane"))
+                //{
+                //    agent.SetDestination(raycastHit.point);
+                //}
             }
-            else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
-            {
-                agent.SetDestination(raycastHit.point);
-            }
+            //else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
+            //{
+            //    agent.SetDestination(raycastHit.point);
+            //}
         }
 
 
@@ -194,19 +193,19 @@ public class PlayerController : MonoBehaviour
                     //연구소 팝업창
                     popUpMgr.OpenLaboratoryPopup();
                 }
-                else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
-                   raycastHit.collider.gameObject.name.Equals("Plane") ||
-                        raycastHit.collider.gameObject.CompareTag("Road"))
-                {
-                    nav.targetPos = raycastHit.point;
-                    agent.SetDestination(raycastHit.point);
-                }
+                //else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
+                //   raycastHit.collider.gameObject.name.Equals("Plane") ||
+                //        raycastHit.collider.gameObject.CompareTag("Road"))
+                //{
+                //    //nav.targetPos = raycastHit.point;
+                //    agent.SetDestination(raycastHit.point);
+                //}
             }
-            else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
-            {
-                nav.targetPos = raycastHit.point;
-                agent.SetDestination(raycastHit.point);
-            }
+            //else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
+            //{
+            //    //nav.targetPos = raycastHit.point;
+            //    agent.SetDestination(raycastHit.point);
+            //}
         }
         if (agent.velocity.magnitude > 0.15f) //움직이고 있을 때.
         {
@@ -222,10 +221,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
-    {
-        transform.position = agent.nextPosition;
-    }
+    //private void LateUpdate()
+    //{
+    //    transform.position = agent.nextPosition;
+    //}
 
     public void ChangeBattleScene()
     {
