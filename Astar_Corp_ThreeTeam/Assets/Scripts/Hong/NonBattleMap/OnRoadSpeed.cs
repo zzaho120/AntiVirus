@@ -17,7 +17,7 @@ public class OnRoadSpeed : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            nonBattleMgr.playerController.agent.speed = speedUp;
+           // nonBattleMgr.playerController.agent.speed = speedUp;
         }
     }
 
@@ -25,7 +25,7 @@ public class OnRoadSpeed : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            nonBattleMgr.playerController.agent.speed = startSpeed;
+           // nonBattleMgr.playerController.agent.speed = startSpeed;
         }
     }
 }

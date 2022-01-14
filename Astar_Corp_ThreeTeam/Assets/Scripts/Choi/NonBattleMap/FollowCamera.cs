@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FollowCamera : MonoBehaviour
 {
-     public Transform target;
+    public Transform target;
     public float dist = 10.0f;
     public float height = 5.0f;
     public float smoothRotate = 5.0f;
