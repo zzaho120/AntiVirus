@@ -24,7 +24,6 @@ public class CarCenterMgr : MonoBehaviour
         keyNum = 1;
 
         NextButton(3);
-        //Debug.Log(truckKey);
     }
 
     public void NextButton(int value)
@@ -42,18 +41,15 @@ public class CarCenterMgr : MonoBehaviour
         }
         else
         {
-            //value = 3;
+           
         }
-        //Debug.Log(value);
-
-        //Debug.Log(truckKey);
+        
         if (playerDataMgr.truckList.ContainsKey(truckKey))
         {
             text.text = playerDataMgr.truckList[truckKey].name;
         }
         else
         {
-            Debug.Log("Truck Key 없음. 현재 Key : " + truckKey);
         }
         
     }
@@ -79,4 +75,6 @@ public class CarCenterMgr : MonoBehaviour
             right.interactable = true;
         }
     }
+
+    //public void Selec
 }

@@ -66,6 +66,7 @@ public class BunkerMgr : MonoBehaviour
 
         agitMgr.playerDataMgr = playerDataMgr;
         pubMgr.playerDataMgr = playerDataMgr;
+        storeMgr.playerDataMgr = playerDataMgr;
         hospitalMgr.playerDataMgr = playerDataMgr;
         garageMgr.playerDataMgr = playerDataMgr;
         carCenterMgr.playerDataMgr = playerDataMgr;

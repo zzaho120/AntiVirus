@@ -225,6 +225,11 @@ public class TrunkMgr : MonoBehaviour
             slider.value = slider.maxValue;
             itemNumTxt.text = $"{slider.value}°³";
         }
+        else
+        {
+            slider.value += plus;
+            itemNumTxt.text = $"{slider.value}°³";
+        }
     }
 
     public void Add10()

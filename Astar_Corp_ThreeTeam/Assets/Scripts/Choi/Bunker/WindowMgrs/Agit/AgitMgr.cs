@@ -87,8 +87,7 @@ public class AgitMgr : MonoBehaviour
         equipmentMgr.Init();
 
         toleranceMgr.playerDataMgr = playerDataMgr;
-        toleranceMgr.Init();
-
+        
         bagMgr.playerDataMgr = playerDataMgr;
         bagMgr.Init();
 
@@ -114,10 +113,13 @@ public class AgitMgr : MonoBehaviour
         currentIndex = index;
         skillWinMgr.currentIndex = currentIndex;
         equipmentMgr.currentIndex = currentIndex;
-        equipmentMgr.RefreshEquipList();
         toleranceMgr.currentIndex = currentIndex;
         bagMgr.currentIndex = currentIndex;
+
+        equipmentMgr.RefreshEquipList();
+        toleranceMgr.Refresh();
         bagMgr.Init();
+        
         OpenCharacterInfo();
     }
 
