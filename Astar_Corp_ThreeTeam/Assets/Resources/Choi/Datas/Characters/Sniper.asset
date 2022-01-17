@@ -19,35 +19,41 @@ MonoBehaviour:
   name: Sniper
   type: "\uC800\uACA9\uBCD1"
   description: "\uC2DC\uC57C\uC5D0 \uC774\uC810\uC744 \uAC00\uC9C4 \uCE90\uB9AD\uD130"
-  min_Hp: 60
-  max_Hp: 80
-  min_Hp_Rise: 4
-  max_Hp_Rise: 10
-  weight: 90
-  weight_Rise: 15
-  min_Sensitivity: 1
-  max_Sensitivity: 2
-  min_Sen_Rise: 1
-  max_Sen_Rise: 3
-  min_Avoid_Rate: 10
-  max_Avoid_Rate: 20
-  min_Concentration: 1
-  max_Concentration: 4
-  min_Con_Rise: 1
-  max_Con_Rise: 6
-  min_Willpower: 1
-  max_Willpower: 3
-  min_Will_Rise: 1
-  max_Will_Rise: 2
-  min_Crit_Rate: 20
-  max_Crit_Rate: 30
-  min_Char_Cost: 300
-  max_Char_Cost: 500
+  minHp: 60
+  maxHp: 80
+  hpChance: 10
+  hpRise: 10
+  weight: 60
+  weight_Rise: 20
+  mpPenalty1: -1
+  mpPenalty2: -2
+  mpPenalty3: -3
+  minSensitivity: 1
+  maxSensitivity: 4
+  senChance: 40
+  senRise: 2
+  minAvoidRate: 10
+  maxAvoidRate: 20
+  avoidRateRisePerSen: 2
+  minConcentration: 1
+  maxConcentration: 4
+  concentrationChance: 40
+  concentrationRise: 2
+  accurRatePerCon: 1
+  minWillpower: 1
+  maxWillpower: 2
+  willChance: 10
+  willRise: 2
+  alertAccurRateRise: 2
+  critRateRise: 2
+  critResistRateRise: 1
+  minCharCost: 300
+  maxCharCost: 500
   exp: 100
-  resistance: 100
-  virusDec: 40
+  resistGauge: 100
+  virusDec_Lev0: 10
+  virusDec_Lev1: 40
   weapons:
   - 1
-  - 3
   - 6
   - 7

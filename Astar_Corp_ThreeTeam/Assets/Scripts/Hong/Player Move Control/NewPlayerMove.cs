@@ -4,11 +4,17 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
 
+// public static bool SamplePosition(Vector3 sourcePosition, out NavMeshHit hit, float maxDistance, int areaMask);
+
 public class NewPlayerMove : MonoBehaviour
 {
     //get NavMesh
     private NavMeshAgent navMeshAgent;
     private new Camera camera;
+
+    // to save and control player speed
+    private float speed = 8f;
+    private float speedUp = 16f;
 
     //to get CharacterController from the unity
     private CharacterController characterController;
@@ -67,6 +73,18 @@ public class NewPlayerMove : MonoBehaviour
         else
         {
             characterController.Move(Vector3.zero);
+        }
+
+        NavMeshHit navHit;
+        if (NavMesh.SamplePosition(transform.position, out navHit, 0.8f, 8))    // 8번 AreaMask : Road
+        {
+            //Debug.Log(navHit.distance);
+            //Debug.Log("Player가 Road 위에 있을때만 이 메시지가 뜨면 성공입니다");
+            navMeshAgent.speed = speedUp;
+        }
+        else
+        {
+            navMeshAgent.speed = speed;
         }
     }
     private void LateUpdate()

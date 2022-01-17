@@ -44,46 +44,54 @@ public class CharacterSO
                     character.type                  = splitData[5];
                     character.description           = splitData[6];
 
-                    character.min_Hp                = int.Parse(splitData[7]);
-                    character.max_Hp                = int.Parse(splitData[8]);
-                    character.min_Hp_Rise           = int.Parse(splitData[9]);
-                    character.max_Hp_Rise           = int.Parse(splitData[10]);
+                    character.minHp                = int.Parse(splitData[7]);
+                    character.maxHp                = int.Parse(splitData[8]);
+                    character.hpChance              = int.Parse(splitData[9]);
+                    character.hpRise                = int.Parse(splitData[10]);
 
                     character.weight                = int.Parse(splitData[11]);
                     character.weight_Rise           = int.Parse(splitData[12]);
 
-                    character.min_Sensitivity       = int.Parse(splitData[13]);
-                    character.max_Sensitivity       = int.Parse(splitData[14]);
-                    character.min_Sen_Rise          = int.Parse(splitData[15]);
-                    character.max_Sen_Rise          = int.Parse(splitData[16]);
+                    character.mpPenalty1            = int.Parse(splitData[13]);
+                    character.mpPenalty2            = int.Parse(splitData[14]);
+                    character.mpPenalty3            = int.Parse(splitData[15]);
 
-                    character.min_Avoid_Rate        = int.Parse(splitData[17]);
-                    character.max_Avoid_Rate        = int.Parse(splitData[18]);
+                    character.minSensitivity        = int.Parse(splitData[16]);
+                    character.maxSensitivity        = int.Parse(splitData[17]);
+                    character.senChance             = int.Parse(splitData[18]);
+                    character.senRise               = int.Parse(splitData[19]);
 
-                    character.min_Concentration     = int.Parse(splitData[19]);
-                    character.max_Concentration     = int.Parse(splitData[20]);
-                    character.min_Con_Rise          = int.Parse(splitData[21]);
-                    character.max_Con_Rise          = int.Parse(splitData[22]);
+                    character.minAvoidRate          = int.Parse(splitData[20]);
+                    character.maxAvoidRate          = int.Parse(splitData[21]);
+                    character.avoidRateRisePerSen   = int.Parse(splitData[22]);
 
-                    character.min_Willpower         = int.Parse(splitData[23]);
-                    character.max_Willpower         = int.Parse(splitData[24]);
-                    character.min_Will_Rise         = int.Parse(splitData[25]);
-                    character.max_Will_Rise         = int.Parse(splitData[26]);
+                    character.minConcentration      = int.Parse(splitData[23]);
+                    character.maxConcentration      = int.Parse(splitData[24]);
+                    character.concentrationChance   = int.Parse(splitData[25]);
+                    character.concentrationRise     = int.Parse(splitData[26]);
+                    character.accurRatePerCon       = int.Parse(splitData[27]);
 
-                    character.min_Crit_Rate         = int.Parse(splitData[27]);
-                    character.max_Crit_Rate         = int.Parse(splitData[28]);
+                    character.minWillpower          = int.Parse(splitData[28]);
+                    character.maxWillpower          = int.Parse(splitData[29]);
+                    character.willChance            = int.Parse(splitData[30]);
+                    character.willRise              = int.Parse(splitData[31]);
+                    character.alertAccurRateRise    = int.Parse(splitData[32]);
 
-                    character.min_Char_Cost         = int.Parse(splitData[29]);
-                    character.max_Char_Cost         = int.Parse(splitData[30]);
+                    character.critRateRise          = int.Parse(splitData[33]);
+                    character.critResistRateRise    = int.Parse(splitData[34]);
 
-                    character.exp                   = int.Parse(splitData[31]);
-                    character.resistance            = int.Parse(splitData[32]);
-                    character.virusDec              = int.Parse(splitData[33]);
-                    
+                    character.minCharCost           = int.Parse(splitData[35]);
+                    character.maxCharCost           = int.Parse(splitData[36]);
+
+                    character.exp                   = int.Parse(splitData[37]);
+                    character.resistGauge           = int.Parse(splitData[38]);
+                    character.virusDec_Lev0         = int.Parse(splitData[39]);
+                    character.virusDec_Lev1         = int.Parse(splitData[40]);
+
 
                     // 무기 리스트
                     // 디버프 리스트
-                    string[] weapon = splitData[34].Split('*');
+                    string[] weapon = splitData[41].Split('*');
                     for (int i = 0; i < weapon.Length; i++)
                     {
                         //Debug.Log(debuff[i]);

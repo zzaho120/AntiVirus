@@ -206,14 +206,16 @@ public class EquipmentMgr : MonoBehaviour
         }
     }
 
+    // 홍수진_스탯 수정
+    // 명중률 스탯 주석처리
     public void RefreshSpec()
     {
         var key = itemInfo[currentItemIndex];
         var weapon = playerDataMgr.equippableList[key];
-        string selectedWeaStr = $"기본 명중률 : {weapon.accur_Rate_Base}% \n" +
-            $"데미지 : {weapon.min_damage} ~ {weapon.max_damage} \n" +
-            $"탄창 클립수 : {weapon.bullet} \n" +
-            $"명중률 감소 : {weapon.accur_Rate_Dec}%";
+        string selectedWeaStr = $"기본 명중률 : {weapon.accurRateBase}% \n" +
+            $"데미지 : {weapon.minDamage} ~ {weapon.maxDamage} \n" +
+            $"탄창 클립수 : {weapon.bullet} \n" /*+
+            $"명중률 감소 : {weapon.accur_Rate_Dec}%"*/;
         weaponSpecTxt.text = selectedWeaStr;
 
         Weapon currentWeapon;
@@ -222,16 +224,16 @@ public class EquipmentMgr : MonoBehaviour
             if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
             {
                 currentWeapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
-                string str = $"기본 명중률 : {currentWeapon.accur_Rate_Base}%\n" +
-                   $"데미지 : {currentWeapon.min_damage} ~ {currentWeapon.max_damage}\n" +
-                   $"탄창 클립수 : {currentWeapon.bullet}\n" +
-                   $"명중률 감소 : {currentWeapon.accur_Rate_Dec}%";
+                string str = $"기본 명중률 : {currentWeapon.accurRateBase}%\n" +
+                   $"데미지 : {currentWeapon.minDamage} ~ {currentWeapon.maxDamage}\n" +
+                   $"탄창 클립수 : {currentWeapon.bullet}\n" /*+
+                   $"명중률 감소 : {currentWeapon.accur_Rate_Dec}%"*/;
                 currentWeaSpecTxt.text = str;
 
-                str = $"기본 명중률 : {weapon.accur_Rate_Base - currentWeapon.accur_Rate_Base}%\n" +
-                   $"데미지 : {weapon.min_damage - currentWeapon.min_damage} ~ {weapon.max_damage - currentWeapon.max_damage}\n" +
-                   $"탄창 클립수 : {weapon.bullet - currentWeapon.bullet} \n" +
-                   $"명중률 감소 : {weapon.accur_Rate_Dec - currentWeapon.accur_Rate_Dec}%";
+                str = $"기본 명중률 : {weapon.accurRateBase - currentWeapon.accurRateBase}%\n" +
+                   $"데미지 : {weapon.minDamage - currentWeapon.minDamage} ~ {weapon.maxDamage - currentWeapon.maxDamage}\n" +
+                   $"탄창 클립수 : {weapon.bullet - currentWeapon.bullet} \n" /*+
+                   $"명중률 감소 : {weapon.accur_Rate_Dec - currentWeapon.accur_Rate_Dec}%"*/;
                 changeWeaSpecTxt.text = str;
             }
             else
@@ -249,24 +251,24 @@ public class EquipmentMgr : MonoBehaviour
             if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null)
             {
                 currentWeapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
-                string str = $"기본 명중률 : {currentWeapon.accur_Rate_Base}%\n" +
-                   $"데미지 : {currentWeapon.min_damage} ~ {currentWeapon.max_damage}\n" +
-                   $"탄창 클립수 : {currentWeapon.bullet}\n" +
-                   $"명중률 감소 : {currentWeapon.accur_Rate_Dec}%";
+                string str = $"기본 명중률 : {currentWeapon.accurRateBase}%\n" +
+                   $"데미지 : {currentWeapon.minDamage} ~ {currentWeapon.maxDamage}\n" +
+                   $"탄창 클립수 : {currentWeapon.bullet}\n"; // +
+                   //$"명중률 감소 : {currentWeapon.accur_Rate_Dec}%";
                 currentWeaSpecTxt.text = str;
 
-                str = $"기본 명중률 : {weapon.accur_Rate_Base - currentWeapon.accur_Rate_Base}%\n" +
-                   $"데미지 : {weapon.min_damage - currentWeapon.min_damage} ~ {weapon.max_damage - currentWeapon.max_damage}\n" +
-                   $"탄창 클립수 : {weapon.bullet - currentWeapon.bullet}\n" +
-                   $"명중률 감소 : {weapon.accur_Rate_Dec - currentWeapon.accur_Rate_Dec}%";
+                str = $"기본 명중률 : {weapon.accurRateBase - currentWeapon.accurRateBase}%\n" +
+                   $"데미지 : {weapon.minDamage - currentWeapon.minDamage} ~ {weapon.maxDamage - currentWeapon.maxDamage}\n" +
+                   $"탄창 클립수 : {weapon.bullet - currentWeapon.bullet}\n"; // +
+                   //$"명중률 감소 : {weapon.accur_Rate_Dec - currentWeapon.accur_Rate_Dec}%";
                 changeWeaSpecTxt.text = str;
             }
             else
             {
                 string str = $"기본 명중률 : -% \n" +
                    $"데미지 : - \n" +
-                   $"탄창 클립수 : - \n" +
-                   $"명중률 감소 : -%";
+                   $"탄창 클립수 : - \n"; // +
+                   //$"명중률 감소 : -%";
                 currentWeaSpecTxt.text = str;
                 changeWeaSpecTxt.text = selectedWeaStr;
             }

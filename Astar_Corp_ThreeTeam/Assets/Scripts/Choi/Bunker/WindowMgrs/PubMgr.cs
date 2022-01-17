@@ -82,11 +82,11 @@ public class PubMgr : MonoBehaviour
             stat.VirusPanaltyInit();
             var character = playerDataMgr.characterList[key];
             stat.level = 0;
-            stat.currentHp = Random.Range(character.min_Hp, character.max_Hp);
-            stat.maxHp = stat.currentHp;
-            stat.sensivity = Random.Range(character.min_Sensitivity, character.max_Sensitivity);
-            stat.concentration = Random.Range(character.min_Concentration, character.max_Concentration);
-            stat.willpower = Random.Range(character.min_Willpower, character.max_Willpower);
+            stat.currentHp = Random.Range(character.minHp, character.maxHp);
+            stat.MaxHp = stat.currentHp;
+            stat.sensivity = Random.Range(character.minSensitivity, character.maxSensitivity);
+            stat.concentration = Random.Range(character.minConcentration, character.maxConcentration);
+            stat.willpower = Random.Range(character.minWillpower, character.maxWillpower);
 
             stat.character = character;
             stat.character.id = character.id;

@@ -37,23 +37,25 @@ public class MonsterSO
                     monster.id              = splitData[0];
                     monster.name            = splitData[1];
 
-                    monster.min_Hp          = int.Parse(splitData[2]);
-                    monster.max_Hp          = int.Parse(splitData[3]);
+                    monster.minHp           = int.Parse(splitData[2]);
+                    monster.maxHp           = int.Parse(splitData[3]);
                     
                     monster.atkRange        = int.Parse(splitData[4]);
                     monster.ap              = int.Parse(splitData[5]);
                     monster.mp              = int.Parse(splitData[6]);
-                    monster.closeUpAtk_Ap   = int.Parse(splitData[7]);
+                    monster.closeUpAtkAp    = int.Parse(splitData[7]);
                     
-                    monster.min_Dmg         = int.Parse(splitData[8]);
-                    monster.max_Dmg         = int.Parse(splitData[9]);
-                    monster.min_CritRate    = int.Parse(splitData[10]);
-                    monster.max_CritRate    = int.Parse(splitData[11]);
+                    monster.minDmg          = int.Parse(splitData[8]);
+                    monster.maxDmg          = int.Parse(splitData[9]);
+                    monster.minCritRate     = int.Parse(splitData[10]);
+                    monster.maxCritRate     = int.Parse(splitData[11]);
                     monster.critDmg         = int.Parse(splitData[12]);
+                    monster.critResist      = int.Parse(splitData[13]);
                     
-                    monster.exp             = int.Parse(splitData[13]);
-                    monster.sightRange      = int.Parse(splitData[14]);
-                    monster.virusGauge      = int.Parse(splitData[15]);
+                    monster.exp             = int.Parse(splitData[14]);
+                    monster.sightRange      = int.Parse(splitData[15]);
+                    monster.virusGauge      = int.Parse(splitData[16]);
+                    monster.escapeHpDec     = int.Parse(splitData[17]);
 
                     AssetDatabase.CreateAsset(monster, $"Assets//Resources/Choi/Datas/Monsters/{monster.name}.asset");
                     monsterNum++;

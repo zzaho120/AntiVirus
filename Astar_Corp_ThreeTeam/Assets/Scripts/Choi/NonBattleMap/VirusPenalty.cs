@@ -33,7 +33,7 @@ public class VirusPenalty
     {
         // È«¼öÁø ½ºÅÈ¼öÁ¤
         //return virus.resistCharge * paneltyLevel;
-        return virus.virusCharge * paneltyLevel;
+        return virus.virusGauge * paneltyLevel;
     }
 
     public VirusPenalty(Virus virus)

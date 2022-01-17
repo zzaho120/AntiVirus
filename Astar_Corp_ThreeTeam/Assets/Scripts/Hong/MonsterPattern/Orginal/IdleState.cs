@@ -13,18 +13,23 @@ public class IdleState : StateBase
 
     public override void Enter()
     {
+        //Debug.Log("Idle");
         startTime = Time.time;
     }
 
     public override void Exit()
     {
+        startTime = 0;
     }
 
     public override void Update()
     {
         var randTime = Random.Range(3f, 5f);
 
-        if (Time.time > startTime + randTime)
+        if (Time.time > startTime + 2f)
+        {
             fsm.ChangeState(STATE.Move);
+            //Debug.Log("Change state to Patrol");
+        }
     }
 }

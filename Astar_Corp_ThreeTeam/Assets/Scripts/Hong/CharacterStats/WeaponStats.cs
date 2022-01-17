@@ -90,22 +90,28 @@ public class WeaponStats
         get => WeaponBullet > 0;
     }
 
+    // 홍수진_스탯삭제
     // 명중률 감소
-    [HideInInspector] 
-    public int AccurRate_dec;
+    //public int AccurRate_dec;
 
-    // 무게
-    [HideInInspector] 
-    public int Weight;
+    // 홍수진_스탯...첨언
+    // 기존 "무게 (Weight)" -> 현재 "1 AP당 제공 MP" 항목으로 바뀜
+    public int MpPerAp;
 
+    // 홍수진_스탯수정
     // 발사 시 Ap 소모량
     [HideInInspector] 
-    public int FirstShotAp, AlertShotAp, AimShotAp, LoadAp;
+    public int FirstShotAp, OtherShotAp, LoadAp; // AlertShotAp, AimShotAp
+    // 무기DB
+    // FirstShotAp : 사격 첫발시 소모되는 AP
+    // OtherShotAp : 사격 첫발 이후 소모되는 AP
 
+    // 홍수진_스탯수정
     // 사거리, 패널티
     [HideInInspector] 
-    public int Range, OverRange_Penalty, UnderRange_Penalty;
+    public int MinRange, MaxRange, OverRange_Penalty, UnderRange_Penalty;
 
+    // 데미지 구하기
     public int SetWeaponDamage()
     {
         if (mainWeapon != null && subWeapon != null)
@@ -117,12 +123,12 @@ public class WeaponStats
             if (type == WeaponType.Main)
             {
                 // 데미지
-                var damage = Random.Range(mainWeapon.min_damage, mainWeapon.max_damage + 1);
+                var damage = Random.Range(mainWeapon.minDamage, mainWeapon.maxDamage + 1);
                 return damage;
             }
             else if (type == WeaponType.Sub)
             {
-                var damage = Random.Range(subWeapon.min_damage, subWeapon.max_damage + 1);
+                var damage = Random.Range(subWeapon.minDamage, subWeapon.maxDamage + 1);
                 return damage;
             }
             else
@@ -138,6 +144,7 @@ public class WeaponStats
         }
     }
 
+    // 스탯 초기화
     public void Init()
     {
         if (mainWeapon != null && subWeapon != null)
@@ -150,28 +157,34 @@ public class WeaponStats
             if (type == WeaponType.Main)
             {
                 // 명중률
-                AccurRate_base = mainWeapon.accur_Rate_Base;
+                AccurRate_base = mainWeapon.accurRateBase;
 
                 // 크뎀
-                CritDmg = mainWeapon.crit_Damage;
+                CritDmg = mainWeapon.critDamage;
 
                 // 탄알
                 MainWeaponBullet = mainWeapon.bullet;
 
+                // 홍수진_스탯삭제
                 // 명중률 감소
-                AccurRate_dec = mainWeapon.accur_Rate_Dec;
-
+                //AccurRate_dec = mainWeapon.accur_Rate_Dec;
                 // 무게
-                Weight = mainWeapon.weight;
+                //Weight = mainWeapon.weight;
 
+                // 1 AP당 제공되는 MP
+                MpPerAp = mainWeapon.mpPerAp;
+
+                // 홍수진_스탯수정
                 // 소모AP
-                FirstShotAp = mainWeapon.firstShot_Ap;
-                AlertShotAp = mainWeapon.alertShot_Ap;
-                AimShotAp = mainWeapon.aimShot_Ap;
-                LoadAp = mainWeapon.load_Ap;
+                FirstShotAp = mainWeapon.firstShotAp;
+                OtherShotAp = mainWeapon.otherShotAp;
+                //AlertShotAp = mainWeapon.otherShotAp;
+                LoadAp = mainWeapon.loadAp;
 
+                // 홍수진_스탯수정
                 // 범위
-                Range = mainWeapon.range;
+                MinRange = mainWeapon.minRange;
+                MaxRange = mainWeapon.maxRange;
                 OverRange_Penalty = mainWeapon.overRange_Penalty;
                 UnderRange_Penalty = mainWeapon.underRange_Penalty;
             }
@@ -179,32 +192,27 @@ public class WeaponStats
             else if (type == WeaponType.Sub)
             {
                 // 명중률
-                AccurRate_base = subWeapon.accur_Rate_Base;
-
-                // 데미지
-                //var damage = Random.Range(subWeapon.min_damage, subWeapon.max_damage + 1);
-                //this.damage = damage;
+                AccurRate_base = subWeapon.accurRateBase;
 
                 // 크뎀
-                CritDmg = subWeapon.crit_Damage;
+                CritDmg = subWeapon.critDamage;
 
                 // 탄알
                 SubWeaponBullet = subWeapon.bullet;
 
-                // 명중률 감소
-                AccurRate_dec = subWeapon.accur_Rate_Dec;
+                // 1 AP당 제공되는 MP
+                MpPerAp = subWeapon.mpPerAp;
 
-                // 무게
-                Weight = subWeapon.weight;
-
+                // 홍수진_스탯수정
                 // 소모AP
-                FirstShotAp = subWeapon.firstShot_Ap;
-                AlertShotAp = subWeapon.alertShot_Ap;
-                AimShotAp = subWeapon.aimShot_Ap;
-                LoadAp = subWeapon.load_Ap;
+                FirstShotAp = subWeapon.firstShotAp;
+                OtherShotAp = subWeapon.otherShotAp;
+                LoadAp = subWeapon.loadAp;
 
+                // 홍수진_스탯수정
                 // 범위
-                Range = subWeapon.range;
+                MinRange = subWeapon.minRange;
+                MaxRange = subWeapon.maxRange;
                 OverRange_Penalty = subWeapon.overRange_Penalty;
                 UnderRange_Penalty = subWeapon.underRange_Penalty;
             }
@@ -235,18 +243,40 @@ public class WeaponStats
         return result;
     }
 
+
+    // 홍수진
+    // 여기 스탯 수정 됐어요 !!!!!!!!!!!!!!!!!!!!!!!!! -> 수정된 친구들 주석처리 함
+    // \    /\
+    //  )  ( ')
+    // (  /  )
+    //  \(__)|
+    // =================
+    // 고양이
     public bool CheckAlertAccuracy(int accuracy)
     {
-        var totalAccuracy = CalCulateAccuracy(accuracy, (int)(AccurRate_alert - (AccurRate_dec * fireCount)));
+        var totalAccuracy = CalCulateAccuracy(accuracy, (int)(AccurRate_alert - (/*AccurRate_dec **/ fireCount)));
         var result = Random.Range(0, 100) < totalAccuracy;
         fireCount++;
         return result;
     }
 
+    // 홍수진
+    // 여기 스탯 수정 됐어요 !!!!!!!!!!!!!!!!!!!!!!!!! -> 좀 다르게 수정
+    // \    /\
+    //  )  ( ')
+    // (  /  )
+    //  \(__)|
+    // =================
+    // 고양이
+    // 원래 최소, 최대 사거리가 없고 무기 기본 사거리만 하나 존재하고 있었는데
+    // 새로 최소, 최대 사거리가 생겼어요
+    // 근데 전투 시스템에 어떻게 적용되는지 잘 모르겠어서 걍 주석 처리할라니까 밑에 다 오류 뜰까봐
+    // 임시로 swith문 부분을 Range -> MaxRange로 바꿔놨음 니다
     public int CalCulateAccuracy(int accuracy, int accurRate)
     {
         var totalAccuracy = 0;
-        switch (Range)
+        //switch (Range)
+        switch (MaxRange)
         {
             case 1: // 근거리
                 if (0 < accuracy && accuracy < 5)
@@ -283,6 +313,15 @@ public class WeaponStats
         return totalAccuracy;
     }
 
+
+    // 홍수진
+    // 여기 스탯 수정 됐어요 !!!!!!!!!!!!!!!!!!!!!!!!! -> 수정된 친구들 주석처리 함
+    // \    /\
+    //  )  ( ')
+    // (  /  )
+    //  \(__)|
+    // =================
+    // 고양이
     public bool CheckAvailShot(int AP, PlayerState state)
     {
         var result = false;
@@ -297,11 +336,11 @@ public class WeaponStats
             switch (state)
             {
                 case PlayerState.Attack:
-                    if ((AP - AimShotAp) >= 0)
+                    //if ((AP - AimShotAp) >= 0)
                         result = true;
                     break;
                 case PlayerState.Alert:
-                    if ((AP - AlertShotAp) >= 0)
+                    //if ((AP - AlertShotAp) >= 0)
                         result = true;
                     break;
             }
@@ -309,6 +348,14 @@ public class WeaponStats
         return result;
     }
 
+    // 홍수진
+    // 여기 스탯 수정 됐어요 !!!!!!!!!!!!!!!!!!!!!!!!! -> 수정된 친구들 주석처리 함
+    // \    /\
+    //  )  ( ')
+    // (  /  )
+    //  \(__)|
+    // =================
+    // 고양이
     public int GetWeaponAP(PlayerState state)
     {
         var result = 0;
@@ -319,10 +366,10 @@ public class WeaponStats
             switch (state)
             {
                 case PlayerState.Attack:
-                    result = AimShotAp;
+                    //result = AimShotAp;
                     break;
                 case PlayerState.Alert:
-                    result = AlertShotAp;
+                    //result = AlertShotAp;
                     break;
             }
         }

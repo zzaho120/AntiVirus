@@ -49,7 +49,7 @@ public class VirusSO
                     virus.crit_Dmg     = int.Parse(splitData[9]);
 
                     virus.exp          = int.Parse(splitData[10]);
-                    virus.virusCharge = int.Parse(splitData[11]);
+                    virus.virusGauge  = int.Parse(splitData[11]);
 
                     AssetDatabase.CreateAsset(virus, $"Assets//Resources/Choi/Datas/Viruses/{virus.name}.asset");
                     virusNum++;

@@ -59,7 +59,7 @@ public class Chase_PatrolState : StateBase
 
     public override void Update()
     {
-        if (Vector3.Distance(player.position, agent.transform.position) <= distance)
+        if (Vector3.Distance(player.position, fsm.transform.position) <= distance)
         {
             fsm.ChangeState(STATE.Chase);
         }

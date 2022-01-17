@@ -10,6 +10,7 @@ public class CreateMonsterAreas : MonoBehaviour
     public GameObject monsterAreaPrefab;
     private MonsterPool poolInfo;
     private int monsterAreaCount;
+    private float posY = 10f;   // y좌표 설정
 
     public void Init()
     {
@@ -44,7 +45,7 @@ public class CreateMonsterAreas : MonoBehaviour
                     //randX = Random.Range(10, 20);
                     randX = Random.Range(40, 80);
                     var pos = Random.onUnitSphere * randX + randLaboratoryPos;
-                    position = new Vector3(pos.x, 0, pos.z);
+                    position = new Vector3(pos.x, posY, pos.z);
                     randScale = Random.Range(6, 10);
 
                     //if (randomIndex == 0)
@@ -93,7 +94,7 @@ public class CreateMonsterAreas : MonoBehaviour
                 str = $"MonsterAreaZ{j}";
                 var randZ = PlayerPrefs.GetFloat(str);
 
-                var go = Instantiate(monsterAreaPrefab, new Vector3(randX, 0, randZ), Quaternion.identity);
+                var go = Instantiate(monsterAreaPrefab, new Vector3(randX, posY, randZ), Quaternion.identity);
                 go.transform.SetParent(GameObject.Find("MonsterArea").transform);   // 부모오브젝트 설정
                 str = $"MonsterAreaScale{j}";
                 var randScale = PlayerPrefs.GetInt(str);

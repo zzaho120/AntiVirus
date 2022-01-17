@@ -19,33 +19,40 @@ MonoBehaviour:
   name: Healer
   type: "\uBCF4\uC870"
   description: "\uCE58\uB8CC & \uBCF4\uAE09"
-  min_Hp: 70
-  max_Hp: 90
-  min_Hp_Rise: 2
-  max_Hp_Rise: 8
+  minHp: 80
+  maxHp: 90
+  hpChance: 40
+  hpRise: 10
   weight: 80
-  weight_Rise: 10
-  min_Sensitivity: 1
-  max_Sensitivity: 4
-  min_Sen_Rise: 1
-  max_Sen_Rise: 4
-  min_Avoid_Rate: 30
-  max_Avoid_Rate: 40
-  min_Concentration: 1
-  max_Concentration: 2
-  min_Con_Rise: 1
-  max_Con_Rise: 4
-  min_Willpower: 1
-  max_Willpower: 2
-  min_Will_Rise: 1
-  max_Will_Rise: 3
-  min_Crit_Rate: 10
-  max_Crit_Rate: 15
-  min_Char_Cost: 250
-  max_Char_Cost: 350
+  weight_Rise: 20
+  mpPenalty1: -1
+  mpPenalty2: -2
+  mpPenalty3: -3
+  minSensitivity: 1
+  maxSensitivity: 4
+  senChance: 40
+  senRise: 2
+  minAvoidRate: 30
+  maxAvoidRate: 40
+  avoidRateRisePerSen: 2
+  minConcentration: 1
+  maxConcentration: 2
+  concentrationChance: 10
+  concentrationRise: 2
+  accurRatePerCon: 1
+  minWillpower: 1
+  maxWillpower: 2
+  willChance: 10
+  willRise: 2
+  alertAccurRateRise: 2
+  critRateRise: 2
+  critResistRateRise: 1
+  minCharCost: 250
+  maxCharCost: 350
   exp: 100
-  resistance: 100
-  virusDec: 40
+  resistGauge: 100
+  virusDec_Lev0: 10
+  virusDec_Lev1: 40
   weapons:
   - 1
   - 2

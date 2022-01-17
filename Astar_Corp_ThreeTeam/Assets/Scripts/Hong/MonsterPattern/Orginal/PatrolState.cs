@@ -7,24 +7,19 @@ public class PatrolState : StateBase
 {
     private float startTime;
     private float moveRange = 5f;  // 이동 범위 설정
+    private float speed = 0.5f;
 
-    private Vector3 targetPos;
-    private Vector3 startPos;
-
-    private Transform player;
+    private Vector3 startPos, targetPos;
     private NavMeshAgent agent;
 
-    //public PatrolState(FSM fsm)
-    public PatrolState(PatrolFSM fsm)
+    public PatrolState(FSM fsm)
     {
         this.fsm = fsm;
 
         if (this.fsm != null)
         {
-            agent = fsm.GetComponent<NavMeshAgent>();
+            //agent = fsm.GetComponent<NavMeshAgent>();
             startPos = fsm.transform.position;  // 시작 위치 저장
-
-            player = GameObject.FindWithTag("Player").transform;
         }
     }
 
@@ -49,21 +44,23 @@ public class PatrolState : StateBase
         }
 
         // 내비메쉬 이동
-        agent.SetDestination(targetPos);
+        //agent.SetDestination(targetPos);
     }
 
     public override void Exit()
     {
-
+       // agent.SetDestination(startPos);
     }
 
     public override void Update()
     {
-        var randTime = Random.Range(0f, 5f);
+        var randTime = Random.Range(0f, 2f);
 
-        if (Time.time > startTime + randTime)
+        if (Time.time > startTime + 2f)
         {
             fsm.ChangeState(STATE.Idle);
+            //Debug.Log("Change State to Idle");
         }
     }
+
 }

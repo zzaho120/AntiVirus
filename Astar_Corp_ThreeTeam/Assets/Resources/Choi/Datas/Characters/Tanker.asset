@@ -19,35 +19,43 @@ MonoBehaviour:
   name: Tanker
   type: "\uB3CC\uACA9\uBCD1"
   description: " AR & \uC0F7\uAC74"
-  min_Hp: 100
-  max_Hp: 120
-  min_Hp_Rise: 10
-  max_Hp_Rise: 15
-  weight: 150
+  minHp: 100
+  maxHp: 120
+  hpChance: 40
+  hpRise: 10
+  weight: 70
   weight_Rise: 20
-  min_Sensitivity: 1
-  max_Sensitivity: 3
-  min_Sen_Rise: 1
-  max_Sen_Rise: 2
-  min_Avoid_Rate: 25
-  max_Avoid_Rate: 35
-  min_Concentration: 1
-  max_Concentration: 3
-  min_Con_Rise: 1
-  max_Con_Rise: 3
-  min_Willpower: 1
-  max_Willpower: 4
-  min_Will_Rise: 1
-  max_Will_Rise: 4
-  min_Crit_Rate: 15
-  max_Crit_Rate: 20
-  min_Char_Cost: 100
-  max_Char_Cost: 300
+  mpPenalty1: -1
+  mpPenalty2: -2
+  mpPenalty3: -3
+  minSensitivity: 1
+  maxSensitivity: 2
+  senChance: 10
+  senRise: 2
+  minAvoidRate: 20
+  maxAvoidRate: 25
+  avoidRateRisePerSen: 2
+  minConcentration: 1
+  maxConcentration: 2
+  concentrationChance: 10
+  concentrationRise: 2
+  accurRatePerCon: 1
+  minWillpower: 1
+  maxWillpower: 4
+  willChance: 40
+  willRise: 2
+  alertAccurRateRise: 2
+  critRateRise: 2
+  critResistRateRise: 1
+  minCharCost: 100
+  maxCharCost: 300
   exp: 100
-  resistance: 100
-  virusDec: 40
+  resistGauge: 100
+  virusDec_Lev0: 10
+  virusDec_Lev1: 40
   weapons:
   - 1
   - 2
+  - 3
   - 4
   - 7

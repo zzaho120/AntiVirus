@@ -40,7 +40,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                                                                                                
     private void Start()
     {
-        PlayerPrefs.DeleteAll();
+        //PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
@@ -181,7 +181,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     stat.saveId = i;
                     stat.VirusPanaltyInit();
                     stat.currentHp = saveData.hp[i];
-                    stat.maxHp = saveData.maxHp[i];
+                    stat.MaxHp = saveData.maxHp[i];
                     stat.sensivity = saveData.sensitivity[i];
                     stat.concentration = saveData.concentration[i];
                     stat.willpower = saveData.willPower[i];
@@ -241,7 +241,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             stat.saveId = i;
             stat.VirusPanaltyInit();
             stat.currentHp = saveData.hp[i];
-            stat.maxHp = saveData.maxHp[i];
+            stat.MaxHp = saveData.maxHp[i];
             stat.sensivity = saveData.sensitivity[i];
             stat.concentration = saveData.concentration[i];
             stat.willpower = saveData.willPower[i];
@@ -295,7 +295,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.id.Add(stat.character.id);
             saveData.name.Add(stat.character.name);
             saveData.hp.Add(stat.currentHp);
-            saveData.maxHp.Add(stat.maxHp);
+            saveData.maxHp.Add(stat.MaxHp);
             saveData.sensitivity.Add(stat.sensivity);
             saveData.concentration.Add(stat.concentration);
             saveData.willPower.Add(stat.willpower);

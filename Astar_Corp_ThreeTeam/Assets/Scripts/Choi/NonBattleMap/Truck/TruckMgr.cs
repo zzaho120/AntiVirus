@@ -25,6 +25,13 @@ public class TruckMgr : MonoBehaviour
     public GameObject equipTruckItem;
     public GameObject consumTruckItem;
 
+    [Header("Character Inventory")]
+    public GameObject SquadItemPrefab;
+    public GameObject char1Inventory;
+    public GameObject char2Inventory;
+    public GameObject char3Inventory;
+    public GameObject char4Inventory;
+
     PlayerDataMgr playerDataMgr;
     
     void Start()
@@ -82,6 +89,7 @@ public class TruckMgr : MonoBehaviour
         TruckWin.SetActive(false);
     }
 
+    // 전투 씬에 데려갈 캐릭터 선택
     void SelectBattleCharacter(int num)
     {
         //비어있을 때.
@@ -116,6 +124,7 @@ public class TruckMgr : MonoBehaviour
 
     private bool isItemInit;
 
+    // 트럭UI 세팅 (초기화)
     public void TruckUISetting()
     {
         // BattleSquad Setting
@@ -131,7 +140,7 @@ public class TruckMgr : MonoBehaviour
 
         if (!isItemInit)
         {
-            Debug.Log("Init Items");
+            //Debug.Log("Init Items");
 
             // 트럭 장비템 출력
             foreach (var element in playerDataMgr.truckEquippables)
@@ -162,29 +171,57 @@ public class TruckMgr : MonoBehaviour
     // 트럭 아이템 카테고리 선택 (장비 vs 소비)
     public void SelectItemType(int value)
     {
-        var conImg = consumTruckItem.GetComponent<Image>();
-        var wepImg = equipTruckItem.GetComponent<Image>();
+        equipTruckItem.SetActive(true);
 
         if (value == 0)
         {
-            if (conImg.enabled)
-                conImg.enabled = false;
+            if (consumTruckItem.activeInHierarchy)
+                consumTruckItem.SetActive(false);
 
-            wepImg.enabled = true;
+            equipTruckItem.SetActive(true);
         }
         else if (value == 1)
         {
-            //if (wepImg.enabled)
-            //    wepImg.enabled = false;
+            if (equipTruckItem.activeInHierarchy)
+                equipTruckItem.SetActive(false);
 
-            conImg.enabled = true;
+            consumTruckItem.SetActive(true);
         }
     }
 
+    private bool isFull;
+
+    // 개별 인벤토리 출력
     private void SelectCharInventory(int key)
     {
         // 임시로
         var charName = GameObject.Find("Char Name").GetComponent<TextMeshProUGUI>();
         charName.text = playerDataMgr.battleSquad[key].character.name;
+
+        foreach (var element in playerDataMgr.battleSquad[key].bag)
+        {
+            if (playerDataMgr.equippableList.ContainsKey(element.Key))
+            {
+                //Debug.Log("Contains : " + playerDataMgr.equippableList[element.Key].name);
+
+                var go = Instantiate(SquadItemPrefab, char1Inventory.transform);
+                go.AddComponent<Button>();
+
+                var goName = go.GetComponentInChildren<Text>();
+                if (goName != null)
+                    goName.text = playerDataMgr.equippableList[element.Key].name;
+            }
+            if (playerDataMgr.consumableList.ContainsKey(element.Key))
+            {
+                var go = Instantiate(SquadItemPrefab, char1Inventory.transform);
+                go.AddComponent<Button>();
+
+                var goName = go.GetComponentInChildren<Text>();
+                if (goName != null)
+                    goName.text = playerDataMgr.consumableList[element.Key].name;
+            }
+
+            isFull = true;
+        }
     }
 }

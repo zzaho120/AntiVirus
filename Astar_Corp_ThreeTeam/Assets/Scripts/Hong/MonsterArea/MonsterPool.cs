@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MonsterPool : PoolManager
 {
@@ -54,7 +55,7 @@ public class MonsterPool : PoolManager
         var randY = Random.Range(-3f, 3f);
 
         var ps = pools[poolNum].Pool.Get();
-        ps.transform.position = testZone[poolNum + 1].position + new Vector3(randX, ps.transform.position.y, randY);
+        ps.transform.position = testZone[poolNum + 1].position + new Vector3(randX, testZone[poolNum + 1].position.y + 0.5f, randY);
 
         //int randNum = Random.Range(0, 9);
         //int randPool = Random.Range(0, pools.Length);

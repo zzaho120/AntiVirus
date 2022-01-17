@@ -7,25 +7,25 @@ public class VirusData : MonoBehaviour
     public bool None;
     public Dictionary<string, int> currentVirus = new Dictionary<string, int>();
 
-    public bool B1;
-    public bool B2;
-    public bool B3;
+    [HideInInspector] public bool B1;
+    [HideInInspector] public bool B2;
+    [HideInInspector] public bool B3;
 
-    public bool E1;
-    public bool E2;
-    public bool E3;
+    [HideInInspector] public bool E1;
+    [HideInInspector] public bool E2;
+    [HideInInspector] public bool E3;
 
-    public bool I1;
-    public bool I2;
-    public bool I3;
+    [HideInInspector] public bool I1;
+    [HideInInspector] public bool I2;
+    [HideInInspector] public bool I3;
 
-    public bool P1;
-    public bool P2;
-    public bool P3;
+    [HideInInspector] public bool P1;
+    [HideInInspector] public bool P2;
+    [HideInInspector] public bool P3;
 
-    public bool T1;
-    public bool T2;
-    public bool T3;
+    [HideInInspector] public bool T1;
+    [HideInInspector] public bool T2;
+    [HideInInspector] public bool T3;
 
     private void Start()
     {

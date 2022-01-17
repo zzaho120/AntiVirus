@@ -193,13 +193,13 @@ public class PlayerController : MonoBehaviour
                     //연구소 팝업창
                     popUpMgr.OpenLaboratoryPopup();
                 }
-                //else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
-                //   raycastHit.collider.gameObject.name.Equals("Plane") ||
-                //        raycastHit.collider.gameObject.CompareTag("Road"))
-                //{
-                //    //nav.targetPos = raycastHit.point;
-                //    agent.SetDestination(raycastHit.point);
-                //}
+            //    else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
+            //       raycastHit.collider.gameObject.name.Equals("Plane") ||
+            //            raycastHit.collider.gameObject.CompareTag("Road"))
+            //    {
+            //        //nav.targetPos = raycastHit.point;
+            //        agent.SetDestination(raycastHit.point);
+            //    }
             }
             //else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
             //{

@@ -21,5 +21,5 @@ public class Virus : ScriptableObject
 	public int crit_Dmg;		// 레벨당 크뎀
 
 	public int exp;				// 레벨당 캐릭터 경험치량
-	public int virusCharge;		// 바이러스 게이지 증가량
+	public int virusGauge;		// 바이러스 게이지 증가량
 }

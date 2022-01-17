@@ -12,25 +12,22 @@ public class Weapon : ScriptableObject
     public string kind;
     public new string name;
 
-    public int accur_Rate_Base;     // 기본 명중률
+    public int accurRateBase;       // 기본 명중률
 
-    public int min_damage;          // 최소 데미지
-    public int max_damage;          // 최대 데미지
-    public int crit_Damage;         // 크리티컬 데미지 (데미지 * 계수)%
+    public int minDamage;           // 최소 데미지
+    public int maxDamage;           // 최대 데미지
+    public int critRate;            // 크리티컬 확률
+    public int critDamage;          // 크리티컬 데미지 (데미지 * 계수)%
 
     public int bullet;              // 탄창 클립수
-    public int accur_Rate_Dec;      // 명중률 감소
-    /// <summary>
-    /// Mp 소모량
-    /// </summary>
-    public int weight;              // 이동시 소모되는 MP 양
+    public int mpPerAp;             // 1 AP당 제공 MP
 
-    public int firstShot_Ap;        // 새로운 경계, 조준 사격 시 소모 AP
-    public int alertShot_Ap;        // 경계 시 첫 사격 이후 소모되는 AP
-    public int aimShot_Ap;          // 조준사격 시 첫 사격 이후 소모되는 AP
-    public int load_Ap;             // 장전 시 소모되는 AP
+    public int firstShotAp;         // 사격 첫발 시 소모 AP
+    public int otherShotAp;         // 첫발 이후 소모되는 AP
+    public int loadAp;              // 장전 시 소모되는 AP
 
-    public int range;               // 사거리
+    public int minRange;            // 최소 사거리
+    public int maxRange;            // 최대 사거리
     public int overRange_Penalty;   // 사거리 +n타일에 따른 명중률 감소
     public int underRange_Penalty;  // 사거리 -n타일에 따른 명중률 감소
 

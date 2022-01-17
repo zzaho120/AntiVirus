@@ -200,7 +200,7 @@ public class PlayerableChar : BattleTile
 
     private void CheckMoveRange(TileBase tile, int cnt)
     {
-        var moveAP = (int)((cnt + 1.5 - characterStats.weapon.Weight) / 1.5f);
+        var moveAP = (int)((cnt + 1.5 - characterStats.weapon.MpPerAp) / 1.5f);
         if (moveAP > AP)
             return;
 

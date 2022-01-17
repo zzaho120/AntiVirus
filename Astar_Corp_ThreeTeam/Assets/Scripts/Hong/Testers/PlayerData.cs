@@ -38,10 +38,10 @@ public class PlayerData : MonoBehaviour
         {
             characterStats.level += 1;
 
-            int HpIncrease = Random.Range(characterStats.character.max_Avoid_Rate, characterStats.character.min_Concentration + 1);
+            int HpIncrease = Random.Range(characterStats.character.maxAvoidRate, characterStats.character.minConcentration + 1);
             //Debug.Log("Hp »ó½Â·® : " + HpIncrease);
             
-            characterStats.maxHp += HpIncrease;
+            characterStats.MaxHp += HpIncrease;
             //characterStats.willpower += characterStats.character.min_Con_Rise;
             //characterStats.stamina += characterStats.character.max_Concentration;
         }

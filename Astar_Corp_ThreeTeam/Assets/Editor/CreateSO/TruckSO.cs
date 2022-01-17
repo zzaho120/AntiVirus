@@ -34,24 +34,24 @@ public class TruckSO
                     string[] splitData = line.Split(',');
 
                     Truck truck = ScriptableObject.CreateInstance<Truck>();
-                    truck.id = splitData[0];
-                    truck.name = splitData[1];
+                    truck.id            = splitData[0];
+                    truck.name          = splitData[1];
 
-                    truck.capacity = int.Parse(splitData[2]);
+                    truck.capacity      = int.Parse(splitData[2]);
 
-                    truck.speed = int.Parse(splitData[3]);
-                    truck.speed_Rise = int.Parse(splitData[4]);
-                    truck.speedUp_Cost = int.Parse(splitData[5]);
+                    truck.speed         = int.Parse(splitData[3]);
+                    truck.speed_Rise    = int.Parse(splitData[4]);
+                    truck.speedUp_Cost  = int.Parse(splitData[5]);
 
-                    truck.sight = int.Parse(splitData[6]);
-                    truck.sight_Rise = int.Parse(splitData[7]);
-                    truck.sightUp_Cost = int.Parse(splitData[8]);
+                    truck.sight         = int.Parse(splitData[6]);
+                    truck.sight_Rise    = int.Parse(splitData[7]);
+                    truck.sightUp_Cost  = int.Parse(splitData[8]);
 
-                    truck.trunk = int.Parse(splitData[9]);
-                    truck.trunk_Rise = int.Parse(splitData[10]);
-                    truck.trunkUp_Cost = int.Parse(splitData[11]);
+                    truck.trunk         = int.Parse(splitData[9]);
+                    truck.trunk_Rise    = int.Parse(splitData[10]);
+                    truck.trunkUp_Cost  = int.Parse(splitData[11]);
                     
-                    truck.price = int.Parse(splitData[12]);
+                    truck.price         = int.Parse(splitData[12]);
 
                     AssetDatabase.CreateAsset(truck, $"Assets//Resources/Choi/Datas/Trucks/{truck.name}.asset");
                     truckNum++;

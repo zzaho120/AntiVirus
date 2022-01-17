@@ -47,8 +47,7 @@ public class LaboratoryInfo : MonoBehaviour
     {
         if (playerDataMgr == null)
         {
-            var playerDataMgrObj = GameObject.FindGameObjectWithTag("PlayerDataMgr");
-            playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
+            playerDataMgr = PlayerDataMgr.Instance;
         }
 
         if (other.gameObject.CompareTag("Player") && player != null)
