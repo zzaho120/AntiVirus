@@ -5,7 +5,8 @@ using UnityEngine;
 public class ActiveSkill : ScriptableObject
 {
     public string id;
-    public string name;
-    public int damage;
-    //public int range;
+    public string ownerId;
+    public new string name;
+    public string level;
+    public int type;
 }

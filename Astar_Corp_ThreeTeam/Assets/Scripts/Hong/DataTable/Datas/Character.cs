@@ -73,4 +73,7 @@ public class Character : ScriptableObject
 
 	// 사용가능 무기
 	public List<string> weapons = new List<string>();
+	public List<string> skillA = new List<string>();
+	public List<string> skillB = new List<string>();
+	public List<string> skillC = new List<string>();
 }

@@ -20,10 +20,10 @@ public class Truck : ScriptableObject
 	public int sight_Rise;
 	public int sightUp_Cost;
 
-	// 트렁크
-	public int trunk;
-	public int trunk_Rise;
-	public int trunkUp_Cost;
+	// 트렁크(트럭 인벤토리) 무게
+	public int weight;
+	public int weight_Rise;
+	public int weightUp_Cost;
 
 	// 가격
 	public int price;

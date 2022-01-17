@@ -34,9 +34,11 @@ public class ActiveSkillSO
                     string[] splitData = line.Split(',');
 
                     ActiveSkill activeSkill = ScriptableObject.CreateInstance<ActiveSkill>();
-                    activeSkill.id      = splitData[0];
-                    activeSkill.name    = splitData[1];
-                    activeSkill.damage  = int.Parse(splitData[2]);
+                    activeSkill.id          = splitData[0];
+                    activeSkill.ownerId     = splitData[1];
+                    activeSkill.name        = splitData[2];
+                    activeSkill.level       = splitData[3];
+                    activeSkill.type        = int.Parse(splitData[4]);
 
                     AssetDatabase.CreateAsset(activeSkill, $"Assets//Resources/Choi/Datas/Skills/ActiveSkills/{activeSkill.name}.asset");
                     activeSkillNum++;

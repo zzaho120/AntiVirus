@@ -90,12 +90,27 @@ public class CharacterSO
 
 
                     // 무기 리스트
-                    // 디버프 리스트
                     string[] weapon = splitData[41].Split('*');
                     for (int i = 0; i < weapon.Length; i++)
                     {
-                        //Debug.Log(debuff[i]);
                         character.weapons.Add(weapon[i]);
+                    }
+
+                    // 스킬 리스트
+                    string[] skillA = splitData[42].Split('*');
+                    for (int i = 0; i < skillA.Length; i++)
+                    {
+                        character.skillA.Add(skillA[i]);
+                    }
+                    string[] skillB = splitData[43].Split('*');
+                    for (int i = 0; i < skillB.Length; i++)
+                    {
+                        character.skillB.Add(skillB[i]);
+                    }
+                    string[] skillC = splitData[44].Split('*');
+                    for (int i = 0; i < skillC.Length; i++)
+                    {
+                        character.skillC.Add(skillC[i]);
                     }
 
                     AssetDatabase.CreateAsset(character, $"Assets//Resources/Choi/Datas/Characters/{character.name}.asset");

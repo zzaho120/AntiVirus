@@ -47,9 +47,9 @@ public class TruckSO
                     truck.sight_Rise    = int.Parse(splitData[7]);
                     truck.sightUp_Cost  = int.Parse(splitData[8]);
 
-                    truck.trunk         = int.Parse(splitData[9]);
-                    truck.trunk_Rise    = int.Parse(splitData[10]);
-                    truck.trunkUp_Cost  = int.Parse(splitData[11]);
+                    truck.weight         = int.Parse(splitData[9]);
+                    truck.weight_Rise    = int.Parse(splitData[10]);
+                    truck.weightUp_Cost  = int.Parse(splitData[11]);
                     
                     truck.price         = int.Parse(splitData[12]);
 
