@@ -8,6 +8,7 @@ public class SightTileBase
 {
     public TileBase tileBase;
     public bool isInSight;
+    public bool isMonsterSight;
     public SightTileBase(TileBase tileBase)
     {
         this.tileBase = tileBase;
@@ -22,6 +23,7 @@ public class SightTileBase
     public void Init()
     {
         isInSight = false;
+        isMonsterSight = false;
         tileBase.EnableDisplay(isInSight);
     }
 }
@@ -42,6 +44,9 @@ public class SightMgr : MonoBehaviour
 
     public List<Dictionary<Vector2, List<SightTileBase>>> calculateSightDics =
         new List<Dictionary<Vector2, List<SightTileBase>>>();
+
+    public List<List<SightTileBase>> monsterSightList =
+        new List<List<SightTileBase>>();
 
     private List<PlayerableChar> playerableChars;
 

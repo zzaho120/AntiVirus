@@ -6,11 +6,8 @@ public class MonsterChar : BattleTile
 {
     [Header("Character")]
     public MonsterStats monsterStats;
-    public int moveDistance;
-    public int recognition;
-    public PlayerableChar target;
     public BattleMonsterFSM fsm;
-    public MeshRenderer ren;
+    public bool turnState;
 
     public override void Init()
     {
@@ -19,7 +16,11 @@ public class MonsterChar : BattleTile
         monsterStats.Init();
         fsm = new BattleMonsterFSM();
         fsm.Init(this);
-        ren = GetComponent<MeshRenderer>();
+    }
+
+    public void StartTurn()
+    {
+        monsterStats.StartTurn();
     }
 
     public void GetDamage(int dmg)
@@ -40,6 +41,14 @@ public class MonsterChar : BattleTile
         fsm.Update();
     }
 
+    public void MoveRandomTile()
+    {
+        var Ap = monsterStats.currentAp;
+        var Mp = Ap * (3 + monsterStats.Mp);
+        var moveTilePoint = Mp / 2;
+        Debug.Log(moveTilePoint);
+    }
+
     public void MoveTile(Vector3 nextIdx)
     {
         foreach (var tile in currentTile.adjNodes)
@@ -51,7 +60,7 @@ public class MonsterChar : BattleTile
                 tileIdx = nextIdx;
                 currentTile = tile;
                 currentTile.charObj = gameObject;
-                transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 1, tile.tileIdx.z);
+                transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 0.5f, tile.tileIdx.z);
             }
         }
 

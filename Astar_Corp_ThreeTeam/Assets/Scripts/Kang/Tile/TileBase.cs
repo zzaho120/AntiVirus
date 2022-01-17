@@ -55,7 +55,9 @@ public class TileBase : MonoBehaviour
 
         if (charObj != null)
         {
-            charObj.GetComponent<MeshRenderer>().enabled = isEnabled;
+            var charRen = charObj.GetComponent<MeshRenderer>();
+            if (charRen != null)
+                charRen.enabled = isEnabled;
         }
         foreach (var hint in hintObj)
         {

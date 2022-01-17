@@ -5,12 +5,6 @@ using UnityEngine;
 public class BattleMoveState : StateBase
 {
     private MonsterChar monster;
-    private PlayerableChar target;
-    private Stack<AStarTile> pathList;
-    private float timer;
-    private Vector3 nextTile;
-    private bool isSetPath;
-    private bool inited;
 
     public BattleMoveState(MonsterChar monster, FSM fsm)
     {
@@ -20,9 +14,6 @@ public class BattleMoveState : StateBase
 
     public override void Enter()
     {
-        inited = false;
-        isSetPath = false;
-        target = monster.target;
     }
 
     public override void Exit()
@@ -31,43 +22,9 @@ public class BattleMoveState : StateBase
 
     public override void Update()
     {
-        if (!inited)
-        {
-            inited = true;
-            SetPath();
-        }
-
-        if (!isSetPath)
-        {
-            isSetPath = true;
-
-            if (pathList.Count > 0)
-                nextTile = pathList.Pop().tileBase.tileIdx;
-            if (target.tileIdx == nextTile)
-                fsm.ChangeState((int)BattleMonState.Attack);
-        }
-
-        if (target.tileIdx != nextTile)
-        {
-            if (timer < .5f)
-            {
-                timer += Time.deltaTime;
-
-                monster.MoveTile(nextTile);
-                BattleMgr.Instance.sightMgr.UpdateFog();
-            }
-            else
-            {
-                timer = 0;
-                isSetPath = false;
-            }
-        }
     }
 
     private void SetPath()
     {
-        var pathMgr = BattleMgr.Instance.pathMgr;
-        pathMgr.InitAStar(monster.tileIdx, target.currentTile.tileIdx);
-        pathList = pathMgr.pathList;
     }
 }
