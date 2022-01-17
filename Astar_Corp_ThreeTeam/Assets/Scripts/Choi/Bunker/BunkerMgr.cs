@@ -45,8 +45,9 @@ public class BunkerMgr : MonoBehaviour
     public GameObject carCenterPrefab;
     public GameObject hospitalPrefab;
     public GameObject garagePrefab;
+    public GameObject lockedPrefab;
     public List<GameObject> bunkerObjs;
-
+    
     int bunkerCount;
     public int currentBunkerIndex;
 
@@ -139,7 +140,6 @@ public class BunkerMgr : MonoBehaviour
             CloseWindow();
 
             selectedBunker = null;
-
 
             currentBunkerIndex = -1;
             currentBunkerKind = BunkerKinds.None;
@@ -296,27 +296,27 @@ public class BunkerMgr : MonoBehaviour
         {
             case 1:
                 currentBunkerKind = BunkerKinds.Agit;
-                go = Instantiate(agitPrefab, selectedBunker.transform.position, Quaternion.identity);
+                go = Instantiate(agitPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
             case 2:
                 currentBunkerKind = BunkerKinds.Pub;
-                go = Instantiate(pubPrefab, selectedBunker.transform.position, Quaternion.identity);
+                go = Instantiate(pubPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
             case 3:
                 currentBunkerKind = BunkerKinds.Store;
-                go = Instantiate(storePrefab, selectedBunker.transform.position, Quaternion.identity);
+                go = Instantiate(storePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
             case 4:
                 currentBunkerKind = BunkerKinds.CarCenter;
-                go = Instantiate(carCenterPrefab, selectedBunker.transform.position, Quaternion.identity);
+                go = Instantiate(carCenterPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
             case 5:
                 currentBunkerKind = BunkerKinds.Hospital;
-                go = Instantiate(hospitalPrefab, selectedBunker.transform.position, Quaternion.identity);
+                go = Instantiate(hospitalPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
             case 6:
                 currentBunkerKind = BunkerKinds.Garage;
-                go = Instantiate(garagePrefab, selectedBunker.transform.position, Quaternion.identity);
+                go = Instantiate(garagePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
         }
 
@@ -345,7 +345,7 @@ public class BunkerMgr : MonoBehaviour
         string str = $"BunkerKind{currentBunkerIndex}";
         PlayerPrefs.SetInt(str, (int)currentBunkerKind);
 
-        var go = Instantiate(emptyPrefab, selectedBunker.transform.position, Quaternion.identity);
+        var go = Instantiate(emptyPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
         var script = go.GetComponent<BunkerBase>();
         script.bunkerId = currentBunkerIndex;
 

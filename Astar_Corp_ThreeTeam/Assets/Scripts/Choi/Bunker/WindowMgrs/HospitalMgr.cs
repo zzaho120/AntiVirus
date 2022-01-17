@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class HospitalMgr : MonoBehaviour
 {
+    public GameObject hospitalWin;
     public GameObject characterListContent;
     public GameObject characterPrefab;
     public GameObject stateWin;
@@ -29,6 +30,8 @@ public class HospitalMgr : MonoBehaviour
 
     public void Init()
     {
+        //if (!hospitalWin.activeSelf) hospitalWin.SetActive(true);
+
         if (sliders.Count == 0) 
         {
             sliders.Add("E", eVirusSlider);

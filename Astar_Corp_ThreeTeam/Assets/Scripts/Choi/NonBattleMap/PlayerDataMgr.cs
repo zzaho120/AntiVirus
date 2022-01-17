@@ -192,6 +192,18 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     stat.weapon.mainWeapon = (saveData.mainWeapon[i] == null) ? null : equippableList[saveData.mainWeapon[i]];
                     stat.weapon.subWeapon = (saveData.subWeapon[i] == null) ? null : equippableList[saveData.subWeapon[i]];
 
+                    stat.virusPanalty["E"].penaltyLevel = saveData.levelE[i];
+                    stat.virusPanalty["B"].penaltyLevel = saveData.levelB[i];
+                    stat.virusPanalty["P"].penaltyLevel = saveData.levelP[i];
+                    stat.virusPanalty["I"].penaltyLevel = saveData.levelI[i];
+                    stat.virusPanalty["T"].penaltyLevel = saveData.levelT[i];
+
+                    stat.virusPanalty["E"].penaltyGauge = saveData.gaugeE[i];
+                    stat.virusPanalty["B"].penaltyGauge = saveData.gaugeB[i];
+                    stat.virusPanalty["P"].penaltyGauge = saveData.gaugeP[i];
+                    stat.virusPanalty["I"].penaltyGauge = saveData.gaugeI[i];
+                    stat.virusPanalty["T"].penaltyGauge = saveData.gaugeT[i];
+
                     List<string> activeSkill = new List<string>();
                     int activeSkillNum = activeSkillList.Count;
                     for (int j = 0; j < activeSkillNum; j++) { activeSkill.Add(saveData.activeSkillList[i * activeSkillNum + j]); }
