@@ -64,6 +64,16 @@ public class BoardingMgr : MonoBehaviour
             i++;
         }
 
+        foreach (var element in playerDataMgr.boardingSquad)
+        {
+            currentSeatNum = element.Key;
+            currentIndex = element.Value;
+
+            var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
+            child.GetComponent<Text>().text = characterInfo[currentIndex].character.name.Substring(0, 3);
+            isBoarding[currentSeatNum] = currentIndex;
+        }
+
         currentIndex = -1;
         currentSeatNum = -1;
 
@@ -105,7 +115,11 @@ public class BoardingMgr : MonoBehaviour
         var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
         child.GetComponent<Text>().text = characterInfo[currentIndex].character.name.Substring(0,3);
         isBoarding[currentSeatNum] = currentIndex;
-        playerDataMgr.boardingSquad.Add(currentSeatNum, playerDataMgr.currentSquad[currentIndex]);
+        
+        playerDataMgr.boardingSquad.Add(currentSeatNum, currentIndex);
+
+        playerDataMgr.saveData.boarding[currentIndex] = currentSeatNum;
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
     }
 
     public void GetOffTheCar()
@@ -115,5 +129,10 @@ public class BoardingMgr : MonoBehaviour
         var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
         child.GetComponent<Text>().text = string.Empty;
         isBoarding[currentSeatNum] = -1;
+
+        playerDataMgr.boardingSquad.Remove(currentSeatNum);
+
+        playerDataMgr.saveData.boarding[currentIndex] = -1;
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
     }
 }

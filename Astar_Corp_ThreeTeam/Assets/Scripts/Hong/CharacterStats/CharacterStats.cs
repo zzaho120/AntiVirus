@@ -69,7 +69,9 @@ public class CharacterStats : MonoBehaviour
 
     //가방.
     public Dictionary<string, int> bag = new Dictionary<string, int>();
- 
+    public int bagLevel;
+    public int currentWeight;
+
     //json 위치.
     public int saveId;
 

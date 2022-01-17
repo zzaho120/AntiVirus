@@ -43,7 +43,7 @@ public class BunkerCamController : MonoBehaviour
         currentMode = Mode.None;
         isCurrentEmpty = true;
 
-        centerPos = new Vector3(3.5f, 1.06f, -7.81f);
+        centerPos = new Vector3(3.69f, 1.3f, 0f);
     }
 
     // Update is called once per frame

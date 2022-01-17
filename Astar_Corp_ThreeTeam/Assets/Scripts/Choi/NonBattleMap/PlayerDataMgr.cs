@@ -35,7 +35,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
     //캐릭터 데이터.
     public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();
-    public Dictionary<int, CharacterStats> boardingSquad = new Dictionary<int, CharacterStats>();//트럭에 있는 캐릭터들.
+    public Dictionary<int, int> boardingSquad = new Dictionary<int, int>();//트럭에 있는 캐릭터들.(좌석 번호/ 인덱스)
     public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.
                                                                                                
     private void Start()
@@ -56,6 +56,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         if (saveData.id == null)
         {
             saveData.id = new List<string>();
+            saveData.boarding = new List<int>();
             saveData.name = new List<string>();
             saveData.hp = new List<int>();
             saveData.maxHp = new List<int>();
@@ -233,6 +234,9 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     }
                     
                     currentSquad.Add(i, stat);
+
+                    if (saveData.boarding[i] != -1) boardingSquad.Add(saveData.boarding[i], i);
+
                 }
             }
         }
@@ -304,6 +308,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         //인원 추가.
         if (num > totalSquadNum - 1)
         {
+            saveData.boarding.Add(-1);
             saveData.id.Add(stat.character.id);
             saveData.name.Add(stat.character.name);
             saveData.hp.Add(stat.currentHp);

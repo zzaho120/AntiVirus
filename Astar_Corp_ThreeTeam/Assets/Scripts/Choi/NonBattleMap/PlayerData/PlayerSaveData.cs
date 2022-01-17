@@ -7,6 +7,7 @@ public class PlayerSaveData
     //저장할 데이터들.
     //캐릭터 관련.
     public List<string> id { get; set; }
+    public List<int> boarding { get; set; }
     public List<string> name { get; set; }
     public List<int> hp { get; set; }
     public List<int> maxHp { get; set; }
