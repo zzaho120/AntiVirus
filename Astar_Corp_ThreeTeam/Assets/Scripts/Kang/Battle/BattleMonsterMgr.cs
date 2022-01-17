@@ -67,20 +67,19 @@ public class BattleMonsterMgr : MonoBehaviour
     {
         foreach (var monster in monsters)
         {
-            monster.target = null;
+            //monster.target = null;
             foreach (var player in playerableChars)
             {
-                var dist = Vector3.Distance(monster.currentTile.tileIdx, player.currentTile.tileIdx);
 
-                if (monster.recognition > dist)
-                {
-                    monster.target = player;
-                    monster.ren.material.color = Color.cyan;
-                }
+                //if (monster.recognition > dist)
+                //{
+                //    monster.target = player;
+                //    monster.ren.material.color = Color.cyan;
+                //}
             }
 
-            if (monster.target == null)
-                monster.ren.material.color = Color.red;
+            //if (monster.target == null)
+            //    monster.ren.material.color = Color.red;
         }
     }
 

@@ -34,8 +34,11 @@ public class MonsterStats : MonoBehaviour
     public int virusLevel;
 
     private int maxHp { get => Hp; }
+
     [HideInInspector]
     public int currentHp;
+    [HideInInspector]
+    public int currentAp;
 
 
     private int Hp
@@ -218,5 +221,10 @@ public class MonsterStats : MonoBehaviour
     public void Init()
     {
         currentHp = maxHp;
+    }
+
+    public void StartTurn()
+    {
+        currentAp = Ap;
     }
 }

@@ -49,10 +49,7 @@ public class BattleMgr : MonoBehaviour
         // 아래 코드가 동작함
 
         var vectorList = new List<Vector3>();
-        vectorList.Add(new Vector3(7, 1, 8));
-        //vectorList.Add(new Vector3(6, 1, 8));
-        //vectorList.Add(new Vector3(7, 1, 7));
-        //vectorList.Add(new Vector3(6, 1, 7));
+        vectorList.Add(new Vector3(7, 0.5f, 8));
 
         var playerDataMgrObj = GameObject.FindWithTag("PlayerDataMgr");
         var isExistDataMgr = playerDataMgrObj != null;

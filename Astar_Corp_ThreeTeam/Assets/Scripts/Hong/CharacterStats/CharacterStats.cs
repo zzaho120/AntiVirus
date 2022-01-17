@@ -30,6 +30,7 @@ public class CharacterStats : MonoBehaviour
     public int MaxHp; // { get => Hp; set => Hp = value; }
     [HideInInspector]
     public int currentHp;
+
     // 1-1. ·¾¾÷ ½Ã ¼±ÅÃµÉ È®·ü
     public int HpChance;
 

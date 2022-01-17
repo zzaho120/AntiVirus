@@ -11,6 +11,7 @@ public enum PlayerState
     TurnEnd
 }
 
+[RequireComponent(typeof(CharacterStats))]
 public class PlayerableChar : BattleTile
 {
     [Header("Character")]
@@ -18,7 +19,7 @@ public class PlayerableChar : BattleTile
 
     [Header("Value")]
     public int AP;
-    public int sightDistance;
+    public int sightDistance = 3;
     public int audibleDistance = 4;
     public PlayerState status;
     public bool isSelected;
@@ -28,15 +29,13 @@ public class PlayerableChar : BattleTile
     private Dictionary<TileBase, int> moveDics =
         new Dictionary<TileBase, int>();
 
-    private MeshRenderer ren;
-
     [Header("Alert")]
     public List<MonsterChar> alertList;
 
     public override void Init()
     {
         base.Init();
-        ren = GetComponent<MeshRenderer>();
+        characterStats = GetComponent<CharacterStats>();
         characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
         characterStats.weapon.mainWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/AssaultRifle_01"));
         characterStats.weapon.subWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/FireAxe_01"));
@@ -72,7 +71,6 @@ public class PlayerableChar : BattleTile
                                     playerAction.curChar = this;
                                     playerAction.EnableReloadBtn();
 
-                                    ren.material.color = Color.green;
 
                                     CameraController.instance.SetFollowObject(transform);
                                 }
@@ -108,7 +106,6 @@ public class PlayerableChar : BattleTile
         status = PlayerState.Wait;
         isSelected = false;
         AP = 6;
-        ren.material.color = Color.white;
         alertList.Clear();
         characterStats.StartTurn();
     }
@@ -153,7 +150,7 @@ public class PlayerableChar : BattleTile
                 tileIdx = nextIdx;
                 currentTile = tile;
                 currentTile.charObj = gameObject;
-                transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 1, tile.tileIdx.z);
+                transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 0.5f, tile.tileIdx.z);
             }
         }
     }
@@ -171,7 +168,6 @@ public class PlayerableChar : BattleTile
         }
         else
         {
-            ren.material.color = Color.white;
             foreach (var pair in moveDics)
             {
                 var tile = pair.Key;
@@ -300,7 +296,6 @@ public class PlayerableChar : BattleTile
     {
         if (status != PlayerState.Alert)
             status = PlayerState.TurnEnd;
-        ren.material.color = Color.gray;
         CameraController.instance.SetFollowObject(null);
         EventBusMgr.Publish(EventType.EndPlayer);
     }
@@ -308,7 +303,6 @@ public class PlayerableChar : BattleTile
     public void WaitPlayer()
     {
         status = PlayerState.Wait;
-        ren.material.color = Color.white;
     }
 
     public void GetDamage(MonsterStats monsterStats)
@@ -372,7 +366,6 @@ public class PlayerableChar : BattleTile
         window.Close();
         window = BattleMgr.Instance.battleWindowMgr.GetWindow(2);
         window.Close();
-        ren.material.color = Color.white;
         isSelected = false;
         status = PlayerState.Wait;
         CameraController.instance.SetFollowObject(null);

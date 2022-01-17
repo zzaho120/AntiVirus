@@ -5,7 +5,6 @@ using UnityEngine;
 public class BattleAttackState : StateBase
 {
     public MonsterChar monster;
-    public PlayerableChar target;
 
     public BattleAttackState(MonsterChar monster, FSM fsm)
     {
@@ -14,7 +13,6 @@ public class BattleAttackState : StateBase
     }
     public override void Enter()
     {
-        target = monster.target;
     }
 
     public override void Exit()
@@ -23,14 +21,5 @@ public class BattleAttackState : StateBase
 
     public override void Update()
     {
-        Debug.Log(target);
-        if (target != null)
-        {
-            var stats = monster.monsterStats;
-            target.GetDamage(stats);
-            EventBusMgr.Publish(EventType.EndEnemy);
-        }
-        else
-            fsm.ChangeState((int)BattleMonState.Idle);
     }
 }
