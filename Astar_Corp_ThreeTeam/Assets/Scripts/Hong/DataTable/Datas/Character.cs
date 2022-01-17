@@ -73,4 +73,6 @@ public class Character : ScriptableObject
 
 	// 사용가능 무기
 	public List<string> weapons = new List<string>();
+
+
 }
