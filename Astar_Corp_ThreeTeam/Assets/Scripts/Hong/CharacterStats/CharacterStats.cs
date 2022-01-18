@@ -26,6 +26,7 @@ public class CharacterStats : MonoBehaviour
     // 스킬
     public CharacterSkillList skills;
 
+
     // 1. 기본 체력
     public int MaxHp; // { get => Hp; set => Hp = value; }
     [HideInInspector]

@@ -112,6 +112,11 @@ public class CharacterSO
                     {
                         character.skillC.Add(skillC[i]);
                     }
+                    string[] skillD = splitData[45].Split('*');
+                    for (int i = 0; i < skillD.Length; i++)
+                    {
+                        character.skillD.Add(skillD[i]);
+                    }
 
                     AssetDatabase.CreateAsset(character, $"Assets//Resources/Choi/Datas/Characters/{character.name}.asset");
                     characterNum++;

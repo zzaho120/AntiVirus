@@ -205,23 +205,24 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     stat.virusPanalty["I"].penaltyGauge = saveData.gaugeI[i];
                     stat.virusPanalty["T"].penaltyGauge = saveData.gaugeT[i];
 
-                    List<string> activeSkill = new List<string>();
-                    int activeSkillNum = activeSkillList.Count;
-                    for (int j = 0; j < activeSkillNum; j++) { activeSkill.Add(saveData.activeSkillList[i * activeSkillNum + j]); }
-                    foreach (var element in activeSkill)
-                    {
-                        if (element == null) continue;
-                        stat.skills.activeSkills.Add(activeSkillList[element]);
-                    }
-
-                    List<string> passiveSkill = new List<string>();
-                    int passiveSkillNum = passiveSkillList.Count;
-                    for (int j = 0; j < passiveSkillNum; j++) { passiveSkill.Add(saveData.passiveSkillList[i * passiveSkillNum + j]); }
-                    foreach (var element in passiveSkill)
-                    {
-                        if (element == null) continue;
-                        stat.skills.passiveSkills.Add(passiveSkillList[element]);
-                    }
+                    // 홍수진_캐릭터 스킬 수정 중이라 잠시 주석
+                    //List<string> activeSkill = new List<string>();
+                    //int activeSkillNum = activeSkillList.Count;
+                    //for (int j = 0; j < activeSkillNum; j++) { activeSkill.Add(saveData.activeSkillList[i * activeSkillNum + j]); }
+                    //foreach (var element in activeSkill)
+                    //{
+                    //    if (element == null) continue;
+                    //    stat.skills.activeSkills.Add(activeSkillList[element]);
+                    //}
+                    //
+                    //List<string> passiveSkill = new List<string>();
+                    //int passiveSkillNum = passiveSkillList.Count;
+                    //for (int j = 0; j < passiveSkillNum; j++) { passiveSkill.Add(saveData.passiveSkillList[i * passiveSkillNum + j]); }
+                    //foreach (var element in passiveSkill)
+                    //{
+                    //    if (element == null) continue;
+                    //    stat.skills.passiveSkills.Add(passiveSkillList[element]);
+                    //}
 
                     for (int j = saveData.bagEquippableFirstIndex[i]; j < saveData.bagEquippableLastIndex[i]; j++)
                     {
@@ -333,6 +334,8 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.mainWeapon.Add(mainWeaponStr);
             string subWeaponStr = (stat.weapon.subWeapon != null) ? stat.weapon.subWeapon.id : null;
             saveData.subWeapon.Add(subWeaponStr);
+
+            
             for (int k = 0; k < 5; k++) 
             {
                 string activeSkillStr = (stat.skills.activeSkills[k] != null) ? stat.skills.activeSkills[k].id : null;

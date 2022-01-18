@@ -27,7 +27,8 @@ public class AgitMgr : MonoBehaviour
     public Text willpowerTxt;
 
     // 리스트 순서 / PlayerDataMgr Key
-    Dictionary<int, int> characterInfo = new Dictionary<int, int>();
+    [HideInInspector]
+    public Dictionary<int, int> characterInfo = new Dictionary<int, int>();
     bool isDeleteMode;
     int currentIndex;
     Color originColor;

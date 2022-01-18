@@ -19,7 +19,6 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector]
     public NavMeshAgent agent;
-    private NavMeshSetting nav; //내비 테스터
 
     //public GameObject panel;  //나중에 Fadeout 효과 넣을때
     [HideInInspector]
@@ -36,8 +35,6 @@ public class PlayerController : MonoBehaviour
 
     public void Init()
     {
-        nav = GetComponent<NavMeshSetting>();
-
         nonBattleMgr = NonBattleMgr.Instance;
         popUpMgr = nonBattleMgr.GetComponent<PopUpMgr>();
 
@@ -84,6 +81,10 @@ public class PlayerController : MonoBehaviour
                         timeController.PauseTime();
                         timeController.isPause = true;
                     }
+                }
+                if (raycastHit.collider.CompareTag("Footprint") && multiTouch.LongTap)
+                {
+                    Debug.Log("발자국");
                 }
             }
             if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
@@ -159,6 +160,10 @@ public class PlayerController : MonoBehaviour
                         timeController.PauseTime();
                         timeController.isPause = true;
                     }
+                }
+                if (raycastHit.collider.CompareTag("Footprint"))
+                {
+                    Debug.Log("발자국");
                 }
             }
             if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
