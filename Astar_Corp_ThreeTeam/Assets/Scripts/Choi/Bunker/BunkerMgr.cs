@@ -13,6 +13,7 @@ public enum BunkerKinds
     CarCenter,
     Hospital,
     Garage,
+    Locked,
 }
 
 public class BunkerMgr : MonoBehaviour
@@ -85,67 +86,86 @@ public class BunkerMgr : MonoBehaviour
         camController.OpenWindow = OpenWindow;
         camController.CloseWindow = CloseWindow;
         camController.SetBunkerKind = SetBunkerKind;
-        
+
         currentWinId = -1;
         currentBunkerKind = BunkerKinds.None;
 
         bunkerCount = bunkerObjs.Count;
         currentBunkerIndex = -1;
 
-        if (!PlayerPrefs.HasKey("BunkerKind0"))
+        int i = 0;
+        foreach (var element in playerDataMgr.saveData.bunkerKind)
         {
-            for (int i = 0; i < bunkerCount; i++)
+            int kind = element;
+            BunkerKinds bunkerKinds = (BunkerKinds)kind;
+
+            selectedBunker = bunkerObjs[i];
+            currentBunkerIndex = i;
+            currentBunkerKind = bunkerKinds;
+            switch (bunkerKinds)
             {
-                string str = $"BunkerKind{i}";
-                PlayerPrefs.SetInt(str, (int)BunkerKinds.None);
+                case BunkerKinds.None:
+                    break;
+                case BunkerKinds.Agit:
+                    Create(1);
+                    break;
+                case BunkerKinds.Pub:
+                    Create(2);
+                    break;
+                case BunkerKinds.Store:
+                    Create(3);
+                    break;
+                case BunkerKinds.CarCenter:
+                    Create(4);
+                    break;
+                case BunkerKinds.Hospital:
+                    Create(5);
+                    break;
+                case BunkerKinds.Garage:
+                    Create(6);
+                    break;
+                case BunkerKinds.Locked:
+                    selectedBunker = bunkerObjs[i];
+                    var go = Instantiate(lockedPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
+
+                    var script = go.GetComponent<BunkerBase>();
+                    script.bunkerId = i;
+
+                    Destroy(selectedBunker);
+                    selectedBunker = null;
+                    bunkerObjs[i] = go;
+
+                    break;
             }
-            Debug.Log("no key");
+            i++;
         }
-        else
+        CloseWindow();
+        selectedBunker = null;
+        currentBunkerIndex = -1;
+        currentBunkerKind = BunkerKinds.None;
+
+        if (playerDataMgr.isFirst)
         {
-            Debug.Log("has key");
-            for (int i = 0; i < bunkerCount; i++)
+            //랜덤으로 잠기도록.
+            int[] randomIndexArr = new int[2];
+            randomIndexArr[0] = Random.Range(0, 4);
+            randomIndexArr[1] = Random.Range(4, 9);
+
+            foreach (var element in randomIndexArr)
             {
-                string str = $"BunkerKind{i}";
-                int kind = PlayerPrefs.GetInt(str);
-                BunkerKinds bunkerKinds = (BunkerKinds)kind;
+                selectedBunker = bunkerObjs[element];
+                var go = Instantiate(lockedPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
 
-                selectedBunker = bunkerObjs[i];
-                currentBunkerIndex = i;
-                currentBunkerKind = bunkerKinds;
-                switch (bunkerKinds)
-                {
-                    case BunkerKinds.None:
-                        break;
-                    case BunkerKinds.Agit:
-                        Create(1);
-                        break;
-                    case BunkerKinds.Pub:
-                        Create(2);
-                        break;
-                    case BunkerKinds.Store:
-                        Create(3);
-                        break;
-                    case BunkerKinds.CarCenter:
-                        Create(4);
-                        break;
-                    case BunkerKinds.Hospital:
-                        Create(5);
-                        break;
-                    case BunkerKinds.Garage:
-                        Create(6);
-                        break;
-                }
+                var script = go.GetComponent<BunkerBase>();
+                script.bunkerId = element;
+
+                Destroy(selectedBunker);
+                selectedBunker = null;
+                bunkerObjs[element] = go;
             }
-            CloseWindow();
-
-            selectedBunker = null;
-
-            currentBunkerIndex = -1;
-            currentBunkerKind = BunkerKinds.None;
-
-            if (destroyButton.activeSelf) destroyButton.SetActive(false);
         }
+
+        if (destroyButton.activeSelf) destroyButton.SetActive(false);
     }
 
     public void SetBunkerKind(Mode currentMode, GameObject bunker)

@@ -117,8 +117,6 @@ public class BunkerCamController : MonoBehaviour
                     {
                         if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
                         {
-                            Debug.Log("¾È³ç");
-
                             SetBunkerKind(currentMode, hit.collider.gameObject);
                             if (hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None")) isCurrentEmpty = true;
                             else isCurrentEmpty = false;
@@ -140,7 +138,9 @@ public class BunkerCamController : MonoBehaviour
 
                     if (Physics.Raycast(ray, out hit))
                     {
-                        if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
+                        var bunkerBase = hit.collider.gameObject.GetComponent<BunkerBase>();
+                        if (bunkerBase != null && bunkerBase.bunkerName.Equals("Locked")) lockMgr.OpenConditionPopup();
+                        else if (bunkerBase != null)
                         {
                             SetBunkerKind(currentMode, hit.collider.gameObject);
                             if (hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None")) isCurrentEmpty = true;
@@ -178,7 +178,6 @@ public class BunkerCamController : MonoBehaviour
         float progress = 0; //This float will serve as the 3rd parameter of the lerp function.
         float increment = smoothness / duration; //The amount of change to apply.
 
-        lockMgr.CloseLockImg();
         while (progress < .5)
         {
             camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, 0.4f, progress);
@@ -194,7 +193,6 @@ public class BunkerCamController : MonoBehaviour
 
     IEnumerator ZoomOut()
     {
-        lockMgr.OpenLockImg();
         float progress = 0; //This float will serve as the 3rd parameter of the lerp function.
         float increment = smoothness / duration; //The amount of change to apply.
         while (progress < .5)

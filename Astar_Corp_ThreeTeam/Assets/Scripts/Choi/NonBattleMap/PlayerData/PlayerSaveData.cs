@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlayerSaveData
 {
     //저장할 데이터들.
+    public List<int> bunkerKind { get; set; }
+    public List<int> bunkerLevel { get; set; }
+
     //캐릭터 관련.
     public List<string> id { get; set; }
     public List<int> boarding { get; set; }

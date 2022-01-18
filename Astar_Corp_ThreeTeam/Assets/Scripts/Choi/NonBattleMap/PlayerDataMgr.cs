@@ -37,7 +37,8 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();
     public Dictionary<int, int> boardingSquad = new Dictionary<int, int>();//트럭에 있는 캐릭터들.(좌석 번호/ 인덱스)
     public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.
-                                                                                               
+
+    public bool isFirst;
     private void Start()
     {
         //PlayerPrefs.DeleteAll();
@@ -55,6 +56,9 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         filePath = @$"{Application.persistentDataPath}\PlayerData.json";
         if (saveData.id == null)
         {
+            saveData.bunkerKind = new List<int>();
+            saveData.bunkerLevel = new List<int>();
+
             saveData.id = new List<string>();
             saveData.boarding = new List<int>();
             saveData.name = new List<string>();
@@ -108,8 +112,16 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             //처음하기.
             if (!PlayerPrefs.HasKey("Continue"))
             {
+                isFirst = true;
+
                 string str = "Continue";
                 PlayerPrefs.SetInt(str, 1);
+
+                for (int i = 0; i < 9; i++)
+                {
+                    saveData.bunkerKind.Add(0);
+                    saveData.bunkerLevel.Add(0);
+                }
 
                 //테스트용.
                 //////////////////////////////
@@ -205,7 +217,6 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     stat.virusPanalty["I"].penaltyGauge = saveData.gaugeI[i];
                     stat.virusPanalty["T"].penaltyGauge = saveData.gaugeT[i];
 
-                    // 홍수진_캐릭터 스킬 수정 중이라 잠시 주석
                     //List<string> activeSkill = new List<string>();
                     //int activeSkillNum = activeSkillList.Count;
                     //for (int j = 0; j < activeSkillNum; j++) { activeSkill.Add(saveData.activeSkillList[i * activeSkillNum + j]); }
@@ -214,7 +225,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     //    if (element == null) continue;
                     //    stat.skills.activeSkills.Add(activeSkillList[element]);
                     //}
-                    //
+
                     //List<string> passiveSkill = new List<string>();
                     //int passiveSkillNum = passiveSkillList.Count;
                     //for (int j = 0; j < passiveSkillNum; j++) { passiveSkill.Add(saveData.passiveSkillList[i * passiveSkillNum + j]); }
@@ -334,8 +345,6 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.mainWeapon.Add(mainWeaponStr);
             string subWeaponStr = (stat.weapon.subWeapon != null) ? stat.weapon.subWeapon.id : null;
             saveData.subWeapon.Add(subWeaponStr);
-
-            
             for (int k = 0; k < 5; k++) 
             {
                 string activeSkillStr = (stat.skills.activeSkills[k] != null) ? stat.skills.activeSkills[k].id : null;

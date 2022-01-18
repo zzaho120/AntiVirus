@@ -33,11 +33,11 @@ public class EquipmentMgr : MonoBehaviour
 
     public GameObject itemListContents;
     public GameObject itemPrefab;
-    public Dictionary<int, GameObject> itemObjs = new Dictionary<int, GameObject>();
-    public Dictionary<int, string> itemInfo = new Dictionary<int, string>();
-
+    public Dictionary<string, GameObject> itemObjs = new Dictionary<string, GameObject>();
+    public Dictionary<string, int> itemInfo = new Dictionary<string, int>();
+   
     public int currentIndex;
-    int currentItemIndex;
+    string currentKey;
     EquipKind currentKind;
 
     public void Init()
@@ -55,24 +55,22 @@ public class EquipmentMgr : MonoBehaviour
         }
         if (itemInfo.Count != 0) itemInfo.Clear();
 
-        int i = 0;
         foreach (var element in playerDataMgr.currentEquippables)
         {
             var go = Instantiate(itemPrefab, itemListContents.transform);
             var button = go.AddComponent<Button>();
-            int num = i;
-            button.onClick.AddListener(delegate { SelectItem(num); });
+            button.onClick.AddListener(delegate { SelectItem(element.Key); });
 
             var child = go.transform.GetChild(0).gameObject;
             child.GetComponent<Text>().text = element.Value.name;
+            child = go.transform.GetChild(1).gameObject;
+            child.GetComponent<Text>().text = $"{playerDataMgr.currentEquippablesNum[element.Key]}개";
 
-            itemObjs.Add(num,go);
-            itemInfo.Add(num, element.Key);
-
-            i++;
+            itemObjs.Add(element.Key, go);
+            itemInfo.Add(element.Key, playerDataMgr.currentEquippablesNum[element.Key]);
         }
 
-        currentItemIndex = -1;
+        currentKey = null;
         currentKind = EquipKind.None;
     }
 
@@ -109,13 +107,13 @@ public class EquipmentMgr : MonoBehaviour
         OpenEquipWin2();
     }
 
-    public void SelectItem(int index)
+    public void SelectItem(string key)
     {
-        if (currentItemIndex != -1) 
-            itemObjs[currentItemIndex].GetComponent<Image>().color = Color.white;
-        
-        currentItemIndex = index;
-        itemObjs[currentItemIndex].GetComponent<Image>().color = Color.red;
+        if (currentKey != null) 
+            itemObjs[currentKey].GetComponent<Image>().color = Color.white;
+
+        currentKey = key;
+        itemObjs[currentKey].GetComponent<Image>().color = Color.red;
 
         OpenWeaponInfo();
     }
@@ -133,76 +131,206 @@ public class EquipmentMgr : MonoBehaviour
         Disarm();
         if (currentKind == EquipKind.MainWeapon)
         {
-            var key = itemInfo[currentItemIndex];
-            var weapon = playerDataMgr.currentEquippables[key];
+            playerDataMgr.saveData.mainWeapon[currentIndex] = currentKey;
+            var weapon = playerDataMgr.equippableList[currentKey];
             playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon = weapon;
 
-            playerDataMgr.currentEquippables.Remove(key);
-            playerDataMgr.currentEquippablesNum.Remove(key);
+            mainWeaponTxt.text = weapon.name;
 
-            var index = currentIndex;
-            playerDataMgr.saveData.mainWeapon[index] = key;
-            index = playerDataMgr.saveData.equippableList.IndexOf(key);
-            playerDataMgr.saveData.equippableList.Remove(key);
-            playerDataMgr.saveData.equippableNumList.RemoveAt(index);
+            //json.
+            var id = currentKey;
+            var index = playerDataMgr.saveData.equippableList.IndexOf(id);
+            if (playerDataMgr.saveData.equippableNumList[index] - 1 == 0)
+            {
+                playerDataMgr.saveData.equippableList.Remove(id);
+                playerDataMgr.saveData.equippableNumList.RemoveAt(index);
+            }
+            else
+            {
+                playerDataMgr.saveData.equippableNumList[index] -= 1;
+            }
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
-            Destroy(itemObjs[currentItemIndex]);
+            if (playerDataMgr.currentEquippablesNum[id] - 1 == 0)
+            {
+                //현재 데이터.
+                itemInfo.Remove(currentKey);
+                Destroy(itemObjs[currentKey]);
+                itemObjs.Remove(currentKey);
 
-            mainWeaponTxt.text = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name;
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentEquippables.Remove(id);
+                playerDataMgr.currentEquippablesNum.Remove(id);
+
+                currentKey = null;
+                currentKind = EquipKind.None;
+            }
+            else
+            {
+                //현재 데이터.
+                itemInfo[currentKey] -= 1;
+                var child = itemObjs[currentKey].transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{itemInfo[currentKey]}개";
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentEquippablesNum[id] -= 1;
+            }
         }
         else if (currentKind == EquipKind.SubWeapon)
         {
-            var key = itemInfo[currentItemIndex];
-            var weapon = playerDataMgr.currentEquippables[key];
+            playerDataMgr.saveData.subWeapon[currentIndex] = currentKey;
+            var weapon = playerDataMgr.equippableList[currentKey];
             playerDataMgr.currentSquad[currentIndex].weapon.subWeapon = weapon;
 
-            playerDataMgr.currentEquippables.Remove(key);
-            playerDataMgr.currentEquippablesNum.Remove(key);
+            subWeaponTxt.text = weapon.name;
 
-            var index = currentIndex;
-            playerDataMgr.saveData.subWeapon[index] = key;
-            index = playerDataMgr.saveData.equippableList.IndexOf(key);
-            playerDataMgr.saveData.equippableList.Remove(key);
-            playerDataMgr.saveData.equippableNumList.RemoveAt(index);
+            //json.
+            var id = currentKey;
+            var index = playerDataMgr.saveData.equippableList.IndexOf(id);
+            if (playerDataMgr.saveData.equippableNumList[index] - 1 == 0)
+            {
+                playerDataMgr.saveData.equippableList.Remove(id);
+                playerDataMgr.saveData.equippableNumList.RemoveAt(index);
+            }
+            else
+            {
+                playerDataMgr.saveData.equippableNumList[index] -= 1;
+            }
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
-            Destroy(itemObjs[currentItemIndex]);
+            if (playerDataMgr.currentEquippablesNum[id] - 1 == 0)
+            {
+                //현재 데이터.
+                itemInfo.Remove(currentKey);
+                Destroy(itemObjs[currentKey]);
+                itemObjs.Remove(currentKey);
 
-            subWeaponTxt.text = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.name;
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentEquippables.Remove(id);
+                playerDataMgr.currentEquippablesNum.Remove(id);
+
+                currentKey = null;
+                currentKind = EquipKind.None;
+            }
+            else
+            {
+                //현재 데이터.
+                itemInfo[currentKey] -= 1;
+                var child = itemObjs[currentKey].transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{itemInfo[currentKey]}개";
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentEquippablesNum[id] -= 1;
+            }
         }
-        RefreshSpec();
-        itemInfo.Remove(currentItemIndex);
-        currentItemIndex = -1;
-        //if (WeaponWin.activeSelf) WeaponWin.SetActive(false);
-        //if (SpecCompareWin.activeSelf) SpecCompareWin.SetActive(false);
+        CloseEquipWin2();
     }
 
     public void Disarm()
     {
         if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null && currentKind == EquipKind.MainWeapon)
         {
-            var id = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.id;
-            
-            playerDataMgr.saveData.equippableList.Add(id);
-            playerDataMgr.saveData.equippableNumList.Add(1);
+            var id = playerDataMgr.saveData.mainWeapon[currentIndex];
+            var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
+            playerDataMgr.saveData.mainWeapon[currentIndex] = null;
+            playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon = null;
+
+            //json.
+            int index = 0;
+            if (!playerDataMgr.saveData.equippableList.Contains(id))
+            {
+                playerDataMgr.saveData.equippableList.Add(id);
+                playerDataMgr.saveData.equippableNumList.Add(1);
+            }
+            else
+            {
+                index = playerDataMgr.saveData.equippableList.IndexOf(id);
+                playerDataMgr.saveData.equippableNumList[index] += 1;
+            }
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
-            playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon = null;
-            playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
-            playerDataMgr.currentEquippablesNum.Add(id, 1);
+            //playerDataMgr.
+            if (!playerDataMgr.currentEquippables.ContainsKey(id))
+            {
+                //현재데이터 관련.
+                itemInfo.Add(id, 1);
+                
+                var go = Instantiate(itemPrefab, itemListContents.transform);
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Text>().text = weapon.name;
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"1개";
+
+                var button = go.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectItem(id); });
+                itemObjs.Add(id, go);
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
+                playerDataMgr.currentEquippablesNum.Add(id, 1);
+            }
+            else
+            {
+                //현재데이터 관련.
+                itemInfo[id] += 1;
+                var child = itemObjs[id].transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{itemInfo[id]}개";
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentEquippablesNum[id] += 1;
+            }
         }
         else if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null && currentKind == EquipKind.SubWeapon)
         {
-            var id = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.id;
-            
-            playerDataMgr.saveData.equippableList.Add(id);
-            playerDataMgr.saveData.equippableNumList.Add(1);
+            var id = playerDataMgr.saveData.subWeapon[currentIndex];
+            var weapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
+            playerDataMgr.saveData.subWeapon[currentIndex] = null;
+            playerDataMgr.currentSquad[currentIndex].weapon.subWeapon = null;
+
+            //json.
+            int index = 0;
+            if (!playerDataMgr.saveData.equippableList.Contains(id))
+            {
+                playerDataMgr.saveData.equippableList.Add(id);
+                playerDataMgr.saveData.equippableNumList.Add(1);
+            }
+            else
+            {
+                index = playerDataMgr.saveData.equippableList.IndexOf(id);
+                playerDataMgr.saveData.equippableNumList[index] += 1;
+            }
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
-            playerDataMgr.currentSquad[currentIndex].weapon.subWeapon = null;
-            playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
-            playerDataMgr.currentEquippablesNum.Add(id, 1);
+            //playerDataMgr.
+            if (!playerDataMgr.currentEquippables.ContainsKey(id))
+            {
+                //현재데이터 관련.
+                itemInfo.Add(id, 1);
+
+                var go = Instantiate(itemPrefab, itemListContents.transform);
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Text>().text = weapon.name;
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"1개";
+
+                var button = go.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectItem(id); });
+                itemObjs.Add(id, go);
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
+                playerDataMgr.currentEquippablesNum.Add(id, 1);
+            }
+            else
+            {
+                //현재데이터 관련.
+                itemInfo[id] += 1;
+                var child = itemObjs[id].transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{itemInfo[id]}개";
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentEquippablesNum[id] += 1;
+            }
         }
     }
 
@@ -210,8 +338,7 @@ public class EquipmentMgr : MonoBehaviour
     // 명중률 스탯 주석처리
     public void RefreshSpec()
     {
-        var key = itemInfo[currentItemIndex];
-        var weapon = playerDataMgr.equippableList[key];
+        var weapon = playerDataMgr.equippableList[currentKey];
         string selectedWeaStr = $"기본 명중률 : {weapon.accurRateBase}% \n" +
             $"데미지 : {weapon.minDamage} ~ {weapon.maxDamage} \n" +
             $"탄창 클립수 : {weapon.bullet} \n" /*+
@@ -221,6 +348,7 @@ public class EquipmentMgr : MonoBehaviour
         Weapon currentWeapon;
         if (currentKind == EquipKind.MainWeapon)
         {
+
             if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
             {
                 currentWeapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
@@ -293,11 +421,11 @@ public class EquipmentMgr : MonoBehaviour
 
     public void CloseEquipWin2()
     {
-        if (currentItemIndex != -1)
+        if (currentKey != null && itemObjs.ContainsKey(currentKey))
         {
-            if (itemObjs[currentItemIndex].GetComponent<Image>().color == Color.red)
-                itemObjs[currentItemIndex].GetComponent<Image>().color = Color.white;
-            currentItemIndex = -1;
+            if (itemObjs[currentKey].GetComponent<Image>().color == Color.red)
+                itemObjs[currentKey].GetComponent<Image>().color = Color.white;
+            currentKey = null;
         }
 
         equipmentWin2.SetActive(false);
