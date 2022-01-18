@@ -28,9 +28,15 @@ public class BattleMonsterMgr : MonoBehaviour
     {
         monsterIdx = 0;
 
-        foreach (var monster in monsters)
+        var sightMgr = BattleMgr.Instance.sightMgr;
+        for (var idx = 0; idx < monsters.Count; ++idx)
         {
+            var monster = monsters[idx];
+            monster.StartTurn();
             monster.fsm.ChangeState((int)BattleMonState.Idle);
+            sightMgr.InitMonsterSight(idx);
+            if (monster.target == null)
+                monster.target = sightMgr.GetPlayerInMonsterSight(idx);
         }
         curMonster = monsters[0];
         RecognizePlayer();
@@ -45,8 +51,10 @@ public class BattleMonsterMgr : MonoBehaviour
     public void SetEndTurn(object[] param)
     {
         monsterIdx++;
+        if (!BattleMgr.Instance.sightMgr.GetMonsterInPlayerSight(curMonster.gameObject))
+            BattleMgr.Instance.hintMgr.CheckRader(curMonster.tileIdx);
+        
         curMonster = null;
-        BattleMgr.Instance.hintMgr.CheckRader((Vector3)param[0]);
 
         Invoke("CheckEndTurn", RaderWindow.maxTime);
     }

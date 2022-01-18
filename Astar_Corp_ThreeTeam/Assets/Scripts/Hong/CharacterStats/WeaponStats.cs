@@ -322,7 +322,7 @@ public class WeaponStats
     //  \(__)|
     // =================
     // 고양이
-    public bool CheckAvailShot(int AP, PlayerState state)
+    public bool CheckAvailShot(int AP, CharacterState state)
     {
         var result = false;
 
@@ -335,11 +335,11 @@ public class WeaponStats
         {
             switch (state)
             {
-                case PlayerState.Attack:
+                case CharacterState.Attack:
                     //if ((AP - AimShotAp) >= 0)
                         result = true;
                     break;
-                case PlayerState.Alert:
+                case CharacterState.Alert:
                     //if ((AP - AlertShotAp) >= 0)
                         result = true;
                     break;
@@ -356,7 +356,7 @@ public class WeaponStats
     //  \(__)|
     // =================
     // 고양이
-    public int GetWeaponAP(PlayerState state)
+    public int GetWeaponAP(CharacterState state)
     {
         var result = 0;
         if (fireCount == 0)
@@ -365,10 +365,10 @@ public class WeaponStats
         {
             switch (state)
             {
-                case PlayerState.Attack:
+                case CharacterState.Attack:
                     //result = AimShotAp;
                     break;
-                case PlayerState.Alert:
+                case CharacterState.Alert:
                     //result = AlertShotAp;
                     break;
             }

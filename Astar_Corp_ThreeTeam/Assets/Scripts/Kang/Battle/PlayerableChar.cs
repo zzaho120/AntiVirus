@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PlayerState
+public enum CharacterState
 {
     Wait,
     Move,
@@ -21,7 +21,7 @@ public class PlayerableChar : BattleTile
     public int AP;
     public int sightDistance = 3;
     public int audibleDistance = 4;
-    public PlayerState status;
+    public CharacterState status;
     public bool isSelected;
     
     public DirectionType direction;
@@ -47,7 +47,7 @@ public class PlayerableChar : BattleTile
 
     public void Update()
     {
-        if (status != PlayerState.TurnEnd)
+        if (status != CharacterState.TurnEnd)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -58,7 +58,7 @@ public class PlayerableChar : BattleTile
                 {
                     switch (status)
                     {
-                        case PlayerState.Wait:
+                        case CharacterState.Wait:
                             if (hit.collider.gameObject == gameObject)
                             {
                                 isSelected = !isSelected;
@@ -78,7 +78,7 @@ public class PlayerableChar : BattleTile
                                     SetNonSelected();
                             }
                             break;
-                        case PlayerState.Move:
+                        case CharacterState.Move:
                             if (hit.collider.tag == "Tile")
                             {
                                 var tileBase = hit.collider.GetComponent<TileBase>();
@@ -86,14 +86,14 @@ public class PlayerableChar : BattleTile
                                     ActionMove(tileBase);
                             }
                             break;
-                        case PlayerState.Attack:
+                        case CharacterState.Attack:
                             if (hit.collider.tag == "BattleMonster")
                             {
                                 var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.BattleInfo - 1).GetComponent<BattleInfoWindow>();
                                 window.EnableMonsterInfo(true, hit.collider.GetComponent<MonsterChar>(), characterStats.weapon);
                             }
                             break;
-                        case PlayerState.Alert:
+                        case CharacterState.Alert:
                             break;
                     }
                 }
@@ -103,7 +103,7 @@ public class PlayerableChar : BattleTile
 
     public void StartTurn()
     {
-        status = PlayerState.Wait;
+        status = CharacterState.Wait;
         isSelected = false;
         AP = 6;
         alertList.Clear();
@@ -157,12 +157,12 @@ public class PlayerableChar : BattleTile
 
     public void MoveMode()
     {
-        if (status == PlayerState.Move)
-            status = PlayerState.Wait;
+        if (status == CharacterState.Move)
+            status = CharacterState.Wait;
         else
-            status = PlayerState.Move;
+            status = CharacterState.Move;
 
-        if (status == PlayerState.Move && isSelected)
+        if (status == CharacterState.Move && isSelected)
         {
             FloodFillMove();
         }
@@ -237,7 +237,7 @@ public class PlayerableChar : BattleTile
 
     public void AttackMode()
     {
-        status = PlayerState.Attack;
+        status = CharacterState.Attack;
     }
 
 
@@ -247,10 +247,10 @@ public class PlayerableChar : BattleTile
 
         if (weapon.CheckAvailBullet)
         {
-            if (weapon.CheckAvailShot(AP, PlayerState.Attack))
+            if (weapon.CheckAvailShot(AP, CharacterState.Attack))
             {
                 var isHit = weapon.CheckAttackAccuracy(monster.currentTile.accuracy);
-                AP -= weapon.GetWeaponAP(PlayerState.Attack);
+                AP -= weapon.GetWeaponAP(CharacterState.Attack);
 
                 if (isHit)
                     monster.GetDamage(weapon.Damage);
@@ -289,20 +289,20 @@ public class PlayerableChar : BattleTile
 
     public void AlertMode()
     {
-        status = PlayerState.Alert;
+        status = CharacterState.Alert;
     }
 
     public void EndPlayer()
     {
-        if (status != PlayerState.Alert)
-            status = PlayerState.TurnEnd;
+        if (status != CharacterState.Alert)
+            status = CharacterState.TurnEnd;
         CameraController.instance.SetFollowObject(null);
         EventBusMgr.Publish(EventType.EndPlayer);
     }
 
     public void WaitPlayer()
     {
-        status = PlayerState.Wait;
+        status = CharacterState.Wait;
     }
 
     public void GetDamage(MonsterStats monsterStats)
@@ -367,7 +367,30 @@ public class PlayerableChar : BattleTile
         window = BattleMgr.Instance.battleWindowMgr.GetWindow(2);
         window.Close();
         isSelected = false;
-        status = PlayerState.Wait;
+        status = CharacterState.Wait;
         CameraController.instance.SetFollowObject(null);
+    }
+
+    public void SetDirection(DirectionType direction)
+    {
+        this.direction = direction;
+
+        switch (direction)
+        {
+            case DirectionType.None:
+                break;
+            case DirectionType.Top:
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+                break;
+            case DirectionType.Bot:
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+                break;
+            case DirectionType.Left:
+                transform.rotation = Quaternion.Euler(0, 270, 0);
+                break;
+            case DirectionType.Right:
+                transform.rotation = Quaternion.Euler(0, 90, 0);
+                break;
+        }
     }
 }

@@ -35,7 +35,7 @@ public class BattlePlayerMgr : MonoBehaviour
         var turnEndCount = 0;
         foreach (var player in playerableChars)
         {
-            if (player.status == PlayerState.TurnEnd || player.status == PlayerState.Alert)
+            if (player.status == CharacterState.TurnEnd || player.status == CharacterState.Alert)
                 turnEndCount++;
         }
 
@@ -63,10 +63,10 @@ public class BattlePlayerMgr : MonoBehaviour
                     var weapon = player.characterStats.weapon;
                     if (weapon.CheckAvailBullet)
                     {
-                        if (weapon.CheckAvailShot(player.AP, PlayerState.Alert))
+                        if (weapon.CheckAvailShot(player.AP, CharacterState.Alert))
                         {
                             var isHit = weapon.CheckAlertAccuracy(curMonster.currentTile.accuracy);
-                            player.AP -= weapon.GetWeaponAP(PlayerState.Attack);
+                            player.AP -= weapon.GetWeaponAP(CharacterState.Attack);
 
                             if (isHit)
                                 curMonster.GetDamage(player.characterStats.weapon.Damage);
