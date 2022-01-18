@@ -27,7 +27,7 @@ public class HintMgr : MonoBehaviour
 
     public void AddPrint(HintType hintType, DirectionType directionType, Vector3 tileIdx)
     {
-        var newVector = tileIdx + new Vector3(0, 1, 0);
+        var newVector = tileIdx + new Vector3(0, .5f, 0);
         GameObject prefab = null;
         switch (hintType)
         {

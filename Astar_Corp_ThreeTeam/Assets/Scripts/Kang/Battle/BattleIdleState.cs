@@ -15,6 +15,7 @@ public class BattleIdleState : StateBase
 
     public override void Enter()
     {
+        isActing = false;
     }
 
     public override void Exit()
@@ -23,10 +24,24 @@ public class BattleIdleState : StateBase
 
     public override void Update()
     {
-        if (!isActing)
+        if (monster.target == null)
         {
-            isActing = true;
-            monster.MoveRandomTile();
+            if (!isActing)
+            {
+                isActing = true;
+                monster.MoveRandomTile();
+            }
         }
+        else
+        {
+            if (!isActing)
+            {
+                isActing = true;
+
+            }
+
+            if ()
+        }
+        
     }
 }

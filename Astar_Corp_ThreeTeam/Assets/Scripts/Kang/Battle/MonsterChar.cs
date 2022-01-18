@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[RequireComponent(typeof(MonsterStats))]
 public class MonsterChar : BattleTile
 {
     [Header("Character")]
@@ -9,10 +11,13 @@ public class MonsterChar : BattleTile
     public BattleMonsterFSM fsm;
     public bool turnState;
 
+    public PlayerableChar target;
+
     public override void Init()
     {
         base.Init();
-        monsterStats.monster = (Monster)Instantiate(Resources.Load("Choi/Datas/Monsters/Bear"));
+        monsterStats = GetComponent<MonsterStats>();
+        monsterStats.monster = (Monster)Instantiate(Resources.Load("Choi/Datas/Monsters/Fox"));
         monsterStats.Init();
         fsm = new BattleMonsterFSM();
         fsm.Init(this);
@@ -41,12 +46,77 @@ public class MonsterChar : BattleTile
         fsm.Update();
     }
 
-    public void MoveRandomTile()
+    public void Move(PlayerableChar target)
     {
-        var Ap = monsterStats.currentAp;
-        var Mp = Ap * (3 + monsterStats.Mp);
-        var moveTilePoint = Mp / 2;
-        Debug.Log(moveTilePoint);
+        var mp = monsterStats.currentAp * (3 + monsterStats.Mp);
+        var pathMgr = BattleMgr.Instance.pathMgr;
+        var destTile = Vector3.zero;
+
+        if (target == null)
+            MoveRandomTile(mp);
+    }
+
+    public void MoveRandomTile(int mp)
+    {
+        var Ap1ByMp = 3 + monsterStats.Mp;
+        var tileDics = BattleMgr.Instance.tileMgr.tileDics;
+        var destTile = Vector3.zero;
+        while (true)
+        {
+            var maxTile = mp / 2;
+            var randomX = Random.Range(-maxTile, maxTile + 1);
+            var randomZ = 0;
+            if (randomX > 0)
+                randomZ = maxTile - randomX;
+            else
+                randomZ = maxTile + randomX;
+
+            if (Random.Range(0, 2) == 0)
+                randomZ = -randomZ;
+
+            destTile = tileIdx + new Vector3(randomX, 0, randomZ);
+            if (tileDics.ContainsKey(destTile))
+            {
+                BattleMgr.Instance.pathMgr.InitAStar(tileIdx, destTile);
+                break;
+            }
+        }
+
+        StartCoroutine(CoMove(Ap1ByMp, destTile));
+    }
+
+    public void MoveTarget()
+    {
+
+    }
+    public IEnumerator CoMove(int mp, Vector3 destTile)
+    {
+        var pathMgr = BattleMgr.Instance.pathMgr;
+        var printIdx = 0;
+
+        if (mp < 2)
+            printIdx = 1;
+        else if (mp < 4)
+            printIdx = 2;
+        else if (mp > 4)
+            printIdx = 3;
+
+        var idx = 1; 
+        CreateHint(HintType.Footprint, tileIdx);
+        
+        while (tileIdx != destTile)
+        {
+            idx++;
+            if (idx >= printIdx)
+            {
+                idx = 0;
+                CreateHint(HintType.Footprint, tileIdx);
+            }
+
+            var nextTile = pathMgr.pathList.Pop();
+            MoveTile(nextTile.tileBase.tileIdx);
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     public void MoveTile(Vector3 nextIdx)
@@ -55,7 +125,6 @@ public class MonsterChar : BattleTile
         {
             if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
             {
-                CreateHint(HintType.Footprint, nextIdx);
                 currentTile.charObj = null;
                 tileIdx = nextIdx;
                 currentTile = tile;
@@ -116,7 +185,7 @@ public class MonsterChar : BattleTile
 
         for (var playerIdx = 0; playerIdx < frontSights.Count; ++playerIdx)
         {
-            if (playerChars[playerIdx].status != PlayerState.Alert)
+            if (playerChars[playerIdx].status != CharacterState.Alert)
                 continue;
 
             if (frontSights[playerIdx].Exists(sightTile => sightTile.tileBase == currentTile))

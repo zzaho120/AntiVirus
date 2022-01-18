@@ -58,13 +58,13 @@ public class PlayerActionWindow : GenericWindow
 
     public void OnClickDirectionBtn(int direction)
     {
-        curChar.direction = (DirectionType)(1 << direction);
+        curChar.SetDirection((DirectionType)(1 << direction));
         BattleMgr.Instance.sightMgr.UpdateFrontSight(curChar);
         Close();
 
-        if (curChar.status == PlayerState.Alert || curChar.AP <= 0)
+        if (curChar.status == CharacterState.Alert || curChar.AP <= 0)
             curChar.EndPlayer();
-        else if (curChar.status == PlayerState.Move)
+        else if (curChar.status == CharacterState.Move)
             curChar.WaitPlayer();
     }
 

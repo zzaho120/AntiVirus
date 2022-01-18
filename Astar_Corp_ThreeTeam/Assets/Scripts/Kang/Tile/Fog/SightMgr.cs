@@ -4,11 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+public enum CharacterType
+{
+    Player,
+    Monster
+}
+
 public class SightTileBase
 {
     public TileBase tileBase;
     public bool isInSight;
-    public bool isMonsterSight;
+    public bool isInMonsterSight;
     public SightTileBase(TileBase tileBase)
     {
         this.tileBase = tileBase;
@@ -23,8 +29,12 @@ public class SightTileBase
     public void Init()
     {
         isInSight = false;
-        isMonsterSight = false;
         tileBase.EnableDisplay(isInSight);
+    }
+
+    public void MonsterInit()
+    {
+        isInMonsterSight = false;
     }
 }
 
@@ -49,6 +59,7 @@ public class SightMgr : MonoBehaviour
         new List<List<SightTileBase>>();
 
     private List<PlayerableChar> playerableChars;
+    private List<MonsterChar> monsters;
 
     private int MAX_X_IDX;
     private int MAX_Z_IDX;
@@ -58,6 +69,7 @@ public class SightMgr : MonoBehaviour
     public void Init()
     {
         playerableChars = BattleMgr.Instance.playerMgr.playerableChars;
+        monsters = BattleMgr.Instance.monsterMgr.monsters;
         MAX_X_IDX = TileMgr.MAX_X_IDX;
         MAX_Z_IDX = TileMgr.MAX_Z_IDX;
         InitFog();
@@ -99,6 +111,11 @@ public class SightMgr : MonoBehaviour
             frontSightList.Add(new List<SightTileBase>());
             sightList.Add(new List<SightTileBase>());
             calculateSightDics.Add(new Dictionary<Vector2, List<SightTileBase>>());
+        }
+
+        for (var idx = 0; idx < monsters.Count; ++idx)
+        {
+            monsterSightList.Add(new List<SightTileBase>());
         }
     }
 
@@ -156,7 +173,7 @@ public class SightMgr : MonoBehaviour
         }
     }
 
-    private void InitPlayerSight()
+    public void InitPlayerSight()
     {
         for (var idx = 0; idx < playerableChars.Count; ++idx)
         {
@@ -192,7 +209,7 @@ public class SightMgr : MonoBehaviour
                         }
                     }
                 }
-                InitObstacle(idx);
+                InitObstacle(idx, CharacterType.Player);
                 var tempList = new List<SightTileBase>();
                 foreach (var sightTile in sightList[idx])
                 {
@@ -212,16 +229,29 @@ public class SightMgr : MonoBehaviour
         }
     }
 
-    private void InitObstacle(int playerIdx)
+
+    private void InitObstacle(int idx, CharacterType characterType)
     {
-        var player = playerableChars[playerIdx];
-        if (!player.gameObject.activeSelf)
+        var tileIdx = Vector3.zero;
+        GameObject character = null;
+        switch (characterType)
+        {
+            case CharacterType.Player:
+                tileIdx = playerableChars[idx].tileIdx;
+                character = playerableChars[idx].gameObject;
+                break;
+            case CharacterType.Monster:
+                tileIdx = monsters[idx].tileIdx;
+                character = monsters[idx].gameObject;
+                break;
+        }
+        if (!character.activeSelf)
             return;
 
-        var sightDist = player.sightDistance;
+        var sightDist = 3;
         var maxX = sightDist;
         var maxY = sightDist;
-        var startTileIdx = new Vector2(player.currentTile.tileIdx.x, player.currentTile.tileIdx.z);
+        var startTileIdx = new Vector2(tileIdx.x, tileIdx.z);
 
         for (var i = -sightDist; i <= maxY; ++i)
         {
@@ -241,12 +271,12 @@ public class SightMgr : MonoBehaviour
                 var specificCase = absX == absY &&
                     (absX + absY) == sightDist - 1;
                 if (absY + absX == sightDist || specificCase)
-                    CastRayTile(endTileIdx, startTileIdx, sightDist, playerIdx);
+                    CastRayTile(endTileIdx, startTileIdx, sightDist, characterType);
             }
         }
     }
 
-    private void CastRayTile(Vector2 start, Vector2 end, int sightDist, int playerIdx)
+    private void CastRayTile(Vector2 start, Vector2 end, int sightDist, CharacterType characterType)
     {
         var delta = end - start;
 
@@ -322,7 +352,15 @@ public class SightMgr : MonoBehaviour
         {
             foreach (var elem in elemList)
             {
-                elem.isInSight = true;
+                switch (characterType)
+                {
+                    case CharacterType.Player:
+                        elem.isInSight = true;
+                        break;
+                    case CharacterType.Monster:
+                        elem.isInMonsterSight = true;
+                        break;
+                }
             }
         }
     }
@@ -468,7 +506,7 @@ public class SightMgr : MonoBehaviour
                     endTileIdx = new Vector2(Mathf.Clamp(startTileIdx.x + advanceCenter, 0, MAX_X_IDX), Mathf.Clamp(startTileIdx.y + i, 0, MAX_Z_IDX));
                     break;
             }
-            CastRayTile(endTileIdx, startTileIdx, MaxFrontTile, playerIdx);
+            CastRayTile(endTileIdx, startTileIdx, MaxFrontTile, CharacterType.Player);
         }
     }
 
@@ -512,5 +550,88 @@ public class SightMgr : MonoBehaviour
         }
 
         frontSightList[playerIdx].Clear();
+    }
+
+    public bool GetMonsterInPlayerSight(GameObject gameObj)
+    {
+        foreach (var sight in sightList)
+        {
+            foreach (var tile in sight)
+            {
+                if (tile.tileBase.charObj == gameObj)
+                    return true;
+            }
+        }
+
+        foreach (var frontSight in frontSightList)
+        {
+            foreach (var tile in frontSight)
+            {
+                if (tile.tileBase.charObj == gameObj)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public PlayerableChar GetPlayerInMonsterSight(int idx)
+    {
+        var monster = monsters[idx];
+        var monsterSight = monsterSightList[idx];
+
+        foreach (var sight in monsterSight)
+        {
+            if (sight.isInMonsterSight && sight.tileBase.charObj != null)
+            {
+                foreach (var player in playerableChars)
+                {
+                    if (sight.tileBase.charObj == player.gameObject)
+                        return player;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public void InitMonsterSight(int monsterIdx)
+    {
+        var monsterSight = monsterSightList[monsterIdx];
+        var monster = monsters[monsterIdx];
+        var sightDistance = 3;
+        var curTileIdx = new Vector2(monster.tileIdx.x, monster.tileIdx.z);
+
+        foreach (var sight in monsterSight)
+        {
+            sight.MonsterInit();
+        }
+
+        monsterSight.Clear();
+
+        for (var i = -sightDistance; i <= sightDistance; ++i)
+        {
+            if (curTileIdx.y + i < 0)
+                continue;
+
+            for (var j = -sightDistance; j <= sightDistance; ++j)
+            {
+                if (curTileIdx.x + j < 0)
+                    continue;
+
+                var checkIdx = new Vector2(curTileIdx.x + j, curTileIdx.y + i);
+                if (Mathf.Abs(i) + Mathf.Abs(j) > sightDistance)
+                    continue;
+
+                if (totalSightDics.ContainsKey(checkIdx))
+                {
+                    foreach (var sightTile in totalSightDics[checkIdx])
+                    {
+                        monsterSight.Add(sightTile);
+                    }
+                }
+            }
+        }
+        InitObstacle(monsterIdx, CharacterType.Monster);
     }
 }
