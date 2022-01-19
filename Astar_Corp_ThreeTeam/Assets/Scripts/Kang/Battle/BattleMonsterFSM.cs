@@ -5,8 +5,8 @@ using UnityEngine;
 public enum BattleMonState
 {
     Idle,
-    Move,
-    Attack
+    Attack,
+    Escape
 }
 
 
@@ -18,9 +18,9 @@ public class BattleMonsterFSM : FSM
     public void Init(MonsterChar monster)
     {
         this.monster = monster;
-        AddState(new BattleIdleState(monster, this));
         AddState(new BattleMoveState(monster, this));
         AddState(new BattleAttackState(monster, this));
+        AddState(new BattleEscapeState(monster, this));
 
         ChangeState((int)BattleMonState.Idle);
     }

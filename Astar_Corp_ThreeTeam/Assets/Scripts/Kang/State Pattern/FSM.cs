@@ -43,7 +43,7 @@ public class FSM : MonoBehaviour
             curState.Enter();
         }
 
-        //Debug.Log("state : " + curState);
+        Debug.Log("state : " + curState);
     }
 
     public void ChangeState(int state)
@@ -58,6 +58,6 @@ public class FSM : MonoBehaviour
             curState.Enter();
         }
 
-        //Debug.Log("state : " + curState);
+        Debug.Log("state : " + curState);
     }
 }

@@ -12,6 +12,7 @@ public class MonsterChar : BattleTile
     public bool turnState;
 
     public PlayerableChar target;
+    public bool isMoved;
 
     public override void Init()
     {
@@ -26,6 +27,7 @@ public class MonsterChar : BattleTile
     public void StartTurn()
     {
         monsterStats.StartTurn();
+        isMoved = false;
     }
 
     public void GetDamage(int dmg)
@@ -48,17 +50,19 @@ public class MonsterChar : BattleTile
 
     public void Move(PlayerableChar target)
     {
-        var mp = monsterStats.currentAp * (3 + monsterStats.Mp);
+        var Ap1ByMp = 3 + monsterStats.Mp;
+        var mp = monsterStats.currentAp * Ap1ByMp;
         var pathMgr = BattleMgr.Instance.pathMgr;
         var destTile = Vector3.zero;
 
         if (target == null)
-            MoveRandomTile(mp);
+            MoveRandomTile(mp, Ap1ByMp);
+        else
+            MoveTarget(mp, Ap1ByMp);
     }
 
-    public void MoveRandomTile(int mp)
+    public void MoveRandomTile(int mp, int Ap1ByMp)
     {
-        var Ap1ByMp = 3 + monsterStats.Mp;
         var tileDics = BattleMgr.Instance.tileMgr.tileDics;
         var destTile = Vector3.zero;
         while (true)
@@ -75,6 +79,7 @@ public class MonsterChar : BattleTile
                 randomZ = -randomZ;
 
             destTile = tileIdx + new Vector3(randomX, 0, randomZ);
+            Debug.Log(destTile);
             if (tileDics.ContainsKey(destTile))
             {
                 BattleMgr.Instance.pathMgr.InitAStar(tileIdx, destTile);
@@ -85,26 +90,32 @@ public class MonsterChar : BattleTile
         StartCoroutine(CoMove(Ap1ByMp, destTile));
     }
 
-    public void MoveTarget()
+    public void MoveTarget(int mp, int Ap1ByMp)
     {
-
+        var tileDics = BattleMgr.Instance.tileMgr.tileDics;
+        var destTile = Vector3.zero;
+        BattleMgr.Instance.pathMgr.InitAStar(tileIdx, target.tileIdx);
+        StartCoroutine(CoMove(Ap1ByMp, target.tileIdx));
     }
-    public IEnumerator CoMove(int mp, Vector3 destTile)
+
+    public IEnumerator CoMove(int Ap1ByMp, Vector3 destTile)
     {
         var pathMgr = BattleMgr.Instance.pathMgr;
         var printIdx = 0;
 
-        if (mp < 2)
+        if (Ap1ByMp < 2)
             printIdx = 1;
-        else if (mp < 4)
+        else if (Ap1ByMp < 4)
             printIdx = 2;
-        else if (mp > 4)
+        else if (Ap1ByMp > 4)
             printIdx = 3;
 
-        var idx = 1; 
+        var idx = 1;
+        var moveIdx = 0;
         CreateHint(HintType.Footprint, tileIdx);
-        
-        while (tileIdx != destTile)
+
+        var compareIdx = Mathf.Abs(destTile.x) + Mathf.Abs(destTile.z);
+        while (Mathf.Abs(tileIdx.x) + Mathf.Abs(tileIdx.z) + monsterStats.AtkRange != compareIdx)
         {
             idx++;
             if (idx >= printIdx)
@@ -114,17 +125,34 @@ public class MonsterChar : BattleTile
             }
 
             var nextTile = pathMgr.pathList.Pop();
-            MoveTile(nextTile.tileBase.tileIdx);
+            if (!MoveTile(nextTile.tileBase.tileIdx))
+                break;
+
+            if (moveIdx == 0)
+                monsterStats.currentAp--;
+            moveIdx += 2;
+            if (moveIdx >= Ap1ByMp)
+                moveIdx = 0;
+            if (monsterStats.currentAp == 0)
+                break;
             yield return new WaitForSeconds(0.1f);
         }
+
+        if (moveIdx > 0)
+            monsterStats.currentAp--;
+
+        isMoved = true;
     }
 
-    public void MoveTile(Vector3 nextIdx)
+    public bool MoveTile(Vector3 nextIdx)
     {
         foreach (var tile in currentTile.adjNodes)
         {
             if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
             {
+                if (tile.charObj != null && tile.charObj.CompareTag("BattlePlayer"))
+                    return false;
+
                 currentTile.charObj = null;
                 tileIdx = nextIdx;
                 currentTile = tile;
@@ -142,6 +170,8 @@ public class MonsterChar : BattleTile
                 break;
             }
         }
+
+        return true;
     }
 
     private void CreateHint(HintType hintType, Vector3 nextIdx)
@@ -193,5 +223,72 @@ public class MonsterChar : BattleTile
         }
 
         return boolList;
+    }
+
+    public PlayerableChar CheckAttackRange()
+    {
+        var adjTiles = currentTile.adjNodes;
+        var rangeCnt = 0;
+
+        var player = CheckAttackRangeByDirection(DirectionType.Top, rangeCnt, tileIdx);
+        if (player != null)
+            return player;
+
+        player = CheckAttackRangeByDirection(DirectionType.Bot, rangeCnt, tileIdx);
+        if (player != null)
+            return player;
+
+        player = CheckAttackRangeByDirection(DirectionType.Left, rangeCnt, tileIdx);
+        if (player != null)
+            return player;
+
+        player = CheckAttackRangeByDirection(DirectionType.Right, rangeCnt, tileIdx);
+        if (player != null)
+            return player;
+
+        return null;
+    }
+
+    public PlayerableChar CheckAttackRangeByDirection(DirectionType directionType, int rangeCnt, Vector3 tileIdx)
+    {
+        PlayerableChar result = null;
+        var nextTile = Vector3.zero;
+        switch (directionType)
+        {
+            case DirectionType.Top:
+                nextTile = new Vector3(tileIdx.x, tileIdx.y, Mathf.Clamp(tileIdx.z + 1, 0, TileMgr.MAX_Z_IDX));
+                break;
+            case DirectionType.Bot:
+                nextTile = new Vector3(tileIdx.x, tileIdx.y, Mathf.Clamp(tileIdx.z - 1, 0, TileMgr.MAX_Z_IDX));
+                break;
+            case DirectionType.Left:
+                nextTile = new Vector3(Mathf.Clamp(tileIdx.x - 1, 0, TileMgr.MAX_X_IDX), tileIdx.y, tileIdx.z);
+                break;
+            case DirectionType.Right:
+                nextTile = new Vector3(Mathf.Clamp(tileIdx.x + 1, 0, TileMgr.MAX_X_IDX), tileIdx.y, tileIdx.z);
+                break;
+        }
+        if (rangeCnt >= monsterStats.AtkRange)
+            return null;
+
+        var tileDics = BattleMgr.Instance.tileMgr.tileDics;
+        if (tileDics.ContainsKey(nextTile))
+        {
+            var charObj = tileDics[nextTile].charObj;
+            if (charObj != null)
+            {
+                var player = charObj.GetComponent<PlayerableChar>();
+                if (player != null && player == target)
+                    return player;
+            }
+        }
+
+        rangeCnt++;
+        result = CheckAttackRangeByDirection(directionType, rangeCnt, nextTile);
+
+        if (result != null)
+            return result;
+        else
+            return null;
     }
 }

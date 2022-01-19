@@ -127,7 +127,7 @@ public class PlayerableChar : BattleTile
         {
             var aStarTile = path.Pop();
 
-            if (aStarTile.tileBase.charObj != null)
+            if (aStarTile.tileBase.charObj != null && !aStarTile.tileBase.charObj.CompareTag("BattlePlayer"))
                 break;
 
             MoveTile(aStarTile.tileBase.tileIdx);
@@ -312,24 +312,26 @@ public class PlayerableChar : BattleTile
         hp -= dmg;
         characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
 
+        monsterStats.CalculateAttackAp();
+
         if (monsterStats.virus != null)
         {
             var virusType = string.Empty;
             switch (monsterStats.virus.id)
             {
-                case "1":
+                case "VIR_0001":
                     virusType = "E";
                     break;
-                case "2":
+                case "VIR_0002":
                     virusType = "B";
                     break;
-                case "3":
+                case "VIR_0003":
                     virusType = "P";
                     break;
-                case "4":
+                case "VIR_0004":
                     virusType = "I";
                     break;
-                case "5":
+                case "VIR_0005":
                     virusType = "T";
                     break;
             }

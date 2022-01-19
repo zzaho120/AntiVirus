@@ -21,5 +21,12 @@ public class BattleAttackState : StateBase
 
     public override void Update()
     {
+        var player = monster.CheckAttackRange();
+        if (player != null && monster.monsterStats.CheckAttackAp())
+        {
+            player.GetDamage(monster.monsterStats);
+        }
+        else
+            EventBusMgr.Publish(EventType.EndEnemy);
     }
 }

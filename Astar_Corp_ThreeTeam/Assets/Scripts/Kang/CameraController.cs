@@ -38,9 +38,12 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MoveKeyboardInput();
-        RotateKeyboardInput();
-        ZoominOutKeyboardInput();
+        if (followTransform == null)
+        {
+            MoveKeyboardInput();
+            RotateKeyboardInput();
+            ZoominOutKeyboardInput();
+        }
         FollowObject();
     }
 
