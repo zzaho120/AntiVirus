@@ -15,30 +15,35 @@ public enum VirusType
 public class VirusPenalty
 {
     public Virus virus;
+    public Character character;
     public int penaltyGauge; // 페널티바
     public int penaltyLevel;
     public int reductionGauge; // 내성 경험치바
     public int reductionLevel;
 
     private readonly int expGauge = 100; 
-    private readonly int maxLevel = 5; 
+    private readonly int maxLevel = 5;
 
-    // 홍수진 스탯수정
-    //public int CurrentReduction
-    //{
-    //    get => virus.resistDec * reductionLevel;
-    //}
-    
+    public int CurrentReduction
+    {
+        get
+        {
+            if (reductionLevel == 0)
+                return character.virusDec_Lev0;
+            else
+                return character.virusDec_Lev1 * reductionLevel;
+        }
+    }
+
     public int GetPenaltyGauge(int paneltyLevel)
     {
-        // 홍수진 스탯수정
-        //return virus.resistCharge * paneltyLevel;
         return virus.virusGauge * paneltyLevel;
     }
 
-    public VirusPenalty(Virus virus)
+    public VirusPenalty(Virus virus, Character character)
     {
         this.virus = virus;
+        this.character = character;
         penaltyGauge = 0;
         penaltyLevel = 0;
         reductionLevel = 1;
@@ -46,10 +51,45 @@ public class VirusPenalty
 
     public void Calculation(int virusLevel)
     {
-        // 홍수진 스탯수정
-        //penaltyGauge += (GetPenaltyGauge(virusLevel) - CurrentReduction);
-        //Debug.Log($"{virus.name} 바이러스 페널티 {GetPenaltyGauge(virusLevel) - CurrentReduction}를 입혀서 {penaltyLevel}레벨 {penaltyGauge}가 됐습니다.");
-        var maxGauge = expGauge * (penaltyLevel + 1);
+        var newGauge = GetPenaltyGauge(virusLevel) - CurrentReduction;
+        penaltyGauge += newGauge;
+
+        if (newGauge < 0)
+        {
+            if (penaltyGauge < 0)
+                GetReductionExp(newGauge - penaltyGauge);
+            else
+                GetReductionExp(newGauge);
+        }
+
+        penaltyGauge = Mathf.Clamp(penaltyGauge, 0, GetMaxGauge());
+        Debug.Log($"{virus.name} 바이러스 페널티 {newGauge}를 입혀서 {penaltyLevel}레벨 {penaltyGauge}가 됐습니다.");
+
+        CheckPenaltyGauge();
+    }
+
+    public void Calculation(int virusLevel, int virusAmount)
+    {
+        var newGauge = virusAmount * virusLevel - CurrentReduction;
+        penaltyGauge += newGauge;
+
+        if (newGauge < 0)
+        {
+            if (penaltyGauge < 0)
+                GetReductionExp(newGauge - penaltyGauge);
+            else
+                GetReductionExp(newGauge);
+        }
+
+        penaltyGauge = Mathf.Clamp(penaltyGauge, 0, GetMaxGauge());
+        Debug.Log($"{virus.name} 바이러스 페널티 {newGauge}를 입혀서 {penaltyLevel}레벨 {penaltyGauge}가 됐습니다.");
+
+        CheckPenaltyGauge();
+    }
+
+    private void CheckPenaltyGauge()
+    {
+        var maxGauge = GetMaxGauge();
         if (penaltyGauge >= maxGauge)
         {
             if (penaltyLevel != maxLevel)
@@ -59,6 +99,16 @@ public class VirusPenalty
             }
             else if (penaltyLevel == maxLevel)
                 penaltyGauge = maxGauge;
+        }
+        else if (penaltyGauge < 0)
+        {
+            if (penaltyLevel > 0)
+            {
+                penaltyGauge += expGauge * penaltyLevel;
+                penaltyLevel--;
+            }
+            else
+                penaltyGauge = 0;
         }
     }
 
@@ -81,19 +131,22 @@ public class VirusPenalty
         }
     }
 
-    public void GetReductionExp()
+    public void GetReductionExp(int reduceGauge)
     {
-        reductionGauge += virus.exp * penaltyLevel;
-        var maxGauge = expGauge * (reductionLevel + 1);
-        if (reductionGauge >= maxGauge)
+        if (reduceGauge < 0)
         {
-            if (reductionLevel != maxLevel)
+            reductionGauge += (-reduceGauge);
+            var maxGauge = character.resistGauge * (reductionLevel + 1);
+            if (reductionGauge >= maxGauge)
             {
-                reductionGauge -= maxGauge;
-                reductionLevel++;
+                if (reductionLevel != maxLevel)
+                {
+                    reductionGauge -= maxGauge;
+                    reductionLevel++;
+                }
+                else if (reductionLevel == maxLevel)
+                    penaltyGauge = maxGauge;
             }
-            else if (reductionLevel == maxLevel)
-                penaltyGauge = maxGauge;
         }
     }
 

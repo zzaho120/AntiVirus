@@ -24,7 +24,8 @@ public class BattleAttackState : StateBase
         var player = monster.CheckAttackRange();
         if (player != null && monster.monsterStats.CheckAttackAp())
         {
-            player.GetDamage(monster.monsterStats);
+            if (player.GetDamage(monster.monsterStats))
+                monster.SetTarget(null);
         }
         else
             EventBusMgr.Publish(EventType.EndEnemy);

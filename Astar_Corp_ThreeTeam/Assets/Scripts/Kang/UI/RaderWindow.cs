@@ -32,9 +32,7 @@ public class RaderWindow : GenericWindow
         rot.y = 0;
 
         raderImage.rotation = rot;
-
-        raderImage.position = Camera.main.WorldToScreenPoint(player);
-        raderImage.anchoredPosition += newPos * 200;
+        raderImage.anchoredPosition += newPos * 100;
 
         StartCoroutine(CoAlphaRader(level));
     }

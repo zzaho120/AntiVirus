@@ -35,7 +35,7 @@ public class BattleMonsterMgr : MonoBehaviour
             monster.StartTurn();
             sightMgr.InitMonsterSight(idx);
             if (monster.target == null)
-                monster.target = sightMgr.GetPlayerInMonsterSight(idx);
+                monster.SetTarget(sightMgr.GetPlayerInMonsterSight(idx));
 
             monster.fsm.ChangeState((int)BattleMonState.Idle);
         }

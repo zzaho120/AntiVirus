@@ -25,7 +25,6 @@ public class PlayerActionWindow : GenericWindow
             }
         }
 
-
         if (!inited)
         {
             inited = true;

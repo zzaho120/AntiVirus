@@ -53,7 +53,9 @@ public class BattleInfoWindow : GenericWindow
     {
         var tileIdx = new Vector2(curMonster.tileIdx.x, curMonster.tileIdx.z);
         if (BattleMgr.Instance.sightMgr.GetFrontSight(curPlayer).Exists(x => x.tileBase == curMonster.currentTile))
+        {
             curPlayer.ActionAttack(curMonster);
+        }
 
         curPlayer = null;
         curMonster = null;

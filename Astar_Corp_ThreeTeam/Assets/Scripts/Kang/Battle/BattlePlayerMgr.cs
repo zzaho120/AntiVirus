@@ -66,7 +66,7 @@ public class BattlePlayerMgr : MonoBehaviour
                         if (weapon.CheckAvailShot(player.AP, CharacterState.Alert))
                         {
                             var isHit = weapon.CheckAlertAccuracy(curMonster.currentTile.accuracy);
-                            player.AP -= weapon.GetWeaponAP(CharacterState.Attack);
+                            player.AP -= weapon.GetWeaponAP();
 
                             if (isHit)
                                 curMonster.GetDamage(player.characterStats.weapon.Damage);

@@ -99,7 +99,7 @@ public class HintMgr : MonoBehaviour
 
         CameraController.Instance.SetFollowObject(playerableChar[min.Item1].transform);
         var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.RaderWindow - 1) as RaderWindow;
-        window.StartRader(playerableChar[min.Item1].tileIdx, monster, 3);
+        window.StartRader(playerableChar[min.Item1].tileIdx, monster, level);
         
     }
 }

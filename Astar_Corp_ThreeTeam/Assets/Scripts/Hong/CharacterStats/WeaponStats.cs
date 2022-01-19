@@ -272,43 +272,22 @@ public class WeaponStats
     // 새로 최소, 최대 사거리가 생겼어요
     // 근데 전투 시스템에 어떻게 적용되는지 잘 모르겠어서 걍 주석 처리할라니까 밑에 다 오류 뜰까봐
     // 임시로 swith문 부분을 Range -> MaxRange로 바꿔놨음 니다
+    // 강주수 - 수정완료
     public int CalCulateAccuracy(int accuracy, int accurRate)
     {
         var totalAccuracy = 0;
-        //switch (Range)
-        switch (MaxRange)
+
+        if (MinRange <= accuracy && accuracy <= MaxRange)
+            totalAccuracy = accurRate;
+        else if (accuracy < MinRange)
         {
-            case 1: // 근거리
-                if (0 < accuracy && accuracy < 5)
-                    totalAccuracy = accurRate;
-                else
-                    totalAccuracy = accurRate - 30 * (accuracy - 4);
-                break;
-
-            case 2: // 중거리
-                if (3 < accuracy && accuracy < 8)
-                    totalAccuracy = accurRate;
-                else if (accuracy < 4)
-                    totalAccuracy = accurRate - 10 * (4 - accuracy);
-                else if (accuracy > 7)
-                    totalAccuracy = accurRate - 15 * (accuracy - 8);
-                break;
-
-            case 3: // 원거리
-                if (6 < accuracy && accuracy < 11)
-                    totalAccuracy = accurRate;
-                else if (accuracy < 7)
-                    totalAccuracy = accurRate - 15 * (7 - accuracy);
-                else if (accuracy > 10)
-                    totalAccuracy = accurRate - 10 * (accuracy - 10);
-                break;
-
-            case 4: // 근접무기
-                if (1 == accuracy)
-                    totalAccuracy = accurRate;
-                else
-                    totalAccuracy = 0;
-                break;
+            var difference = MinRange - accuracy;
+            totalAccuracy = accurRate - UnderRange_Penalty * difference;
+        }
+        else if (MaxRange < accuracy)
+        {
+            var difference = accuracy - MaxRange;
+            totalAccuracy = accurRate - OverRange_Penalty * difference;
         }
         return totalAccuracy;
     }
@@ -356,23 +335,13 @@ public class WeaponStats
     //  \(__)|
     // =================
     // 고양이
-    public int GetWeaponAP(CharacterState state)
+    public int GetWeaponAP()
     {
         var result = 0;
         if (fireCount == 0)
             result = FirstShotAp;
         else
-        {
-            switch (state)
-            {
-                case CharacterState.Attack:
-                    //result = AimShotAp;
-                    break;
-                case CharacterState.Alert:
-                    //result = AlertShotAp;
-                    break;
-            }
-        }
+            result = OtherShotAp;
         return result;
     }
 
@@ -383,5 +352,4 @@ public class WeaponStats
 
         return false;
     }
-
 }

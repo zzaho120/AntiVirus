@@ -599,7 +599,7 @@ public class SightMgr : MonoBehaviour
     {
         var monsterSight = monsterSightList[monsterIdx];
         var monster = monsters[monsterIdx];
-        var sightDistance = 3;
+        var sightDistance = monster.monsterStats.monster.sightRange;
         var curTileIdx = new Vector2(monster.tileIdx.x, monster.tileIdx.z);
 
         foreach (var sight in monsterSight)

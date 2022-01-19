@@ -250,10 +250,13 @@ public class PlayerableChar : BattleTile
             if (weapon.CheckAvailShot(AP, CharacterState.Attack))
             {
                 var isHit = weapon.CheckAttackAccuracy(monster.currentTile.accuracy);
-                AP -= weapon.GetWeaponAP(CharacterState.Attack);
+                AP -= weapon.GetWeaponAP();
 
                 if (isHit)
+                {
                     monster.GetDamage(weapon.Damage);
+                    monster.SetTarget(this);
+                }
                 else
                 {
                     var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
@@ -269,7 +272,6 @@ public class PlayerableChar : BattleTile
                     WaitPlayer();
                     SetNonSelected();
                 }
-
             }
             else
             {
@@ -305,7 +307,7 @@ public class PlayerableChar : BattleTile
         status = CharacterState.Wait;
     }
 
-    public void GetDamage(MonsterStats monsterStats)
+    public bool GetDamage(MonsterStats monsterStats)
     {
         var hp = characterStats.currentHp;
         var dmg = monsterStats.Damage;
@@ -335,14 +337,19 @@ public class PlayerableChar : BattleTile
                     virusType = "T";
                     break;
             }
-            characterStats.virusPanalty[virusType].Calculation(monsterStats.virusLevel);
+            characterStats.virusPanalty[virusType].Calculation(monsterStats.virusLevel, monsterStats.monster.virusGauge);
         }
 
         var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
         window.SetMsgText($"Player is damaged {dmg} Point - HP : {characterStats.currentHp}");
 
         if (characterStats.currentHp == 0)
+        {
             EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 0 });
+            return true;
+        }
+
+        return false;
     }
 
     public void ReloadWeapon()

@@ -43,6 +43,11 @@ public class MonsterChar : BattleTile
             EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 1 });
     }
 
+    public void SetTarget(PlayerableChar player)
+    {
+        target = player;
+    }
+
     public void MonsterUpdate()
     {
         fsm.Update();
@@ -50,7 +55,7 @@ public class MonsterChar : BattleTile
 
     public void Move(PlayerableChar target)
     {
-        var Ap1ByMp = 3 + monsterStats.Mp;
+        var Ap1ByMp = monsterStats.Mp;
         var mp = monsterStats.currentAp * Ap1ByMp;
         var pathMgr = BattleMgr.Instance.pathMgr;
         var destTile = Vector3.zero;
