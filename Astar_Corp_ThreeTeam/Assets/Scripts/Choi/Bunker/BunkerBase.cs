@@ -6,4 +6,5 @@ public class BunkerBase : MonoBehaviour
 {
     public int bunkerId;
     public string bunkerName;
+    public int bunkerLevel;
 }

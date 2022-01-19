@@ -57,8 +57,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         if (saveData.id == null)
         {
             saveData.bunkerKind = new List<int>();
-            saveData.bunkerLevel = new List<int>();
-
+            
             saveData.id = new List<string>();
             saveData.boarding = new List<int>();
             saveData.name = new List<string>();
@@ -120,8 +119,14 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 for (int i = 0; i < 9; i++)
                 {
                     saveData.bunkerKind.Add(0);
-                    saveData.bunkerLevel.Add(0);
                 }
+                saveData.agitLevel = 1;
+                saveData.storageLevel = 1;
+                saveData.garageLevel = 1;
+                saveData.carcenterLevel = 1;
+                saveData.hospitalLevel = 1;
+                saveData.storeLevel = 1;
+                saveData.pubLevel = 1;
 
                 //테스트용.
                 //////////////////////////////

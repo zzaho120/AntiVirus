@@ -6,7 +6,14 @@ public class PlayerSaveData
 {
     //저장할 데이터들.
     public List<int> bunkerKind { get; set; }
-    public List<int> bunkerLevel { get; set; }
+    
+    public int agitLevel { get; set; }
+    public int storageLevel { get; set; }
+    public int garageLevel { get; set; }
+    public int carcenterLevel { get; set; }
+    public int hospitalLevel { get; set; }
+    public int storeLevel { get; set; }
+    public int pubLevel { get; set; }
 
     //캐릭터 관련.
     public List<string> id { get; set; }

@@ -29,6 +29,7 @@ public class BunkerMgr : MonoBehaviour
     GarageMgr garageMgr;
     PlayerDataMgr playerDataMgr;
     CarCenterMgr carCenterMgr;  //¼öÁø
+    UpgradeMgr upgradeMgr;
 
     public GameObject createButton;
     public GameObject destroyButton;
@@ -65,6 +66,7 @@ public class BunkerMgr : MonoBehaviour
         hospitalMgr = GameObject.FindGameObjectWithTag("HospitalMgr").GetComponent<HospitalMgr>();
         garageMgr = GameObject.FindGameObjectWithTag("GarageMgr").GetComponent<GarageMgr>();
         carCenterMgr = GameObject.Find("CarCenterMgr").GetComponent<CarCenterMgr>();
+        upgradeMgr = GameObject.Find("UpgradeMgr").GetComponent<UpgradeMgr>();
 
         agitMgr.playerDataMgr = playerDataMgr;
         pubMgr.playerDataMgr = playerDataMgr;
@@ -72,6 +74,8 @@ public class BunkerMgr : MonoBehaviour
         hospitalMgr.playerDataMgr = playerDataMgr;
         garageMgr.playerDataMgr = playerDataMgr;
         carCenterMgr.playerDataMgr = playerDataMgr;
+        upgradeMgr.playerDataMgr = playerDataMgr;
+        upgradeMgr.manager = this;
     }
 
     private void Start()
@@ -93,15 +97,16 @@ public class BunkerMgr : MonoBehaviour
         bunkerCount = bunkerObjs.Count;
         currentBunkerIndex = -1;
 
-        int i = 0;
-        foreach (var element in playerDataMgr.saveData.bunkerKind)
+        int count = playerDataMgr.saveData.bunkerKind.Count;
+        for (int i=0; i<count; i++)
         {
-            int kind = element;
+            int kind = playerDataMgr.saveData.bunkerKind[i];
             BunkerKinds bunkerKinds = (BunkerKinds)kind;
 
             selectedBunker = bunkerObjs[i];
             currentBunkerIndex = i;
             currentBunkerKind = bunkerKinds;
+
             switch (bunkerKinds)
             {
                 case BunkerKinds.None:
@@ -137,7 +142,7 @@ public class BunkerMgr : MonoBehaviour
 
                     break;
             }
-            i++;
+            var bunkerBase = bunkerObjs[currentBunkerIndex].GetComponent<BunkerBase>();
         }
         CloseWindow();
         selectedBunker = null;
@@ -162,6 +167,9 @@ public class BunkerMgr : MonoBehaviour
                 Destroy(selectedBunker);
                 selectedBunker = null;
                 bunkerObjs[element] = go;
+
+                playerDataMgr.saveData.bunkerKind[element] = 7;
+                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
             }
         }
 
@@ -244,22 +252,18 @@ public class BunkerMgr : MonoBehaviour
                         currentBunkerKind = BunkerKinds.Garage;
                         break;
                 }
-                Debug.Log("ºóº¡Ä¿ ¾Æ´Ô");
             }
             else
             {
                 if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
 
                 currentBunkerKind = BunkerKinds.None;
-
-                Debug.Log("ºóº¡Ä¿ÀÓ");
             }
         }
     }
 
     public void OpenWindow()
     {
-        Debug.Log($"currentBunkerKind : {currentBunkerKind.ToString()}");
         switch (currentBunkerKind)
         {
             case BunkerKinds.Agit:
@@ -293,6 +297,7 @@ public class BunkerMgr : MonoBehaviour
         {
             currentWinId = (int)BunkerWindows.UpgradeWindow - 1;
             windowManager.Open(currentWinId);
+            upgradeMgr.Init();
         }
     }
 
@@ -316,29 +321,36 @@ public class BunkerMgr : MonoBehaviour
         {
             case 1:
                 currentBunkerKind = BunkerKinds.Agit;
+                playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 1;
                 go = Instantiate(agitPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
             case 2:
                 currentBunkerKind = BunkerKinds.Pub;
+                playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 2;
                 go = Instantiate(pubPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
             case 3:
                 currentBunkerKind = BunkerKinds.Store;
+                playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 3;
                 go = Instantiate(storePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
             case 4:
                 currentBunkerKind = BunkerKinds.CarCenter;
+                playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 4;
                 go = Instantiate(carCenterPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
             case 5:
                 currentBunkerKind = BunkerKinds.Hospital;
+                playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 5;
                 go = Instantiate(hospitalPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
             case 6:
                 currentBunkerKind = BunkerKinds.Garage;
+                playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 6;
                 go = Instantiate(garagePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 break;
         }
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
         string str = $"BunkerKind{currentBunkerIndex}";
         PlayerPrefs.SetInt(str, (int)currentBunkerKind);
