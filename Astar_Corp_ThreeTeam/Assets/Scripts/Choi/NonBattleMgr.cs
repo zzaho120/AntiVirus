@@ -15,16 +15,19 @@ public class NonBattleMgr : MonoBehaviour
     public CreateMonsterAreas monsterArea;
     public MonsterPool monsterPool;
     public PlayerController playerController;
+    public PlayerMove playerMove;
 
     private void Awake()
     {
         Instance = this;
 
         // 클래스 찾기
+        var player = GameObject.Find("Player");
         laboratoryArea = Instance.GetComponent<CreateLabArea>();
         monsterArea = Instance.GetComponent<CreateMonsterAreas>();
         monsterPool = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
-        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+        playerController = player.GetComponent<PlayerController>();
+        playerMove = player.GetComponent<PlayerMove>();
     }
 
     private void Start()
@@ -33,12 +36,19 @@ public class NonBattleMgr : MonoBehaviour
         laboratoryArea.Init();
         monsterArea.Init();
         monsterPool.Init();
+        playerMove.Init();
         playerController.Init();
     }
 
     private void Update()
     {
-        playerController.ActivePlayer();
+        playerController.PlayerControllerUpdate();
+        //playerMove.PlayerMoveUpdate();
+    }
+
+    private void LateUpdate()
+    {
+        playerMove.PlayerMoveLateUpdate();
     }
 
     // PlayerPrefs 삭제 테스터

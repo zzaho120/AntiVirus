@@ -4,40 +4,55 @@ using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
+// ※ 주의
+// =======================================================
+//  나중에 벙커 isClickable 작동되도록 -> 지금 주석 쳐놓음
+// =======================================================
+
+// 클래스 역할
+// =======================================================
+//  비전투씬 내 플레이어 위치 저장,
+//  벙커, 연구소, 전투 팝업창 띄우기,
+//  전투 씬으로 전환 등
+// =======================================================
 public class PlayerController : MonoBehaviour
 {
+    // MultiTouch
     //지은.
-    public GameObject ui;
-
-    public CharacterInfo character;
+    [HideInInspector]
     public MultiTouch multiTouch;
 
+    // Managers
     private NonBattleMgr nonBattleMgr;
     private PopUpMgr popUpMgr;
 
+    // Time Controller
+    [HideInInspector]
     public TimeController timeController;
 
+    // Get NavMesh
+    private PlayerMove playerNav;
+    private NavMeshAgent agent;
+
+    // Sight
     [HideInInspector]
-    public NavMeshAgent agent;
+    public bool isBunkerClikable = true;
 
-    //public GameObject panel;  //나중에 Fadeout 효과 넣을때
-    [HideInInspector]
-    public bool isMove;//지은.
-    public bool isBunkerClikable = true;    // 시야관련
-
-    float pX, pY, pZ;
-    bool saveMode;
-    float originAgentSpeed;
-
-    // to set layers
-    [SerializeField]
-    LayerMask groundLayerMask;
+    // SaveLoad
+    private float pX, pY, pZ;
+    private bool saveMode;
 
     public void Init()
     {
-        nonBattleMgr = NonBattleMgr.Instance;
-        popUpMgr = nonBattleMgr.GetComponent<PopUpMgr>();
+        // 오브젝트 찾기
+        nonBattleMgr    = NonBattleMgr.Instance;
+        multiTouch      = GameObject.Find("MultiTouch").GetComponent<MultiTouch>();
+        popUpMgr        = nonBattleMgr.GetComponent<PopUpMgr>();
+        timeController  = GameObject.Find("TimeController").GetComponent<TimeController>();
+        playerNav       = GetComponent<PlayerMove>();
+        agent           = playerNav.navMeshAgent;
 
+        // 위치 저장
         if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")))
         {
             pX = PlayerPrefs.GetFloat("p_x");
@@ -49,170 +64,118 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = nonBattleMgr.bunkerPos.position;
         }
-
-        agent = GetComponentInChildren<NavMeshAgent>();
-
-        isMove = false;
         saveMode = true;
     }
 
     //void Update()
-    public void ActivePlayer()
+    public void PlayerControllerUpdate()
     {
-        // 뉴인풋시스템
-        if (Input.touchCount == 1 && !EventSystem.current.IsPointerOverGameObject())
-        // if (multiTouch.Tap && !IsPointerOverUIObject(multiTouch.curTouchPos)            /*&& timeController.isPause == false*/)
+        // Raycast parameters
+        int facilitiesLayer = LayerMask.GetMask("Facilities");
+        int monsterLayer    = LayerMask.GetMask("EliteMonster");
+        int rayRange = 1000;
+
+        #region New Input System
+        if ((multiTouch.Tap && !EventSystem.current.IsPointerOverGameObject() && timeController.isPause == false))              
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
             RaycastHit raycastHit;
-            groundLayerMask = LayerMask.GetMask("Ground");
-            int facilitiesLayer = LayerMask.GetMask("Facilities");
-
-            // 전투발생
-            if (Physics.Raycast(ray, out raycastHit, 100, LayerMask.GetMask("EliteMonster")))
+            if (Physics.Raycast(ray, out raycastHit, rayRange, monsterLayer))
             {
+                // 전투발생
                 if (raycastHit.collider.CompareTag("Enemy"))
                 {
                     // 렌더러가 활성화 되어있을때만 유효하게
                     if (raycastHit.collider.GetComponent<MeshRenderer>().enabled)
                     {
+                        // 위치 저장? 해야되나
+                        //SavePlayerPos(raycastHit);
                         popUpMgr.OpenMonsterPopup();
 
+                        // 비전투씬 일시정지
                         timeController.PauseTime();
                         timeController.isPause = true;
                     }
                 }
-                if (raycastHit.collider.CompareTag("Footprint") && multiTouch.LongTap)
+                // 발자국 클릭 시
+                if (raycastHit.collider.CompareTag("Footprint"))
                 {
-                    Debug.Log("발자국");
+                    popUpMgr.OpenFootprintPopup();
                 }
+                // 클릭하는 위치로 이동하는 것 방지
+                agent.SetDestination(agent.transform.position);
             }
-            if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
+            if (Physics.Raycast(ray, out raycastHit, rayRange, facilitiesLayer))
             {
-                if (raycastHit.collider.gameObject.name.Equals("Bunker") && isBunkerClikable)
+                if (raycastHit.collider.gameObject.name.Equals("Bunker") /*&& isBunkerClikable*/)
                 {
-                    pX = raycastHit.collider.gameObject.transform.position.x;
-                    pY = raycastHit.collider.gameObject.transform.position.y;
-                    pZ = raycastHit.collider.gameObject.transform.position.z;
-
-                    saveMode = false;
-                    PlayerPrefs.SetFloat("p_x", pX);
-                    PlayerPrefs.SetFloat("p_y", pY);
-                    PlayerPrefs.SetFloat("p_z", pZ);
-
-                    //벙커 팝업창
+                    SavePlayerPos(raycastHit);
                     popUpMgr.OpenBunkerPopup();
+                    agent.SetDestination(agent.transform.position); 
                 }
-                else if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
+                if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
                 {
-                    //pX = raycastHit.collider.gameObject.transform.position.x;
-                    //pY = raycastHit.collider.gameObject.transform.position.y;
-                    //pZ = raycastHit.collider.gameObject.transform.position.z;
-                    //
-                    //saveMode = false;
-                    //PlayerPrefs.SetFloat("p_x", pX);
-                    //PlayerPrefs.SetFloat("p_y", pY);
-                    //PlayerPrefs.SetFloat("p_z", pZ);
-
-                    //연구소 팝업창
+                    //SavePlayerPos(raycastHit);
                     popUpMgr.OpenLaboratoryPopup();
+                    agent.SetDestination(agent.transform.position);
                 }
-                //else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
-                //   raycastHit.collider.gameObject.name.Equals("Plane"))
-                //{
-                //    agent.SetDestination(raycastHit.point);
-                //}
             }
-            //else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
-            //{
-            //    agent.SetDestination(raycastHit.point);
-            //}
         }
+        #endregion
 
-
-        // 마우스 클릭
+        #region Mouse Click
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && timeController.isPause == false)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
-            groundLayerMask = LayerMask.GetMask("Ground");
-            int facilitiesLayer = LayerMask.GetMask("Facilities");
-
-            //전투발생
-            if (Physics.Raycast(ray, out raycastHit, 100, LayerMask.GetMask("EliteMonster")))
+        
+            if (Physics.Raycast(ray, out raycastHit, rayRange, monsterLayer))
             {
+                // 전투발생
                 if (raycastHit.collider.CompareTag("Enemy"))
                 {
                     // 렌더러가 활성화 되어있을때만 유효하게
                     if (raycastHit.collider.GetComponent<MeshRenderer>().enabled)
                     {
-                        pX = raycastHit.collider.gameObject.transform.position.x;
-                        pY = raycastHit.collider.gameObject.transform.position.y;
-                        pZ = raycastHit.collider.gameObject.transform.position.z;
-
-                        saveMode = false;
-                        PlayerPrefs.SetFloat("p_x", pX);
-                        PlayerPrefs.SetFloat("p_y", pY);
-                        PlayerPrefs.SetFloat("p_z", pZ);
-
+                        // 위치 저장? 해야되나
+                        //SavePlayerPos(raycastHit);
                         popUpMgr.OpenMonsterPopup();
-
+                        
+                        // 비전투맵 일시정지
                         timeController.PauseTime();
                         timeController.isPause = true;
                     }
                 }
+                // 발자국 클릭 시
                 if (raycastHit.collider.CompareTag("Footprint"))
                 {
-                    Debug.Log("발자국");
+                    popUpMgr.OpenFootprintPopup();
                 }
+                // 클릭하는 위치로 이동하는 것 방지
+                agent.SetDestination(agent.transform.position);
             }
-            if (Physics.Raycast(ray, out raycastHit, 100, facilitiesLayer))
+            if (Physics.Raycast(ray, out raycastHit, rayRange, facilitiesLayer))
             {
-                // 벙커로 이동
-                if (raycastHit.collider.gameObject.name.Equals("Bunker") && isBunkerClikable)
+                if (raycastHit.collider.gameObject.name.Equals("Bunker") /*&& isBunkerClikable*/)
                 {
-                    pX = raycastHit.collider.gameObject.transform.position.x;
-                    pY = raycastHit.collider.gameObject.transform.position.y;
-                    pZ = raycastHit.collider.gameObject.transform.position.z;
-
-                    saveMode = false;
-                    PlayerPrefs.SetFloat("p_x", pX);
-                    PlayerPrefs.SetFloat("p_y", pY);
-                    PlayerPrefs.SetFloat("p_z", pZ);
-
-                    //벙커 팝업창
+                    SavePlayerPos(raycastHit);
                     popUpMgr.OpenBunkerPopup();
-                }
-                // 연구소로 이동
-                else if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
-                {
-                    //pX = raycastHit.collider.gameObject.transform.position.x;
-                    //pY = raycastHit.collider.gameObject.transform.position.y;
-                    //pZ = raycastHit.collider.gameObject.transform.position.z;
-                    //
-                    //saveMode = false;
-                    //PlayerPrefs.SetFloat("p_x", pX);
-                    //PlayerPrefs.SetFloat("p_y", pY);
-                    //PlayerPrefs.SetFloat("p_z", pZ);
 
-                    //연구소 팝업창
-                    popUpMgr.OpenLaboratoryPopup();
+                    // 클릭하는 위치로 이동하는 것 방지
+                    agent.SetDestination(agent.transform.position);
                 }
-            //    else if (raycastHit.collider.gameObject.name.Equals("Fog") ||
-            //       raycastHit.collider.gameObject.name.Equals("Plane") ||
-            //            raycastHit.collider.gameObject.CompareTag("Road"))
-            //    {
-            //        //nav.targetPos = raycastHit.point;
-            //        agent.SetDestination(raycastHit.point);
-            //    }
+                if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
+                {
+                    popUpMgr.OpenLaboratoryPopup();
+                    agent.SetDestination(agent.transform.position);
+                }
+
             }
-            //else if (Physics.Raycast(ray, out raycastHit, 100, groundLayerMask))
-            //{
-            //    //nav.targetPos = raycastHit.point;
-            //    agent.SetDestination(raycastHit.point);
-            //}
         }
-        if (agent.velocity.magnitude > 0.15f) //움직이고 있을 때.
+        #endregion
+
+        //움직이고 있을 때.
+        if (agent.velocity.magnitude > 0.15f) 
         {
             PlayerPrefs.SetFloat("p_x", transform.position.x);
             PlayerPrefs.SetFloat("p_y", transform.position.y);
@@ -224,13 +187,24 @@ public class PlayerController : MonoBehaviour
         {
             agent.SetDestination(agent.transform.position);
         }
+
+        playerNav.PlayerMoveUpdate();
     }
 
-    //private void LateUpdate()
-    //{
-    //    transform.position = agent.nextPosition;
-    //}
+    // 플레이어 위치 저장
+    private void SavePlayerPos(RaycastHit raycastHit)
+    {
+        pX = raycastHit.collider.gameObject.transform.position.x;
+        pY = raycastHit.collider.gameObject.transform.position.y;
+        pZ = raycastHit.collider.gameObject.transform.position.z;
 
+        saveMode = false;
+        PlayerPrefs.SetFloat("p_x", pX);
+        PlayerPrefs.SetFloat("p_y", pY);
+        PlayerPrefs.SetFloat("p_z", pZ);
+    }
+
+    // 전투 씬으로 전환
     public void ChangeBattleScene()
     {
         timeController.PauseTime();

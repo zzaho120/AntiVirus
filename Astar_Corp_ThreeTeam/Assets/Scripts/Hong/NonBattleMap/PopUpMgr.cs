@@ -37,6 +37,12 @@ public class PopUpMgr : MonoBehaviour
         var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
     }
 
+    public void OpenFootprintPopup()
+    {
+        var windowId = (int)Windows.FootprintInfo - 1;
+        var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+    }
+
     public void MoveToBunker()
     {
         SceneManager.LoadScene("Bunker");
