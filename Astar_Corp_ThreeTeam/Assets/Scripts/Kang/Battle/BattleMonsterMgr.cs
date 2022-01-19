@@ -33,13 +33,13 @@ public class BattleMonsterMgr : MonoBehaviour
         {
             var monster = monsters[idx];
             monster.StartTurn();
-            monster.fsm.ChangeState((int)BattleMonState.Idle);
             sightMgr.InitMonsterSight(idx);
             if (monster.target == null)
                 monster.target = sightMgr.GetPlayerInMonsterSight(idx);
+
+            monster.fsm.ChangeState((int)BattleMonState.Idle);
         }
         curMonster = monsters[0];
-        RecognizePlayer();
     }
 
     public void UpdateTurn()

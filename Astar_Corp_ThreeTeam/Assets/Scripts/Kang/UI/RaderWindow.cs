@@ -26,7 +26,6 @@ public class RaderWindow : GenericWindow
     {
         var dir = (monster - player).normalized;
         var newPos = new Vector2(dir.x, dir.z);
-        Debug.Log(newPos);
         var rot = Quaternion.FromToRotation(raderImage.up, newPos);
 
         rot.x = 0;
@@ -69,6 +68,7 @@ public class RaderWindow : GenericWindow
             yield return null;
         }
 
+        CameraController.Instance.SetFollowObject(null);
         Close();
     }
 }

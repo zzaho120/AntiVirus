@@ -227,4 +227,19 @@ public class MonsterStats : MonoBehaviour
     {
         currentAp = Ap;
     }
+
+    public bool CheckAttackAp()
+    {
+        return currentAp >= CloseAttackAp;
+    }
+
+    public void CalculateAttackAp()
+    {
+        currentAp -= CloseAttackAp;
+    }
+
+    public bool CheckRunMonster()
+    {
+        return currentHp < maxHp * (monster.escapeHpDec / 100f);
+    }
 }

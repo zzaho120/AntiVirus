@@ -50,6 +50,7 @@ public class BattleMgr : MonoBehaviour
 
         var vectorList = new List<Vector3>();
         vectorList.Add(new Vector3(7, 0.5f, 8));
+        vectorList.Add(new Vector3(7, 0.5f, 9));
 
         var playerDataMgrObj = GameObject.FindWithTag("PlayerDataMgr");
         var isExistDataMgr = playerDataMgrObj != null;

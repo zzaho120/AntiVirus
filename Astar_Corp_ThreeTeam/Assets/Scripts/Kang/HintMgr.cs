@@ -85,7 +85,6 @@ public class HintMgr : MonoBehaviour
             }
         }
 
-        Debug.Log(min.Item1);
         if (min.Item1 == -1)
             return;
 
@@ -97,7 +96,10 @@ public class HintMgr : MonoBehaviour
             level = 2;
         else if (audible * 3 > min.Item2)
             level = 1;
+
+        CameraController.Instance.SetFollowObject(playerableChar[min.Item1].transform);
         var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.RaderWindow - 1) as RaderWindow;
         window.StartRader(playerableChar[min.Item1].tileIdx, monster, 3);
+        
     }
 }
