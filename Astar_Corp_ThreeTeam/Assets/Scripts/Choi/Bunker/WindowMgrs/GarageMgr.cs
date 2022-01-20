@@ -13,8 +13,32 @@ public class GarageMgr : MonoBehaviour
     public TrunkMgr trunkMgr;
     public BoardingMgr boardingMgr;
 
+    int garageLevel;
+    int maxCarCapacity;
     public void Init()
     {
+        garageLevel = playerDataMgr.saveData.garageLevel;
+        Bunker garageLevelInfo = playerDataMgr.bunkerList["BUN_0003"];
+        switch (garageLevel)
+        {
+            case 1:
+                maxCarCapacity = garageLevelInfo.level1;
+                break;
+            case 2:
+                maxCarCapacity = garageLevelInfo.level2;
+                break;
+            case 3:
+                maxCarCapacity = garageLevelInfo.level3;
+                break;
+            case 4:
+                maxCarCapacity = garageLevelInfo.level4;
+                break;
+            case 5:
+                maxCarCapacity = garageLevelInfo.level5;
+                break;
+        }
+        int currentCarNum = playerDataMgr.saveData.cars.Count;
+
         trunkMgr.playerDataMgr = playerDataMgr;
         trunkMgr.Init();
 

@@ -5,15 +5,23 @@ using UnityEngine;
 public class PlayerSaveData
 {
     //저장할 데이터들.
+    public int bunkerExitNum;
+
+    //벙커 관련.
     public List<int> bunkerKind { get; set; }
-    
     public int agitLevel { get; set; }
     public int storageLevel { get; set; }
     public int garageLevel { get; set; }
-    public int carcenterLevel { get; set; }
+    public int carCenterLevel { get; set; }
     public int hospitalLevel { get; set; }
     public int storeLevel { get; set; }
     public int pubLevel { get; set; }
+
+    //차량 관련.
+    public List<string> cars { get; set; }
+    public List<int> speedLv { get; set; }
+    public List<int> sightLv { get; set; }
+    public List<int> weightLv { get; set; }
 
     //캐릭터 관련.
     public List<string> id { get; set; }
@@ -24,6 +32,7 @@ public class PlayerSaveData
     public List<int> sensitivity { get; set; }
     public List<int> concentration { get; set; }
     public List<int> willPower { get; set; }
+    public List<int> bagLevel { get; set; }
 
     //패널티.
     //"E", "B", "P", "I", "T" 

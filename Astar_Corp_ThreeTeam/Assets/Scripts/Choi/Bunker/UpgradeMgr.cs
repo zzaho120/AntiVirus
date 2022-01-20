@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UpgradeMgr : MonoBehaviour
 {
@@ -11,18 +12,23 @@ public class UpgradeMgr : MonoBehaviour
     public List<GameObject> bunkers;
     public GameObject prefab;
 
+    BunkerMgr bunkerMgr;
     [HideInInspector]
-    public BunkerMgr manager;
-    [HideInInspector]
-    public List<GameObject> prefabs;
+    public Dictionary<int, GameObject> prefabs = new Dictionary<int, GameObject>();
 
     public void Init()
     {
+        bunkerMgr = GameObject.Find("BunkerMgr").GetComponent<BunkerMgr>();
+
         int i = 0;
-        foreach (var element in manager.bunkerObjs)
+        foreach (var element in bunkerMgr.bunkerObjs)
         {
             var bunkerBase = element.GetComponent<BunkerBase>();
-            if (bunkerBase.bunkerName.Equals("None") || bunkerBase.bunkerName.Equals("Locked")) continue;
+            if (bunkerBase.bunkerName.Equals("None") || bunkerBase.bunkerName.Equals("Locked"))
+            {
+                i++;
+                continue;
+            }
 
             var go = Instantiate(prefab, conWindow.transform);
             go.transform.position = Camera.main.WorldToScreenPoint(element.transform.position);
@@ -43,7 +49,7 @@ public class UpgradeMgr : MonoBehaviour
                     currentLevel = playerDataMgr.saveData.garageLevel;
                     break;
                 case "CarCenter":
-                    currentLevel = playerDataMgr.saveData.carcenterLevel;
+                    currentLevel = playerDataMgr.saveData.carCenterLevel;
                     break;
                 case "Hospital":
                     currentLevel = playerDataMgr.saveData.hospitalLevel;
@@ -70,7 +76,7 @@ public class UpgradeMgr : MonoBehaviour
                 button.interactable = false;
             }
 
-            prefabs.Add(go);
+            prefabs.Add(num, go);
             i++;
         }
     }
@@ -93,7 +99,7 @@ public class UpgradeMgr : MonoBehaviour
                 currentLevel = playerDataMgr.saveData.garageLevel;
                 break;
             case "CarCenter":
-                currentLevel = playerDataMgr.saveData.carcenterLevel;
+                currentLevel = playerDataMgr.saveData.carCenterLevel;
                 break;
             case "Hospital":
                 currentLevel = playerDataMgr.saveData.hospitalLevel;
@@ -112,45 +118,55 @@ public class UpgradeMgr : MonoBehaviour
         switch (kind)
         {
             case "Agit":
+                playerDataMgr.saveData.agitLevel += 1;
+                bunkerMgr.agitMgr.Init();
                 currentLevel = playerDataMgr.saveData.agitLevel;
                 break;
             case "Storage":
+                playerDataMgr.saveData.storageLevel += 1;
+                //bunkerMgr.sto.Init();
                 currentLevel = playerDataMgr.saveData.storageLevel;
                 break;
             case "Garage":
+                playerDataMgr.saveData.garageLevel += 1;
                 currentLevel = playerDataMgr.saveData.garageLevel;
                 break;
             case "CarCenter":
-                currentLevel = playerDataMgr.saveData.carcenterLevel;
+                playerDataMgr.saveData.carCenterLevel += 1;
+                currentLevel = playerDataMgr.saveData.carCenterLevel;
                 break;
             case "Hospital":
+                playerDataMgr.saveData.hospitalLevel += 1;
                 currentLevel = playerDataMgr.saveData.hospitalLevel;
                 break;
             case "Store":
+                playerDataMgr.saveData.storeLevel += 1;
+                bunkerMgr.storeMgr.Init();
                 currentLevel = playerDataMgr.saveData.storeLevel;
                 break;
             case "Pub":
+                playerDataMgr.saveData.pubLevel += 1;
                 currentLevel = playerDataMgr.saveData.pubLevel;
                 break;
         }
 
-        //playerDataMgr.saveData.bunkerLevel[index] += 1;
-
         var child = prefabs[index].transform.GetChild(0).gameObject;
-        //currentLevel += 1;
-        //child.GetComponent<Text>().text = $"현재레벨 : {currentLevel}";
+        child.GetComponent<Text>().text = $"현재레벨 : {currentLevel}";
 
         child = prefabs[index].transform.GetChild(1).gameObject;
-        //int nextLevel = currentLevel + 1;
-        //child.GetComponent<Text>().text = (nextLevel != 6) ? $"다음레벨 :{nextLevel}" : "-";
+        int nextLevel = currentLevel + 1;
+        child.GetComponent<Text>().text = (nextLevel != 6) ? $"다음레벨 :{nextLevel}" : "-";
 
-        //if (currentLevel == 5)
-        //{
-        //    child = prefabs[index].transform.GetChild(2).gameObject;
-        //    child.transform.GetChild(0).gameObject.GetComponent<Text>().text = "-";
-        //    var button = child.GetComponent<Button>();
-        //    button.interactable = false;
-        //}
+        if (currentLevel == 5)
+        {
+            child = prefabs[index].transform.GetChild(2).gameObject;
+            child.transform.GetChild(0).gameObject.GetComponent<Text>().text = "-";
+            var button = child.GetComponent<Button>();
+            button.interactable = false;
+        }
+
+        child = bunkerMgr.bunkerObjs[index].transform.GetChild(0).gameObject;
+        child.GetComponent<TextMeshPro>().text = $"Lv.{currentLevel}";
 
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
     }

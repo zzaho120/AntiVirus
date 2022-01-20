@@ -39,12 +39,35 @@ public class StoreMgr : MonoBehaviour
 
     Dictionary<string, Weapon> storeWeaponInfo = new Dictionary<string, Weapon>();
     Dictionary<string, Consumable> storeConsumableInfo = new Dictionary<string, Consumable>();
-    
+
+    int storeLevel;
+    int maxItemNum;
     StoreKind currentKind;
     string currentKey;
 
     public void Init()
     {
+        storeLevel = playerDataMgr.saveData.storeLevel;
+        Bunker storeLevelInfo = playerDataMgr.bunkerList["BUN_0006"];
+        switch (storeLevel)
+        {
+            case 1:
+                maxItemNum = storeLevelInfo.level1;
+                break;
+            case 2:
+                maxItemNum = storeLevelInfo.level2;
+                break;
+            case 3:
+                maxItemNum = storeLevelInfo.level3;
+                break;
+            case 4:
+                maxItemNum = storeLevelInfo.level4;
+                break;
+            case 5:
+                maxItemNum = storeLevelInfo.level5;
+                break;
+        }
+
         ClosePopup();
 
         //이전 정보 삭제.
@@ -112,6 +135,7 @@ public class StoreMgr : MonoBehaviour
             storeObjs.Clear();
             storeContents.transform.DetachChildren();
         }
+        storeWeaponInfo.Clear();
 
         foreach (var element in playerDataMgr.equippableList)
         {
@@ -137,6 +161,7 @@ public class StoreMgr : MonoBehaviour
             storeObjs.Clear();
             storeContents.transform.DetachChildren();
         }
+        storeConsumableInfo.Clear();
 
         foreach (var element in playerDataMgr.consumableList)
         {

@@ -27,6 +27,8 @@ public class PubMgr : MonoBehaviour
     public Text hintContents;
 
     int pubLevel;
+    int maxSoldierNum;
+    int maxHintNum;
     int currentIndex;
     int currentHintIndex;
     Color originColor;
@@ -35,6 +37,33 @@ public class PubMgr : MonoBehaviour
     Dictionary<int, CharacterStats> soliders = new Dictionary<int, CharacterStats>();
     public void Init()
     {
+        pubLevel = playerDataMgr.saveData.pubLevel;
+        Bunker pubSoldierLevelInfo = playerDataMgr.bunkerList["BUN_0007"];
+        Bunker pubHintLevelInfo = playerDataMgr.bunkerList["BUN_0008"];
+        switch (pubLevel)
+        {
+            case 1:
+                maxSoldierNum = pubSoldierLevelInfo.level1;
+                maxHintNum = pubHintLevelInfo.level1;
+                break;
+            case 2:
+                maxSoldierNum = pubSoldierLevelInfo.level2;
+                maxHintNum = pubHintLevelInfo.level2;
+                break;
+            case 3:
+                maxSoldierNum = pubSoldierLevelInfo.level3;
+                maxHintNum = pubHintLevelInfo.level3;
+                break;
+            case 4:
+                maxSoldierNum = pubSoldierLevelInfo.level4;
+                maxHintNum = pubHintLevelInfo.level4;
+                break;
+            case 5:
+                maxSoldierNum = pubSoldierLevelInfo.level5;
+                maxHintNum = pubHintLevelInfo.level5;
+                break;
+        }
+
         if (!mainWin.activeSelf) mainWin.SetActive(true);
         if (recruitmentWin.activeSelf) recruitmentWin.SetActive(false);
         if (hintCollectionWin.activeSelf) hintCollectionWin.SetActive(false);
@@ -54,26 +83,11 @@ public class PubMgr : MonoBehaviour
         //랜덤 용병 생성.
         foreach (var element in playerDataMgr.characterList)
         {
-            characterName.Add(element.Key);
-        }
-
-        pubLevel = (PlayerPrefs.HasKey("PubLevel"))? PlayerPrefs.GetInt("PubLevel") : 1;
-        int soliderNum=0;
-        switch (pubLevel)
-        {
-            case 1:
-                soliderNum = 4;
-                break;
-            case 2:
-                soliderNum = 6;
-                break;
-            case 3:
-                soliderNum = 8;
-                break;
+            characterName.Add(element.Key); 
         }
 
         if (soliders.Count != 0) soliders.Clear();
-        for (int j = 0; j < soliderNum; j++)
+        for (int j = 0; j < maxSoldierNum; j++)
         {
             int randomIndex = Random.Range(0, playerDataMgr.characterList.Count);
             var key = characterName[randomIndex];
@@ -169,6 +183,31 @@ public class PubMgr : MonoBehaviour
 
     public void Hire()
     {
+        int agitLevel = playerDataMgr.saveData.agitLevel;
+        Bunker agitLevelInfo = playerDataMgr.bunkerList["BUN_0001"];
+        int maxMember = 0;
+        switch (agitLevel)
+        {
+            case 1:
+                maxMember = agitLevelInfo.level1;
+                break;
+            case 2:
+                maxMember = agitLevelInfo.level2;
+                break;
+            case 3:
+                maxMember = agitLevelInfo.level3;
+                break;
+            case 4:
+                maxMember = agitLevelInfo.level4;
+                break;
+            case 5:
+                maxMember = agitLevelInfo.level5;
+                break;
+        }
+        int currentMemberNum = playerDataMgr.currentSquad.Count;
+
+        if (currentMemberNum + 1 > maxMember) return;
+
         string squadNum = "SquadNum";
         int currentNum = PlayerPrefs.HasKey(squadNum) ? PlayerPrefs.GetInt(squadNum) : 0;
         playerDataMgr.AddCharacter(currentNum, soliders[currentIndex]);

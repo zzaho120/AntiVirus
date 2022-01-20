@@ -22,6 +22,12 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
 
     // 트럭 관련
     public Dictionary<string, Truck> truckList = new Dictionary<string, Truck>();
+
+    //벙커 관련
+    public Dictionary<string, Bunker> bunkerList = new Dictionary<string, Bunker>();
+
+    //가방 관련
+    public Dictionary<string, Inventory> bagList = new Dictionary<string, Inventory>();
     #endregion
 
     public override void Awake()
@@ -93,6 +99,22 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         foreach (var truck in truckArr)
         {
             truckList.Add($"{truck.id}", truck);
+        }
+
+        // 10. Bunker
+        string bunkerSOPath = "Choi/Datas/Bunkers";
+        Bunker[] bunkerArr = Resources.LoadAll<Bunker>(bunkerSOPath);
+        foreach (var bunker in bunkerArr)
+        {
+            bunkerList.Add($"{bunker.id}", bunker);
+        }
+
+        // 11. Bag
+        string bagSOPath = "Choi/Datas/Inventorys";
+        Inventory[] bagArr = Resources.LoadAll<Inventory>(bagSOPath);
+        foreach (var bag in bagArr)
+        {
+            bagList.Add($"{bag.id}", bag);
         }
     }
 

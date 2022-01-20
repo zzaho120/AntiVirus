@@ -19,6 +19,9 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public Dictionary<string, ActiveSkill> activeSkillList = new Dictionary<string, ActiveSkill>();
     public Dictionary<string, PassiveSkill> passiveSkillList = new Dictionary<string, PassiveSkill>();
     public Dictionary<string, Truck> truckList = new Dictionary<string, Truck>();
+    public Dictionary<string, Inventory> bagList = new Dictionary<string, Inventory>();
+    public Dictionary<string, Bunker> bunkerList = new Dictionary<string, Bunker>();
+
     ScriptableMgr scriptableMgr;
 
     //아지트 아이템 데이터.
@@ -41,7 +44,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public bool isFirst;
     private void Start()
     {
-        //PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
@@ -52,12 +55,20 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         activeSkillList = scriptableMgr.activeSkillList;
         passiveSkillList = scriptableMgr.passiveSkillList;
         truckList = scriptableMgr.truckList;
+        bagList = scriptableMgr.bagList;
+        bunkerList = scriptableMgr.bunkerList;
 
         filePath = @$"{Application.persistentDataPath}\PlayerData.json";
         if (saveData.id == null)
         {
+            saveData.bunkerExitNum = 0;
+
             saveData.bunkerKind = new List<int>();
-            
+            saveData.cars = new List<string>();
+            saveData.speedLv = new List<int>();
+            saveData.sightLv = new List<int>();
+            saveData.weightLv = new List<int>();
+
             saveData.id = new List<string>();
             saveData.boarding = new List<int>();
             saveData.name = new List<string>();
@@ -66,6 +77,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.sensitivity = new List<int>();
             saveData.concentration = new List<int>();
             saveData.willPower = new List<int>();
+            saveData.bagLevel = new List<int>();
 
             saveData.mainWeapon = new List<string>();
             saveData.subWeapon = new List<string>();
@@ -123,10 +135,15 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.agitLevel = 1;
                 saveData.storageLevel = 1;
                 saveData.garageLevel = 1;
-                saveData.carcenterLevel = 1;
+                saveData.carCenterLevel = 1;
                 saveData.hospitalLevel = 1;
                 saveData.storeLevel = 1;
                 saveData.pubLevel = 1;
+
+                saveData.cars.Add("TRU_0004");
+                saveData.speedLv.Add(1);
+                saveData.sightLv.Add(1);
+                saveData.weightLv.Add(1);
 
                 //테스트용.
                 //////////////////////////////
@@ -205,6 +222,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     stat.willpower = saveData.willPower[i];
                     stat.character = characterList[saveData.id[i]];
                     stat.character.id = saveData.id[i];
+                    stat.bagLevel = saveData.bagLevel[i];
 
                     stat.weapon = new WeaponStats();
                     stat.weapon.mainWeapon = (saveData.mainWeapon[i] == null) ? null : equippableList[saveData.mainWeapon[i]];
@@ -242,7 +260,11 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
                     for (int j = saveData.bagEquippableFirstIndex[i]; j < saveData.bagEquippableLastIndex[i]; j++)
                     {
+                        var key = saveData.bagEquippableList[j];
+                        var weapon = equippableList[key];
+                        
                         stat.bag.Add(saveData.bagEquippableList[j], saveData.bagEquippableNumList[j]);
+
                     }
 
                     for (int j = saveData.bagConsumableFirstIndex[i]; j < saveData.bagConsumableLastIndex[i]; j++)

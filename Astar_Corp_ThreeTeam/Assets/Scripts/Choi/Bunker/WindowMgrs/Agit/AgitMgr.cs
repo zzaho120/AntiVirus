@@ -17,6 +17,7 @@ public class AgitMgr : MonoBehaviour
 
     public GameObject charcterListWin;
     public GameObject characterInfoWin;
+    public Text memberNumTxt;
 
     //캐릭터 정보 확인.
     public Text nameTxt;
@@ -27,13 +28,38 @@ public class AgitMgr : MonoBehaviour
     public Text willpowerTxt;
 
     // 리스트 순서 / PlayerDataMgr Key
-    [HideInInspector]
     public Dictionary<int, int> characterInfo = new Dictionary<int, int>();
+    int agitLevel;
+    int currentMember;
+    int maxMember;
     bool isDeleteMode;
     int currentIndex;
     Color originColor;
     public void Init()
     {
+        agitLevel = playerDataMgr.saveData.agitLevel;
+        Bunker agitLevelInfo = playerDataMgr.bunkerList["BUN_0001"];
+        switch (agitLevel)
+        {
+            case 1:
+                maxMember = agitLevelInfo.level1;
+                break;
+            case 2:
+                maxMember = agitLevelInfo.level2;
+                break;
+            case 3:
+                maxMember = agitLevelInfo.level3;
+                break;
+            case 4:
+                maxMember = agitLevelInfo.level4;
+                break;
+            case 5:
+                maxMember = agitLevelInfo.level5;
+                break;
+        }
+        int currentMemberNum = playerDataMgr.currentSquad.Count;
+        memberNumTxt.text = $"팀원 {currentMemberNum} / {maxMember}";
+
         //이전 정보 삭제.
         if (characterObjs.Count != 0)
         {

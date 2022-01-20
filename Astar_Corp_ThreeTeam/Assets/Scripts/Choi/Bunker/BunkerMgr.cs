@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public enum BunkerKinds
 {
@@ -22,13 +23,13 @@ public class BunkerMgr : MonoBehaviour
     public BunkerCamController camController;
     public WindowManager windowManager;
     
-    AgitMgr agitMgr;
-    PubMgr pubMgr;
-    StoreMgr storeMgr;
-    HospitalMgr hospitalMgr;
-    GarageMgr garageMgr;
+    public AgitMgr agitMgr;
+    public PubMgr pubMgr;
+    public StoreMgr storeMgr;
+    public HospitalMgr hospitalMgr;
+    public GarageMgr garageMgr;
     PlayerDataMgr playerDataMgr;
-    CarCenterMgr carCenterMgr;  //수진
+    public CarCenterMgr carCenterMgr;  //수진
     UpgradeMgr upgradeMgr;
 
     public GameObject createButton;
@@ -75,7 +76,6 @@ public class BunkerMgr : MonoBehaviour
         garageMgr.playerDataMgr = playerDataMgr;
         carCenterMgr.playerDataMgr = playerDataMgr;
         upgradeMgr.playerDataMgr = playerDataMgr;
-        upgradeMgr.manager = this;
     }
 
     private void Start()
@@ -295,9 +295,9 @@ public class BunkerMgr : MonoBehaviour
     {
         if (!camController.isZoomIn)
         {
+            upgradeMgr.Init();
             currentWinId = (int)BunkerWindows.UpgradeWindow - 1;
             windowManager.Open(currentWinId);
-            upgradeMgr.Init();
         }
     }
 
@@ -317,37 +317,44 @@ public class BunkerMgr : MonoBehaviour
         if(!destroyButton.activeSelf) destroyButton.SetActive(true);
 
         GameObject go = null;
+        int currentLevel = 0;
         switch (index)
         {
             case 1:
                 currentBunkerKind = BunkerKinds.Agit;
                 playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 1;
                 go = Instantiate(agitPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
+                currentLevel = playerDataMgr.saveData.agitLevel;
                 break;
             case 2:
                 currentBunkerKind = BunkerKinds.Pub;
                 playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 2;
                 go = Instantiate(pubPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
+                currentLevel = playerDataMgr.saveData.pubLevel;
                 break;
             case 3:
                 currentBunkerKind = BunkerKinds.Store;
                 playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 3;
                 go = Instantiate(storePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
+                currentLevel = playerDataMgr.saveData.storeLevel;
                 break;
             case 4:
                 currentBunkerKind = BunkerKinds.CarCenter;
                 playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 4;
                 go = Instantiate(carCenterPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
+                currentLevel = playerDataMgr.saveData.carCenterLevel;
                 break;
             case 5:
                 currentBunkerKind = BunkerKinds.Hospital;
                 playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 5;
                 go = Instantiate(hospitalPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
+                currentLevel = playerDataMgr.saveData.hospitalLevel;
                 break;
             case 6:
                 currentBunkerKind = BunkerKinds.Garage;
                 playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 6;
                 go = Instantiate(garagePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
+                currentLevel = playerDataMgr.saveData.garageLevel;
                 break;
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
@@ -361,6 +368,9 @@ public class BunkerMgr : MonoBehaviour
         Destroy(selectedBunker);
         selectedBunker = go;
         bunkerObjs[script.bunkerId] = go;
+
+        var child = bunkerObjs[script.bunkerId].transform.GetChild(0).gameObject;
+        child.GetComponent<TextMeshPro>().text = $"Lv{currentLevel}";
         camController.currentObject = selectedBunker;
 
         OpenWindow();
@@ -391,6 +401,7 @@ public class BunkerMgr : MonoBehaviour
 
     public void ExitBunker()
     {
+        playerDataMgr.saveData.bunkerExitNum += 1;
         SceneManager.LoadScene("NonBattleMap");
         //SceneManager.LoadScene("NonBattleAsset");
     }

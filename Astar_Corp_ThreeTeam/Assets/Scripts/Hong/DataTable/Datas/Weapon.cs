@@ -31,6 +31,8 @@ public class Weapon : ScriptableObject
     public int overRange_Penalty;   // 사거리 +n타일에 따른 명중률 감소
     public int underRange_Penalty;  // 사거리 -n타일에 따른 명중률 감소
 
+    public int weight;
+    public int cost;
     //private Sprite iconSprite;
 
     //public Sprite IconSprite

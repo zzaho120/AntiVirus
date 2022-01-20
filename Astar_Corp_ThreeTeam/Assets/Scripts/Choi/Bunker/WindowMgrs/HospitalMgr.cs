@@ -9,6 +9,8 @@ public class HospitalMgr : MonoBehaviour
     public GameObject characterListContent;
     public GameObject characterPrefab;
     public GameObject stateWin;
+    public GameObject hpRecoveryButton;
+    public GameObject virusRecoveryButton;
 
     //상태창.
     public Slider hpSlider;
@@ -22,15 +24,38 @@ public class HospitalMgr : MonoBehaviour
     public PlayerDataMgr playerDataMgr;
 
     List<GameObject> characterObjs = new List<GameObject>();
-    // 리스트 순서 / PlayerDataMgr Key
-    Dictionary<int, int> characterInfo = new Dictionary<int, int>();
+    int hospitalLevel;
+
+    int virusRecoveryCost;
+    int hpRecoveryCost;
+    int reductionPercentage;
+    
     int currentIndex;
     string currentVirus;
     Color originColor;
 
     public void Init()
     {
-        //if (!hospitalWin.activeSelf) hospitalWin.SetActive(true);
+        hospitalLevel = playerDataMgr.saveData.hospitalLevel;
+        Bunker hospitalLevelInfo = playerDataMgr.bunkerList["BUN_0005"];
+        switch (hospitalLevel)
+        {
+            case 1:
+                reductionPercentage = hospitalLevelInfo.level1;
+                break;
+            case 2:
+                reductionPercentage = hospitalLevelInfo.level2;
+                break;
+            case 3:
+                reductionPercentage = hospitalLevelInfo.level3;
+                break;
+            case 4:
+                reductionPercentage = hospitalLevelInfo.level4;
+                break;
+            case 5:
+                reductionPercentage = hospitalLevelInfo.level5;
+                break;
+        }
 
         if (sliders.Count == 0) 
         {
@@ -58,8 +83,7 @@ public class HospitalMgr : MonoBehaviour
 
             characterListContent.transform.DetachChildren();
         }
-        if (characterInfo.Count != 0) characterInfo.Clear();
-
+        
         if (stateWin.activeSelf) stateWin.SetActive(false);
 
         //생성.
@@ -74,10 +98,13 @@ public class HospitalMgr : MonoBehaviour
             var button = go.AddComponent<Button>();
             button.onClick.AddListener(delegate { SelectCharacter(num); });
 
-            characterInfo.Add(num, element.Key);
-            
             i++;
         }
+
+        virusRecoveryCost = 0;
+        hpRecoveryCost = (int)(100 * (1 - 0.01 * reductionPercentage));
+        var child = hpRecoveryButton.transform.GetChild(1).gameObject;
+        child.GetComponent<Text>().text = $"{ hpRecoveryCost}";
 
         currentIndex = -1;
         currentVirus = null;
@@ -98,8 +125,7 @@ public class HospitalMgr : MonoBehaviour
         //상태창 관리.
         stateWin.SetActive(true);
 
-        int key = characterInfo[currentIndex];
-        var character = playerDataMgr.currentSquad[key];
+        var character = playerDataMgr.currentSquad[currentIndex];
         
         //테스트.
         //character.currentHp = 20;
@@ -131,6 +157,23 @@ public class HospitalMgr : MonoBehaviour
         currentVirus = str;
         child = sliders[currentVirus].transform.GetChild(0).gameObject;
         child.GetComponent<Image>().color = Color.red;
+
+        int level = level = playerDataMgr.currentSquad[currentIndex].virusPanalty[str].penaltyLevel;
+        switch (str)
+        {
+            case "E":
+            case "B":
+            case "P":
+            case "I":
+                 virusRecoveryCost = (int)(100 * (1 - 0.01 * reductionPercentage)) * level;
+                break;
+            case "T":
+                virusRecoveryCost = (int)(400 * (1 - 0.01 * reductionPercentage)) * level;
+                break;
+        }
+
+        child = virusRecoveryButton.transform.GetChild(1).gameObject;
+        child.GetComponent<Text>().text = $"{virusRecoveryCost}";
     }
 
     public void RecoveryHp()
@@ -158,9 +201,7 @@ public class HospitalMgr : MonoBehaviour
         if (currentIndex == -1) return;
         if (currentVirus == null) return;
         //돈도 부족하면 리턴.
-
-        int key = characterInfo[currentIndex];
-
+ 
         //var gauge = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge;
         //int recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
         //playerDataMgr.currentSquad[key].virusPanalty[currentVirus].ReductionCalculation(recoveryAmount);
