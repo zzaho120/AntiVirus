@@ -19,6 +19,7 @@ public class CreateLabArea : MonoBehaviour
 
     public void Init()
     {
+        return;
         //√≥¿Ω Ω√¿€«“∂ß.
         if (!PlayerPrefs.HasKey("MonsterAreaX0"))
         {
@@ -36,9 +37,9 @@ public class CreateLabArea : MonoBehaviour
             foreach (var element in laboratoryObjs)
             {
                 //∏«πÿ¿Ã ¡¶¿œ ≈≠.
-                var virusZone3 = element.transform.GetChild(1).gameObject;
-                var virusZone2 = element.transform.GetChild(2).gameObject;
-                var virusZone1 = element.transform.GetChild(3).gameObject;
+                var virusZone3 = element.transform.GetChild(1).gameObject;  // ∑æ3
+                var virusZone2 = element.transform.GetChild(2).gameObject;  // ∑æ2
+                var virusZone1 = element.transform.GetChild(3).gameObject;  // ∑æ1
 
                 var script = virusZone1.GetComponent<LaboratoryInfo>();
                 int randomNum = (!script.isSpareLab) ? 10 : 8;

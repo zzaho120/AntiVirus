@@ -37,6 +37,8 @@ public class PopUpMgr : MonoBehaviour
         var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
     }
 
+    // value 값에 따라서 뜨는 문구 다르게 (몬스터 구분하기)
+    //public void OpenFootprintPopup(int value)
     public void OpenFootprintPopup()
     {
         var windowId = (int)Windows.FootprintInfo - 1;

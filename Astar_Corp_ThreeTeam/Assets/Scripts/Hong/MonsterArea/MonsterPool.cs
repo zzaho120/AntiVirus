@@ -23,7 +23,8 @@ public class MonsterPool : PoolManager
 
     private void GetMonstersFromPool()
     {
-        for (int i = 0; i < pools.Length; i++)
+        //for (int i = 0; i < pools.Length; i++)
+        for (int i = 0; i < pools.Count; i++)
         {
             // 풀 초기 생성 시 Monster 수 정의
             if (!isMaxPool[i]) monsterNum[i] = poolBox[i].transform.childCount;

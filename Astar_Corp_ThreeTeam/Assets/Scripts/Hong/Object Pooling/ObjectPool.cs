@@ -19,7 +19,6 @@ public class ObjectPool
     public PoolName poolName;
     public GameObject prefab;
 
-    
     [HideInInspector]
     public Transform poolTr;
     [HideInInspector]
@@ -76,6 +75,6 @@ public class ObjectPool
     public void OnDestroyPoolObject(GameObject go)
     {
         GameObject.Destroy(go);
-        Debug.Log("Destroy");
+        //Debug.Log("Destroy");
     }
 }

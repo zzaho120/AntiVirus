@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-// 상수 정의
-static class Constants
-{
-    public const int disance = 15;
-}
-
 public class LowChaseState : StateBase
 {
     //private float startTime;

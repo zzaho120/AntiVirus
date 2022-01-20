@@ -5,13 +5,15 @@ using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
-    public ObjectPool[] pools;
+    public List<ObjectPool> pools;
+    //public ObjectPool[] pools;
     private GameObject newPool;
     protected GameObject[] poolBox;
 
     private void Awake()
     {
-        poolBox = new GameObject[pools.Length];
+        poolBox = new GameObject[pools.Count];
+        //poolBox = new GameObject[pools.Length];
 
         CreatePoolsTr();
     }
@@ -19,7 +21,8 @@ public class PoolManager : MonoBehaviour
     // 풀 생성
     private void CreatePoolsTr()
     {
-        for (int i = 0; i < pools.Length; i++)
+        //for (int i = 0; i < pools.Length; i++)
+        for (int i = 0; i < pools.Count; i++)
         {
             // 풀로 사용할 게임오브젝트 생성
             newPool = new GameObject($"{pools[i].poolName}_{pools[i].prefab.name}");

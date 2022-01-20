@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class LaboratoryInfo : MonoBehaviour
 {
+    private NonBattleMgr nonBattleMgr;
+
     public bool isSpareLab;
 
     public float radiusZone1;
@@ -25,6 +27,32 @@ public class LaboratoryInfo : MonoBehaviour
     PlayerController playerController;
     VirusData virusData;
     PlayerDataMgr playerDataMgr;
+
+    private void Start()
+    {
+        nonBattleMgr = NonBattleMgr.Instance;
+        //StartCoroutine(CoCheckActiveZone());
+    }
+
+    private IEnumerator CoCheckActiveZone()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        // 잘 작동
+        Debug.Log("isActiveZone2 : " + isActiveZone2);
+        Debug.Log("isActiveZone3 : " + isActiveZone3);
+
+        if (isActiveZone2)
+        {
+            // 몬스터 풀에 몬스터 영역 수 추가 (4)
+            nonBattleMgr.monsterPool.pools.Add(nonBattleMgr.monsterPoolTemp.randMonsterPool);
+            nonBattleMgr.monsterPool.pools.Add(nonBattleMgr.monsterPoolTemp.randMonsterPool);
+        }
+        else if (isActiveZone3)
+        {
+            // 몬스터 풀에 몬스터 영역 수 추가 (6)
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -50,6 +78,7 @@ public class LaboratoryInfo : MonoBehaviour
             playerDataMgr = PlayerDataMgr.Instance;
         }
 
+        // 플레이어
         if (other.gameObject.CompareTag("Player") && player != null)
         {
             var distance = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(player.transform.position.x, player.transform.position.z));

@@ -7,7 +7,7 @@ public class CreateFootprint : MonoBehaviour
     private float totalTime = 0;
 
     private FootprintPool footprintPool;
-    public Transform footprints;
+    //public Transform footprints;
 
     private void Start()
     {
@@ -18,14 +18,56 @@ public class CreateFootprint : MonoBehaviour
     {
         totalTime += Time.deltaTime;
         
-        footprintPool.pools[0].prefab.transform.LookAt(transform);
-        //footprintPool.pools[0].prefab.transform.rotation.x = 90f;
+        // Pool 0. Bear
+        // Pool 1. Boar
+        // Pool 2. Fox
+        // Pool 3. Rabbit
+
+        if (gameObject.name == MonsterName.monster1)
+        {
+            GetFootprintsFromPool(0);
+        }
+        else if (gameObject.name == MonsterName.monster2)
+        {
+            GetFootprintsFromPool(1);
+        }
+        else if (gameObject.name == MonsterName.monster3)
+        {
+            GetFootprintsFromPool(2);
+        }
+        else if (gameObject.name == MonsterName.monster4)
+        {
+            GetFootprintsFromPool(3);
+        }
+        else
+        {
+            Debug.LogError("¹¹Áö");
+        }
+
+        //footprintPool.pools[0].prefab.transform.LookAt(transform);
+        //
+        //if (totalTime > 0.8)
+        //{
+        //    GameObject go = footprintPool.pools[0].Pool.Get();
+        //    go.transform.position = transform.position;
+        //    go.transform.rotation = transform.rotation;
+        //
+        //    totalTime = 0;
+        //}
+    }
+
+    private void GetFootprintsFromPool(int num)
+    {
+        footprintPool.pools[num].prefab.transform.LookAt(transform);
 
         if (totalTime > 0.8)
         {
-            GameObject go = footprintPool.pools[0].Pool.Get();
-            go.transform.position = transform.position;
-            go.transform.rotation = transform.rotation;
+            GameObject go = footprintPool.pools[num].Pool.Get();
+            //go.transform.position = transform.position;
+            //go.transform.rotation = transform.rotation;
+
+            // Footprint position tester
+            go.transform.position = GameObject.Find("Player").transform.position + new Vector3(Random.Range(5f, 20f), 10f, Random.Range(5f, 20f));
 
             totalTime = 0;
         }

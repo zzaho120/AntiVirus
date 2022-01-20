@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CreateMonsterAreas : MonoBehaviour
 {
@@ -12,74 +13,119 @@ public class CreateMonsterAreas : MonoBehaviour
     private int monsterAreaCount;
     private float posY = 10f;   // y좌표 설정
 
+    private GameObject fog;
+
+    private List<GameObject> monsterAreaList = new List<GameObject>();
+
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.magenta;
+    //    foreach (var go in monsterAreaList)
+    //    {
+    //        var col = go.GetComponentInChildren<SphereCollider>();
+    //        Gizmos.DrawSphere(go.transform.position, go.transform.lossyScale.x * col.radius);
+    //    }
+    //}
+
     public void Init()
     {
+        monsterAreaList.ToArray();
+        //PlayerPrefs.DeleteAll();
+
         nonBattleMgr = NonBattleMgr.Instance;
 
         // 몬스터 영역 수 설정
         poolInfo = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
-        monsterAreaCount = poolInfo.pools.Length;
+        //monsterAreaCount = poolInfo.pools.Length;
+        monsterAreaCount = poolInfo.pools.Count;
+
+        fog = GameObject.Find("Fog");
 
         // 처음 생성 시
         if (!PlayerPrefs.HasKey("MonsterAreaX0"))
         {
             //MonsterArea 생성
-            for (int j = 0; j < monsterAreaCount; j++)
+            //for (int j = 0; j < monsterAreaCount; j++)
+            for (int j = 0; j < 10; j++)
             {
-                int randX;
-                int randScale;
-                int randomIndex;
-                Vector3 position;
+                #region 기존 코드
+                //int randX;
+                //int randScale;
+                //int randomIndex;
+                //Vector3 position;
+                //
+                //var radius = monsterAreaPrefab.GetComponent<SphereCollider>().radius;
+                //var monsterAreaLayer = LayerMask.GetMask("MonsterArea");
+                //var virusZone = LayerMask.GetMask("VirusZone");
+                //var playerLayer = LayerMask.GetMask("Player");
+                //var boundaryLayer = LayerMask.GetMask("Boundary");
+                //var groundLayer = LayerMask.GetMask("Ground");
+                //
+                //do
+                //{
+                //    randomIndex = Random.Range(0, nonBattleMgr.laboratoryArea.virusZones1.Count);
+                //    var randLaboratoryPos = nonBattleMgr.laboratoryArea.virusZones1[randomIndex].transform.position;    // 연구소 위치 임의로 가져옴
+                //
+                //    randX = Random.Range(10, 20);
+                //    var pos = Random.onUnitSphere * randX + randLaboratoryPos;
+                //    position = new Vector3(pos.x, posY, pos.z);
+                //    randScale = Random.Range(30, 50);
+                //}
+                //while ((Physics.OverlapSphere(position, radius * randScale, monsterAreaLayer).Length != 0));
+                ////|| (Physics.OverlapSphere(position, radius * randScale, playerLayer).Length != 0)
+                ////|| (Physics.OverlapSphere(position, radius * randScale, boundaryLayer).Length != 0)
+                ///*|| (Physics.OverlapSphere(position, radius * randScale, virusZone).Length == 0)*/);
+                #endregion
 
-                var radius = monsterAreaPrefab.GetComponent<SphereCollider>().radius;
+                // 위치 지정
+                Vector3 position;
+                int randScale;
+
+                var bigRadius = nonBattleMgr.laboratoryArea.virusZones1[0].GetComponent<SphereCollider>();
+                var radius = monsterAreaPrefab.GetComponent<SphereCollider>(); //.radius;
                 var monsterAreaLayer = LayerMask.GetMask("MonsterArea");
-                var facilitiesLayer = LayerMask.GetMask("facilities");
                 var virusZone = LayerMask.GetMask("VirusZone");
                 var playerLayer = LayerMask.GetMask("Player");
-                var boundaryLayer = LayerMask.GetMask("Boundary");
+
+                Vector3 bigCenter = new Vector3(bigRadius.transform.position.x, 0, bigRadius.transform.position.z);
+                Vector3 smallCenter;
+                // 겹치지 않을 때까지 좌표 가져오기
                 do
                 {
-                    randomIndex = Random.Range(0, nonBattleMgr.laboratoryArea.virusZones1.Count);
-                    var randLaboratoryPos = nonBattleMgr.laboratoryArea.virusZones1[randomIndex].transform.position;    // 연구소 위치 임의로 가져옴
-                    
-                    //randX = Random.Range(10, 20);
-                    randX = Random.Range(40, 80);
-                    var pos = Random.onUnitSphere * randX + randLaboratoryPos;
+                    Vector3 pos = RandomPosOnFog();
                     position = new Vector3(pos.x, posY, pos.z);
-                    randScale = Random.Range(6, 10);
+                    randScale = Random.Range(30, 50);
+                    smallCenter = new Vector3(position.x, 0, position.z);
+                }
+                while ((Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.lossyScale.x, monsterAreaLayer).Length != 0) ||
+                       (Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.lossyScale.x, playerLayer).Length != 0) ||
+                       /*(Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.lossyScale.x, virusZone).Length == 0) ||*/
+                       Vector3.Distance(bigCenter, smallCenter) > ((bigRadius.radius * bigRadius.transform.lossyScale.x) - (radius.radius * monsterAreaPrefab.transform.lossyScale.x)));
+                       //Vector3.Distance(bigRadius.transform.position, position) < ((bigRadius.radius * bigRadius.transform.lossyScale.x) - (radius.radius * monsterAreaPrefab.transform.lossyScale.x)));
+                //Vector3.Distance(/*큰원의 중심, 작은원의 중심*/) < /*큰원 Radius - 작은원 Radius*/); //이거아닌듯
 
-                    //if (randomIndex == 0)
-                    //{
-                    //
-                    //}
-                    //else if (randomIndex == 1)
-                    //{
-                    //
-                    //}
-                    //else if (randomIndex == 2)
-                    //{
-                    //
-                    //}
-                    //else
-                    //{
-                    //
-                    //}
+                // Ok
+                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube.transform.position = bigCenter;
+                cube.transform.localScale = new Vector3(5f, bigRadius.transform.localScale.y, 5f);
+                GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube2.transform.position = smallCenter; //radius.transform.position;
+                cube2.transform.localScale = new Vector3(5f, radius.transform.localScale.y, 5f);
 
-                } while ((Physics.OverlapSphere(position, radius * randScale, monsterAreaLayer).Length != 0)
-                || (Physics.OverlapSphere(position, radius * randScale, playerLayer).Length != 0)
-                || (Physics.OverlapSphere(position, radius * randScale, boundaryLayer).Length != 0)
-                /*|| (Physics.OverlapSphere(position, radius * randScale, virusZone).Length == 0)*/);
-
-                string str = $"MonsterAreaX{j}";
-                PlayerPrefs.SetFloat(str, position.x);
-                str = $"MonsterAreaZ{j}";
-                PlayerPrefs.SetFloat(str, position.z);
-                str = $"MonsterAreaScale{j}";
-                PlayerPrefs.SetInt(str, randScale);
+                // 몬스터 영역 저장
+                //string str = $"MonsterAreaX{j}";
+                //PlayerPrefs.SetFloat(str, position.x);
+                //str = $"MonsterAreaZ{j}";
+                //PlayerPrefs.SetFloat(str, position.z);
+                //str = $"MonsterAreaScale{j}";
+                //PlayerPrefs.SetFloat(str, monsterAreaPrefab.transform.lossyScale.x);
+                ////PlayerPrefs.SetInt(str, randScale);
 
                 var go = Instantiate(monsterAreaPrefab, position, Quaternion.identity);
                 go.transform.SetParent(GameObject.Find("MonsterArea").transform);   // 부모오브젝트 설정
                 //go.transform.localScale = new Vector3(randScale, randScale, randScale);
+
+                monsterAreaList.Add(go);
             }
         }
         // 게임 이어서 할 때
@@ -97,9 +143,33 @@ public class CreateMonsterAreas : MonoBehaviour
                 var go = Instantiate(monsterAreaPrefab, new Vector3(randX, posY, randZ), Quaternion.identity);
                 go.transform.SetParent(GameObject.Find("MonsterArea").transform);   // 부모오브젝트 설정
                 str = $"MonsterAreaScale{j}";
-                var randScale = PlayerPrefs.GetInt(str);
+                //var randScale = PlayerPrefs.GetInt(str);
             }
         }
     }
 
+    private Vector3 RandomPosOnFog()
+    {
+        // Fog Position을 기준으로
+        Vector3 originPosition = new Vector3(fog.transform.position.x, fog.transform.position.y + 5f, fog.transform.position.z);
+
+        // 콜라이더의 사이즈를 가져오는 bound.size 사용
+        var fogCollider = fog.GetComponent<BoxCollider>();
+        float range_X = fogCollider.bounds.size.x;
+        float range_Z = fogCollider.bounds.size.z;
+
+        // 랜덤 포지션 뽑기
+        //range_X = Random.Range((range_X / 2) * -1, range_X / 2);
+        //range_Z = Random.Range((range_Z / 2) * -1, range_Z / 2);
+        float tempRange = 30.0f;
+        range_X = Random.Range(((range_X / 2) * -1) + tempRange, (range_X / 2) - tempRange);
+        range_Z = Random.Range(((range_Z / 2) * -1) + tempRange, (range_Z / 2) - tempRange);
+
+        // 새로운 변수에 랜덤 포지션 담기
+        Vector3 RandomPostion = new Vector3(range_X, 0f, range_Z);
+
+        // 리턴
+        Vector3 respawnPosition = originPosition + RandomPostion;
+        return respawnPosition;
+    }
 }

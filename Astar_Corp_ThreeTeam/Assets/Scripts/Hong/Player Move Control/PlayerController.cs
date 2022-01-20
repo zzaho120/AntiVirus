@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -25,13 +26,14 @@ public class PlayerController : MonoBehaviour
     // Managers
     private NonBattleMgr nonBattleMgr;
     private PopUpMgr popUpMgr;
+    private GameObject footprintUI;
 
     // Time Controller
     [HideInInspector]
     public TimeController timeController;
 
     // Get NavMesh
-    private PlayerMove playerNav;
+    private PlayerMove playerMove;
     private NavMeshAgent agent;
 
     // Sight
@@ -49,8 +51,9 @@ public class PlayerController : MonoBehaviour
         multiTouch      = GameObject.Find("MultiTouch").GetComponent<MultiTouch>();
         popUpMgr        = nonBattleMgr.GetComponent<PopUpMgr>();
         timeController  = GameObject.Find("TimeController").GetComponent<TimeController>();
-        playerNav       = GetComponent<PlayerMove>();
-        agent           = playerNav.navMeshAgent;
+        playerMove      = GetComponent<PlayerMove>();
+        agent           = playerMove.navMeshAgent;
+        footprintUI     = GameObject.Find("Footprint Info");
 
         // 위치 저장
         if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")))
@@ -101,6 +104,9 @@ public class PlayerController : MonoBehaviour
                 if (raycastHit.collider.CompareTag("Footprint"))
                 {
                     popUpMgr.OpenFootprintPopup();
+
+                    TextMeshProUGUI[] text = footprintUI.GetComponentsInChildren<TextMeshProUGUI>();
+                    text[1].text = raycastHit.collider.name;
                 }
                 // 클릭하는 위치로 이동하는 것 방지
                 agent.SetDestination(agent.transform.position);
@@ -149,7 +155,10 @@ public class PlayerController : MonoBehaviour
                 // 발자국 클릭 시
                 if (raycastHit.collider.CompareTag("Footprint"))
                 {
+                    // 발자국 팝업창 Open
                     popUpMgr.OpenFootprintPopup();
+                    // 몬스터 정보 출력
+                    PrintMonsterName(raycastHit);
                 }
                 // 클릭하는 위치로 이동하는 것 방지
                 agent.SetDestination(agent.transform.position);
@@ -175,7 +184,7 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         //움직이고 있을 때.
-        if (agent.velocity.magnitude > 0.15f) 
+        if (agent != null && agent.velocity.magnitude > 0.15f) 
         {
             PlayerPrefs.SetFloat("p_x", transform.position.x);
             PlayerPrefs.SetFloat("p_y", transform.position.y);
@@ -188,7 +197,7 @@ public class PlayerController : MonoBehaviour
             agent.SetDestination(agent.transform.position);
         }
 
-        playerNav.PlayerMoveUpdate();
+        playerMove.PlayerMoveUpdate();
     }
 
     // 플레이어 위치 저장
@@ -202,6 +211,34 @@ public class PlayerController : MonoBehaviour
         PlayerPrefs.SetFloat("p_x", pX);
         PlayerPrefs.SetFloat("p_y", pY);
         PlayerPrefs.SetFloat("p_z", pZ);
+    }
+
+    // 몬스터 발자국 정보 출력
+    private void PrintMonsterName(RaycastHit hitInfo)
+    {
+        // Text 정보 가져오기
+        TextMeshProUGUI[] text = GameObject.Find("Footprint Info").GetComponentsInChildren<TextMeshProUGUI>();
+
+        if (hitInfo.collider.name == "Footprint_" + MonsterName.monster1)
+        {
+            text[1].text = "Bear";
+        }
+        else if (hitInfo.collider.name == "Footprint_" + MonsterName.monster2)
+        {
+            text[1].text = "Boar";
+        }
+        else if (hitInfo.collider.name == "Footprint_" + MonsterName.monster3)
+        {
+            text[1].text = "Fox";
+        }
+        else if (hitInfo.collider.name == "Footprint_" + MonsterName.monster4)
+        {
+            text[1].text = "Rabbit";
+        }
+        else
+        {
+            Debug.LogError("뭐지");
+        }
     }
 
     // 전투 씬으로 전환
