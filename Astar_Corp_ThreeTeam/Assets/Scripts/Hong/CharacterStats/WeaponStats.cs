@@ -16,6 +16,10 @@ public class WeaponStats
     public Weapon mainWeapon;
     public Weapon subWeapon;
     
+    public WeaponStats()
+    {
+        Debug.Log("!");
+    }
     public Weapon curWeapon
     {
         get

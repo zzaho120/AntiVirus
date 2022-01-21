@@ -26,6 +26,11 @@ public class CharacterStats : MonoBehaviour
     // 스킬
     public CharacterSkillList skills;
 
+    // 스킬
+    public SkillMgr skillMgr;
+
+    // 버프
+    public BuffMgr buffMgr;
 
     // 1. 기본 체력
     public int MaxHp; // { get => Hp; set => Hp = value; }
@@ -188,5 +193,12 @@ public class CharacterStats : MonoBehaviour
     public void StartTurn()
     {
         weapon.StartTurn();
+
+        var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
+
+        foreach (var skill in skillList)
+        {
+            skill.Invoke(buffMgr);
+        }
     }
 }

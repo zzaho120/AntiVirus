@@ -2,11 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveSkill : ScriptableObject
+public class ActiveSkill : SkillBase
 {
-    public string id;
-    public string ownerId;
-    public new string name;
-    public string level;
-    public int type;
 }

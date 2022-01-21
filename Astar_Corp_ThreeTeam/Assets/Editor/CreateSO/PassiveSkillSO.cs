@@ -35,12 +35,25 @@ public class PassiveSkillSO
 
                     PassiveSkill passiveSkill = ScriptableObject.CreateInstance<PassiveSkill>();
                     passiveSkill.id         = splitData[0];
-                    passiveSkill.name       = splitData[1];
-                    passiveSkill.hp         = int.Parse(splitData[2]);
-                    passiveSkill.willpower  = int.Parse(splitData[3]);
-                    passiveSkill.stamina    = float.Parse(splitData[4]);
+                    passiveSkill.skillName  = splitData[1];
+                    passiveSkill.character  = splitData[2];
+                    passiveSkill.type       = splitData[3];
+                    passiveSkill.level      = int.Parse(splitData[4]);
+                    passiveSkill.skillCase  = splitData[5];
+                    switch (splitData[6])
+                    {
+                        case "Sight":
+                            passiveSkill.stat = Stat.Sight;
+                            break;
+                        case "Reduction":
+                            passiveSkill.stat = Stat.Reduction;
+                            break;
+                    }
+                    passiveSkill.increase   = float.Parse(splitData[7]);
+                    passiveSkill.decrease   = float.Parse(splitData[8]);
+                    passiveSkill.lifeTurn   = int.Parse(splitData[9]);
 
-                    AssetDatabase.CreateAsset(passiveSkill, $"Assets//Resources/Choi/Datas/Skills/PassiveSkills/{passiveSkill.name}.asset");
+                    AssetDatabase.CreateAsset(passiveSkill, $"Assets//Resources/Choi/Datas/Skills/PassiveSkills/{passiveSkill.skillName}.asset");
                     passiveSkillNum++;
                 }
                 sr.Close();
