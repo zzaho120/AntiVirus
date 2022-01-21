@@ -23,6 +23,9 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     // 트럭 관련
     public Dictionary<string, Truck> truckList = new Dictionary<string, Truck>();
 
+    // 비전투씬 몬스터
+    public Dictionary<string, WorldMonster> worldMonsterList = new Dictionary<string, WorldMonster>();
+
     //벙커 관련
     public Dictionary<string, Bunker> bunkerList = new Dictionary<string, Bunker>();
 
@@ -116,6 +119,14 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         {
             bagList.Add($"{bag.id}", bag);
         }
+
+        // 12. Bag
+        string nbmSOPath = "Choi/Datas/WorldMonsters";
+        WorldMonster[] worldMonsterArr = Resources.LoadAll<WorldMonster>(nbmSOPath);
+        foreach (var monster in worldMonsterArr)
+        {
+            worldMonsterList.Add($"{monster.id}", monster);
+        }
     }
 
     /// <summary>
@@ -181,5 +192,13 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     public Truck GetTruck(string id)
     {
         return Instantiate(truckList[id]);
+    }
+
+    /// <summary>
+    /// 매개변수 입력 팁; NBM_0000
+    /// </summary>
+    public WorldMonster GetWorldMonster(string id)
+    {
+        return Instantiate(worldMonsterList[id]);
     }
 }

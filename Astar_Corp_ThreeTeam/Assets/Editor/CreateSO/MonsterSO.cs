@@ -57,6 +57,13 @@ public class MonsterSO
                     monster.virusGauge      = int.Parse(splitData[16]);
                     monster.escapeHpDec     = int.Parse(splitData[17]);
 
+                    monster.dropItem1     = splitData[18];
+                    monster.item1Rate     = splitData[19];
+                    monster.dropItem2     = splitData[20];
+                    monster.item2Rate     = splitData[21];
+                    monster.dropItem3     = splitData[22];
+                    monster.item3Rate     = splitData[23];
+
                     AssetDatabase.CreateAsset(monster, $"Assets//Resources/Choi/Datas/Monsters/{monster.name}.asset");
                     monsterNum++;
                 }

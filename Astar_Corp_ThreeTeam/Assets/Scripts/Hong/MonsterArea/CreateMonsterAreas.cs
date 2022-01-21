@@ -45,8 +45,8 @@ public class CreateMonsterAreas : MonoBehaviour
         if (!PlayerPrefs.HasKey("MonsterAreaX0"))
         {
             //MonsterArea 생성
-            //for (int j = 0; j < monsterAreaCount; j++)
-            for (int j = 0; j < 10; j++)
+            //for (int j = 0; j < 10; j++)
+            for (int j = 0; j < monsterAreaCount; j++)
             {
                 #region 기존 코드
                 //int randX;
@@ -104,13 +104,13 @@ public class CreateMonsterAreas : MonoBehaviour
                        //Vector3.Distance(bigRadius.transform.position, position) < ((bigRadius.radius * bigRadius.transform.lossyScale.x) - (radius.radius * monsterAreaPrefab.transform.lossyScale.x)));
                 //Vector3.Distance(/*큰원의 중심, 작은원의 중심*/) < /*큰원 Radius - 작은원 Radius*/); //이거아닌듯
 
-                // Ok
-                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                cube.transform.position = bigCenter;
-                cube.transform.localScale = new Vector3(5f, bigRadius.transform.localScale.y, 5f);
-                GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                cube2.transform.position = smallCenter; //radius.transform.position;
-                cube2.transform.localScale = new Vector3(5f, radius.transform.localScale.y, 5f);
+                // 원 생성 위치에 큐브 놔두기
+                //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                //cube.transform.position = bigCenter;
+                //cube.transform.localScale = new Vector3(5f, bigRadius.transform.localScale.y, 5f);
+                //GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                //cube2.transform.position = smallCenter; //radius.transform.position;
+                //cube2.transform.localScale = new Vector3(3f, radius.transform.localScale.y, 3f);
 
                 // 몬스터 영역 저장
                 //string str = $"MonsterAreaX{j}";

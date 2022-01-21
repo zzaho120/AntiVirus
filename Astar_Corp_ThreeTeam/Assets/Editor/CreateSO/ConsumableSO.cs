@@ -34,18 +34,25 @@ public class ConsumableSO
                     string[] splitData = line.Split(',');
 
                     Consumable consumable = ScriptableObject.CreateInstance<Consumable>();
-                    consumable.id = splitData[0];
-                    consumable.iconId = splitData[1];
-                    consumable.prefabsId = splitData[2];
-                    consumable.name = splitData[3];
-                    consumable.description = splitData[4];
-                    consumable.type = splitData[5];
-                    consumable.weight = int.Parse(splitData[6]);
-                    consumable.cost = int.Parse(splitData[7]);
-                    consumable.hp = int.Parse(splitData[8]);
-                    consumable.mp = int.Parse(splitData[9]);
-                    consumable.str = int.Parse(splitData[10]);
-                    consumable.duration = int.Parse(splitData[11]);
+                    consumable.id            = splitData[0];
+                    consumable.iconId        = splitData[1];
+                    consumable.prefabsId     = splitData[2];
+                    consumable.name          = splitData[3];
+                                             
+                    consumable.description   = splitData[4];
+                    consumable.type          = splitData[5];
+                                             
+                    consumable.ap            = int.Parse(splitData[6]);
+                    consumable.hpRecovery    = int.Parse(splitData[7]);
+                    consumable.virusGaugeDec = int.Parse(splitData[8]);
+
+                    // 나중에 아이템데이터테이블 딕셔너리로 수정
+                    consumable.grade         = int.Parse(splitData[9]);
+                    consumable.price         = int.Parse(splitData[10]);
+                    consumable.weight        = int.Parse(splitData[11]);
+                    consumable.value         = int.Parse(splitData[12]);
+                    consumable.dropRate      = float.Parse(splitData[13]);
+                    consumable.itemQuantity  = int.Parse(splitData[14]);
 
                     AssetDatabase.CreateAsset(consumable, $"Assets//Resources/Choi/Datas/Consumables/{consumable.name}.asset");
                     itemNum++;

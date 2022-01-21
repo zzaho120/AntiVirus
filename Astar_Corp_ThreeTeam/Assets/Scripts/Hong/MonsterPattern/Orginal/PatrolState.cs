@@ -18,7 +18,7 @@ public class PatrolState : StateBase
 
         if (this.fsm != null)
         {
-            //agent = fsm.GetComponent<NavMeshAgent>();
+            agent = fsm.GetComponent<NavMeshAgent>();
             startPos = fsm.transform.position;  // 시작 위치 저장
         }
     }
@@ -44,12 +44,12 @@ public class PatrolState : StateBase
         }
 
         // 내비메쉬 이동
-        //agent.SetDestination(targetPos);
+        agent.SetDestination(targetPos);
     }
 
     public override void Exit()
     {
-       // agent.SetDestination(startPos);
+       agent.SetDestination(startPos);
     }
 
     public override void Update()

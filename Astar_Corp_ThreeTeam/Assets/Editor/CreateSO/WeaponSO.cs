@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Collections.Generic;
 
 public class WeaponSO 
 {
@@ -15,6 +16,11 @@ public class WeaponSO
             File.Delete(file);
             //Debug.Log($"{file} is deleted.");
         }
+
+        // 딕셔너리 <string, List<string>> ItemDics
+        // 무게 가격이 있는 아이템 테이블을 읽어서 대입
+        // 키는 id, 밸류는 실제 값들
+        Dictionary<string, List<string>> itemDics = new Dictionary<string, List<string>>();
 
         int equippableNum = 0;
         using (FileStream fs = new FileStream(Application.dataPath + equippableCSVPath, FileMode.Open, FileAccess.Read))
@@ -60,6 +66,39 @@ public class WeaponSO
                     equippable.maxRange             = int.Parse(splitData[17]);
                     equippable.overRange_Penalty    = int.Parse(splitData[18]);
                     equippable.underRange_Penalty   = int.Parse(splitData[19]);
+
+                    equippable.grade                = int.Parse(splitData[20]);
+                    equippable.price                = int.Parse(splitData[21]);
+                    equippable.weight               = int.Parse(splitData[22]);
+                    equippable.value                = int.Parse(splitData[23]);
+                    equippable.dropRate             = float.Parse(splitData[24]);
+                    equippable.itemQuantity         = int.Parse(splitData[25]);
+
+                    //// Item 정보 담고 있는 List
+                    //List<string> itemInfo = new List<string>();
+                    //itemInfo.Add(splitData[20]);    // Grade            // 등급
+                    //itemInfo.Add(splitData[21]);    // Price            // 가격
+                    //itemInfo.Add(splitData[22]);    // Weight           // 무게
+                    //itemInfo.Add(splitData[23]);    // Value            // 밸류
+                    //itemInfo.Add(splitData[24]);    // DropRate         // 드롭율
+                    //itemInfo.Add(splitData[25]);    // itemQuantity     // 상점 내 아이템 개수
+                    //
+                    //// 테스트 출력
+                    ////equippable.testList = itemInfo;
+                    //
+                    //// 딕셔너리에 추가
+                    //var itemId = splitData[0];
+                    //itemDics.Add(itemId, itemInfo);
+                    //
+                    //if (itemDics.ContainsKey(itemId))
+                    //{
+                    //    equippable.grade = int.Parse(itemDics[itemId][0]);
+                    //    equippable.price = int.Parse(itemDics[itemId][1]);
+                    //    equippable.weight = int.Parse(itemDics[itemId][2]);
+                    //    equippable.value = int.Parse(itemDics[itemId][3]);
+                    //    equippable.dropRate = float.Parse(itemDics[itemId][4]);
+                    //    equippable.itemQuantity = int.Parse(itemDics[itemId][5]);
+                    //}
 
                     AssetDatabase.CreateAsset(equippable, $"Assets//Resources/Choi/Datas/Weapons/{equippable.name}.asset");
                     equippableNum++;

@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : ScriptableObject
+public class Weapon : ItemBase
 {
-    public string id;
+    //public string id;
     public string iconId;
     public string prefabId;
 
     public string type;
     public string kind;
-    public new string name;
+    //public new string name;
 
     public int accurRateBase;       // 기본 명중률
 
@@ -31,8 +31,8 @@ public class Weapon : ScriptableObject
     public int overRange_Penalty;   // 사거리 +n타일에 따른 명중률 감소
     public int underRange_Penalty;  // 사거리 -n타일에 따른 명중률 감소
 
-    public int weight;
-    public int cost;
+    //public List<string> testList = new List<string>();
+
     //private Sprite iconSprite;
 
     //public Sprite IconSprite

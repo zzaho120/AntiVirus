@@ -14,7 +14,7 @@ public class NonBattleMgr : MonoBehaviour
     public CreateLabArea laboratoryArea;
     public CreateMonsterAreas monsterArea;
     public MonsterPool monsterPool;
-    public MonsterPoolTemp monsterPoolTemp;
+    //public MonsterPoolTemp monsterPoolTemp;
     public PlayerController playerController;
     public PlayerMove playerMove;
 
@@ -27,7 +27,7 @@ public class NonBattleMgr : MonoBehaviour
         laboratoryArea = Instance.GetComponent<CreateLabArea>();
         monsterArea = Instance.GetComponent<CreateMonsterAreas>();
         monsterPool = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
-        monsterPoolTemp = GameObject.Find("ObjectPoolTester").GetComponent<MonsterPoolTemp>();
+        //monsterPoolTemp = GameObject.Find("ObjectPoolTester").GetComponent<MonsterPoolTemp>();
         playerController = player.GetComponent<PlayerController>();
         playerMove = player.GetComponent<PlayerMove>();
     }

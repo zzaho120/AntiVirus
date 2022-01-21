@@ -25,5 +25,15 @@ public class Monster : ScriptableObject
 	public int exp;             // 보유 경험치
 	public int sightRange;      // 인식 범위 (칸)
 	public int virusGauge;      // 렙당 바이러스 게이지 증가량 (바이러스 레벨당 누적)
-	public int escapeHpDec;		// 도망AI시 필요 체력 감소량 ?
+	public int escapeHpDec;     // 도망AI시 필요 체력 감소량 ?
+
+	/// <summary>
+	/// 빈 값이 있어서 string형으로 썼음. 나중에 int.Parse 해서 사용해주세요
+	/// </summary>
+	public string dropItem1;		// 드롭 아이템 1
+	public string item1Rate;		// 아이템1 드롭 확률
+	public string dropItem2;		// 드롭 아이템 2
+	public string item2Rate;       // 아이템2 드롭 확률
+	public string dropItem3;		// 드롭 아이템 3
+	public string item3Rate;		// 아이템3 드롭 확률
 }

@@ -45,8 +45,8 @@ public class LaboratoryInfo : MonoBehaviour
         if (isActiveZone2)
         {
             // 몬스터 풀에 몬스터 영역 수 추가 (4)
-            nonBattleMgr.monsterPool.pools.Add(nonBattleMgr.monsterPoolTemp.randMonsterPool);
-            nonBattleMgr.monsterPool.pools.Add(nonBattleMgr.monsterPoolTemp.randMonsterPool);
+            //nonBattleMgr.monsterPool.pools.Add(nonBattleMgr.monsterPoolTemp.randMonsterPool);
+            //nonBattleMgr.monsterPool.pools.Add(nonBattleMgr.monsterPoolTemp.randMonsterPool);
         }
         else if (isActiveZone3)
         {

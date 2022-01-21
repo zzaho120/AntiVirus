@@ -56,7 +56,15 @@ public class MonsterPool : PoolManager
         var randY = Random.Range(-3f, 3f);
 
         var ps = pools[poolNum].Pool.Get();
-        ps.transform.position = testZone[poolNum + 1].position + new Vector3(randX, testZone[poolNum + 1].position.y + 0.5f, randY);
+        //ps.transform.position = testZone[poolNum + 1].position + new Vector3(randX, testZone[poolNum + 1].position.y + 0.5f, randY); // ±‚¡∏
+        ps.transform.position = new Vector3(testZone[poolNum + 1].position.x, 70.0f, testZone[poolNum + 1].position.z);
+        //ps.GetComponent<NavMeshAgent>().transform.position = new Vector3(testZone[poolNum + 1].position.x, 0f, testZone[poolNum + 1].position.z);
+        //Debug.Log(ps.name);
+
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        cube.transform.position = ps.transform.position;
+        cube.transform.localScale = new Vector3(3f, 3f, 3f);
+        cube.GetComponent<SphereCollider>().isTrigger = true;
 
         //int randNum = Random.Range(0, 9);
         //int randPool = Random.Range(0, pools.Length);
