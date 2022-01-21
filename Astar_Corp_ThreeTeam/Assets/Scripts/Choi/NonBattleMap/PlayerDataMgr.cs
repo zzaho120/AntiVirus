@@ -44,7 +44,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public bool isFirst;
     private void Start()
     {
-        PlayerPrefs.DeleteAll();
+        //PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
@@ -61,16 +61,15 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         filePath = @$"{Application.persistentDataPath}\PlayerData.json";
         if (saveData.id == null)
         {
-            saveData.bunkerExitNum = 0;
-
             saveData.bunkerKind = new List<int>();
             saveData.cars = new List<string>();
             saveData.speedLv = new List<int>();
             saveData.sightLv = new List<int>();
             saveData.weightLv = new List<int>();
+            saveData.boarding = new List<int>();
+            saveData.currentCar = null;
 
             saveData.id = new List<string>();
-            saveData.boarding = new List<int>();
             saveData.name = new List<string>();
             saveData.hp = new List<int>();
             saveData.maxHp = new List<int>();
@@ -302,6 +301,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             stat.willpower = saveData.willPower[i];
             stat.character = characterList[saveData.id[i]];
             stat.character.id = saveData.id[i];
+            stat.bagLevel = saveData.bagLevel[i];
 
             stat.weapon = new WeaponStats();
             stat.weapon.mainWeapon = (saveData.mainWeapon[i] == null) ? null : equippableList[saveData.mainWeapon[i]];
@@ -355,6 +355,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.sensitivity.Add(stat.sensivity);
             saveData.concentration.Add(stat.concentration);
             saveData.willPower.Add(stat.willpower);
+            saveData.bagLevel.Add(1);
 
             saveData.gaugeE.Add(stat.virusPanalty["E"].penaltyGauge);
             saveData.gaugeB.Add(stat.virusPanalty["B"].penaltyGauge);

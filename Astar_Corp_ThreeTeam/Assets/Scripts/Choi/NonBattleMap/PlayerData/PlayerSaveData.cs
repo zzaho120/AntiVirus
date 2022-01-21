@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerSaveData
 {
     //저장할 데이터들.
+    public int money;
     public int bunkerExitNum;
 
     //벙커 관련.
@@ -22,10 +23,10 @@ public class PlayerSaveData
     public List<int> speedLv { get; set; }
     public List<int> sightLv { get; set; }
     public List<int> weightLv { get; set; }
-
+    public string currentCar;
+    public List<int> boarding { get; set; }
     //캐릭터 관련.
     public List<string> id { get; set; }
-    public List<int> boarding { get; set; }
     public List<string> name { get; set; }
     public List<int> hp { get; set; }
     public List<int> maxHp { get; set; }

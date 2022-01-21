@@ -6,7 +6,6 @@ public class GarageMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
 
-    public GameObject carSelectWin;
     public GameObject TrunkWin;
     public GameObject carBoardingWin;
 
@@ -45,31 +44,32 @@ public class GarageMgr : MonoBehaviour
         boardingMgr.playerDataMgr = playerDataMgr;
         boardingMgr.Init();
 
-        OpenCarSelectWin();
+        OpenTrunkWin();
     }
 
     public void OpenCarSelectWin()
     {
         if (TrunkWin.activeSelf) TrunkWin.SetActive(false);
         if (carBoardingWin.activeSelf) carBoardingWin.SetActive(false);
-        carSelectWin.SetActive(true);
+        //carSelectWin.SetActive(true);
     }
 
     public void CloseCarSelectWin()
     {
-        carSelectWin.SetActive(false);
+        //carSelectWin.SetActive(false);
     }
 
     public void OpenTrunkWin()
     {
-        carSelectWin.SetActive(false);
+        //carSelectWin.SetActive(false);
+        if (carBoardingWin.activeSelf) carBoardingWin.SetActive(false);
         TrunkWin.SetActive(true);
     }
 
     public void CloseTrunkWin()
     {
         TrunkWin.SetActive(false);
-        carSelectWin.SetActive(true);
+        //carSelectWin.SetActive(true);
     }
 
     public void OpenCarBoardingWin()

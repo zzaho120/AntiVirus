@@ -37,6 +37,7 @@ public class CarCenterMgr : MonoBehaviour
     public List<GameObject> gaugeList;
     public Text costTxt;
     public Button buyButton;
+    public Text upgradeCostTxt;
 
     public Dictionary<int, Truck> carOrder = new Dictionary<int, Truck>();
 
@@ -90,6 +91,8 @@ public class CarCenterMgr : MonoBehaviour
 
         buyButton.interactable = false;
         ButtonInteractable();
+
+        upgradeCostTxt.text = "-";
     }
 
     public void Refresh()
@@ -152,10 +155,8 @@ public class CarCenterMgr : MonoBehaviour
         if (currentKey-1 < 0) return;
 
         currentKey--;
-        ButtonInteractable();
-        text.text = carOrder[currentKey].name;
-
-        
+        selectedCar = carOrder[currentKey].id;
+        CarDisplay(selectedCar);
     }
 
     public void NextButton()
@@ -163,10 +164,8 @@ public class CarCenterMgr : MonoBehaviour
         if (currentKey+1 >= carOrder.Count) return;
 
         currentKey++;
-        ButtonInteractable();
-        text.text = carOrder[currentKey].name;
-
-       
+        selectedCar = carOrder[currentKey].id;
+        CarDisplay(selectedCar);
     }
 
     private void ButtonInteractable()
@@ -205,12 +204,18 @@ public class CarCenterMgr : MonoBehaviour
         {
             case 0:
                 currentStat = TruckStat.Speed;
+                var cost = playerDataMgr.truckList[selectedCar].speedUp_Cost;
+                upgradeCostTxt.text = $"{cost}";
                 break;
             case 1:
                 currentStat = TruckStat.Trunk;
+                cost = playerDataMgr.truckList[selectedCar].weightUp_Cost;
+                upgradeCostTxt.text = $"{cost}";
                 break;
             case 2:
                 currentStat = TruckStat.FieldOfView;
+                cost = playerDataMgr.truckList[selectedCar].sightUp_Cost;
+                upgradeCostTxt.text = $"{cost}";
                 break;
         }
         buttonList[index].GetComponent<Image>().color = selectedColor;
@@ -242,7 +247,7 @@ public class CarCenterMgr : MonoBehaviour
         int speedLv = 1;
         int trunkLv = 1;
         int sightLv = 1;
-        text.text = key;
+        text.text = playerDataMgr.truckList[key].name;
         if (owned.Contains(key))
         {
             int index = playerDataMgr.saveData.cars.IndexOf(key);
@@ -284,21 +289,55 @@ public class CarCenterMgr : MonoBehaviour
 
         var cost = playerDataMgr.truckList[key].price;
         costTxt.text = $"차량 구매 비용 : {cost}";
+        upgradeCostTxt.text = "-";
     }
 
     public void Upgrage()
     {
         if (currentStat == TruckStat.None) return;
         if (!owned.Contains(selectedCar)) return;
- 
+
+        var speedObj = gaugeList[0];
+        var trunkObj = gaugeList[1];
+        var sightObj = gaugeList[2];
         int index = playerDataMgr.saveData.cars.IndexOf(selectedCar);
-        var speedLv = playerDataMgr.saveData.speedLv[index];
-        var trunkLv = playerDataMgr.saveData.weightLv[index];
-        var sightLv = playerDataMgr.saveData.sightLv[index];
         if (currentStat == TruckStat.Speed)
-        { 
-            //var speedLv = playerDataMgr.saveData.
+        {
+            if (playerDataMgr.saveData.speedLv[index] == 5) return;
+            playerDataMgr.saveData.speedLv[index] += 1;
+            var speedLv = playerDataMgr.saveData.speedLv[index];
+
+            for (int i = 0; i < speedLv; i++)
+            {
+                if(!speedObj.transform.GetChild(i).gameObject.activeSelf)
+                    speedObj.transform.GetChild(i).gameObject.SetActive(true);
+            }
         }
+        else if (currentStat == TruckStat.Trunk)
+        {
+            if (playerDataMgr.saveData.weightLv[index] == 5) return;
+            playerDataMgr.saveData.weightLv[index] += 1;
+            var trunkLv = playerDataMgr.saveData.weightLv[index];
+
+            for (int i = 0; i < trunkLv; i++)
+            {
+                if (!trunkObj.transform.GetChild(i).gameObject.activeSelf)
+                    trunkObj.transform.GetChild(i).gameObject.SetActive(true);
+            }
+        }
+        else if (currentStat == TruckStat.FieldOfView)
+        {
+            if (playerDataMgr.saveData.sightLv[index] == 5) return;
+            playerDataMgr.saveData.sightLv[index] += 1;
+            var sightLv = playerDataMgr.saveData.sightLv[index];
+
+            for (int i = 0; i < sightLv; i++)
+            {
+                if (!sightObj.transform.GetChild(i).gameObject.activeSelf)
+                    sightObj.transform.GetChild(i).gameObject.SetActive(true);
+            }
+        }
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
     }
 
     public void Buy()
@@ -327,6 +366,11 @@ public class CarCenterMgr : MonoBehaviour
 
     public void CloseCarListPopup()
     {
+        foreach (var element in carObjs)
+        {
+            if (element.Value.GetComponent<Image>().color == Color.red)
+                element.Value.GetComponent<Image>().color = Color.white;
+        }
         carListPopup.SetActive(false);
         if (selectedCar != null) CarDisplay(selectedCar);
     }

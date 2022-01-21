@@ -6,21 +6,35 @@ using System.Linq;
 
 public class BoardingMgr : MonoBehaviour
 {
+    public Button left;
+    public Button right;
+    public Text carNameTxt;
+    
     public GameObject ListContent;
     public GameObject characterPrefab;
     public Dictionary<int, GameObject> characters = new Dictionary<int, GameObject>();
-    public Dictionary<int, CharacterStats> characterInfo = new Dictionary<int, CharacterStats>();
-    public Dictionary<int, int> isBoarding = new Dictionary<int, int>();
     public List<GameObject> seats;
 
+    public GameObject carListPopup;
+    public GameObject carListContents;
+    public GameObject carPrefab;
+    public Dictionary<string, GameObject> carObjs = new Dictionary<string, GameObject>();
+    public Dictionary<int, Truck> carOrder = new Dictionary<int, Truck>();
+    
+    List<string> owned = new List<string>();
+  
     int currentIndex;
     int currentSeatNum;
+    int currentKey;
+    string selectedCar;
 
     public PlayerDataMgr playerDataMgr;
     Color originColor;
 
     public void Init()
     {
+        if (carListPopup.activeSelf) carListPopup.SetActive(false);
+
         //삭제.
         if (characters.Count != 0)
         {
@@ -32,35 +46,39 @@ public class BoardingMgr : MonoBehaviour
 
             ListContent.transform.DetachChildren();
         }
-        if (characterInfo.Count != 0) characterInfo.Clear();
-        if (isBoarding.Count != 0) isBoarding.Clear();
+        
+        if (carObjs.Count != 0)
+        {
+            foreach (var element in carObjs)
+            {
+                Destroy(element.Value);
+            }
+            carObjs.Clear();
+            carListContents.transform.DetachChildren();
+        }
+        if (owned.Count != 0) owned.Clear();
+        if (carOrder.Count != 0) carOrder.Clear();
 
         //생성.
         int i = 0;
         foreach (var element in playerDataMgr.currentSquad)
         {
-            if (element.Value.character.name == string.Empty) continue;
+            if (playerDataMgr.saveData.boarding[i] != -1)
+            {
+                i++;
+                continue;
+            }
 
             var go = Instantiate(characterPrefab, ListContent.transform);
             var button = go.AddComponent<Button>();
 
             var child = go.transform.GetChild(0).gameObject;
             child.GetComponent<Text>().text = element.Value.character.name;
-
+            
             int num = i;
             button.onClick.AddListener(delegate { SelectCharacter(num); });
             characters.Add(num, go);
-            characterInfo.Add(num, element.Value);
-         
-            i++;
-        }
-
-        i = 0;
-        foreach (var element in seats)
-        {
-            int num = i;
-            isBoarding.Add(num, -1);
-
+            
             i++;
         }
 
@@ -70,21 +88,136 @@ public class BoardingMgr : MonoBehaviour
             currentIndex = element.Value;
 
             var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
-            child.GetComponent<Text>().text = characterInfo[currentIndex].character.name.Substring(0, 3);
-            isBoarding[currentSeatNum] = currentIndex;
+            child.GetComponent<Text>().text = playerDataMgr.currentSquad[currentIndex].character.name.Substring(0, 3);
+        }
+
+        //소유차량.
+        foreach (var element in playerDataMgr.truckList)
+        {
+            if (playerDataMgr.saveData.cars.Contains(element.Key))
+                owned.Add(element.Key);
+        }
+
+        i = 0;
+        foreach (var element in owned)
+        {
+            var truck = playerDataMgr.truckList[element];
+            int num = i;
+            carOrder.Add(num, truck);
+            i++;
+        }
+
+        //팝업.
+        foreach (var element in carOrder)
+        {
+            var go = Instantiate(carPrefab, carListContents.transform);
+            var child = go.transform.GetChild(0).gameObject;
+            child.GetComponent<Text>().text = element.Value.name;
+            if (!owned.Contains(element.Value.id)) go.GetComponent<Image>().color = Color.gray;
+
+            string key = element.Value.id;
+            var button = go.AddComponent<Button>();
+            button.onClick.AddListener(delegate { SelectCar(key); });
+
+            carObjs.Add(element.Value.id, go);
         }
 
         currentIndex = -1;
         currentSeatNum = -1;
 
+        if (playerDataMgr.saveData.currentCar == null)
+        {
+            currentKey = 0;
+        }
+        else
+        {
+            currentKey = carOrder.FirstOrDefault(x => x.Value.id.Equals(playerDataMgr.saveData.currentCar)).Key;
+        }
+        selectedCar = carOrder[currentKey].id;
+        CarDisplay(selectedCar);
+
+        ButtonInteractable();
         originColor = new Color(255, 192, 0);
+    }
+
+    public void PreviousButton()
+    {
+        if (currentKey - 1 < 0) return;
+
+        currentKey--;
+        selectedCar = carOrder[currentKey].id;
+
+        CarReset();
+        CarDisplay(selectedCar);
+    }
+
+    public void NextButton()
+    {
+        if (currentKey + 1 >= carOrder.Count) return;
+
+        currentKey++;
+        selectedCar = carOrder[currentKey].id;
+
+        CarReset();
+        CarDisplay(selectedCar);
+    }
+
+    public void CarReset()
+    {
+        foreach (var element in seats)
+        {
+            if (element.GetComponent<Image>().color != Color.red) continue;
+            element.GetComponent<Image>().color = Color.white;
+        }
+
+        foreach (var element in characters)
+        {
+            if (element.Value.GetComponent<Image>().color != Color.red) continue;
+            element.Value.GetComponent<Image>().color = Color.white;
+        }
+
+        foreach (var key in playerDataMgr.boardingSquad.Keys.ToList())
+        {
+            currentSeatNum = key;
+            currentIndex = playerDataMgr.boardingSquad[key];
+            GetOffTheCar();
+        }
+        currentIndex = -1;
+        currentSeatNum = -1;
+    }
+
+    public void CarDisplay(string key)
+    {
+        currentKey = carOrder.FirstOrDefault(x => x.Value.id.Equals(selectedCar)).Key;
+        ButtonInteractable();
+
+        var truck = carOrder[currentKey];
+        carNameTxt.text = truck.name;
+
+        var capacity = truck.capacity;
+        for (int i = 0; i < capacity; i++)
+        {
+            if (!seats[i].activeSelf)
+                seats[i].SetActive(true);
+        }
+        for (int i = capacity; i < seats.Count; i++)
+        {
+            if (seats[i].activeSelf)
+                seats[i].SetActive(false);
+        }
+    }
+
+    private void ButtonInteractable()
+    {
+        left.interactable = (currentKey <= 0) ? false : true;
+        right.interactable = (currentKey >= carOrder.Count - 1) ? false : true;
     }
 
     public void SelectCharacter(int i)
     {
         if (currentSeatNum == -1) return;
 
-        if(currentIndex!=-1)
+        if(currentIndex!=-1 && characters.ContainsKey(currentIndex))
         characters[currentIndex].GetComponent<Image>().color = originColor;
 
         currentIndex = i;
@@ -95,11 +228,20 @@ public class BoardingMgr : MonoBehaviour
     {
         if (currentSeatNum != -1) seats[currentSeatNum].GetComponent<Image>().color = Color.white;
 
-        Debug.Log($"currentSeatNum : {currentSeatNum}");
-        Debug.Log($"count : {seats.Count}");
-
         currentSeatNum = i;
         seats[currentSeatNum].GetComponent<Image>().color = Color.red;
+
+        if (playerDataMgr.boardingSquad.ContainsKey(currentSeatNum))
+            currentIndex = playerDataMgr.boardingSquad[currentSeatNum];
+    }
+
+    public void SelectCar(string key)
+    {
+        if (selectedCar != null)
+            carObjs[selectedCar].GetComponent<Image>().color = Color.white;
+
+        selectedCar = key;
+        carObjs[selectedCar].GetComponent<Image>().color = Color.red;
     }
 
     //탑승.
@@ -107,32 +249,85 @@ public class BoardingMgr : MonoBehaviour
     {
         if (currentIndex == -1 || currentSeatNum == -1) return;
 
-        foreach (var element in isBoarding)
+        //다른 사람이 탑승하고 있으면 스왑.
+        if (playerDataMgr.boardingSquad.ContainsKey(currentSeatNum))
         {
-            if (element.Value == currentIndex) return;
+            var current = currentIndex;
+            var previous = playerDataMgr.boardingSquad[currentSeatNum];
+            currentIndex = previous;
+            GetOffTheCar();
+            currentIndex = current;
         }
-        
-        var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
-        child.GetComponent<Text>().text = characterInfo[currentIndex].character.name.Substring(0,3);
-        isBoarding[currentSeatNum] = currentIndex;
-        
-        playerDataMgr.boardingSquad.Add(currentSeatNum, currentIndex);
 
+        //json.
+        playerDataMgr.saveData.currentCar = selectedCar;
         playerDataMgr.saveData.boarding[currentIndex] = currentSeatNum;
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+        //playerDataMgr.
+        playerDataMgr.boardingSquad.Add(currentSeatNum, currentIndex);
+
+        //현재 데이터.
+        var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
+        child.GetComponent<Text>().text = playerDataMgr.currentSquad[currentIndex].character.name.Substring(0,3);
+        
+        Destroy(characters[currentIndex]);
+        characters.Remove(currentIndex);
+
+        seats[currentSeatNum].GetComponent<Image>().color = Color.white;
+        currentSeatNum = -1;
+        currentIndex = -1;
     }
 
     public void GetOffTheCar()
     {
         if (currentIndex == -1 || currentSeatNum == -1) return;
 
-        var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
-        child.GetComponent<Text>().text = string.Empty;
-        isBoarding[currentSeatNum] = -1;
-
-        playerDataMgr.boardingSquad.Remove(currentSeatNum);
-
+        //json.
         playerDataMgr.saveData.boarding[currentIndex] = -1;
+
+        //playerDataMgr.
+        playerDataMgr.boardingSquad.Remove(currentSeatNum);
+        if (playerDataMgr.boardingSquad.Count == 0) playerDataMgr.saveData.currentCar = null;
+
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+        //현재데이터.
+        var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
+        child.GetComponent<Text>().text = $"좌석{currentSeatNum+1}";
+        
+        var go = Instantiate(characterPrefab, ListContent.transform);
+        var button = go.AddComponent<Button>();
+
+        child = go.transform.GetChild(0).gameObject;
+        child.GetComponent<Text>().text = playerDataMgr.currentSquad[currentIndex].character.name;
+
+        int index = currentIndex;
+        button.onClick.AddListener(delegate { SelectCharacter(index); });
+        characters.Add(currentIndex, go);
+
+        seats[currentSeatNum].GetComponent<Image>().color = Color.white;
+        currentSeatNum = -1;
+        currentIndex = -1;
+    }
+
+    public void OpenCarListPopup()
+    {
+        carListPopup.SetActive(true);
+    }
+
+    public void CloseCarListPopup()
+    {
+        foreach (var element in carObjs)
+        {
+            if (element.Value.GetComponent<Image>().color == Color.red)
+                element.Value.GetComponent<Image>().color = Color.white;
+        }
+        carListPopup.SetActive(false);
+        if (selectedCar != null)
+        {
+            CarReset();
+            CarDisplay(selectedCar);
+        }
     }
 }
