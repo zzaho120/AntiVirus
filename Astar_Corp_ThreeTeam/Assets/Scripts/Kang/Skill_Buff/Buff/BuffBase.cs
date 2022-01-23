@@ -26,6 +26,7 @@ public class BuffBase
 
     public float GetAmount()
     {
+        Debug.Log(stat);
         if (isIncrease)
             return amount;
         else
@@ -35,6 +36,5 @@ public class BuffBase
     public void StartTurn()
     {
         currentLifeTurn++;
-        Debug.Log(currentLifeTurn);
     }
 }

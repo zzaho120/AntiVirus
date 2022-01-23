@@ -189,11 +189,12 @@ public class CharacterStats : MonoBehaviour
         VirusPanaltyInit();
 
         // test
-        var skilltest = (PassiveSkill)Resources.Load("Choi/Datas/Skills/PassiveSkills/Scout_B-1");
+        //var skilltest = ScriptableMgr.Instance.passiveSkillList["PSK_0001"];
+        var skilltest = ScriptableMgr.Instance.passiveSkillList["PSK_0009"];
 
         skillMgr.AddSkill(SkillType.Passive, skilltest);
 
-        var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
+        var skillList = skillMgr.GetPassiveSkills(skilltest.skillCase);
 
         foreach (var skill in skillList)
         {

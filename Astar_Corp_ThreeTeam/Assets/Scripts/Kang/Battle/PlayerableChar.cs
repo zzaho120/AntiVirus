@@ -37,6 +37,7 @@ public class PlayerableChar : BattleTile
     public int audibleDistance = 4;
     public CharacterState status;
     public bool isSelected;
+    public bool isFullApMove;
     
     public DirectionType direction;
 
@@ -118,6 +119,7 @@ public class PlayerableChar : BattleTile
     {
         status = CharacterState.Wait;
         isSelected = false;
+        isFullApMove = false;
         AP = 6;
         alertList.Clear();
         characterStats.StartTurn();
@@ -148,6 +150,14 @@ public class PlayerableChar : BattleTile
             yield return new WaitForSeconds(0.1f);
         }
         AP -= currentTile.moveAP;
+        if (currentTile.moveAP == 6)
+        {
+            var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.FullApMove);
+            foreach (var skill in skillList)
+            {
+                skill.Invoke(characterStats.buffMgr);
+            }
+        }
 
         var window = BattleMgr.Instance.battleWindowMgr.Open(1).GetComponent<PlayerActionWindow>();
         window.OnActiveDirectionBtns(false, true);
@@ -200,28 +210,49 @@ public class PlayerableChar : BattleTile
         moveDics.Clear();
         moveDics.Add(currentTile, 0);
 
-        var cnt = 0;
+        var cnt = 0; 
+        var mpPerAp = characterStats.weapon.MpPerAp;
+        var buffMgr = characterStats.buffMgr;
+
+        var mpList = buffMgr.GetBuffList(Stat.MP);
+        foreach (var buff in mpList)
+        {
+            mpPerAp += (int)buff.GetAmount();
+        }
+
+        var maxMpList = buffMgr.GetBuffList(Stat.MaxMPLimit);
+        var isBuff = maxMpList.Count > 0;
         foreach (var adjNode in currentTile.adjNodes)
         {
-            CheckMoveRange(adjNode, cnt);
+            CheckMoveRange(adjNode, cnt, mpPerAp, isBuff);
         }
     }
 
-    private void CheckMoveRange(TileBase tile, int cnt)
+    private void CheckMoveRange(TileBase tile, int cnt, int mpPerAp, bool isBuff)
     {
-        var moveAP = (int)((cnt + 1.5 - characterStats.weapon.MpPerAp) / 1.5f);
-        if (moveAP > AP)
+        var totalMp = AP * mpPerAp;
+        var moveAP = (cnt + mpPerAp) / mpPerAp;
+        if (moveAP > totalMp || moveAP > AP)
             return;
 
-        cnt++;
+        if (isBuff)
+        {
+            if (tile.movePoint >= 2)
+                cnt += 2;
+            else
+                cnt += tile.movePoint;
+        }
+        else
+            cnt += tile.movePoint;
+
         if (!moveDics.ContainsKey(tile))
         {
-            moveDics.Add(tile, cnt);
+            moveDics.Add(tile, moveAP);
             tile.moveAP = moveAP;
         }
-        else if (moveDics[tile] > cnt)
+        else if (moveDics[tile] > moveAP)
         {
-            moveDics[tile] = cnt;
+            moveDics[tile] = moveAP;
             tile.moveAP = moveAP;
         }
         else
@@ -237,7 +268,7 @@ public class PlayerableChar : BattleTile
 
         foreach (var adjNode in tile.adjNodes)
         {
-            CheckMoveRange(adjNode, cnt);
+            CheckMoveRange(adjNode, cnt, mpPerAp, isBuff);
         }
     }
 
@@ -258,17 +289,32 @@ public class PlayerableChar : BattleTile
     {
         var weapon = characterStats.weapon;
 
+        var fullAPMoveList = characterStats.buffMgr.GetBuffList(Stat.FullApMove);
+        var isFullApMove = fullAPMoveList.Count > 0;
+
         if (weapon.CheckAvailBullet)
         {
-            if (weapon.CheckAvailShot(AP, CharacterState.Attack))
+            if (weapon.CheckAvailShot(AP, CharacterState.Attack) || isFullApMove)
             {
                 var isHit = weapon.CheckAttackAccuracy(monster.currentTile.accuracy);
-                AP -= weapon.GetWeaponAP();
+
+                if (!isFullApMove)
+                    AP -= weapon.GetWeaponAP();
 
                 if (isHit)
                 {
                     monster.GetDamage(weapon.Damage);
-                    monster.SetTarget(this);
+
+                    var buffMgr = characterStats.buffMgr;
+                    var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.Hit);
+                    foreach (var skill in skillList)
+                    {
+                        skill.Invoke(buffMgr);
+                    }
+
+                    var buffList = buffMgr.GetBuffList(Stat.Aggro);
+                    if (buffList.Count > 0 || monster.IsNullTarget)
+                        monster.SetTarget(this);
                 }
                 else
                 {
@@ -276,6 +322,7 @@ public class PlayerableChar : BattleTile
                     window.SetMsgText($"You missed {monster.name}");
                 }
 
+                characterStats.buffMgr.RemoveBuff(fullAPMoveList);
                 monster.currentTile.EnableDisplay(true);
 
                 if (AP <= 0)
@@ -311,8 +358,9 @@ public class PlayerableChar : BattleTile
     {
         if (status != CharacterState.Alert)
             status = CharacterState.TurnEnd;
-        CameraController.instance.SetFollowObject(null);
+
         EventBusMgr.Publish(EventType.EndPlayer);
+        CameraController.instance.SetFollowObject(null);
     }
 
     public void WaitPlayer()
