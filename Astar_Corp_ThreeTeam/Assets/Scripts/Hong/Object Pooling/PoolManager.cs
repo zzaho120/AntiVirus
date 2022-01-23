@@ -1,27 +1,22 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
     public List<ObjectPool> pools;
-    //public ObjectPool[] pools;
     private GameObject newPool;
     protected GameObject[] poolBox;
 
     private void Awake()
     {
         poolBox = new GameObject[pools.Count];
-        //poolBox = new GameObject[pools.Length];
 
         CreatePoolsTr();
     }
 
     // 풀 생성
-    private void CreatePoolsTr()
+    public virtual void CreatePoolsTr()
     {
-        //for (int i = 0; i < pools.Length; i++)
         for (int i = 0; i < pools.Count; i++)
         {
             // 풀로 사용할 게임오브젝트 생성
@@ -34,7 +29,6 @@ public class PoolManager : MonoBehaviour
         }
     }
 
-    //protected abstract void GetObjFromPool();
 
     // 실험용
     //void OnGUI()

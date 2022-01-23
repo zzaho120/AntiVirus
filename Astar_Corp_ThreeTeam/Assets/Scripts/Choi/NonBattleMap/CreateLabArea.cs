@@ -19,7 +19,6 @@ public class CreateLabArea : MonoBehaviour
 
     public void Init()
     {
-        return;
         //처음 시작할때.
         if (!PlayerPrefs.HasKey("MonsterAreaX0"))
         {

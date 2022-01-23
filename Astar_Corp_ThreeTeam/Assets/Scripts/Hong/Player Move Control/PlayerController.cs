@@ -219,21 +219,33 @@ public class PlayerController : MonoBehaviour
         // Text 정보 가져오기
         TextMeshProUGUI[] text = GameObject.Find("Footprint Info").GetComponentsInChildren<TextMeshProUGUI>();
 
-        if (hitInfo.collider.name == "Footprint_" + MonsterName.monster1)
+        if (hitInfo.collider.name == "Footprint_" + MonsterName.Wolf)
         {
-            text[1].text = "Bear";
+            text[1].text = "Wolf";
         }
-        else if (hitInfo.collider.name == "Footprint_" + MonsterName.monster2)
+        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Boar)
         {
             text[1].text = "Boar";
         }
-        else if (hitInfo.collider.name == "Footprint_" + MonsterName.monster3)
+        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Bear)
+        {
+            text[1].text = "Bear";
+        }
+        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Tiger)
+        {
+            text[1].text = "Tiger";
+        }
+        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Jaguar)
+        {
+            text[1].text = "Jaguar";
+        }
+        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Fox)
         {
             text[1].text = "Fox";
         }
-        else if (hitInfo.collider.name == "Footprint_" + MonsterName.monster4)
+        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Spider)
         {
-            text[1].text = "Rabbit";
+            text[1].text = "Spider";
         }
         else
         {

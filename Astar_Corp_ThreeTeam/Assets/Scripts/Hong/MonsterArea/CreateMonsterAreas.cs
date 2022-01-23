@@ -12,10 +12,12 @@ public class CreateMonsterAreas : MonoBehaviour
     private MonsterPool poolInfo;
     private int monsterAreaCount;
     private float posY = 10f;   // y좌표 설정
+    public int labortoryNum;
 
     private GameObject fog;
 
     private List<GameObject> monsterAreaList = new List<GameObject>();
+    private LaboratoryInfo labInfo;
 
     //private void OnDrawGizmos()
     //{
@@ -29,15 +31,37 @@ public class CreateMonsterAreas : MonoBehaviour
 
     public void Init()
     {
+        nonBattleMgr = NonBattleMgr.Instance;
+
         monsterAreaList.ToArray();
         //PlayerPrefs.DeleteAll();
 
-        nonBattleMgr = NonBattleMgr.Instance;
+        labInfo = GetComponentInChildren<LaboratoryInfo>();
+
+        //Debug.Log("Zone2 : " + labInfo.isActiveZone2);
+        //Debug.Log("Zone3 : " + labInfo.isActiveZone3);
+
+        //// 몬스터 영역 수 설정
+        if (labInfo != null)
+        {
+            if (labInfo.isActiveZone2 && !labInfo.isActiveZone3)
+            {
+                monsterAreaCount = 4;
+            }
+            else if (labInfo.isActiveZone2 && labInfo.isActiveZone3)
+            {
+                monsterAreaCount = 6;
+            }
+            else
+            {
+                monsterAreaCount = 2;
+            }
+            //Debug.Log(monsterAreaCount);
+        }
 
         // 몬스터 영역 수 설정
-        poolInfo = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
-        //monsterAreaCount = poolInfo.pools.Length;
-        monsterAreaCount = poolInfo.pools.Count;
+        //poolInfo = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
+        //monsterAreaCount = poolInfo.pools.Count;
 
         fog = GameObject.Find("Fog");
 
@@ -45,7 +69,6 @@ public class CreateMonsterAreas : MonoBehaviour
         if (!PlayerPrefs.HasKey("MonsterAreaX0"))
         {
             //MonsterArea 생성
-            //for (int j = 0; j < 10; j++)
             for (int j = 0; j < monsterAreaCount; j++)
             {
                 #region 기존 코드
@@ -81,7 +104,7 @@ public class CreateMonsterAreas : MonoBehaviour
                 Vector3 position;
                 int randScale;
 
-                var bigRadius = nonBattleMgr.laboratoryArea.virusZones1[0].GetComponent<SphereCollider>();
+                var bigRadius = nonBattleMgr.laboratoryArea.virusZones1[labortoryNum].GetComponent<SphereCollider>();
                 var radius = monsterAreaPrefab.GetComponent<SphereCollider>(); //.radius;
                 var monsterAreaLayer = LayerMask.GetMask("MonsterArea");
                 var virusZone = LayerMask.GetMask("VirusZone");
@@ -99,10 +122,7 @@ public class CreateMonsterAreas : MonoBehaviour
                 }
                 while ((Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.lossyScale.x, monsterAreaLayer).Length != 0) ||
                        (Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.lossyScale.x, playerLayer).Length != 0) ||
-                       /*(Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.lossyScale.x, virusZone).Length == 0) ||*/
                        Vector3.Distance(bigCenter, smallCenter) > ((bigRadius.radius * bigRadius.transform.lossyScale.x) - (radius.radius * monsterAreaPrefab.transform.lossyScale.x)));
-                       //Vector3.Distance(bigRadius.transform.position, position) < ((bigRadius.radius * bigRadius.transform.lossyScale.x) - (radius.radius * monsterAreaPrefab.transform.lossyScale.x)));
-                //Vector3.Distance(/*큰원의 중심, 작은원의 중심*/) < /*큰원 Radius - 작은원 Radius*/); //이거아닌듯
 
                 // 원 생성 위치에 큐브 놔두기
                 //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -112,7 +132,7 @@ public class CreateMonsterAreas : MonoBehaviour
                 //cube2.transform.position = smallCenter; //radius.transform.position;
                 //cube2.transform.localScale = new Vector3(3f, radius.transform.localScale.y, 3f);
 
-                // 몬스터 영역 저장
+                //// 몬스터 영역 저장
                 //string str = $"MonsterAreaX{j}";
                 //PlayerPrefs.SetFloat(str, position.x);
                 //str = $"MonsterAreaZ{j}";

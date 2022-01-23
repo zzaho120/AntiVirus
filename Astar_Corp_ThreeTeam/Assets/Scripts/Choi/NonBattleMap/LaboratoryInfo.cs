@@ -5,6 +5,7 @@ using UnityEngine;
 public class LaboratoryInfo : MonoBehaviour
 {
     private NonBattleMgr nonBattleMgr;
+    private ScriptableMgr scriptableMgr;
 
     public bool isSpareLab;
 
@@ -16,7 +17,7 @@ public class LaboratoryInfo : MonoBehaviour
     public bool isActiveZone2;
     public bool isActiveZone3;
 
-    public string virusType;
+    public string virusType;    // 바이러스 정보(타입) 확인
     string[] virusTypes = { "E", "B", "P", "I", "T" };
     int step;
     float timer;
@@ -31,27 +32,7 @@ public class LaboratoryInfo : MonoBehaviour
     private void Start()
     {
         nonBattleMgr = NonBattleMgr.Instance;
-        //StartCoroutine(CoCheckActiveZone());
-    }
-
-    private IEnumerator CoCheckActiveZone()
-    {
-        yield return new WaitForSeconds(0.5f);
-
-        // 잘 작동
-        Debug.Log("isActiveZone2 : " + isActiveZone2);
-        Debug.Log("isActiveZone3 : " + isActiveZone3);
-
-        if (isActiveZone2)
-        {
-            // 몬스터 풀에 몬스터 영역 수 추가 (4)
-            //nonBattleMgr.monsterPool.pools.Add(nonBattleMgr.monsterPoolTemp.randMonsterPool);
-            //nonBattleMgr.monsterPool.pools.Add(nonBattleMgr.monsterPoolTemp.randMonsterPool);
-        }
-        else if (isActiveZone3)
-        {
-            // 몬스터 풀에 몬스터 영역 수 추가 (6)
-        }
+        scriptableMgr = ScriptableMgr.Instance;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -68,6 +49,31 @@ public class LaboratoryInfo : MonoBehaviour
             player = other.gameObject;
             playerController = player.GetComponent<PlayerController>();
             virusData = player.GetComponent<VirusData>();
+        }
+
+        // 몬스터 정보 설정
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            var stat = other.GetComponent<MonsterStats>();
+            //stat.virus = virusType;
+            
+            // Area2
+            if (isActiveZone2 && !isActiveZone3)
+            {
+                stat.virusLevel = Random.Range(1, 2 + 1);
+            }
+            // Area3
+            else if (isActiveZone2 && isActiveZone3)
+            {
+                stat.virusLevel = Random.Range(1, 3 + 1);
+            }
+            // Area1
+            else
+            {
+                stat.virusLevel = 1;
+            }
+            Debug.Log(gameObject.name + " virus level : " + stat.virusLevel);
+
         }
     }
 

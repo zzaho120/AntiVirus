@@ -18,41 +18,32 @@ public class CreateFootprint : MonoBehaviour
     {
         totalTime += Time.deltaTime;
         
+        // Áö±Ý ¸ó½ºÅÍ DB ¼öÁ¤µÊ
         // Pool 0. Bear
         // Pool 1. Boar
         // Pool 2. Fox
         // Pool 3. Rabbit
 
-        if (gameObject.name == MonsterName.monster1)
-        {
-            GetFootprintsFromPool(0);
-        }
-        else if (gameObject.name == MonsterName.monster2)
-        {
-            GetFootprintsFromPool(1);
-        }
-        else if (gameObject.name == MonsterName.monster3)
-        {
-            GetFootprintsFromPool(2);
-        }
-        else if (gameObject.name == MonsterName.monster4)
-        {
-            GetFootprintsFromPool(3);
-        }
-        else
-        {
-            Debug.LogError("¹¹Áö");
-        }
-
-        //footprintPool.pools[0].prefab.transform.LookAt(transform);
-        //
-        //if (totalTime > 0.8)
+        // ¼öÁ¤
+        //if (gameObject.name == MonsterName.monster1)
         //{
-        //    GameObject go = footprintPool.pools[0].Pool.Get();
-        //    go.transform.position = transform.position;
-        //    go.transform.rotation = transform.rotation;
-        //
-        //    totalTime = 0;
+        //    GetFootprintsFromPool(0);
+        //}
+        //else if (gameObject.name == MonsterName.monster2)
+        //{
+        //    GetFootprintsFromPool(1);
+        //}
+        //else if (gameObject.name == MonsterName.monster3)
+        //{
+        //    GetFootprintsFromPool(2);
+        //}
+        //else if (gameObject.name == MonsterName.monster4)
+        //{
+        //    GetFootprintsFromPool(3);
+        //}
+        //else
+        //{
+        //    Debug.LogError("¹¹Áö");
         //}
     }
 

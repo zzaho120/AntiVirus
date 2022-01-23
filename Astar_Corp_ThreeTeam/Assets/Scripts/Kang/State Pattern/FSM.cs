@@ -5,7 +5,7 @@ using UnityEngine;
 public enum STATE
 {
     Idle,
-    Move,
+    Patrol,
     Chase
 
     //State1,

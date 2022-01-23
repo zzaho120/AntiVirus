@@ -3,27 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+
 public class MonsterPool : PoolManager
 {
     private Transform[] testZone;
     private int[] monsterNum;
     private bool[] isMaxPool;
+    //private List<GameObject> monsterList;
+
+
 
     public void Init()
     {
         testZone = GameObject.Find("MonsterArea").GetComponentsInChildren<Transform>();
-        //Debug.Log(testZone.Length);
-        
         isMaxPool = new bool[testZone.Length];
         monsterNum = new int[testZone.Length];
-        //isNextCreate = new bool[testZone.Length];
-        
+
         InvokeRepeating("GetMonstersFromPool", 0.5f, 3f);
     }
 
     private void GetMonstersFromPool()
     {
-        //for (int i = 0; i < pools.Length; i++)
+        //for (int i = 0; i < testZone.Length; i++)
         for (int i = 0; i < pools.Count; i++)
         {
             // 풀 초기 생성 시 Monster 수 정의
@@ -34,7 +35,17 @@ public class MonsterPool : PoolManager
             // 몬스터 생성
             if (monsterNum[i] < pools[i].quantity)
             {
-                CreateMonster(i);
+                // MonsterArea(몬스터 영역)의 갯수만큼만 풀에서 몬스터 프리팹 Get 해오기
+                // i : PoolCount (풀 갯수)
+                if (i >= testZone.Length - 1)
+                {
+                    //Debug.Log("Return");
+                    return;
+                }
+                else
+                {
+                    CreateMonster(i);
+                }
             }
             else
             {
@@ -48,48 +59,11 @@ public class MonsterPool : PoolManager
 
     private void CreateMonster(int poolNum)
     {
-        //Debug.Log("몹 생성");
         isMaxPool[poolNum] = false;
 
-        // 랜덤 범위 설정
-        var randX = Random.Range(-3f, 3f);
-        var randY = Random.Range(-3f, 3f);
-
         var ps = pools[poolNum].Pool.Get();
-        //ps.transform.position = testZone[poolNum + 1].position + new Vector3(randX, testZone[poolNum + 1].position.y + 0.5f, randY); // 기존
-        ps.transform.position = new Vector3(testZone[poolNum + 1].position.x, 70.0f, testZone[poolNum + 1].position.z);
-        //ps.GetComponent<NavMeshAgent>().transform.position = new Vector3(testZone[poolNum + 1].position.x, 0f, testZone[poolNum + 1].position.z);
-        //Debug.Log(ps.name);
-
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        cube.transform.position = ps.transform.position;
-        cube.transform.localScale = new Vector3(3f, 3f, 3f);
-        cube.GetComponent<SphereCollider>().isTrigger = true;
-
-        //int randNum = Random.Range(0, 9);
-        //int randPool = Random.Range(0, pools.Length);
-        //if (randNum < 5)
-        //{
-        //    var ps = pools[randPool].Pool.Get();
-        //    ps.transform.position = testZone[poolNum + 1].position + new Vector3(randX, ps.transform.position.y, randY);
-        //}
-        //else
-        //{
-        //    var ps = pools[poolNum].Pool.Get();
-        //    ps.transform.position = testZone[poolNum + 1].position + new Vector3(randX, ps.transform.position.y, randY);
-        //}
-
-        // 처음 생성될 때 여러마리
-        //int amount;
-        //if (!isNextCreate[poolNum]) amount = Random.Range(1, pools[poolNum].quantity);
-        //else amount = 1;
-        //for (int i = 0; i < amount; ++i)
-        //{
-        //    Debug.Log(poolNum + " : " + amount);
-        //    var ps = pools[poolNum].Pool.Get();
-        //    ps.transform.position = testZone[poolNum + 1].position + new Vector3(randX, ps.transform.position.y, randY);
-        //    isNextCreate[poolNum] = true;
-        //}
+        ps.transform.position = new Vector3(testZone[poolNum + 1].position.x, 0f, testZone[poolNum + 1].position.z);
+        //ps.transform.localScale = new Vector3(10f, 10f, 10f);
     }
 
     //private void OnGUI()

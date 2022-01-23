@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+// 스탯 정보
 
 // 몬스터 기본 스탯
 // 1. HP
@@ -17,6 +17,9 @@ using UnityEngine;
 // 12. 바이러스 게이지 증가량
 // 13. 도망AI시 필요 체력 감소량 ?
 
+// 비전투씬용 몬스터 스탯
+// 1. 충돌 시 전투 최대 마리 수
+
 // 바이러스 스탯
 // 1. HP
 // 2. AP
@@ -28,9 +31,12 @@ using UnityEngine;
 
 public class MonsterStats : MonoBehaviour
 {
+    [HideInInspector]
     public Monster monster;
+    [HideInInspector]
     public Virus virus;
 
+    public WorldMonster nonBattleMonster;
     public int virusLevel;
 
     private int maxHp { get => Hp; }
@@ -210,6 +216,17 @@ public class MonsterStats : MonoBehaviour
         get
         {
             return monster.escapeHpDec;
+        }
+    }
+
+    // 전투 발생 시 출전(?)하는 몬스터 수
+    // 최소 마리 수 ~ 최대 마리 수 사이에서 랜덤 결정
+    public int BattleMonsterNum
+    {
+        get
+        {
+            var monsterNum = Random.Range(nonBattleMonster.battleMinNum, nonBattleMonster.battleMaxNum + 1);
+            return monsterNum;
         }
     }
 
