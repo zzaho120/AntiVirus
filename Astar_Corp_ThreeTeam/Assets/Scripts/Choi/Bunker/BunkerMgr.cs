@@ -383,7 +383,7 @@ public class BunkerMgr : MonoBehaviour
 
     public void ExitBunker()
     {
-        if (!playerDataMgr.ableToExit) return;
+        //if (!playerDataMgr.ableToExit) return;
 
         playerDataMgr.saveData.bunkerExitNum += 1;
         if (playerDataMgr.saveData.bunkerExitNum == 5)
@@ -392,7 +392,7 @@ public class BunkerMgr : MonoBehaviour
             playerDataMgr.saveData.bunkerExitNum = 0;
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
-        //SceneManager.LoadScene("NonBattleMap");
+        SceneManager.LoadScene("TestNonBattleMap");
         //SceneManager.LoadScene("NonBattleAsset");
     }
 }

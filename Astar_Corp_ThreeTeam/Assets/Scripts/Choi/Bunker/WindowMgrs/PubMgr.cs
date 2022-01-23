@@ -104,7 +104,8 @@ public class PubMgr : MonoBehaviour
             stat.sensivity = Random.Range(character.minSensitivity, character.maxSensitivity);
             stat.concentration = Random.Range(character.minConcentration, character.maxConcentration);
             stat.willpower = Random.Range(character.minWillpower, character.maxWillpower);
-           
+            stat.bagLevel = 1;
+
             stat.character = character;
             stat.character.id = character.id;
 

@@ -50,7 +50,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public bool isFirst;
     private void Start()
     {
-        //PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
@@ -191,31 +191,58 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
                 //테스트용.
                 //////////////////////////////
+                //foreach (var element in equippableList)
+                //{
+                //    saveData.equippableList.Add(element.Key);
+                //    int random = Random.Range(1, 3);
+                //    saveData.equippableNumList.Add(random);
+                //    currentEquippables.Add(element.Key, element.Value);
+                //    currentEquippablesNum.Add(element.Key, random);
+                //}
+
+                //foreach (var element in consumableList)
+                //{
+                //    saveData.consumableList.Add(element.Key);
+                //    int random = Random.Range(1, 3);
+                //    saveData.consumableNumList.Add(random);
+                //    currentConsumables.Add(element.Key, element.Value);
+                //    currentConsumablesNum.Add(element.Key, random);
+                //}
+
+                //foreach (var element in otherItemList)
+                //{
+                //    saveData.otherItemList.Add(element.Key);
+                //    int random = Random.Range(1, 3);
+                //    saveData.otherItemNumList.Add(random);
+                //    currentOtherItems.Add(element.Key, element.Value);
+                //    currentOtherItemsNum.Add(element.Key, random);
+                //}
+
                 foreach (var element in equippableList)
                 {
-                    saveData.equippableList.Add(element.Key);
+                    saveData.truckEquippableList.Add(element.Key);
                     int random = Random.Range(1, 3);
-                    saveData.equippableNumList.Add(random);
-                    currentEquippables.Add(element.Key, element.Value);
-                    currentEquippablesNum.Add(element.Key, random);
+                    saveData.truckEquippableNumList.Add(random);
+                    truckEquippables.Add(element.Key, element.Value);
+                    truckEquippablesNum.Add(element.Key, random);
                 }
 
                 foreach (var element in consumableList)
                 {
-                    saveData.consumableList.Add(element.Key);
+                    saveData.truckConsumableList.Add(element.Key);
                     int random = Random.Range(1, 3);
-                    saveData.consumableNumList.Add(random);
-                    currentConsumables.Add(element.Key, element.Value);
-                    currentConsumablesNum.Add(element.Key, random);
+                    saveData.truckConsumableNumList.Add(random);
+                    truckConsumables.Add(element.Key, element.Value);
+                    truckConsumablesNum.Add(element.Key, random);
                 }
 
                 foreach (var element in otherItemList)
                 {
-                    saveData.otherItemList.Add(element.Key);
+                    saveData.truckOtherItemList.Add(element.Key);
                     int random = Random.Range(1, 3);
-                    saveData.otherItemNumList.Add(random);
-                    currentOtherItems.Add(element.Key, element.Value);
-                    currentOtherItemsNum.Add(element.Key, random);
+                    saveData.truckOtherItemNumList.Add(random);
+                    truckOtherItems.Add(element.Key, element.Value);
+                    truckOtherItemsNum.Add(element.Key, random);
                 }
 
                 PlayerSaveLoadSystem.Save(saveData);
