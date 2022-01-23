@@ -162,7 +162,7 @@ public class CreateMonsterAreas : MonoBehaviour
 
                 var go = Instantiate(monsterAreaPrefab, new Vector3(randX, posY, randZ), Quaternion.identity);
                 go.transform.SetParent(GameObject.Find("MonsterArea").transform);   // 부모오브젝트 설정
-                str = $"MonsterAreaScale{j}";
+                //str = $"MonsterAreaScale{j}";
                 //var randScale = PlayerPrefs.GetInt(str);
             }
         }

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Jaguar_PatrolState : StateBase
+public class Bear_PatrolState : StateBase
 {
     private float startTime;
     private bool isChase;
     private float randTimer;
 
-    private float moveRange = Constants.jaguarRange;   // 이동 범위 설정
-    private float distance = Constants.jaguarDistance;    // 플레이어, 몬스터간 거리
-    private int atkChance = 7;
+    private float moveRange = Constants.bearRange;   // 이동 범위 설정
+    private float distance = Constants.bearDistance;    // 플레이어, 몬스터간 거리
+    private int atkChance = 6;
 
     private Vector3 targetPos;
     private Vector3 startPos;
@@ -19,7 +19,7 @@ public class Jaguar_PatrolState : StateBase
     private Transform player;
     private NavMeshAgent agent;
 
-    public Jaguar_PatrolState(FSM fsm)
+    public Bear_PatrolState(FSM fsm)
     {
         this.fsm = fsm;
 
@@ -35,7 +35,6 @@ public class Jaguar_PatrolState : StateBase
 
     public override void Enter()
     {
-        //agent.transform.position = startPos;
         // Debug.Log(startPos);
         agent.SetDestination(startPos);
 
@@ -50,7 +49,7 @@ public class Jaguar_PatrolState : StateBase
         targetPos = startPos + new Vector3(randX, fsm.transform.position.y, randY);
 
         // 허용 범위를 초과하면 타겟위치 = 시작위치
-        if (Vector3.Distance(targetPos, startPos) > moveRange * 3)
+        if (Vector3.Distance(targetPos, startPos) > moveRange * 2)
         {
             //Debug.Log("Range Over");
             targetPos = startPos;

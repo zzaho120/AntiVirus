@@ -17,13 +17,15 @@ public class CreateFootprint : MonoBehaviour
     private void Update()
     {
         totalTime += Time.deltaTime;
-        
+
         // 지금 몬스터 DB 수정됨
         // Pool 0. Bear
         // Pool 1. Boar
         // Pool 2. Fox
         // Pool 3. Rabbit
 
+        var randFootprint = Random.Range(0, 4);
+        GetFootprintsFromPool(randFootprint);
         // 수정
         //if (gameObject.name == MonsterName.monster1)
         //{
@@ -54,11 +56,11 @@ public class CreateFootprint : MonoBehaviour
         if (totalTime > 0.8)
         {
             GameObject go = footprintPool.pools[num].Pool.Get();
-            //go.transform.position = transform.position;
-            //go.transform.rotation = transform.rotation;
+            go.transform.position = transform.position;
+            go.transform.rotation = transform.rotation;
 
             // Footprint position tester
-            go.transform.position = GameObject.Find("Player").transform.position + new Vector3(Random.Range(5f, 20f), 10f, Random.Range(5f, 20f));
+            //go.transform.position = GameObject.Find("Player").transform.position + new Vector3(Random.Range(5f, 20f), 10f, Random.Range(5f, 20f));
 
             totalTime = 0;
         }

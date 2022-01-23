@@ -9,14 +9,14 @@ public class SetMonsterStat : MonoBehaviour
     private MonsterStats monsterStats;
     private string id, nonBattleId;
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-
-        var center = transform.position;
-        var radius = transform.lossyScale.x;
-        Gizmos.DrawSphere(center, radius);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.red;
+    //
+    //    var center = transform.position;
+    //    var radius = transform.lossyScale.x;
+    //    Gizmos.DrawSphere(center, radius);
+    //}
 
 
     public void Init()

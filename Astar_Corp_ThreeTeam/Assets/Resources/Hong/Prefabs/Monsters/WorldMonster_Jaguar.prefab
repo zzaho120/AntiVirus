@@ -417,9 +417,10 @@ GameObject:
   - component: {fileID: 1211717473332356174}
   - component: {fileID: -1079732754706045964}
   - component: {fileID: 8036217221351425615}
-  - component: {fileID: -5614710290517310038}
   - component: {fileID: -8601744937402619262}
   - component: {fileID: 5395120676637928197}
+  - component: {fileID: 9013790241831267432}
+  - component: {fileID: 8212341617134466299}
   m_Layer: 17
   m_Name: WorldMonster_Jaguar
   m_TagString: Enemy
@@ -511,18 +512,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054d7e78f4f1f3e4eb02f61101a50311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-5614710290517310038
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1212895298041781005}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3385c720ef50673499ea3392d2f8f462, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-8601744937402619262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -554,6 +543,32 @@ MonoBehaviour:
   virusLevel: 0
   currentHp: 0
   currentAp: 0
+--- !u!136 &9013790241831267432
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212895298041781005}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.62
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: -0.01, y: 0.62, z: 0.23}
+--- !u!114 &8212341617134466299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212895298041781005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3385c720ef50673499ea3392d2f8f462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1213119004451653807
 GameObject:
   m_ObjectHideFlags: 0

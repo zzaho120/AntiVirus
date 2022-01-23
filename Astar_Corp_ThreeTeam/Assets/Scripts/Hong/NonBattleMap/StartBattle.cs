@@ -18,12 +18,14 @@ public class StartBattle : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy"))
+        //Debug.Log(other.name);
+
+        if (other.gameObject.CompareTag("Enemy"))
         {
-            // 렌더러가 활성화 되어있을때만 유효하게
-            if (other.GetComponent<MeshRenderer>().enabled)
-            {
-                // 몬스터 공격 앞뒤 판단
+            // 렌더러가 활성화 되어있을때만 유효하게 // 해당조건 잠깐 Off
+            //if (other.GetComponent<MeshRenderer>().enabled)
+            //{
+            // 몬스터 공격 앞뒤 판단
                 GameObject target = other.gameObject;
                 Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
                 // 플레이어 앞
@@ -46,7 +48,7 @@ public class StartBattle : MonoBehaviour
                 // 전체맵 일시정지
                 timeController.PauseTime();
                 timeController.isPause = true;
-            }
+            //}
         }
     }
 }

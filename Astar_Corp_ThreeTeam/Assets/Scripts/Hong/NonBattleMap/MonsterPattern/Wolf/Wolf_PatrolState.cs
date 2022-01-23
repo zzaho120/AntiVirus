@@ -49,7 +49,7 @@ public class Wolf_PatrolState : StateBase
         targetPos = startPos + new Vector3(randX, fsm.transform.position.y, randY);
 
         // 허용 범위를 초과하면 타겟위치 = 시작위치
-        if (Vector3.Distance(targetPos, startPos) > moveRange * 3)
+        if (Vector3.Distance(targetPos, startPos) > moveRange * 2)
         {
             //Debug.Log("Range Over");
             targetPos = startPos;

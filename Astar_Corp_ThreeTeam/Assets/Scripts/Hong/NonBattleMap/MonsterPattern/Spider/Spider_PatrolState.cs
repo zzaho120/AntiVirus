@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Bear_PatrolState : StateBase
+public class Spider_PatrolState : StateBase
 {
     private float startTime;
     private bool isChase;
     private float randTimer;
 
-    private float moveRange = Constants.bearRange;   // 이동 범위 설정
-    private float distance = Constants.bearDistance;    // 플레이어, 몬스터간 거리
-    private int atkChance = 6;
+    private float moveRange = Constants.spiderRange;   // 이동 범위 설정
+    private float distance = Constants.spiderDistance;    // 플레이어, 몬스터간 거리
+    private int atkChance = 8;
 
     private Vector3 targetPos;
     private Vector3 startPos;
@@ -19,7 +19,7 @@ public class Bear_PatrolState : StateBase
     private Transform player;
     private NavMeshAgent agent;
 
-    public Bear_PatrolState(FSM fsm)
+    public Spider_PatrolState(FSM fsm)
     {
         this.fsm = fsm;
 
@@ -35,8 +35,9 @@ public class Bear_PatrolState : StateBase
 
     public override void Enter()
     {
-        // Debug.Log(startPos);
+        //agent.transform.position = startPos;
         agent.SetDestination(startPos);
+        // Debug.Log(startPos);
 
         startTime = Time.time;
         randTimer = 0;
@@ -49,7 +50,7 @@ public class Bear_PatrolState : StateBase
         targetPos = startPos + new Vector3(randX, fsm.transform.position.y, randY);
 
         // 허용 범위를 초과하면 타겟위치 = 시작위치
-        if (Vector3.Distance(targetPos, startPos) > moveRange * 3)
+        if (Vector3.Distance(targetPos, startPos) > moveRange * 2)
         {
             //Debug.Log("Range Over");
             targetPos = startPos;

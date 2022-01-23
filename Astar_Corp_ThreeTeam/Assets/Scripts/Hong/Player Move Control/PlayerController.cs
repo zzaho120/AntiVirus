@@ -88,9 +88,9 @@ public class PlayerController : MonoBehaviour
                 // 전투발생
                 if (raycastHit.collider.CompareTag("Enemy"))
                 {
-                    // 렌더러가 활성화 되어있을때만 유효하게
-                    if (raycastHit.collider.GetComponent<MeshRenderer>().enabled)
-                    {
+                    //// 렌더러가 활성화 되어있을때만 유효하게 // 해당조건 잠깐 Off
+                    //if (raycastHit.collider.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
+                    //{
                         // 위치 저장? 해야되나
                         //SavePlayerPos(raycastHit);
                         popUpMgr.OpenMonsterPopup();
@@ -98,16 +98,16 @@ public class PlayerController : MonoBehaviour
                         // 비전투씬 일시정지
                         timeController.PauseTime();
                         timeController.isPause = true;
-                    }
+                    //}
                 }
-                // 발자국 클릭 시
-                if (raycastHit.collider.CompareTag("Footprint"))
-                {
-                    popUpMgr.OpenFootprintPopup();
-
-                    TextMeshProUGUI[] text = footprintUI.GetComponentsInChildren<TextMeshProUGUI>();
-                    text[1].text = raycastHit.collider.name;
-                }
+                //// 발자국 클릭 시
+                //if (raycastHit.collider.CompareTag("Footprint"))
+                //{
+                //    popUpMgr.OpenFootprintPopup();
+                //
+                //    TextMeshProUGUI[] text = footprintUI.GetComponentsInChildren<TextMeshProUGUI>();
+                //    text[1].text = raycastHit.collider.name;
+                //}
                 // 클릭하는 위치로 이동하는 것 방지
                 agent.SetDestination(agent.transform.position);
             }
@@ -141,8 +141,8 @@ public class PlayerController : MonoBehaviour
                 if (raycastHit.collider.CompareTag("Enemy"))
                 {
                     // 렌더러가 활성화 되어있을때만 유효하게
-                    if (raycastHit.collider.GetComponent<MeshRenderer>().enabled)
-                    {
+                    //if (raycastHit.collider.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
+                    //{
                         // 위치 저장? 해야되나
                         //SavePlayerPos(raycastHit);
                         popUpMgr.OpenMonsterPopup();
@@ -150,16 +150,16 @@ public class PlayerController : MonoBehaviour
                         // 비전투맵 일시정지
                         timeController.PauseTime();
                         timeController.isPause = true;
-                    }
+                    //}
                 }
                 // 발자국 클릭 시
-                if (raycastHit.collider.CompareTag("Footprint"))
-                {
-                    // 발자국 팝업창 Open
-                    popUpMgr.OpenFootprintPopup();
-                    // 몬스터 정보 출력
-                    PrintMonsterName(raycastHit);
-                }
+                //if (raycastHit.collider.CompareTag("Footprint"))
+                //{
+                //    // 발자국 팝업창 Open
+                //    popUpMgr.OpenFootprintPopup();
+                //    // 몬스터 정보 출력
+                //    //PrintMonsterName(raycastHit);
+                //}
                 // 클릭하는 위치로 이동하는 것 방지
                 agent.SetDestination(agent.transform.position);
             }

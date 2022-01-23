@@ -36,18 +36,13 @@ public class NonBattleMgr : MonoBehaviour
 
         // 클래스들 초기화
         laboratoryArea.Init();
-
         for (int i = 0; i < monsterArea.Length; i++)
         {
             monsterArea[i].Init();
         }
-        //for (int i = 0; i < laboratoryArea.laboratoryObjs.Count; i++)
-        //{
-        //    monsterArea[i].Init();
-        //}
         monsterPool.Init();
         playerMove.Init();
-        playerController.Init();
+        playerController.Init(); 
     }
 
     private void Update()

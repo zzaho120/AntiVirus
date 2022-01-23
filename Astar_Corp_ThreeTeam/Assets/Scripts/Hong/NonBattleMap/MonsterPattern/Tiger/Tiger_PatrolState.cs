@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Boar_PatrolState : StateBase
+public class Tiger_PatrolState : StateBase
 {
     private float startTime;
     private bool isChase;
     private float randTimer;
 
-    // 몬스터별 설정
-    private float moveRange = Constants.boarRange;   // 이동 범위 설정
-    private float distance = Constants.boarDistance;    // 플레이어, 몬스터간 거리
-    private int atkChance = 4;
+    private float moveRange = Constants.tigerRange;   // 이동 범위 설정
+    private float distance = Constants.tigerDistance;    // 플레이어, 몬스터간 거리
+    private int atkChance = 6;
 
     private Vector3 targetPos;
     private Vector3 startPos;
@@ -20,7 +19,7 @@ public class Boar_PatrolState : StateBase
     private Transform player;
     private NavMeshAgent agent;
 
-    public Boar_PatrolState(FSM fsm)
+    public Tiger_PatrolState(FSM fsm)
     {
         this.fsm = fsm;
 
@@ -36,6 +35,7 @@ public class Boar_PatrolState : StateBase
 
     public override void Enter()
     {
+        //agent.transform.position = startPos;
         agent.SetDestination(startPos);
         // Debug.Log(startPos);
 
@@ -50,7 +50,7 @@ public class Boar_PatrolState : StateBase
         targetPos = startPos + new Vector3(randX, fsm.transform.position.y, randY);
 
         // 허용 범위를 초과하면 타겟위치 = 시작위치
-        if (Vector3.Distance(targetPos, startPos) > moveRange * 3)
+        if (Vector3.Distance(targetPos, startPos) > moveRange * 2)
         {
             //Debug.Log("Range Over");
             targetPos = startPos;
@@ -58,6 +58,7 @@ public class Boar_PatrolState : StateBase
 
         // 내비메쉬 이동
         //agent.SetDestination(agent.transform.position);
+        
     }
 
     public override void Exit()

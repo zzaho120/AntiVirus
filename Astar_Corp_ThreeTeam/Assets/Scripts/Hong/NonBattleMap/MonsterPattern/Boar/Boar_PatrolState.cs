@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Fox_PatrolState : StateBase
+public class Boar_PatrolState : StateBase
 {
     private float startTime;
     private bool isChase;
     private float randTimer;
 
-    private float moveRange = Constants.foxRange;   // 이동 범위 설정
-    private float distance = Constants.foxDistance;    // 플레이어, 몬스터간 거리
-    private int atkChance = 2;
+    // 몬스터별 설정
+    private float moveRange = Constants.boarRange;   // 이동 범위 설정
+    private float distance = Constants.boarDistance;    // 플레이어, 몬스터간 거리
+    private int atkChance = 4;
 
     private Vector3 targetPos;
     private Vector3 startPos;
@@ -19,7 +20,7 @@ public class Fox_PatrolState : StateBase
     private Transform player;
     private NavMeshAgent agent;
 
-    public Fox_PatrolState(FSM fsm)
+    public Boar_PatrolState(FSM fsm)
     {
         this.fsm = fsm;
 
@@ -49,7 +50,7 @@ public class Fox_PatrolState : StateBase
         targetPos = startPos + new Vector3(randX, fsm.transform.position.y, randY);
 
         // 허용 범위를 초과하면 타겟위치 = 시작위치
-        if (Vector3.Distance(targetPos, startPos) > moveRange * 3)
+        if (Vector3.Distance(targetPos, startPos) > moveRange * 2)
         {
             //Debug.Log("Range Over");
             targetPos = startPos;
