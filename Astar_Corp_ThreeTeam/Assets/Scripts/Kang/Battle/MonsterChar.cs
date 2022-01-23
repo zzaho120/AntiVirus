@@ -84,7 +84,6 @@ public class MonsterChar : BattleTile
                 randomZ = -randomZ;
 
             destTile = tileIdx + new Vector3(randomX, 0, randomZ);
-            Debug.Log(destTile);
             if (tileDics.ContainsKey(destTile))
             {
                 BattleMgr.Instance.pathMgr.InitAStar(tileIdx, destTile);

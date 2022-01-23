@@ -73,7 +73,6 @@ public class SightMgr : MonoBehaviour
         MAX_X_IDX = TileMgr.MAX_X_IDX;
         MAX_Z_IDX = TileMgr.MAX_Z_IDX;
         InitFog();
-        UpdateFog();
     }
 
     private void InitFog()
@@ -181,7 +180,7 @@ public class SightMgr : MonoBehaviour
             if (player.gameObject == null)
                 continue;
 
-            var sightDistance = player.sightDistance;
+            var sightDistance = player.SightDistance;
             var curTileIdx = new Vector2(player.currentTile.tileIdx.x, player.currentTile.tileIdx.z);
 
             if (!calculateSightDics[idx].ContainsKey(curTileIdx))
@@ -234,21 +233,23 @@ public class SightMgr : MonoBehaviour
     {
         var tileIdx = Vector3.zero;
         GameObject character = null;
+        var sightDist = 0;
         switch (characterType)
         {
             case CharacterType.Player:
                 tileIdx = playerableChars[idx].tileIdx;
                 character = playerableChars[idx].gameObject;
+                sightDist = character.GetComponent<PlayerableChar>().SightDistance;
                 break;
             case CharacterType.Monster:
                 tileIdx = monsters[idx].tileIdx;
                 character = monsters[idx].gameObject;
+                sightDist = character.GetComponent<MonsterChar>().monsterStats.monster.sightRange;
                 break;
         }
         if (!character.activeSelf)
             return;
 
-        var sightDist = 3;
         var maxX = sightDist;
         var maxY = sightDist;
         var startTileIdx = new Vector2(tileIdx.x, tileIdx.z);

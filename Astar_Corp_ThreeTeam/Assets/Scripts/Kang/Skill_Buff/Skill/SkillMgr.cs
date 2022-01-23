@@ -20,13 +20,8 @@ public class SkillMgr
 
         foreach (var skill in passiveSkills)
         {
-            switch (skillCase)
-            {
-                case PassiveCase.Ready:
-                    if (skill.skillCase.Equals("Ready"))
-                        skillList.Add(skill);
-                    break;
-            }
+            if (skill.skillCase == skillCase)
+                skillList.Add(skill);
         }
         
         return skillList;

@@ -387,7 +387,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             foreach (var element in activeSkill)
             {
                 if (element == null) continue;
-                stat.skills.activeSkills.Add(activeSkillList[element]);
+                stat.skillMgr.activeSkills.Add(activeSkillList[element]);
             }
 
             List<string> passiveSkill = new List<string>();
@@ -396,7 +396,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             foreach (var element in passiveSkill)
             {
                 if (element == null) continue;
-                stat.skills.passiveSkills.Add(passiveSkillList[element]);
+                stat.skillMgr.passiveSkills.Add(passiveSkillList[element]);
             }
 
             for (int j = saveData.bagEquippableFirstIndex[i]; j < saveData.bagEquippableLastIndex[i]; j++)
@@ -454,12 +454,12 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.subWeapon.Add(subWeaponStr);
             for (int k = 0; k < 5; k++) 
             {
-                string activeSkillStr = (stat.skills.activeSkills[k] != null) ? stat.skills.activeSkills[k].id : null;
+                string activeSkillStr = (stat.skillMgr.activeSkills[k] != null) ? stat.skillMgr.activeSkills[k].id : null;
                 saveData.activeSkillList.Add(activeSkillStr); 
             }
             for (int k = 0; k < 5; k++) 
             {
-                string passiveSkillStr = (stat.skills.passiveSkills[k] != null) ? stat.skills.passiveSkills[k].id : null;
+                string passiveSkillStr = (stat.skillMgr.passiveSkills[k] != null) ? stat.skillMgr.passiveSkills[k].id : null;
                 saveData.passiveSkillList.Add(passiveSkillStr); 
             }
 

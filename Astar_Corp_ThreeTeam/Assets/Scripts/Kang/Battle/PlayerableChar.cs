@@ -19,7 +19,21 @@ public class PlayerableChar : BattleTile
 
     [Header("Value")]
     public int AP;
-    public int sightDistance = 3;
+    private int sightDistance = 3;
+    public int SightDistance
+    {
+        get
+        {
+            var buffList = characterStats.buffMgr.GetBuffList(Stat.Sight);
+            float result = 0;
+            foreach (var buff in buffList)
+            {
+                result = buff.GetAmount();
+            }
+            return sightDistance + (int)result;
+        }
+    }
+
     public int audibleDistance = 4;
     public CharacterState status;
     public bool isSelected;
@@ -42,7 +56,6 @@ public class PlayerableChar : BattleTile
         //¼öÁ¤
         characterStats.Init();  // --> characterStats.weapon.Init();
         direction = DirectionType.None;
-        StartTurn();
     }
 
     public void Update()

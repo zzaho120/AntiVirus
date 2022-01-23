@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BuffMgr
 {
-    public List<BuffBase> buffList;
+    public List<BuffBase> buffList = new List<BuffBase>();
 
     public void Addbuff(BuffBase buff)
     {
@@ -33,5 +33,21 @@ public class BuffMgr
         }
 
         return newBuffList;
+    }
+
+    public void StartTurn()
+    {
+        var removeList = new List<BuffBase>();
+        foreach (var buff in buffList)
+        {
+            buff.StartTurn();
+            if (buff.IsOverLifeTurn)
+                removeList.Add(buff);
+        }
+
+        foreach (var remove in removeList)
+        {
+            buffList.Remove(remove);
+        }
     }
 }

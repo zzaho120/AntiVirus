@@ -90,10 +90,13 @@ public class BattleMgr : MonoBehaviour
         var window = battleWindowMgr.Open((int)BattleWindows.TurnNotice - 1).GetComponent<TurnNoticeWindow>();
         window.NoticeTurn(turn);
 
+
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
         EventBusMgr.Subscribe(EventType.DestroyChar, DestroyChar);
 
         EventBusMgr.Publish(EventType.StartPlayer);
+
+        sightMgr.UpdateFog();
     }
 
     public void Update()

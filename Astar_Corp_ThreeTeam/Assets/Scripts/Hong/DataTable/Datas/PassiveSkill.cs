@@ -5,6 +5,7 @@ using UnityEngine;
 public enum PassiveCase
 {
     Ready,
+    Hit
 }
 
 public enum Stat
@@ -16,7 +17,7 @@ public enum Stat
 
 public class PassiveSkill : SkillBase
 {
-    public string skillCase;
+    public PassiveCase skillCase;
     public Stat stat;
     public float increase;
     public float decrease;
@@ -24,15 +25,6 @@ public class PassiveSkill : SkillBase
 
     public void Invoke(BuffMgr buffMgr)
     {
-        BuffBase buff = null;
-        switch (stat)
-        {
-            case Stat.Sight:
-                buff = new SightBuff(increase);
-                break;
-            case Stat.Reduction:
-                break;
-        }
-        buffMgr.Addbuff(buff);
+        buffMgr.Addbuff(new BuffBase(stat, increase, lifeTurn));
     }
 }

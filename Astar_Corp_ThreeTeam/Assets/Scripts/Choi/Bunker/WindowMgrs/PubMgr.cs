@@ -124,11 +124,11 @@ public class PubMgr : MonoBehaviour
             stat.weapon.mainWeapon = null;
             stat.weapon.subWeapon =  null;
 
-            stat.skills = new CharacterSkillList();
-            stat.skills.activeSkills = new List<ActiveSkill>();
-            for (int k = 0; k < 5; k++) stat.skills.activeSkills.Add(null);
-            stat.skills.passiveSkills = new List<PassiveSkill>();
-            for (int k = 0; k < 5; k++) stat.skills.passiveSkills.Add(null);
+            stat.skillMgr = new SkillMgr();
+            stat.skillMgr.activeSkills = new List<ActiveSkill>();
+            for (int k = 0; k < 5; k++) stat.skillMgr.activeSkills.Add(null);
+            stat.skillMgr.passiveSkills = new List<PassiveSkill>();
+            for (int k = 0; k < 5; k++) stat.skillMgr.passiveSkills.Add(null);
 
             int num = j;
             soliders.Add(num, stat);

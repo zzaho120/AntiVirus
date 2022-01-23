@@ -24,9 +24,6 @@ public class CharacterStats : MonoBehaviour
     public WeaponStats weapon;
 
     // 스킬
-    public CharacterSkillList skills;
-
-    // 스킬
     public SkillMgr skillMgr;
 
     // 버프
@@ -185,14 +182,16 @@ public class CharacterStats : MonoBehaviour
         //critRate        = CritRate;
         level           = 1;
 
+        buffMgr = new BuffMgr();
+
         // 무기 스탯 초기화
         weapon.Init();
         VirusPanaltyInit();
-    }
 
-    public void StartTurn()
-    {
-        weapon.StartTurn();
+        // test
+        var skilltest = (PassiveSkill)Resources.Load("Choi/Datas/Skills/PassiveSkills/Scout_B-1");
+
+        skillMgr.AddSkill(SkillType.Passive, skilltest);
 
         var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
 
@@ -200,5 +199,11 @@ public class CharacterStats : MonoBehaviour
         {
             skill.Invoke(buffMgr);
         }
+    }
+
+    public void StartTurn()
+    {
+        weapon.StartTurn();
+        buffMgr.StartTurn();
     }
 }

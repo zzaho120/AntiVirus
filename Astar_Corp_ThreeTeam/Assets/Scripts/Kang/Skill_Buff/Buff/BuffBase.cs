@@ -2,18 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BuffBase
+public class BuffBase
 {
     public Stat stat;
-    public float amount;
-    public bool isIncrease;
+    private float amount;
+    private bool isIncrease;
+    private int maxLifeTurn;
+    private int currentLifeTurn;
 
-    public BuffBase(float amount, bool isIncrease = true, Stat stat = Stat.None)
+    public bool IsOverLifeTurn
+    {
+        get => maxLifeTurn <= currentLifeTurn;
+    }
+
+    public BuffBase(Stat stat, float amount, int lifeTurn, bool isIncrease = true)
     {
         this.stat = stat;
         this.amount = amount;
         this.isIncrease = isIncrease;
+        maxLifeTurn = lifeTurn;
+        currentLifeTurn = 0;
     }
 
-    public abstract float GetAmount();
+    public float GetAmount()
+    {
+        if (isIncrease)
+            return amount;
+        else
+            return -amount;
+    }
+
+    public void StartTurn()
+    {
+        currentLifeTurn++;
+        Debug.Log(currentLifeTurn);
+    }
 }
