@@ -1,17 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-
+using System.Collections;
 
 public class MonsterPool : PoolManager
 {
     private Transform[] testZone;
     private int[] monsterNum;
     private bool[] isMaxPool;
-    //private List<GameObject> monsterList;
-
-
+    private List<GameObject> monsterList = new List<GameObject>();
 
     public void Init()
     {
@@ -19,7 +15,7 @@ public class MonsterPool : PoolManager
         isMaxPool = new bool[testZone.Length];
         monsterNum = new int[testZone.Length];
 
-        InvokeRepeating("GetMonstersFromPool", 0.5f, 3f);
+        InvokeRepeating("GetMonstersFromPool", 0.5f, 30f);
     }
 
     private void GetMonstersFromPool()
@@ -56,14 +52,17 @@ public class MonsterPool : PoolManager
             }
         }
     }
-
+    
     private void CreateMonster(int poolNum)
     {
         isMaxPool[poolNum] = false;
 
         var ps = pools[poolNum].Pool.Get();
         ps.transform.position = new Vector3(testZone[poolNum + 1].position.x, 0f, testZone[poolNum + 1].position.z);
+        ps.GetComponent<SetMonsterStat>().Init();
         //ps.transform.localScale = new Vector3(10f, 10f, 10f);
+
+        monsterList.Add(ps);
     }
 
     //private void OnGUI()

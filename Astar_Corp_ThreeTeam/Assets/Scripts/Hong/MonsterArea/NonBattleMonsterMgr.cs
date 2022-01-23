@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterMgr : MonoBehaviour
+public class NonBattleMonsterMgr : MonoBehaviour
 {
     public LaboratoryInfo labInfo;
     private List<MonsterStats> monsterStatList;
+    private List<WorldMonsterData> monsterDataList;
 
     void Start()
     {
-        var monsterStats = GetComponentsInChildren<MonsterStats>();
+
     }
 
     private void Update()

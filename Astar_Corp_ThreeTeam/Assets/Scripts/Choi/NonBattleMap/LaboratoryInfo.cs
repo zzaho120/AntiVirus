@@ -50,31 +50,6 @@ public class LaboratoryInfo : MonoBehaviour
             playerController = player.GetComponent<PlayerController>();
             virusData = player.GetComponent<VirusData>();
         }
-
-        // 몬스터 정보 설정
-        if (other.gameObject.CompareTag("Enemy"))
-        {
-            var stat = other.GetComponent<MonsterStats>();
-            //stat.virus = virusType;
-            
-            // Area2
-            if (isActiveZone2 && !isActiveZone3)
-            {
-                stat.virusLevel = Random.Range(1, 2 + 1);
-            }
-            // Area3
-            else if (isActiveZone2 && isActiveZone3)
-            {
-                stat.virusLevel = Random.Range(1, 3 + 1);
-            }
-            // Area1
-            else
-            {
-                stat.virusLevel = 1;
-            }
-            Debug.Log(gameObject.name + " virus level : " + stat.virusLevel);
-
-        }
     }
 
     private void OnTriggerStay(Collider other)

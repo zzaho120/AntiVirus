@@ -420,6 +420,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4983904294808032737}
   - component: {fileID: 4961927696440018541}
+  - component: {fileID: 3234081451700324510}
   m_Layer: 17
   m_Name: Polygonal Wolf
   m_TagString: Untagged
@@ -532,6 +533,20 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.2576638, y: 0.3430447, z: -0.00000010430813}
     m_Extent: {x: 0.9789304, y: 0.5784029, z: 0.2651205}
   m_DirtyAABB: 0
+--- !u!64 &3234081451700324510
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4988907072150290565}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &4988923090750188991
 GameObject:
   m_ObjectHideFlags: 0
@@ -1428,8 +1443,9 @@ GameObject:
   - component: {fileID: 4986908937019060585}
   - component: {fileID: 4929263937914999883}
   - component: {fileID: -5787808339784443086}
-  - component: {fileID: -2618353137955082476}
   - component: {fileID: 2856239428502788387}
+  - component: {fileID: -2618353137955082476}
+  - component: {fileID: -235222585260604492}
   m_Layer: 17
   m_Name: WorldMonster_Wolf
   m_TagString: Enemy
@@ -1510,18 +1526,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 9
   m_ObstacleAvoidanceType: 0
---- !u!114 &-2618353137955082476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4989792953545997669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa85edcd406b1744880955b0b14ba58a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2856239428502788387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1536,10 +1540,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monster: {fileID: 0}
   virus: {fileID: 0}
-  nonBattleMonster: {fileID: 11400000, guid: 3347762eabcd67946ab64a77ebef4ae9, type: 2}
+  nonBattleMonster: {fileID: 0}
   virusLevel: 0
   currentHp: 0
   currentAp: 0
+--- !u!114 &-2618353137955082476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4989792953545997669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa85edcd406b1744880955b0b14ba58a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-235222585260604492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4989792953545997669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91dda1b350abb42408a24681244e6b81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4989798616074994737
 GameObject:
   m_ObjectHideFlags: 0

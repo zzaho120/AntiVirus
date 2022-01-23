@@ -31,11 +31,8 @@ using UnityEngine;
 
 public class MonsterStats : MonoBehaviour
 {
-    [HideInInspector]
     public Monster monster;
-    [HideInInspector]
     public Virus virus;
-
     public WorldMonster nonBattleMonster;
     public int virusLevel;
 

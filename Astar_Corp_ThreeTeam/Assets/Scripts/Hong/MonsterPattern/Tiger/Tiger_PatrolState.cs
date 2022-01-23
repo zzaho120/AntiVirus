@@ -27,6 +27,7 @@ public class Tiger_PatrolState : StateBase
         {
             agent = fsm.GetComponent<NavMeshAgent>();
             startPos = fsm.transform.position;  // 시작 위치 저장
+            agent.transform.position = startPos;
 
             player = GameObject.FindWithTag("Player").transform;
         }
@@ -34,6 +35,8 @@ public class Tiger_PatrolState : StateBase
 
     public override void Enter()
     {
+        //agent.transform.position = startPos;
+        agent.SetDestination(startPos);
         // Debug.Log(startPos);
 
         startTime = Time.time;
@@ -54,7 +57,8 @@ public class Tiger_PatrolState : StateBase
         }
 
         // 내비메쉬 이동
-        agent.SetDestination(targetPos);
+        //agent.SetDestination(agent.transform.position);
+        
     }
 
     public override void Exit()
@@ -64,6 +68,8 @@ public class Tiger_PatrolState : StateBase
 
     public override void Update()
     {
+        agent.SetDestination(targetPos);
+
         // 플레이어가 몹 인식범위 내로 들어왔을 때
         if (Vector3.Distance(player.position, fsm.transform.position) <= distance)
         {

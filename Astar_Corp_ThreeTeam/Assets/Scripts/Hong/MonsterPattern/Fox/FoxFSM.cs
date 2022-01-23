@@ -10,6 +10,6 @@ public class FoxFSM : FSM
         AddState(new Fox_IdleState(this));         // State 1
         AddState(new Fox_PatrolState(this));       // State 2
         AddState(new Fox_ChaseState(this));        // State 3
-        ChangeState(STATE.Idle);                    // 초기상태 설정
+        ChangeState(STATE.Patrol);                    // 초기상태 설정
     }
 }

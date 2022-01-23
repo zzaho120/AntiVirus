@@ -78,7 +78,7 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         Virus[] virusArr = Resources.LoadAll<Virus>(virusSOPath);
         foreach (var virus in virusArr)
         {
-            virusList.Add($"{virus.name}{virus.penaltyType}", virus);
+            virusList.Add($"{virus.name}", virus);
         }
 
         // 7. Active Skills
@@ -172,11 +172,11 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     }
 
     /// <summary>
-    /// 매개변수 입력 팁; VIR_0000
+    /// 매개변수 입력 팁; 바이러스 이름 (E, B, P, I, T)
     /// </summary>
-    public Virus GetVirus(string id)
+    public Virus GetVirus(string name)
     {
-        return Instantiate(virusList[id]);
+        return Instantiate(virusList[name]);
     }
 
     /// <summary>
