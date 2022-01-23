@@ -15,6 +15,7 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     // 아이템 관련
     public Dictionary<string, Weapon> equippableList = new Dictionary<string, Weapon>();
     public Dictionary<string, Consumable> consumableList = new Dictionary<string, Consumable>();
+    public Dictionary<string, OtherItem> otherItemList = new Dictionary<string, OtherItem>();
 
     // 스킬 관련
     public Dictionary<string, ActiveSkill> activeSkillList = new Dictionary<string, ActiveSkill>();
@@ -126,6 +127,14 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         foreach (var monster in worldMonsterArr)
         {
             worldMonsterList.Add($"{monster.id}", monster);
+        }
+
+        // 13. OtherItems
+        string otherItemsSOPath = "Choi/Datas/OtherItems";
+        OtherItem[] otherItemsArr = Resources.LoadAll<OtherItem>(otherItemsSOPath);
+        foreach (var otherItem in otherItemsArr)
+        {
+            otherItemList.Add($"{otherItem.id}", otherItem);
         }
     }
 

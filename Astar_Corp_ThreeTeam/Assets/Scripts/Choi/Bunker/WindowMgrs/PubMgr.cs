@@ -35,6 +35,8 @@ public class PubMgr : MonoBehaviour
 
     List<string> characterName = new List<string>();
     Dictionary<int, CharacterStats> soliders = new Dictionary<int, CharacterStats>();
+    Dictionary<int, int> costs = new Dictionary<int, int>();
+
     public void Init()
     {
         pubLevel = playerDataMgr.saveData.pubLevel;
@@ -87,6 +89,7 @@ public class PubMgr : MonoBehaviour
         }
 
         if (soliders.Count != 0) soliders.Clear();
+        if (costs.Count != 0) costs.Clear();
         for (int j = 0; j < maxSoldierNum; j++)
         {
             int randomIndex = Random.Range(0, playerDataMgr.characterList.Count);
@@ -101,7 +104,7 @@ public class PubMgr : MonoBehaviour
             stat.sensivity = Random.Range(character.minSensitivity, character.maxSensitivity);
             stat.concentration = Random.Range(character.minConcentration, character.maxConcentration);
             stat.willpower = Random.Range(character.minWillpower, character.maxWillpower);
-
+           
             stat.character = character;
             stat.character.id = character.id;
 
@@ -129,6 +132,8 @@ public class PubMgr : MonoBehaviour
 
             int num = j;
             soliders.Add(num, stat);
+            var cost = Random.Range(character.minCharCost, character.maxCharCost);
+            costs.Add(num, cost);
         }
 
         int i = 0;
@@ -143,9 +148,9 @@ public class PubMgr : MonoBehaviour
             go.transform.GetChild(3).GetComponent<Text>().text
                 = "무기 미장착";
             go.transform.GetChild(4).GetComponent<Text>().text
-                = $"분과";
+                = $"분과 {element.Value.character.name}";
             go.transform.GetChild(5).GetComponent<Text>().text
-                = $"금액";
+                = $"금액 {costs[i]}";
 
             int num = i;
             var button = go.AddComponent<Button>();
@@ -183,6 +188,8 @@ public class PubMgr : MonoBehaviour
 
     public void Hire()
     {
+        if (playerDataMgr.saveData.money - costs[currentIndex] < 0) return;
+
         int agitLevel = playerDataMgr.saveData.agitLevel;
         Bunker agitLevelInfo = playerDataMgr.bunkerList["BUN_0001"];
         int maxMember = 0;
@@ -211,6 +218,8 @@ public class PubMgr : MonoBehaviour
         string squadNum = "SquadNum";
         int currentNum = PlayerPrefs.HasKey(squadNum) ? PlayerPrefs.GetInt(squadNum) : 0;
         playerDataMgr.AddCharacter(currentNum, soliders[currentIndex]);
+        playerDataMgr.saveData.money -= costs[currentIndex];
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         PlayerPrefs.SetInt(squadNum, currentNum + 1);
 
         Refresh();
@@ -221,6 +230,7 @@ public class PubMgr : MonoBehaviour
     {
         Destroy(characterObjs[currentIndex]);
         characterObjs.Remove(currentIndex);
+        costs.Remove(currentIndex);
         currentIndex = -1;
     }
 

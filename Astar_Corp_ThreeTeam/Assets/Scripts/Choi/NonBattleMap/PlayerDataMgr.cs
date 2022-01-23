@@ -12,8 +12,9 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
     //SO데이터.
     public Dictionary<string, Character> characterList = new Dictionary<string, Character>();
-    public Dictionary<string, Consumable> consumableList = new Dictionary<string, Consumable>();
     public Dictionary<string, Weapon> equippableList = new Dictionary<string, Weapon>();
+    public Dictionary<string, Consumable> consumableList = new Dictionary<string, Consumable>();
+    public Dictionary<string, OtherItem> otherItemList = new Dictionary<string, OtherItem>();
     public Dictionary<string, Monster> monsterList = new Dictionary<string, Monster>();
     public Dictionary<string, Virus> virusList = new Dictionary<string, Virus>();
     public Dictionary<string, ActiveSkill> activeSkillList = new Dictionary<string, ActiveSkill>();
@@ -29,18 +30,23 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public Dictionary<string, int> currentEquippablesNum = new Dictionary<string, int>();
     public Dictionary<string, Consumable> currentConsumables = new Dictionary<string, Consumable>();
     public Dictionary<string, int> currentConsumablesNum = new Dictionary<string, int>();
+    public Dictionary<string, OtherItem> currentOtherItems = new Dictionary<string, OtherItem>();
+    public Dictionary<string, int> currentOtherItemsNum = new Dictionary<string, int>();
 
     //트럭 데이터.
     public Dictionary<string, Weapon> truckEquippables = new Dictionary<string, Weapon>();
     public Dictionary<string, int> truckEquippablesNum = new Dictionary<string, int>();
     public Dictionary<string, Consumable> truckConsumables = new Dictionary<string, Consumable>();
     public Dictionary<string, int> truckConsumablesNum = new Dictionary<string, int>();
+    public Dictionary<string, OtherItem> truckOtherItems = new Dictionary<string, OtherItem>();
+    public Dictionary<string, int> truckOtherItemsNum = new Dictionary<string, int>();
 
     //캐릭터 데이터.
     public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();
     public Dictionary<int, int> boardingSquad = new Dictionary<int, int>();//트럭에 있는 캐릭터들.(좌석 번호/ 인덱스)
     public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.
 
+    public bool ableToExit;//벙커 밖으로 나갈 수 있는지.
     public bool isFirst;
     private void Start()
     {
@@ -48,8 +54,9 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
-        consumableList = scriptableMgr.consumableList;
         equippableList = scriptableMgr.equippableList;
+        consumableList = scriptableMgr.consumableList;
+        otherItemList = scriptableMgr.otherItemList;
         monsterList = scriptableMgr.monsterList;
         virusList = scriptableMgr.virusList;
         activeSkillList = scriptableMgr.activeSkillList;
@@ -68,6 +75,9 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.weightLv = new List<int>();
             saveData.boarding = new List<int>();
             saveData.currentCar = null;
+
+            saveData.storeItem = new List<string>();
+            saveData.storeItemNum = new List<int>();
 
             saveData.id = new List<string>();
             saveData.name = new List<string>();
@@ -93,10 +103,17 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.bagConsumableFirstIndex = new List<int>();
             saveData.bagConsumableLastIndex = new List<int>();
 
+            saveData.bagOtherItemList = new List<string>();
+            saveData.bagOtherItemNumList = new List<int>();
+            saveData.bagOtherItemFirstIndex = new List<int>();
+            saveData.bagOtherItemLastIndex = new List<int>();
+
             saveData.equippableList = new List<string>();
             saveData.equippableNumList = new List<int>();
             saveData.consumableList = new List<string>();
             saveData.consumableNumList = new List<int>();
+            saveData.otherItemList = new List<string>();
+            saveData.otherItemNumList = new List<int>();
 
             saveData.gaugeE = new List<int>();
             saveData.gaugeB = new List<int>();
@@ -114,6 +131,8 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.truckEquippableNumList = new List<int>();
             saveData.truckConsumableList = new List<string>();
             saveData.truckConsumableNumList = new List<int>();
+            saveData.truckOtherItemList = new List<string>();
+            saveData.truckOtherItemNumList = new List<int>();
         }
 
         var obj = FindObjectsOfType<PlayerDataMgr>();
@@ -123,14 +142,39 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             if (!PlayerPrefs.HasKey("Continue"))
             {
                 isFirst = true;
-
+                
                 string str = "Continue";
                 PlayerPrefs.SetInt(str, 1);
 
-                for (int i = 0; i < 9; i++)
+                saveData.storeReset = true;
+
+                saveData.money = 1000000;
+                saveData.bunkerExitNum = 0;
+                for (int i = 0; i < 20; i++)
                 {
-                    saveData.bunkerKind.Add(0);
+                    switch (i)
+                    {
+                        case 2:
+                            saveData.bunkerKind.Add(5);
+                            break;
+                        case 7:
+                            saveData.bunkerKind.Add(4);
+                            break;
+                        case 11:
+                            saveData.bunkerKind.Add(3);
+                            break;
+                        case 12:
+                            saveData.bunkerKind.Add(2);
+                            break;
+                        case 13:
+                            saveData.bunkerKind.Add(1);
+                            break;
+                        default:
+                            saveData.bunkerKind.Add(6);
+                            break;
+                    }
                 }
+
                 saveData.agitLevel = 1;
                 saveData.storageLevel = 1;
                 saveData.garageLevel = 1;
@@ -140,6 +184,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.pubLevel = 1;
 
                 saveData.cars.Add("TRU_0004");
+                saveData.currentCar = "TRU_0004";
                 saveData.speedLv.Add(1);
                 saveData.sightLv.Add(1);
                 saveData.weightLv.Add(1);
@@ -162,6 +207,15 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     saveData.consumableNumList.Add(random);
                     currentConsumables.Add(element.Key, element.Value);
                     currentConsumablesNum.Add(element.Key, random);
+                }
+
+                foreach (var element in otherItemList)
+                {
+                    saveData.otherItemList.Add(element.Key);
+                    int random = Random.Range(1, 3);
+                    saveData.otherItemNumList.Add(random);
+                    currentOtherItems.Add(element.Key, element.Value);
+                    currentOtherItemsNum.Add(element.Key, random);
                 }
 
                 PlayerSaveLoadSystem.Save(saveData);
@@ -189,6 +243,14 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     currentConsumablesNum.Add(element, saveData.consumableNumList[num]);
                     k++;
                 }
+                k = 0;
+                foreach (var element in saveData.otherItemList)
+                {
+                    currentOtherItems.Add(element, otherItemList[element]);
+                    int num = k;
+                    currentOtherItemsNum.Add(element, saveData.otherItemNumList[num]);
+                    k++;
+                }
                 //트럭.
                 k = 0;
                 foreach (var element in saveData.truckEquippableList)
@@ -204,6 +266,14 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     truckConsumables.Add(element, consumableList[element]);
                     int num = k;
                     truckConsumablesNum.Add(element, saveData.truckConsumableNumList[num]);
+                    k++;
+                }
+                k = 0;
+                foreach (var element in saveData.truckOtherItemList)
+                {
+                    truckOtherItems.Add(element, otherItemList[element]);
+                    int num = k;
+                    truckOtherItemsNum.Add(element, saveData.truckOtherItemNumList[num]);
                     k++;
                 }
 
@@ -270,11 +340,15 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     {
                         stat.bag.Add(saveData.bagConsumableList[j], saveData.bagConsumableNumList[j]);
                     }
-                    
+
+                    for (int j = saveData.bagOtherItemFirstIndex[i]; j < saveData.bagOtherItemLastIndex[i]; j++)
+                    {
+                        stat.bag.Add(saveData.bagOtherItemList[j], saveData.bagOtherItemNumList[j]);
+                    }
+
                     currentSquad.Add(i, stat);
 
                     if (saveData.boarding[i] != -1) boardingSquad.Add(saveData.boarding[i], i);
-
                 }
             }
         }
@@ -335,6 +409,11 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 stat.bag.Add(saveData.bagConsumableList[j], saveData.bagConsumableNumList[j]);
             }
 
+            for (int j = saveData.bagOtherItemFirstIndex[i]; j < saveData.bagOtherItemLastIndex[i]; j++)
+            {
+                stat.bag.Add(saveData.bagOtherItemList[j], saveData.bagOtherItemNumList[j]);
+            }
+
             currentSquad.Add(i, stat);
         }
     }
@@ -390,6 +469,8 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.bagEquippableLastIndex.Add(0);
                 saveData.bagConsumableFirstIndex.Add(0);
                 saveData.bagConsumableLastIndex.Add(0);
+                saveData.bagOtherItemFirstIndex.Add(0);
+                saveData.bagOtherItemLastIndex.Add(0);
             }
             else
             {
@@ -399,6 +480,9 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 preFirstIndex = saveData.bagConsumableFirstIndex[num - 1];
                 saveData.bagConsumableFirstIndex.Add(preFirstIndex);
                 saveData.bagConsumableLastIndex.Add(preFirstIndex);
+                preFirstIndex = saveData.bagOtherItemFirstIndex[num - 1];
+                saveData.bagOtherItemFirstIndex.Add(preFirstIndex);
+                saveData.bagOtherItemLastIndex.Add(preFirstIndex);
             }
 
             stat.saveId = num;

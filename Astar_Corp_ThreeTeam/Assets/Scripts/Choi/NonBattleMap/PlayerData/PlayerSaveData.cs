@@ -18,6 +18,11 @@ public class PlayerSaveData
     public int storeLevel { get; set; }
     public int pubLevel { get; set; }
 
+    //상점 관련.
+    public List<string> storeItem { get; set; }
+    public List<int> storeItemNum { get; set; }
+    public bool storeReset { get; set; }
+
     //차량 관련.
     public List<string> cars { get; set; }
     public List<int> speedLv { get; set; }
@@ -25,6 +30,7 @@ public class PlayerSaveData
     public List<int> weightLv { get; set; }
     public string currentCar;
     public List<int> boarding { get; set; }
+    
     //캐릭터 관련.
     public List<string> id { get; set; }
     public List<string> name { get; set; }
@@ -60,6 +66,11 @@ public class PlayerSaveData
     public List<int> bagConsumableFirstIndex { get; set; }
     public List<int> bagConsumableLastIndex { get; set; }
 
+    public List<string> bagOtherItemList { get; set; }
+    public List<int> bagOtherItemNumList { get; set; }
+    public List<int> bagOtherItemFirstIndex { get; set; }
+    public List<int> bagOtherItemLastIndex { get; set; }
+
     //기타.
     public List<string> mainWeapon { get; set; }
     public List<string> subWeapon { get; set; }
@@ -72,10 +83,14 @@ public class PlayerSaveData
     public List<int> equippableNumList { get; set; }
     public List<string> consumableList { get; set; }
     public List<int> consumableNumList { get; set; }
+    public List<string> otherItemList { get; set; }
+    public List<int> otherItemNumList { get; set; }
 
     //트럭 데이터.
     public List<string> truckEquippableList { get; set; }
     public List<int> truckEquippableNumList { get; set; }
     public List<string> truckConsumableList { get; set; }
     public List<int> truckConsumableNumList { get; set; }
+    public List<string> truckOtherItemList { get; set; }
+    public List<int> truckOtherItemNumList { get; set; }
 }

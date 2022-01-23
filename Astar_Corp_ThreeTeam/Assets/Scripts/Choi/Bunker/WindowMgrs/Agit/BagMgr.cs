@@ -3,6 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum BagMode
+{ 
+    All,
+    Equippables,
+    Consumables,
+    OtherItems
+}
+
+public enum StorageMode
+{
+    All,
+    Equippables,
+    Consumables,
+    OtherItems
+}
+
 public enum InventoryKind
 { 
     None,
@@ -13,8 +29,23 @@ public enum InventoryKind
 public class BagMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
-    
+
+    [Header("총알 관련")]
+    public Text bagBullet5Txt;
+    public Text bagBullet7Txt;
+    public Text bagBullet9Txt;
+    public Text bagBullet45Txt;
+    public Text bagBullet12Txt;
+
+    public Text storageBullet5Txt;
+    public Text storageBullet7Txt;
+    public Text storageBullet9Txt;
+    public Text storageBullet45Txt;
+    public Text storageBullet12Txt;
+
     public GameObject bagWin;
+    public Text bagWeightTxt;
+    public Text storageWeightTxt;
     
     public GameObject storageContents;
     public GameObject storagePrefab;
@@ -34,14 +65,25 @@ public class BagMgr : MonoBehaviour
     Dictionary<string, int> storageWeaponNumInfo = new Dictionary<string, int>();
     Dictionary<string, Consumable> storageConsumableInfo = new Dictionary<string, Consumable>();
     Dictionary<string, int> storageConsumableNumInfo = new Dictionary<string, int>();
-    
+    Dictionary<string, OtherItem> storageOtherItemInfo = new Dictionary<string, OtherItem>();
+    Dictionary<string, int> storageOtherItemNumInfo = new Dictionary<string, int>();
+
     Dictionary<string, Weapon> bagWeaponInfo = new Dictionary<string, Weapon>();
     Dictionary<string, int> bagWeaponNumInfo = new Dictionary<string, int>();
     Dictionary<string, Consumable> bagConsumableInfo = new Dictionary<string, Consumable>();
     Dictionary<string, int> bagConsumableNumInfo = new Dictionary<string, int>();
+    Dictionary<string, OtherItem> bagOtherItemInfo = new Dictionary<string, OtherItem>();
+    Dictionary<string, int> bagOtherItemNumInfo = new Dictionary<string, int>();
+
+    int bagTotalWeight;
+    int bagCurrentWeight;
+    int storageTotalWeight;
+    int storageCurrentWeight;
 
     public int currentIndex;
     InventoryKind currentInvenKind;
+    BagMode bagMode;
+    StorageMode storageMode;
     string currentKey;
 
     public void Init()
@@ -62,58 +104,36 @@ public class BagMgr : MonoBehaviour
         if (storageWeaponNumInfo.Count != 0) storageWeaponNumInfo.Clear();
         if (storageConsumableInfo.Count != 0) storageConsumableInfo.Clear();
         if (storageConsumableNumInfo.Count != 0) storageConsumableNumInfo.Clear();
+        if (storageOtherItemInfo.Count != 0) storageOtherItemInfo.Clear();
+        if (storageOtherItemNumInfo.Count != 0) storageOtherItemNumInfo.Clear();
 
-        if (bagObjs.Count != 0)
-        {
-            foreach (var element in bagObjs)
-            {
-                Destroy(element.Value);
-            }
-            bagObjs.Clear();
-            bagContents.transform.DetachChildren();
-        }
         if (bagWeaponInfo.Count != 0) bagWeaponInfo.Clear();
         if (bagWeaponNumInfo.Count != 0) bagWeaponNumInfo.Clear();
         if (bagConsumableInfo.Count != 0) bagConsumableInfo.Clear();
         if (bagConsumableNumInfo.Count != 0) bagConsumableNumInfo.Clear();
+        if (bagOtherItemInfo.Count != 0) bagOtherItemInfo.Clear();
+        if (bagOtherItemNumInfo.Count != 0) bagOtherItemNumInfo.Clear();
 
         //생성.
         foreach (var element in playerDataMgr.currentEquippables)
         {
-            var go = Instantiate(storagePrefab, storageContents.transform);
-            var child = go.transform.GetChild(0).gameObject;
-            child.GetComponent<Text>().text = element.Value.name;
-
             var itemNum = playerDataMgr.currentEquippablesNum[element.Key];
-            child = go.transform.GetChild(1).gameObject;
-            child.GetComponent<Text>().text = $"{itemNum}개";
-
-            string key = element.Key;
-            var button = go.AddComponent<Button>();
-            button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Storage); });
-
-            storageObjs.Add(key, go);
             storageWeaponInfo.Add(element.Key, element.Value);
             storageWeaponNumInfo.Add(element.Key, itemNum);
         }
 
         foreach (var element in playerDataMgr.currentConsumables)
         {
-            var go = Instantiate(storagePrefab, storageContents.transform);
-            var child = go.transform.GetChild(0).gameObject;
-            child.GetComponent<Text>().text = element.Value.name;
-
             var itemNum = playerDataMgr.currentConsumablesNum[element.Key];
-            child = go.transform.GetChild(1).gameObject;
-            child.GetComponent<Text>().text = $"{itemNum}개";
-
-            string key = element.Key;
-            var button = go.AddComponent<Button>();
-            button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Storage); });
-
-            storageObjs.Add(key, go);
             storageConsumableInfo.Add(element.Key, element.Value);
             storageConsumableNumInfo.Add(element.Key, itemNum);
+        }
+
+        foreach (var element in playerDataMgr.currentOtherItems)
+        {
+            var itemNum = playerDataMgr.currentOtherItemsNum[element.Key];
+            storageOtherItemInfo.Add(element.Key, element.Value);
+            storageOtherItemNumInfo.Add(element.Key, itemNum);
         }
 
         //가방정보 불러오기.
@@ -121,15 +141,6 @@ public class BagMgr : MonoBehaviour
         {
             foreach (var element in playerDataMgr.currentSquad[currentIndex].bag)
             {
-                var go = Instantiate(bagPrefab, bagContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = $"{element.Value}개";
-
-                string key = element.Key;
-                var button = go.AddComponent<Button>();
-                button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Bag); });
-
-                bagObjs.Add(key, go);
                 if (playerDataMgr.equippableList.ContainsKey(element.Key))
                 {
                     bagWeaponInfo.Add(element.Key, playerDataMgr.equippableList[element.Key]);
@@ -140,11 +151,18 @@ public class BagMgr : MonoBehaviour
                     bagConsumableInfo.Add(element.Key, playerDataMgr.consumableList[element.Key]);
                     bagConsumableNumInfo.Add(element.Key, element.Value);
                 }
+                else if (playerDataMgr.otherItemList.ContainsKey(element.Key))
+                {
+                    bagOtherItemInfo.Add(element.Key, playerDataMgr.otherItemList[element.Key]);
+                    bagOtherItemNumInfo.Add(element.Key, element.Value);
+                }
             }
         }
 
         currentKey = null;
         currentInvenKind = InventoryKind.None;
+        if (currentIndex != -1) DisplayBag(0);
+        DisplayStorage(0);
     }
 
     public void NumAdjustment()
@@ -186,6 +204,11 @@ public class BagMgr : MonoBehaviour
                 itemNameTxt.text = storageConsumableInfo[currentKey].name;
                 slider.maxValue = storageConsumableNumInfo[currentKey];
             }
+            else if (storageOtherItemInfo.ContainsKey(currentKey))
+            {
+                itemNameTxt.text = storageOtherItemInfo[currentKey].name;
+                slider.maxValue = storageOtherItemNumInfo[currentKey];
+            }
         }
         else if (currentInvenKind == InventoryKind.Bag)
         {
@@ -202,11 +225,252 @@ public class BagMgr : MonoBehaviour
                 itemNameTxt.text = bagConsumableInfo[currentKey].name;
                 slider.maxValue = bagConsumableNumInfo[currentKey];
             }
+            else if (bagOtherItemInfo.ContainsKey(currentKey))
+            {
+                itemNameTxt.text = bagOtherItemInfo[currentKey].name;
+                slider.maxValue = bagOtherItemNumInfo[currentKey];
+            }
         }
 
         slider.value = 0;
         itemNumTxt.text = $"0개";
         OpenPopup();
+    }
+
+    public void DisplayBag(int index)
+    {
+        //0.All
+        //1.Equippables
+        //2.Consumables
+        //3.OtherItems
+
+        switch (index)
+        {
+            case 0:
+                bagMode = BagMode.All;
+                break;
+            case 1:
+                bagMode = BagMode.Equippables;
+                break;
+            case 2:
+                bagMode = BagMode.Consumables;
+                break;
+            case 3:
+                bagMode = BagMode.OtherItems;
+                break;
+        }
+
+        if (bagObjs.Count != 0)
+        {
+            foreach (var element in bagObjs)
+            {
+                Destroy(element.Value);
+            }
+            bagObjs.Clear();
+            bagContents.transform.DetachChildren();
+        }
+
+        int bullet5Num = 0;
+        int bullet7Num = 0;
+        int bullet9Num = 0;
+        int bullet45Num = 0;
+        int bullet12Num = 0;
+
+        bagCurrentWeight = 0;
+        bagTotalWeight = 0;
+        foreach (var element in playerDataMgr.currentSquad[currentIndex].bag)
+        {
+            if (playerDataMgr.equippableList.ContainsKey(element.Key))
+                bagCurrentWeight += (playerDataMgr.equippableList[element.Key].weight * element.Value);
+            else if (playerDataMgr.consumableList.ContainsKey(element.Key))
+                bagCurrentWeight += (playerDataMgr.consumableList[element.Key].weight * element.Value);
+            else if (playerDataMgr.otherItemList.ContainsKey(element.Key))
+            {
+                bagCurrentWeight += (int.Parse(playerDataMgr.otherItemList[element.Key].weight) * element.Value);
+
+                switch (element.Key)
+                {
+                    case "BUL_0004":
+                        bullet5Num += element.Value;
+                        break;
+                    case "BUL_0005":
+                        bullet7Num += element.Value;
+                        break;
+                    case "BUL_0002":
+                        bullet9Num += element.Value;
+                        break;
+                    case "BUL_0003":
+                        bullet45Num += element.Value;
+                        break;
+                    case "BUL_0001":
+                        bullet12Num += element.Value;
+                        break;
+                }
+            }
+
+            if (index == 1 && !playerDataMgr.equippableList.ContainsKey(element.Key)) continue;
+            else if (index == 2 && !playerDataMgr.consumableList.ContainsKey(element.Key)) continue;
+            else if (index == 3 && !playerDataMgr.otherItemList.ContainsKey(element.Key)) continue;
+            var go = Instantiate(bagPrefab, bagContents.transform);
+            var child = go.transform.GetChild(0).gameObject;
+            child.GetComponent<Text>().text = $"{element.Value}개";
+
+            string key = element.Key;
+            var button = go.AddComponent<Button>();
+            button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Bag); });
+
+            bagObjs.Add(key, go);
+        }
+
+        var level = playerDataMgr.currentSquad[currentIndex].bagLevel;
+        switch (level)
+        {
+            case 1:
+                bagTotalWeight = playerDataMgr.bagList["BAG_0001"].weight;
+                break;
+        }
+        bagWeightTxt.text = $"무게 {bagCurrentWeight}/{bagTotalWeight}";
+        
+        bagBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
+        bagBullet7Txt.text = $"7탄x{bullet7Num.ToString("D3")}";
+        bagBullet9Txt.text = $"9탄x{bullet9Num.ToString("D3")}";
+        bagBullet45Txt.text = $"45탄x{bullet45Num.ToString("D3")}";
+        bagBullet12Txt.text = $"12게이지x{bullet12Num.ToString("D3")}";
+    }
+
+    public void DisplayStorage(int index)
+    {
+        //0.All
+        //1.Equippables
+        //2.Consumables
+        //3.OtherItems
+
+        switch (index)
+        {
+            case 0:
+                storageMode = StorageMode.All;
+                break;
+            case 1:
+                storageMode = StorageMode.Equippables;
+                break;
+            case 2:
+                storageMode = StorageMode.Consumables;
+                break;
+            case 3:
+                storageMode = StorageMode.OtherItems;
+                break;
+        }
+
+        if (storageObjs.Count != 0)
+        {
+            foreach (var element in storageObjs)
+            {
+                Destroy(element.Value);
+            }
+            storageObjs.Clear();
+            storageContents.transform.DetachChildren();
+        }
+
+        int bullet5Num = 0;
+        int bullet7Num = 0;
+        int bullet9Num = 0;
+        int bullet45Num = 0;
+        int bullet12Num = 0;
+
+        storageCurrentWeight = 0;
+        storageTotalWeight = 0;
+
+        foreach (var element in playerDataMgr.currentEquippables)
+        {
+            if (storageMode != StorageMode.Consumables && storageMode != StorageMode.OtherItems)
+            {
+                var go = Instantiate(storagePrefab, storageContents.transform);
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Text>().text = element.Value.name;
+
+                var itemNum = playerDataMgr.currentEquippablesNum[element.Key];
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{itemNum}개";
+
+                string key = element.Key;
+                var button = go.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Storage); });
+
+                storageObjs.Add(key, go);
+            }
+            storageCurrentWeight += (element.Value.weight * playerDataMgr.currentEquippablesNum[element.Key]);
+        }
+
+        foreach (var element in playerDataMgr.currentConsumables)
+        {
+            if (storageMode != StorageMode.Equippables && storageMode != StorageMode.OtherItems)
+            {
+                var go = Instantiate(storagePrefab, storageContents.transform);
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Text>().text = element.Value.name;
+
+                var itemNum = playerDataMgr.currentConsumablesNum[element.Key];
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{itemNum}개";
+
+                string key = element.Key;
+                var button = go.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Storage); });
+
+                storageObjs.Add(key, go);
+            }
+                storageCurrentWeight += (element.Value.weight * playerDataMgr.currentConsumablesNum[element.Key]);
+        }
+
+        foreach (var element in playerDataMgr.currentOtherItems)
+        {
+            switch (element.Key)
+            {
+                case "BUL_0004":
+                    bullet5Num += playerDataMgr.currentOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0005":
+                    bullet7Num += playerDataMgr.currentOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0002":
+                    bullet9Num += playerDataMgr.currentOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0003":
+                    bullet45Num += playerDataMgr.currentOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0001":
+                    bullet12Num += playerDataMgr.currentOtherItemsNum[element.Key];
+                    break;
+            }
+
+            if (storageMode != StorageMode.Equippables && storageMode != StorageMode.Consumables)
+            {
+                var go = Instantiate(storagePrefab, storageContents.transform);
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Text>().text = element.Value.name;
+
+                var itemNum = playerDataMgr.currentOtherItemsNum[element.Key];
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{itemNum}개";
+
+                string key = element.Key;
+                var button = go.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Storage); });
+
+                storageObjs.Add(key, go);
+            }
+            storageCurrentWeight += (int.Parse(element.Value.weight) * playerDataMgr.currentOtherItemsNum[element.Key]);
+        }
+       
+        storageTotalWeight = 3000;
+        //레벨에 따라 구현해야 함.
+        storageWeightTxt.text = $"무게 {storageCurrentWeight}/{storageTotalWeight}";
+
+        storageBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
+        storageBullet7Txt.text = $"7탄x{bullet7Num.ToString("D3")}";
+        storageBullet9Txt.text = $"9탄x{bullet9Num.ToString("D3")}";
+        storageBullet45Txt.text = $"45탄x{bullet45Num.ToString("D3")}";
+        storageBullet12Txt.text = $"12게이지x{bullet12Num.ToString("D3")}";
     }
 
     public void Move()
@@ -256,6 +520,9 @@ public class BagMgr : MonoBehaviour
 
         if (storageWeaponInfo.ContainsKey(currentKey))
         {
+            var weight = storageWeaponInfo[currentKey].weight;
+            if (bagCurrentWeight + weight * itemNum > bagTotalWeight) return;
+
             //json.
             int index = 0;
             var id = storageWeaponInfo[currentKey].id;
@@ -309,14 +576,14 @@ public class BagMgr : MonoBehaviour
                 bagWeaponInfo.Add(currentKey, storageWeaponInfo[currentKey]);
                 bagWeaponNumInfo.Add(currentKey, itemNum);
 
-                var go = Instantiate(bagPrefab, bagContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                //var go = Instantiate(bagPrefab, bagContents.transform);
+                //var child = go.transform.GetChild(0).gameObject;
+                //child.GetComponent<Text>().text = $"{itemNum}개";
 
-                var button = go.AddComponent<Button>();
-                string selectedKey = currentKey;
-                button.onClick.AddListener(delegate { SelectItem(selectedKey, InventoryKind.Bag); });
-                bagObjs.Add(selectedKey, go);
+                //var button = go.AddComponent<Button>();
+                //string selectedKey = currentKey;
+                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InventoryKind.Bag); });
+                //bagObjs.Add(selectedKey, go);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentSquad[currentIndex].bag.Add(id, itemNum);
@@ -325,20 +592,22 @@ public class BagMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 bagWeaponNumInfo[currentKey] += itemNum;
-                var child = bagObjs[currentKey].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{bagWeaponNumInfo[currentKey]}개";
+                //var child = bagObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{bagWeaponNumInfo[currentKey]}개";
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentSquad[currentIndex].bag[id] += itemNum;
             }
+            int currentMode = (int)bagMode;
+            DisplayBag(currentMode);
 
             if (playerDataMgr.currentEquippablesNum[id] - itemNum == 0)
             {
                 //현재 데이터.
                 storageWeaponInfo.Remove(currentKey);
                 storageWeaponNumInfo.Remove(currentKey);
-                Destroy(storageObjs[currentKey]);
-                storageObjs.Remove(currentKey);
+                //Destroy(storageObjs[currentKey]);
+                //storageObjs.Remove(currentKey);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippables.Remove(id);
@@ -351,15 +620,20 @@ public class BagMgr : MonoBehaviour
             {
                 //현재 데이터.
                 storageWeaponNumInfo[currentKey] -= itemNum;
-                var child = storageObjs[currentKey].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{storageWeaponNumInfo[currentKey]}개";
+                //var child = storageObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{storageWeaponNumInfo[currentKey]}개";
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] -= itemNum;
             }
+            currentMode = (int)storageMode;
+            DisplayStorage(currentMode);
         }
         else if (storageConsumableInfo.ContainsKey(currentKey))
         {
+            var weight = storageConsumableInfo[currentKey].weight;
+            if (bagCurrentWeight + weight * itemNum > bagTotalWeight) return;
+
             //json.
             int index = 0;
             var id = storageConsumableInfo[currentKey].id;
@@ -412,14 +686,14 @@ public class BagMgr : MonoBehaviour
                 bagConsumableInfo.Add(currentKey, storageConsumableInfo[currentKey]);
                 bagConsumableNumInfo.Add(currentKey, itemNum);
 
-                var go = Instantiate(bagPrefab, bagContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                //var go = Instantiate(bagPrefab, bagContents.transform);
+                //var child = go.transform.GetChild(0).gameObject;
+                //child.GetComponent<Text>().text = $"{itemNum}개";
 
-                var button = go.AddComponent<Button>();
-                string selectedKey = currentKey;
-                button.onClick.AddListener(delegate { SelectItem(selectedKey, InventoryKind.Bag); });
-                bagObjs.Add(selectedKey, go);
+                //var button = go.AddComponent<Button>();
+                //string selectedKey = currentKey;
+                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InventoryKind.Bag); });
+                //bagObjs.Add(selectedKey, go);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentSquad[currentIndex].bag.Add(id, itemNum);
@@ -428,20 +702,22 @@ public class BagMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 bagConsumableNumInfo[currentKey] += itemNum;
-                var child = bagObjs[currentKey].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{bagConsumableNumInfo[currentKey]}개";
+                //var child = bagObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{bagConsumableNumInfo[currentKey]}개";
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentSquad[currentIndex].bag[id] += itemNum;
             }
+            int currentMode = (int)bagMode;
+            DisplayBag(currentMode);
 
             if (playerDataMgr.currentConsumablesNum[id] - itemNum == 0)
             {
                 //현재 데이터.
                 storageConsumableInfo.Remove(currentKey);
                 storageConsumableNumInfo.Remove(currentKey);
-                Destroy(storageObjs[currentKey]);
-                storageObjs.Remove(currentKey);
+                //Destroy(storageObjs[currentKey]);
+                //storageObjs.Remove(currentKey);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentConsumables.Remove(id);
@@ -454,12 +730,124 @@ public class BagMgr : MonoBehaviour
             {
                 //현재 데이터.
                 storageConsumableNumInfo[currentKey] -= itemNum;
-                var child = storageObjs[currentKey].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
+                //var child = storageObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentConsumablesNum[id] -= itemNum;
             }
+            currentMode = (int)storageMode;
+            DisplayStorage(currentMode);
+        }
+        else if (storageOtherItemInfo.ContainsKey(currentKey))
+        {
+            var weight = int.Parse(storageOtherItemInfo[currentKey].weight);
+            if (bagCurrentWeight + weight * itemNum > bagTotalWeight) return;
+
+            //json.
+            int index = 0;
+            var id = storageOtherItemInfo[currentKey].id;
+
+            index = playerDataMgr.currentSquad[currentIndex].saveId;
+            int firstIndex = playerDataMgr.saveData.bagOtherItemFirstIndex[index];
+            int lastIndex = playerDataMgr.saveData.bagOtherItemLastIndex[index];
+
+            bool contain = false;
+            int containIndex = -1;
+            for (int i = firstIndex; i < lastIndex; i++)
+            {
+                if (playerDataMgr.saveData.bagOtherItemList[i] != id) continue;
+
+                contain = true;
+                containIndex = i;
+            }
+
+            if (!contain)
+            {
+                playerDataMgr.saveData.bagOtherItemList.Insert(lastIndex, id);
+                playerDataMgr.saveData.bagOtherItemNumList.Insert(lastIndex, itemNum);
+                playerDataMgr.saveData.bagOtherItemLastIndex[index]++;
+
+                for (int i = index + 1; i < playerDataMgr.saveData.id.Count; i++)
+                {
+                    playerDataMgr.saveData.bagOtherItemFirstIndex[i]++;
+                    playerDataMgr.saveData.bagOtherItemLastIndex[i]++;
+                }
+            }
+            else
+            {
+                playerDataMgr.saveData.bagOtherItemNumList[containIndex] += itemNum;
+            }
+
+            index = playerDataMgr.saveData.otherItemList.IndexOf(id);
+            if (playerDataMgr.saveData.otherItemNumList[index] - itemNum == 0)
+            {
+                playerDataMgr.saveData.otherItemList.Remove(id);
+                playerDataMgr.saveData.otherItemNumList.RemoveAt(index);
+            }
+            else playerDataMgr.saveData.otherItemNumList[index] -= itemNum;
+
+            PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+            //playerDataMgr.
+            if (!playerDataMgr.currentSquad[currentIndex].bag.ContainsKey(id))
+            {
+                //현재데이터 관련.
+                bagOtherItemInfo.Add(currentKey, storageOtherItemInfo[currentKey]);
+                bagOtherItemNumInfo.Add(currentKey, itemNum);
+
+                //var go = Instantiate(bagPrefab, bagContents.transform);
+                //var child = go.transform.GetChild(0).gameObject;
+                //child.GetComponent<Text>().text = $"{itemNum}개";
+
+                //var button = go.AddComponent<Button>();
+                //string selectedKey = currentKey;
+                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InventoryKind.Bag); });
+                //bagObjs.Add(selectedKey, go);
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentSquad[currentIndex].bag.Add(id, itemNum);
+            }
+            else
+            {
+                //현재데이터 관련.
+                bagOtherItemNumInfo[currentKey] += itemNum;
+                //var child = bagObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{bagConsumableNumInfo[currentKey]}개";
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentSquad[currentIndex].bag[id] += itemNum;
+            }
+            int currentMode = (int)bagMode;
+            DisplayBag(currentMode);
+
+            if (playerDataMgr.currentOtherItemsNum[id] - itemNum == 0)
+            {
+                //현재 데이터.
+                storageOtherItemInfo.Remove(currentKey);
+                storageOtherItemNumInfo.Remove(currentKey);
+                //Destroy(storageObjs[currentKey]);
+                //storageObjs.Remove(currentKey);
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentOtherItems.Remove(id);
+                playerDataMgr.currentOtherItemsNum.Remove(id);
+
+                currentKey = null;
+                currentInvenKind = InventoryKind.None;
+            }
+            else
+            {
+                //현재 데이터.
+                storageOtherItemNumInfo[currentKey] -= itemNum;
+                //var child = storageObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentOtherItemsNum[id] -= itemNum;
+            }
+            currentMode = (int)storageMode;
+            DisplayStorage(currentMode);
         }
     }
 
@@ -470,6 +858,9 @@ public class BagMgr : MonoBehaviour
 
         if (bagWeaponInfo.ContainsKey(currentKey))
         {
+            var weight = bagWeaponInfo[currentKey].weight;
+            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+
             //json.
             int index = 0;
             var id = bagWeaponInfo[currentKey].id;
@@ -520,17 +911,17 @@ public class BagMgr : MonoBehaviour
                 storageWeaponInfo.Add(currentKey, bagWeaponInfo[currentKey]);
                 storageWeaponNumInfo.Add(currentKey, itemNum);
 
-                var go = Instantiate(storagePrefab, storageContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = bagWeaponInfo[currentKey].name;
+                //var go = Instantiate(storagePrefab, storageContents.transform);
+                //var child = go.transform.GetChild(0).gameObject;
+                //child.GetComponent<Text>().text = bagWeaponInfo[currentKey].name;
 
-                child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                //child = go.transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{itemNum}개";
 
-                var button = go.AddComponent<Button>();
-                string selectedKey = currentKey;
-                button.onClick.AddListener(delegate { SelectItem(selectedKey, InventoryKind.Storage); });
-                storageObjs.Add(selectedKey, go);
+                //var button = go.AddComponent<Button>();
+                //string selectedKey = currentKey;
+                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InventoryKind.Storage); });
+                //storageObjs.Add(selectedKey, go);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
@@ -540,20 +931,22 @@ public class BagMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 storageWeaponNumInfo[currentKey] += itemNum;
-                var child = storageObjs[currentKey].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{storageWeaponNumInfo[currentKey]}개";
+                //var child = storageObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{storageWeaponNumInfo[currentKey]}개";
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] += itemNum;
             }
+            var currentMode = (int)storageMode;
+            DisplayStorage(currentMode);
 
             if (bagWeaponNumInfo[id] - itemNum == 0)
             {
                 //현재 데이터.
                 bagWeaponInfo.Remove(currentKey);
                 bagWeaponNumInfo.Remove(currentKey);
-                Destroy(bagObjs[currentKey]);
-                bagObjs.Remove(currentKey);
+                //Destroy(bagObjs[currentKey]);
+                //bagObjs.Remove(currentKey);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentSquad[currentIndex].bag.Remove(id);
@@ -565,15 +958,20 @@ public class BagMgr : MonoBehaviour
             {
                 //현재 데이터.
                 bagWeaponNumInfo[currentKey] -= itemNum;
-                var child = bagObjs[currentKey].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{bagWeaponNumInfo[currentKey]}개";
+                //var child = bagObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{bagWeaponNumInfo[currentKey]}개";
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentSquad[currentIndex].bag[id] -= itemNum;
             }
+            currentMode = (int)bagMode;
+            DisplayBag(currentMode);
         }
         else if (bagConsumableInfo.ContainsKey(currentKey))
         {
+            var weight = bagConsumableInfo[currentKey].weight;
+            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+
             //json.
             int index;
             var id = bagConsumableInfo[currentKey].id;
@@ -624,17 +1022,17 @@ public class BagMgr : MonoBehaviour
                 storageConsumableInfo.Add(currentKey, bagConsumableInfo[currentKey]);
                 storageConsumableNumInfo.Add(currentKey, itemNum);
 
-                var go = Instantiate(storagePrefab, storageContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = bagConsumableInfo[currentKey].name;
+                //var go = Instantiate(storagePrefab, storageContents.transform);
+                //var child = go.transform.GetChild(0).gameObject;
+                //child.GetComponent<Text>().text = bagConsumableInfo[currentKey].name;
 
-                child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                //child = go.transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{itemNum}개";
 
-                var button = go.AddComponent<Button>();
-                string selectedKey = currentKey;
-                button.onClick.AddListener(delegate { SelectItem(selectedKey, InventoryKind.Storage); });
-                storageObjs.Add(selectedKey, go);
+                //var button = go.AddComponent<Button>();
+                //string selectedKey = currentKey;
+                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InventoryKind.Storage); });
+                //storageObjs.Add(selectedKey, go);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentConsumables.Add(id, playerDataMgr.consumableList[id]);
@@ -644,20 +1042,22 @@ public class BagMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 storageConsumableNumInfo[currentKey] += itemNum;
-                var child = storageObjs[currentKey].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
+                //var child = storageObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentConsumablesNum[id] += itemNum;
             }
+            var currentMode = (int)storageMode;
+            DisplayStorage(currentMode);
 
             if (bagConsumableNumInfo[id] - itemNum == 0)
             {
                 //현재 데이터.
                 bagConsumableInfo.Remove(currentKey);
                 bagConsumableNumInfo.Remove(currentKey);
-                Destroy(bagObjs[currentKey]);
-                bagObjs.Remove(currentKey);
+                //Destroy(bagObjs[currentKey]);
+                //bagObjs.Remove(currentKey);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentSquad[currentIndex].bag.Remove(id);
@@ -669,12 +1069,125 @@ public class BagMgr : MonoBehaviour
             {
                 //현재 데이터.
                 bagConsumableNumInfo[currentKey] -= itemNum;
-                var child = bagObjs[currentKey].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{bagConsumableNumInfo[currentKey]}개";
+                //var child = bagObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{bagConsumableNumInfo[currentKey]}개";
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentSquad[currentIndex].bag[id] -= itemNum;
             }
+            currentMode = (int)bagMode;
+            DisplayBag(currentMode);
+        }
+        else if (bagOtherItemInfo.ContainsKey(currentKey))
+        {
+            var weight = int.Parse(bagOtherItemInfo[currentKey].weight);
+            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+
+            //json.
+            int index = 0;
+            var id = bagOtherItemInfo[currentKey].id;
+            if (!playerDataMgr.saveData.otherItemList.Contains(id))
+            {
+                playerDataMgr.saveData.otherItemList.Add(id);
+                playerDataMgr.saveData.otherItemNumList.Add(itemNum);
+            }
+            else
+            {
+                index = playerDataMgr.saveData.otherItemList.IndexOf(id);
+                playerDataMgr.saveData.otherItemNumList[index] += itemNum;
+            }
+
+            index = playerDataMgr.currentSquad[currentIndex].saveId;
+            int firstIndex = playerDataMgr.saveData.bagOtherItemFirstIndex[index];
+            int lastIndex = playerDataMgr.saveData.bagOtherItemLastIndex[index];
+
+            int containIndex = -1;
+            for (int i = firstIndex; i < lastIndex; i++)
+            {
+                if (playerDataMgr.saveData.bagOtherItemList[i] != id) continue;
+
+                containIndex = i;
+            }
+
+            if (playerDataMgr.saveData.bagOtherItemNumList[containIndex] - itemNum == 0)
+            {
+                playerDataMgr.saveData.bagOtherItemList.RemoveAt(containIndex);
+                playerDataMgr.saveData.bagOtherItemNumList.RemoveAt(containIndex);
+
+                playerDataMgr.saveData.bagOtherItemLastIndex[index]--;
+
+                for (int i = index + 1; i < playerDataMgr.saveData.id.Count; i++)
+                {
+                    playerDataMgr.saveData.bagOtherItemFirstIndex[i]--;
+                    playerDataMgr.saveData.bagOtherItemLastIndex[i]--;
+                }
+            }
+            else playerDataMgr.saveData.bagOtherItemNumList[containIndex] -= itemNum;
+
+            PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+            //playerDataMgr.
+            if (!playerDataMgr.currentOtherItems.ContainsKey(id))
+            {
+                //현재데이터 관련.
+                storageOtherItemInfo.Add(currentKey, bagOtherItemInfo[currentKey]);
+                storageOtherItemNumInfo.Add(currentKey, itemNum);
+
+                //var go = Instantiate(storagePrefab, storageContents.transform);
+                //var child = go.transform.GetChild(0).gameObject;
+                //child.GetComponent<Text>().text = bagWeaponInfo[currentKey].name;
+
+                //child = go.transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{itemNum}개";
+
+                //var button = go.AddComponent<Button>();
+                //string selectedKey = currentKey;
+                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InventoryKind.Storage); });
+                //storageObjs.Add(selectedKey, go);
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentOtherItems.Add(id, playerDataMgr.otherItemList[id]);
+                playerDataMgr.currentOtherItemsNum.Add(id, itemNum);
+            }
+            else
+            {
+                //현재데이터 관련.
+                storageOtherItemNumInfo[currentKey] += itemNum;
+                //var child = storageObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{storageWeaponNumInfo[currentKey]}개";
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentOtherItemsNum[id] += itemNum;
+            }
+            var currentMode = (int)storageMode;
+            DisplayStorage(currentMode);
+
+            if (bagOtherItemNumInfo[id] - itemNum == 0)
+            {
+                //현재 데이터.
+                bagOtherItemInfo.Remove(currentKey);
+                bagOtherItemNumInfo.Remove(currentKey);
+                //Destroy(bagObjs[currentKey]);
+                //bagObjs.Remove(currentKey);
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentSquad[currentIndex].bag.Remove(id);
+
+                currentKey = null;
+                currentInvenKind = InventoryKind.None;
+            }
+            else
+            {
+                //현재 데이터.
+                bagOtherItemNumInfo[currentKey] -= itemNum;
+                //var child = bagObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{bagWeaponNumInfo[currentKey]}개";
+
+                //플레이어 데이터 매니저 관련.
+                playerDataMgr.currentSquad[currentIndex].bag[id] -= itemNum;
+            }
+            currentMode = (int)bagMode;
+            DisplayBag(currentMode);
         }
     }
 

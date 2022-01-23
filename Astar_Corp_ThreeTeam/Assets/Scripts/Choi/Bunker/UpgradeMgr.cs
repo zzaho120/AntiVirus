@@ -20,6 +20,16 @@ public class UpgradeMgr : MonoBehaviour
     {
         bunkerMgr = GameObject.Find("BunkerMgr").GetComponent<BunkerMgr>();
 
+        //√ ±‚»≠.
+        if (prefabs.Count != 0)
+        {
+            foreach (var element in prefabs)
+            {
+                Destroy(element.Value);
+            }
+            prefabs.Clear();
+        }
+
         int i = 0;
         foreach (var element in bunkerMgr.bunkerObjs)
         {

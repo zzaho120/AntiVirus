@@ -6,7 +6,9 @@ public class GarageMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
 
-    public GameObject TrunkWin;
+    public GameObject mainWin;
+    public GameObject buyWin;
+    public GameObject trunkWin;
     public GameObject carBoardingWin;
 
     public TrunkMgr trunkMgr;
@@ -44,43 +46,46 @@ public class GarageMgr : MonoBehaviour
         boardingMgr.playerDataMgr = playerDataMgr;
         boardingMgr.Init();
 
-        OpenTrunkWin();
-    }
-
-    public void OpenCarSelectWin()
-    {
-        if (TrunkWin.activeSelf) TrunkWin.SetActive(false);
+        //Ã¢ °ü·Ã.
         if (carBoardingWin.activeSelf) carBoardingWin.SetActive(false);
-        //carSelectWin.SetActive(true);
-    }
-
-    public void CloseCarSelectWin()
-    {
-        //carSelectWin.SetActive(false);
-    }
-
-    public void OpenTrunkWin()
-    {
-        //carSelectWin.SetActive(false);
-        if (carBoardingWin.activeSelf) carBoardingWin.SetActive(false);
-        TrunkWin.SetActive(true);
-    }
-
-    public void CloseTrunkWin()
-    {
-        TrunkWin.SetActive(false);
-        //carSelectWin.SetActive(true);
+        if (trunkWin.activeSelf) trunkWin.SetActive(false);
+        if(buyWin.activeSelf) buyWin.SetActive(false);
+        if (!mainWin.activeSelf) mainWin.SetActive(true);
     }
 
     public void OpenCarBoardingWin()
     {
-        TrunkWin.SetActive(false);
+        mainWin.SetActive(false);
         carBoardingWin.SetActive(true);
     }
 
     public void CloseCarBoardingWin()
     {
         carBoardingWin.SetActive(false);
-        TrunkWin.SetActive(true);
+        mainWin.SetActive(true);
+    }
+
+    public void OpenTrunkWin()
+    {
+        mainWin.SetActive(false);
+        trunkWin.SetActive(true);
+    }
+
+    public void CloseTrunkWin()
+    {
+        trunkWin.SetActive(false);
+        mainWin.SetActive(true);
+    }
+
+    public void OpenBuyWin()
+    {
+        mainWin.SetActive(false);
+        buyWin.SetActive(true);
+    }
+
+    public void CloseBuyWin()
+    {
+        buyWin.SetActive(false);
+        mainWin.SetActive(true);
     }
 }

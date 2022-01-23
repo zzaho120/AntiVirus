@@ -35,8 +35,10 @@ public class CarCenterMgr : MonoBehaviour
 
     public List<GameObject> buttonList;
     public List<GameObject> gaugeList;
+    public Text moneyTxt;
     public Text costTxt;
     public Button buyButton;
+    public Button upgradeButton;
     public Text upgradeCostTxt;
 
     public Dictionary<int, Truck> carOrder = new Dictionary<int, Truck>();
@@ -56,6 +58,7 @@ public class CarCenterMgr : MonoBehaviour
     {
         if (carListPopup.activeSelf) carListPopup.SetActive(false);
 
+        moneyTxt.text = playerDataMgr.saveData.money.ToString();
         carCenterLevel = playerDataMgr.saveData.carCenterLevel;
         Bunker carCenterLevelInfo = playerDataMgr.bunkerList["BUN_0004"];
         switch (carCenterLevel)
@@ -93,6 +96,7 @@ public class CarCenterMgr : MonoBehaviour
         ButtonInteractable();
 
         upgradeCostTxt.text = "-";
+        upgradeButton.interactable = false;
     }
 
     public void Refresh()
@@ -200,6 +204,7 @@ public class CarCenterMgr : MonoBehaviour
             }
         }
 
+        upgradeButton.interactable = true;
         switch (index)
         {
             case 0:
@@ -274,6 +279,30 @@ public class CarCenterMgr : MonoBehaviour
         }
 
         //게이지.
+        if (currentStat != TruckStat.None)
+        {
+            int previousIndex = -1;
+            switch (currentStat)
+            {
+                case TruckStat.Speed:
+                    previousIndex = 0;
+                    break;
+                case TruckStat.Trunk:
+                    previousIndex = 1;
+                    break;
+                case TruckStat.FieldOfView:
+                    previousIndex = 2;
+                    break;
+            }
+            buttonList[previousIndex].GetComponent<Image>().color = originColor;
+            for (int i = 0; i < gaugeList[previousIndex].transform.childCount; i++)
+            {
+                var child = gaugeList[previousIndex].transform.GetChild(i).gameObject;
+                child.GetComponent<Image>().color = originColor;
+            }
+            currentStat = TruckStat.None;
+        }
+
         for (int i = 0; i < speedLv; i++)
         {
             speedObj.transform.GetChild(i).gameObject.SetActive(true);
@@ -290,12 +319,31 @@ public class CarCenterMgr : MonoBehaviour
         var cost = playerDataMgr.truckList[key].price;
         costTxt.text = $"차량 구매 비용 : {cost}";
         upgradeCostTxt.text = "-";
+        upgradeButton.interactable = false;
     }
 
     public void Upgrage()
     {
         if (currentStat == TruckStat.None) return;
         if (!owned.Contains(selectedCar)) return;
+
+        int cost = 0;
+        switch (currentStat)
+        {
+            case TruckStat.Speed:
+                cost = playerDataMgr.truckList[selectedCar].speedUp_Cost;
+                break;
+            case TruckStat.Trunk:
+                cost = playerDataMgr.truckList[selectedCar].weightUp_Cost;
+                break;
+            case TruckStat.FieldOfView:
+                cost = playerDataMgr.truckList[selectedCar].sightUp_Cost;
+                break;
+        }
+        if (playerDataMgr.saveData.money - cost < 0) return;
+
+        playerDataMgr.saveData.money -= cost;
+        moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
         var speedObj = gaugeList[0];
         var trunkObj = gaugeList[1];
@@ -343,8 +391,12 @@ public class CarCenterMgr : MonoBehaviour
     public void Buy()
     {
         //비용 제약두기.
+        if (playerDataMgr.saveData.money - playerDataMgr.truckList[selectedCar].price < 0) return;
 
         //json.
+        playerDataMgr.saveData.money -= playerDataMgr.truckList[selectedCar].price;
+        moneyTxt.text = playerDataMgr.saveData.money.ToString();
+
         playerDataMgr.saveData.cars.Add(selectedCar);
         playerDataMgr.saveData.speedLv.Add(1);
         playerDataMgr.saveData.sightLv.Add(1);
