@@ -109,6 +109,21 @@ public class BattlePlayerMgr : MonoBehaviour
     {
         var levelList = new List<int>();
         var monsters = BattleMgr.Instance.monsterMgr.monsters;
+        var buffMgr = character.characterStats.buffMgr;
+        var reductionList = buffMgr.GetBuffList(Stat.Reduction);
+        var reductionBuff = 1f;
+        foreach (var reduction in reductionList)
+        {
+            reductionBuff *= reduction.GetAmount();
+        }
+
+        var virusList = buffMgr.GetBuffList(Stat.Virus);
+        var virusBuff = 1f;
+        foreach (var virus in virusList)
+        {
+            virusBuff *= virus.GetAmount();
+        }
+
         foreach (var monster in monsters)
         {
             levelList.Add(character.GetVirusLevel(monster));
@@ -118,7 +133,6 @@ public class BattlePlayerMgr : MonoBehaviour
         for (var idx = 0; idx < levelList.Count; ++idx)
         {
             var virusType = monsters[idx].monsterStats.virus.id;
-
             if (levelList[idx] < 1)
                 continue;
 
@@ -132,20 +146,20 @@ public class BattlePlayerMgr : MonoBehaviour
         {
             switch (pair.Key)
             {
-                case "1":
-                    character.characterStats.virusPanalty["E"].Calculation(pair.Value);
+                case "VIR_0001":
+                    character.characterStats.virusPanalty["E"].Calculation(pair.Value, virusBuff, reductionBuff);
                     break;
-                case "2":
-                    character.characterStats.virusPanalty["B"].Calculation(pair.Value);
+                case "VIR_0002":
+                    character.characterStats.virusPanalty["B"].Calculation(pair.Value, virusBuff, reductionBuff);
                     break;
-                case "3":
-                    character.characterStats.virusPanalty["P"].Calculation(pair.Value);
+                case "VIR_0003":
+                    character.characterStats.virusPanalty["P"].Calculation(pair.Value, virusBuff, reductionBuff);
                     break;
-                case "4":
-                    character.characterStats.virusPanalty["I"].Calculation(pair.Value);
+                case "VIR_0004":
+                    character.characterStats.virusPanalty["I"].Calculation(pair.Value, virusBuff, reductionBuff);
                     break;
-                case "5":
-                    character.characterStats.virusPanalty["T"].Calculation(pair.Value);
+                case "VIR_0005":
+                    character.characterStats.virusPanalty["T"].Calculation(pair.Value, virusBuff, reductionBuff);
                     break;
             }
         }

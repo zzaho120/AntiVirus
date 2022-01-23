@@ -45,9 +45,17 @@ public class BuffMgr
                 removeList.Add(buff);
         }
 
+        RemoveBuff(removeList);
+    }
+
+    public void RemoveBuff(List<BuffBase> removeList)
+    {
         foreach (var remove in removeList)
-        {
-            buffList.Remove(remove);
-        }
+            RemoveBuff(remove);
+    }
+
+    public void RemoveBuff(BuffBase buff)
+    {
+        buffList.Remove(buff);
     }
 }

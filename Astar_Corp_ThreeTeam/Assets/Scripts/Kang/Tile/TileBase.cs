@@ -14,6 +14,7 @@ public class TileBase : MonoBehaviour
     public bool isWall;
     public int accuracy;
     public int moveAP;
+    public int movePoint;
 
     [Header("List")]
     public List<TileBase> adjNodes;
@@ -58,6 +59,15 @@ public class TileBase : MonoBehaviour
             var charRen = charObj.GetComponent<MeshRenderer>();
             if (charRen != null)
                 charRen.enabled = isEnabled;
+
+            if (charObj.tag == "BattleMonster")
+            {
+                var monster = charObj.GetComponent<MonsterChar>();
+                foreach (var renElem in monster.renList)
+                {
+                    renElem.SetActive(isEnabled);
+                }
+            }
         }
         foreach (var hint in hintObj)
         {

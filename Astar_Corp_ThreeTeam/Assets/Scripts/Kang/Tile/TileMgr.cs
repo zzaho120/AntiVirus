@@ -19,7 +19,7 @@ public class TileMgr : MonoBehaviour
  
     public void Init()
     {
-        GenerateTile();
+        //GenerateTile();
         var tileCount = tiles.transform.childCount;
         for (int idx = 0; idx < tileCount; ++idx)
         {

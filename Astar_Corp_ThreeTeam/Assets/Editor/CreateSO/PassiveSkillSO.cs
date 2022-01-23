@@ -40,23 +40,8 @@ public class PassiveSkillSO
                     passiveSkill.type       = splitData[3];
                     passiveSkill.level      = int.Parse(splitData[4]);
 
-                    switch (splitData[5])
-                    {
-                        case "Ready":
-                            passiveSkill.skillCase = PassiveCase.Ready;
-                            break;
-                    }
-
-                    switch (splitData[6])
-                    {
-                        case "Sight":
-                            passiveSkill.stat = Stat.Sight;
-                            break;
-                        case "Reduction":
-                            passiveSkill.stat = Stat.Reduction;
-                            break;
-                    }
-
+                    passiveSkill.skillCase  = (PassiveCase)int.Parse(splitData[5]);
+                    passiveSkill.stat       = (Stat)int.Parse(splitData[6]);
                     passiveSkill.increase   = float.Parse(splitData[7]);
                     passiveSkill.decrease   = float.Parse(splitData[8]);
                     passiveSkill.lifeTurn   = int.Parse(splitData[9]);

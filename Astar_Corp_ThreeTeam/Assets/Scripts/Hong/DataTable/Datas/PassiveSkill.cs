@@ -5,14 +5,31 @@ using UnityEngine;
 public enum PassiveCase
 {
     Ready,
-    Hit
+    Hit,
+    Move,
+    Game,
+    Reload,
+    Attacked,
+    FullApMove
 }
 
 public enum Stat
 {
     None = -1,
     Sight,
-    Reduction
+    Reduction,
+    MP,
+    Aggro,
+    Virus,
+    Weight,
+    FullApMove,
+    Ammo,
+    Evade,
+    MeleeDamage,
+    Accuracy,
+    AASR,
+    MoveSRAccuracy,
+    MaxMPLimit
 }
 
 public class PassiveSkill : SkillBase
@@ -25,6 +42,7 @@ public class PassiveSkill : SkillBase
 
     public void Invoke(BuffMgr buffMgr)
     {
+        Debug.Log(stat);
         buffMgr.Addbuff(new BuffBase(stat, increase, lifeTurn));
     }
 }

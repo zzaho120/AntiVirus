@@ -635,4 +635,21 @@ public class SightMgr : MonoBehaviour
         }
         InitObstacle(monsterIdx, CharacterType.Monster);
     }
+    
+    public bool GetSightDisplay(TileBase tile)
+    {
+        var newTileIdx = new Vector3(tile.tileIdx.x, tile.tileIdx.z);
+        if (totalSightDics.ContainsKey(newTileIdx))
+        {
+            foreach (var sight in totalSightDics[newTileIdx])
+            {
+                if (sight.isInSight)
+                    return true;
+            }
+
+            return false;
+        }
+        else
+            return false;
+    }
 }

@@ -12,8 +12,10 @@ public class MonsterChar : BattleTile
     public bool turnState;
 
     public PlayerableChar target;
+    public bool IsNullTarget { get => target == null; }
     public bool isMoved;
-
+    public bool isSelect;
+    public List<GameObject> renList;
     public override void Init()
     {
         base.Init();
@@ -57,8 +59,6 @@ public class MonsterChar : BattleTile
     {
         var Ap1ByMp = monsterStats.Mp;
         var mp = monsterStats.currentAp * Ap1ByMp;
-        var pathMgr = BattleMgr.Instance.pathMgr;
-        var destTile = Vector3.zero;
 
         if (target == null)
             MoveRandomTile(mp, Ap1ByMp);
@@ -139,6 +139,7 @@ public class MonsterChar : BattleTile
                 moveIdx = 0;
             if (monsterStats.currentAp == 0)
                 break;
+
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -208,6 +209,7 @@ public class MonsterChar : BattleTile
             }
         }
         hintMgr.AddPrint(hintType, directionType, currentTile.tileIdx);
+        currentTile.EnableDisplay(BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile));
     }
 
     public bool[] CheckFrontSight()
@@ -294,5 +296,22 @@ public class MonsterChar : BattleTile
             return result;
         else
             return null;
+    }
+
+    public void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            isSelect = !isSelect;
+
+            if (isSelect)
+                FloodFillVirus();
+            
+        }
+    }
+
+    public void FloodFillVirus()
+    {
+
     }
 }

@@ -49,9 +49,9 @@ public class VirusPenalty
         reductionLevel = 1;
     }
 
-    public void Calculation(int virusLevel)
+    public void Calculation(int virusLevel, float virusBuff = 1f, float reductionBuff = 1f)
     {
-        var newGauge = GetPenaltyGauge(virusLevel) - CurrentReduction;
+        var newGauge = (int)((GetPenaltyGauge(virusLevel) * virusBuff) - (CurrentReduction * reductionBuff));
         penaltyGauge += newGauge;
 
         if (newGauge < 0)
