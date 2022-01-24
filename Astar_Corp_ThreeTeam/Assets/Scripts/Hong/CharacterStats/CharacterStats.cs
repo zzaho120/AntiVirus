@@ -190,11 +190,11 @@ public class CharacterStats : MonoBehaviour
 
         // test
         //var skilltest = ScriptableMgr.Instance.passiveSkillList["PSK_0001"];
-        var skilltest = ScriptableMgr.Instance.passiveSkillList["PSK_0009"];
+        //var skilltest = ScriptableMgr.Instance.passiveSkillList["PSK_0009"];
 
-        skillMgr.AddSkill(SkillType.Passive, skilltest);
+        //skillMgr.AddSkill(SkillType.Passive, skilltest);
 
-        var skillList = skillMgr.GetPassiveSkills(skilltest.skillCase);
+        var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
 
         foreach (var skill in skillList)
         {

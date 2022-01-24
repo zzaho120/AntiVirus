@@ -58,6 +58,7 @@ public class BattleMgr : MonoBehaviour
         {
             playerDataMgr = GameObject.FindWithTag("PlayerDataMgr").GetComponent<PlayerDataMgr>();
 
+            Debug.Log(playerDataMgr.battleSquad.Count);
             for (var idx = 0; idx < playerDataMgr.battleSquad.Count; ++idx)
             {
                 var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.identity);
