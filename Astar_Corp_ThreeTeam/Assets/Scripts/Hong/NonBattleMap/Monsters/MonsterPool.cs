@@ -59,10 +59,10 @@ public class MonsterPool : PoolManager
 
         var ps = pools[poolNum].Pool.Get();
         ps.transform.position = new Vector3(testZone[poolNum + 1].position.x, 0f, testZone[poolNum + 1].position.z);
-        ps.GetComponent<SetMonsterStat>().Init();
+        //ps.GetComponent<SetMonsterStat>().Init();
         //ps.transform.localScale = new Vector3(10f, 10f, 10f);
 
-        monsterList.Add(ps);
+        //monsterList.Add(ps);
     }
 
     //private void OnGUI()
