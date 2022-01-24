@@ -51,7 +51,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public bool isMonsterAtk;
     private void Start()
     {
-        //PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
@@ -170,8 +170,11 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                         case 13:
                             saveData.bunkerKind.Add(1);
                             break;
-                        default:
+                        case 14:
                             saveData.bunkerKind.Add(6);
+                            break;
+                        default:
+                            saveData.bunkerKind.Add(7);
                             break;
                     }
                 }
@@ -219,34 +222,34 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 //    currentOtherItemsNum.Add(element.Key, random);
                 //}
 
-                foreach (var element in equippableList)
-                {
-                    saveData.truckEquippableList.Add(element.Key);
-                    int random = Random.Range(1, 3);
-                    saveData.truckEquippableNumList.Add(random);
-                    truckEquippables.Add(element.Key, element.Value);
-                    truckEquippablesNum.Add(element.Key, random);
-                }
+                //foreach (var element in equippableList)
+                //{
+                //    saveData.truckEquippableList.Add(element.Key);
+                //    int random = Random.Range(1, 3);
+                //    saveData.truckEquippableNumList.Add(random);
+                //    truckEquippables.Add(element.Key, element.Value);
+                //    truckEquippablesNum.Add(element.Key, random);
+                //}
 
-                foreach (var element in consumableList)
-                {
-                    saveData.truckConsumableList.Add(element.Key);
-                    int random = Random.Range(1, 3);
-                    saveData.truckConsumableNumList.Add(random);
-                    truckConsumables.Add(element.Key, element.Value);
-                    truckConsumablesNum.Add(element.Key, random);
-                }
+                //foreach (var element in consumableList)
+                //{
+                //    saveData.truckConsumableList.Add(element.Key);
+                //    int random = Random.Range(1, 3);
+                //    saveData.truckConsumableNumList.Add(random);
+                //    truckConsumables.Add(element.Key, element.Value);
+                //    truckConsumablesNum.Add(element.Key, random);
+                //}
 
-                foreach (var element in otherItemList)
-                {
-                    saveData.truckOtherItemList.Add(element.Key);
-                    int random = Random.Range(1, 3);
-                    saveData.truckOtherItemNumList.Add(random);
-                    truckOtherItems.Add(element.Key, element.Value);
-                    truckOtherItemsNum.Add(element.Key, random);
-                }
+                //foreach (var element in otherItemList)
+                //{
+                //    saveData.truckOtherItemList.Add(element.Key);
+                //    int random = Random.Range(1, 3);
+                //    saveData.truckOtherItemNumList.Add(random);
+                //    truckOtherItems.Add(element.Key, element.Value);
+                //    truckOtherItemsNum.Add(element.Key, random);
+                //}
 
-                PlayerSaveLoadSystem.Save(saveData);
+                //PlayerSaveLoadSystem.Save(saveData);
                 //////////////////////////////
             }
             //이어하기.

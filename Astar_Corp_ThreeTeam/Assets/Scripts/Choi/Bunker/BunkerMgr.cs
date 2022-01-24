@@ -13,6 +13,7 @@ public enum BunkerKinds
     Store,
     Hospital,
     Garage,
+    Storage,
     Locked,
 }
 
@@ -29,6 +30,7 @@ public class BunkerMgr : MonoBehaviour
     public GarageMgr garageMgr;
     PlayerDataMgr playerDataMgr;
     public CarCenterMgr carCenterMgr;  //¼öÁø
+    public StorageMgr storageMgr;
     UpgradeMgr upgradeMgr;
 
     public GameObject createButton;
@@ -47,6 +49,7 @@ public class BunkerMgr : MonoBehaviour
     //public GameObject carCenterPrefab;
     public GameObject hospitalPrefab;
     public GameObject garagePrefab;
+    public GameObject storagePrefab;
     public GameObject lockedPrefab;
     public List<GameObject> bunkerObjs;
     
@@ -66,6 +69,7 @@ public class BunkerMgr : MonoBehaviour
         hospitalMgr = GameObject.FindGameObjectWithTag("HospitalMgr").GetComponent<HospitalMgr>();
         garageMgr = GameObject.FindGameObjectWithTag("GarageMgr").GetComponent<GarageMgr>();
         carCenterMgr = GameObject.Find("CarCenterMgr").GetComponent<CarCenterMgr>();
+        storageMgr = GameObject.Find("StorageMgr").GetComponent<StorageMgr>();
         upgradeMgr = GameObject.Find("UpgradeMgr").GetComponent<UpgradeMgr>();
 
         agitMgr.playerDataMgr = playerDataMgr;
@@ -74,6 +78,7 @@ public class BunkerMgr : MonoBehaviour
         hospitalMgr.playerDataMgr = playerDataMgr;
         garageMgr.playerDataMgr = playerDataMgr;
         carCenterMgr.playerDataMgr = playerDataMgr;
+        storageMgr.playerDataMgr = playerDataMgr;
         upgradeMgr.playerDataMgr = playerDataMgr;
     }
 
@@ -85,6 +90,7 @@ public class BunkerMgr : MonoBehaviour
         hospitalMgr.Init();
         garageMgr.Init();
         carCenterMgr.Init();
+        storageMgr.Init();
 
         camController.OpenWindow = OpenWindow;
         camController.CloseWindow = CloseWindow;
@@ -124,6 +130,9 @@ public class BunkerMgr : MonoBehaviour
                     break;
                 case BunkerKinds.Garage:
                     Create(5);
+                    break;
+                case BunkerKinds.Storage:
+                    Create(6);
                     break;
                 case BunkerKinds.Locked:
                     selectedBunker = bunkerObjs[i];
@@ -203,6 +212,9 @@ public class BunkerMgr : MonoBehaviour
                     case "Garage":
                         currentBunkerKind = BunkerKinds.Garage;
                         break;
+                    case "Storage":
+                        currentBunkerKind = BunkerKinds.Storage;
+                        break;
                 }
             }
             else
@@ -241,6 +253,9 @@ public class BunkerMgr : MonoBehaviour
                     case "Garage":
                         currentBunkerKind = BunkerKinds.Garage;
                         break;
+                    case "Storage":
+                        currentBunkerKind = BunkerKinds.Storage;
+                        break;
                 }
             }
             else
@@ -274,6 +289,10 @@ public class BunkerMgr : MonoBehaviour
             case BunkerKinds.Garage:
                 garageMgr.Init();
                 currentWinId = (int)BunkerWindows.GarageWindow - 1;
+                break;
+            case BunkerKinds.Storage:
+                storageMgr.Init();
+                currentWinId = (int)BunkerWindows.StorageWindow - 1;
                 break;
         }
         windowManager.Open(currentWinId);
@@ -338,6 +357,12 @@ public class BunkerMgr : MonoBehaviour
                 go = Instantiate(garagePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 currentLevel = playerDataMgr.saveData.garageLevel;
                 break;
+            case 6:
+                currentBunkerKind = BunkerKinds.Storage;
+                playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 6;
+                go = Instantiate(storagePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
+                currentLevel = playerDataMgr.saveData.storageLevel;
+                break;
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
@@ -383,7 +408,7 @@ public class BunkerMgr : MonoBehaviour
 
     public void ExitBunker()
     {
-        //if (!playerDataMgr.ableToExit) return;
+        if (!playerDataMgr.ableToExit) return;
 
         playerDataMgr.saveData.bunkerExitNum += 1;
         if (playerDataMgr.saveData.bunkerExitNum == 5)
@@ -392,7 +417,7 @@ public class BunkerMgr : MonoBehaviour
             playerDataMgr.saveData.bunkerExitNum = 0;
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
-        SceneManager.LoadScene("TestNonBattleMap");
+        SceneManager.LoadScene("NonBattleMap");
         //SceneManager.LoadScene("NonBattleAsset");
     }
 }

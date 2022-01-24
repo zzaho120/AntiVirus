@@ -633,6 +633,7 @@ public class StoreMgr : MonoBehaviour
     public void Buy(int itemNum)
     {
         if (currentStoreKey == -1) return;
+        if (itemNum == 0) return;
 
         if (storeWeaponInfo.ContainsKey(currentStoreKey))
         {
@@ -841,6 +842,7 @@ public class StoreMgr : MonoBehaviour
     public void Sell(int itemNum)
     {
         if (currentStorageKey == null) return;
+        if (itemNum == 0) return;
 
         int cost = 0;
         if (storageWeaponInfo.ContainsKey(currentStorageKey))
