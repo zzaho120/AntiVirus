@@ -84,9 +84,6 @@ public class PlayerableChar : BattleTile
                                     var playerAction = BattleMgr.Instance.battleWindowMgr.Open(1, false).GetComponent<PlayerActionWindow>();
                                     playerAction.curChar = this;
                                     playerAction.EnableReloadBtn();
-
-
-                                    CameraController.instance.SetFollowObject(transform);
                                 }
                                 else
                                     SetNonSelected();

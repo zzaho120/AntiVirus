@@ -48,6 +48,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
     public bool ableToExit;//벙커 밖으로 나갈 수 있는지.
     public bool isFirst;
+    public bool isMonsterAtk;
     private void Start()
     {
         //PlayerPrefs.DeleteAll();

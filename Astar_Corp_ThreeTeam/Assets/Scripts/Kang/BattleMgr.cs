@@ -56,9 +56,8 @@ public class BattleMgr : MonoBehaviour
         var isExistDataMgr = playerDataMgrObj != null;
         if (isExistDataMgr)
         {
-            playerDataMgr = GameObject.FindWithTag("PlayerDataMgr").GetComponent<PlayerDataMgr>();
+            playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
 
-            Debug.Log(playerDataMgr.battleSquad.Count);
             for (var idx = 0; idx < playerDataMgr.battleSquad.Count; ++idx)
             {
                 var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.identity);
@@ -66,6 +65,11 @@ public class BattleMgr : MonoBehaviour
                 var playerableChar = player.GetComponent<PlayerableChar>();
                 playerableChar.characterStats = playerDataMgr.battleSquad[idx];
             }
+
+            if (playerDataMgr.isMonsterAtk)
+                startTurn = BattleTurn.Enemy;
+            else
+                startTurn = BattleTurn.Player;
         }
         else
         {
@@ -95,7 +99,16 @@ public class BattleMgr : MonoBehaviour
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
         EventBusMgr.Subscribe(EventType.DestroyChar, DestroyChar);
 
-        EventBusMgr.Publish(EventType.StartPlayer);
+
+        switch (turn)
+        {
+            case BattleTurn.Player:
+                EventBusMgr.Publish(EventType.StartPlayer);
+                break;
+            case BattleTurn.Enemy:
+                EventBusMgr.Publish(EventType.StartEnemy);
+                break;
+        }
 
         sightMgr.UpdateFog();
     }

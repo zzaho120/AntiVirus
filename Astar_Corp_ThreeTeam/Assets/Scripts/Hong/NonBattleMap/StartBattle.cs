@@ -26,28 +26,29 @@ public class StartBattle : MonoBehaviour
             //if (other.GetComponent<MeshRenderer>().enabled)
             //{
             // 몬스터 공격 앞뒤 판단
-                GameObject target = other.gameObject;
-                Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
-                // 플레이어 앞
-                if (Vector3.Dot(transform.forward, dirToTarget) > 0) 
-                {
-                    //Debug.Log("앞");
-                    isMonsterAtk = false;
-                }
-                // 플레이어 뒤
-                else 
-                {
-                    //Debug.Log("뒤");
-                    isMonsterAtk = true;
-                }
+            GameObject target = other.gameObject;
+            Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
+            // 플레이어 앞
+            if (Vector3.Dot(transform.forward, dirToTarget) > 0) 
+            {
+                //Debug.Log("앞");
+                isMonsterAtk = false;
+            }
+            // 플레이어 뒤
+            else 
+            {
+                //Debug.Log("뒤");
+                isMonsterAtk = true;
+            }
+            PlayerDataMgr.Instance.isMonsterAtk = isMonsterAtk;
 
-                // 전투 팝업창 띄우기
-                var windowId = (int)Windows.MonsterWindow - 1;
-                var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+           // 전투 팝업창 띄우기
+            var windowId = (int)Windows.MonsterWindow - 1;
+            var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
 
-                // 전체맵 일시정지
-                timeController.PauseTime();
-                timeController.isPause = true;
+            // 전체맵 일시정지
+            timeController.PauseTime();
+            timeController.isPause = true;
             //}
         }
     }
