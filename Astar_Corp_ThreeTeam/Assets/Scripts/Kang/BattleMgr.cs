@@ -50,7 +50,9 @@ public class BattleMgr : MonoBehaviour
 
         var vectorList = new List<Vector3>();
         vectorList.Add(new Vector3(15, 0.5f, 15));
+        vectorList.Add(new Vector3(15, 0.5f, 14));
         vectorList.Add(new Vector3(14, 0.5f, 14));
+        vectorList.Add(new Vector3(14, 0.5f, 15));
 
         var playerDataMgrObj = GameObject.FindWithTag("PlayerDataMgr");
         var isExistDataMgr = playerDataMgrObj != null;
@@ -60,7 +62,7 @@ public class BattleMgr : MonoBehaviour
 
             for (var idx = 0; idx < playerDataMgr.battleSquad.Count; ++idx)
             {
-                var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.identity);
+                var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.Euler(new Vector3(0, 180, 0)));
                 player.transform.SetParent(playerMgr.transform);
                 var playerableChar = player.GetComponent<PlayerableChar>();
                 playerableChar.characterStats = playerDataMgr.battleSquad[idx];

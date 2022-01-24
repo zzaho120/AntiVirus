@@ -1647,10 +1647,10 @@ MonoBehaviour:
   currentTile: {fileID: 0}
   characterStats: {fileID: 0}
   AP: 0
-  sightDistance: 3
   audibleDistance: 4
   status: 0
   isSelected: 0
+  isFullApMove: 0
   direction: 0
   alertList: []
 --- !u!114 &4918076902992361824
@@ -1683,7 +1683,7 @@ MonoBehaviour:
     MaxRange: 0
     OverRange_Penalty: 0
     UnderRange_Penalty: 0
-  skills:
+  skillMgr:
     activeSkills: []
     passiveSkills: []
   MaxHp: 0
@@ -1697,6 +1697,8 @@ MonoBehaviour:
   willpower: 0
   critRate: 0
   level: 0
+  bagLevel: 0
+  currentWeight: 0
   saveId: 0
 --- !u!65 &5827459687758689018
 BoxCollider:
