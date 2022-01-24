@@ -15,7 +15,7 @@ using UnityEngine;
 // 8. 게이지 관련 -> 경험치, 내성 게이지, 바이러스 게이지 감소량
 // 9. 사용 가능 무기들
 
-public class CharacterStats : MonoBehaviour
+public class CharacterStats
 {
     // 기본 스탯
     public Character character;
@@ -150,11 +150,11 @@ public class CharacterStats : MonoBehaviour
     {
         if (virusPanalty.Count == 0)
         {
-            virusPanalty.Add("E", new VirusPenalty((Virus)Instantiate(Resources.Load("Choi/Datas/Viruses/E")), character));
-            virusPanalty.Add("B", new VirusPenalty((Virus)Instantiate(Resources.Load("Choi/Datas/Viruses/B")), character));
-            virusPanalty.Add("P", new VirusPenalty((Virus)Instantiate(Resources.Load("Choi/Datas/Viruses/P")), character));
-            virusPanalty.Add("I", new VirusPenalty((Virus)Instantiate(Resources.Load("Choi/Datas/Viruses/I")), character));
-            virusPanalty.Add("T", new VirusPenalty((Virus)Instantiate(Resources.Load("Choi/Datas/Viruses/T")), character));
+            virusPanalty.Add("E", new VirusPenalty(ScriptableMgr.Instance.GetVirus("E"), character));
+            virusPanalty.Add("B", new VirusPenalty(ScriptableMgr.Instance.GetVirus("B"), character));
+            virusPanalty.Add("P", new VirusPenalty(ScriptableMgr.Instance.GetVirus("P"), character));
+            virusPanalty.Add("I", new VirusPenalty(ScriptableMgr.Instance.GetVirus("I"), character));
+            virusPanalty.Add("T", new VirusPenalty(ScriptableMgr.Instance.GetVirus("T"), character));
         }
     }
 
@@ -194,12 +194,12 @@ public class CharacterStats : MonoBehaviour
 
         //skillMgr.AddSkill(SkillType.Passive, skilltest);
 
-        var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
+        //var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
 
-        foreach (var skill in skillList)
-        {
-            skill.Invoke(buffMgr);
-        }
+        //foreach (var skill in skillList)
+        //{
+        //    skill.Invoke(buffMgr);
+        //}
     }
 
     public void StartTurn()

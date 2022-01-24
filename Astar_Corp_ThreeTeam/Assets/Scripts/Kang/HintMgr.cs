@@ -75,7 +75,7 @@ public class HintMgr : MonoBehaviour
             var vector = playerableChar[idx].tileIdx - monster;
             var absSum = (int)(Mathf.Abs(vector.x) + Mathf.Abs(vector.z));
 
-            if (playerableChar[idx].audibleDistance * 3 > absSum)
+            if (playerableChar[idx].audibleDistance * 4 > absSum)
             {
                 if (min.Item2 > absSum)
                 {
@@ -90,11 +90,11 @@ public class HintMgr : MonoBehaviour
 
         var level = 0;
         var audible = playerableChar[min.Item1].audibleDistance;
-        if (audible > min.Item2)
+        if (audible * 2 > min.Item2)
             level = 3;
-        else if (audible * 2 > min.Item2)
-            level = 2;
         else if (audible * 3 > min.Item2)
+            level = 2;
+        else if (audible * 4 > min.Item2)
             level = 1;
 
         CameraController.Instance.SetFollowObject(playerableChar[min.Item1].transform);

@@ -314,7 +314,6 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     //게임상 관리하기 쉽도록.
                     CharacterStats stat = new CharacterStats();
                     stat.saveId = i;
-                    stat.VirusPanaltyInit();
                     stat.currentHp = saveData.hp[i];
                     stat.MaxHp = saveData.maxHp[i];
                     stat.sensivity = saveData.sensitivity[i];
@@ -323,6 +322,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     stat.character = characterList[saveData.id[i]];
                     stat.character.id = saveData.id[i];
                     stat.bagLevel = saveData.bagLevel[i];
+                    stat.VirusPanaltyInit();
 
                     stat.weapon = new WeaponStats();
                     stat.weapon.mainWeapon = (saveData.mainWeapon[i] == null) ? null : equippableList[saveData.mainWeapon[i]];

@@ -32,7 +32,7 @@ public class NonBattleMgr : MonoBehaviour
 
     private void Start()
     {
-        PlayerPrefs.DeleteAll();
+        // PlayerPrefs.DeleteAll();
 
         // 클래스들 초기화
         laboratoryArea.Init();

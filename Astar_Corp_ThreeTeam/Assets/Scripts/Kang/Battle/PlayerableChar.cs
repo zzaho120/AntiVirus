@@ -11,7 +11,6 @@ public enum CharacterState
     TurnEnd
 }
 
-[RequireComponent(typeof(CharacterStats))]
 public class PlayerableChar : BattleTile
 {
     [Header("Character")]
@@ -50,11 +49,10 @@ public class PlayerableChar : BattleTile
     public override void Init()
     {
         base.Init();
-        characterStats = GetComponent<CharacterStats>();
-        characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
+        //characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
         characterStats.weapon.mainWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/AssaultRifle_01"));
         characterStats.weapon.subWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/FireAxe_01"));
-        //¼öÁ¤
+        
         characterStats.Init();  // --> characterStats.weapon.Init();
         direction = DirectionType.None;
     }
@@ -298,6 +296,9 @@ public class PlayerableChar : BattleTile
                 if (!isFullApMove)
                     AP -= weapon.GetWeaponAP();
 
+                if (monster.IsNullTarget)
+                    monster.SetTarget(this);
+
                 if (isHit)
                 {
                     monster.GetDamage(weapon.Damage);
@@ -310,7 +311,7 @@ public class PlayerableChar : BattleTile
                     }
 
                     var buffList = buffMgr.GetBuffList(Stat.Aggro);
-                    if (buffList.Count > 0 || monster.IsNullTarget)
+                    if (buffList.Count > 0)
                         monster.SetTarget(this);
                 }
                 else
@@ -356,6 +357,7 @@ public class PlayerableChar : BattleTile
         if (status != CharacterState.Alert)
             status = CharacterState.TurnEnd;
 
+        isSelected = false;
         EventBusMgr.Publish(EventType.EndPlayer);
         CameraController.instance.SetFollowObject(null);
     }

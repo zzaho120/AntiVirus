@@ -96,7 +96,6 @@ public class PubMgr : MonoBehaviour
             var key = characterName[randomIndex];
 
             CharacterStats stat = new CharacterStats();
-            stat.VirusPanaltyInit();
             var character = playerDataMgr.characterList[key];
             stat.level = 0;
             stat.currentHp = Random.Range(character.minHp, character.maxHp);
@@ -109,7 +108,12 @@ public class PubMgr : MonoBehaviour
             stat.character = character;
             stat.character.id = character.id;
 
-            stat.virusPanalty["E"].penaltyGauge =0;
+            stat.skillMgr = new SkillMgr();
+            stat.buffMgr = new BuffMgr();
+
+            stat.VirusPanaltyInit();
+
+            stat.virusPanalty["E"].penaltyGauge = 0;
             stat.virusPanalty["B"].penaltyGauge = 0;
             stat.virusPanalty["P"].penaltyGauge = 0;
             stat.virusPanalty["I"].penaltyGauge = 0;

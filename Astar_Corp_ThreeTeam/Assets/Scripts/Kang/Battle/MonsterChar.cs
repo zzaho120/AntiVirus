@@ -317,16 +317,19 @@ public class MonsterChar : BattleTile
             RaycastHit hit;
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
+            if (!BattleMgr.Instance.playerMgr.GetPlayerSelected())
             {
-                if (hit.collider.gameObject == gameObject)
+                if (Physics.Raycast(ray, out hit))
                 {
-                    isSelect = !isSelect;
+                    if (hit.collider.gameObject == gameObject)
+                    {
+                        isSelect = !isSelect;
 
-                    if (isSelect)
-                        FloodFillVirus();
-                    else
-                        ClearTileColor();
+                        if (isSelect)
+                            FloodFillVirus();
+                        else
+                            ClearTileColor();
+                    }
                 }
             }
         }

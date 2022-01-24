@@ -46,7 +46,7 @@ public class VirusPenalty
         this.character = character;
         penaltyGauge = 0;
         penaltyLevel = 0;
-        reductionLevel = 1;
+        reductionLevel = 0;
     }
 
     public void Calculation(int virusLevel, float virusBuff = 1f, float reductionBuff = 1f)

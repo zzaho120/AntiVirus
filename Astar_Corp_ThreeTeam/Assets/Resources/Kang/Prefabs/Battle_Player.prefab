@@ -1556,7 +1556,6 @@ GameObject:
   - component: {fileID: 4432474598567780}
   - component: {fileID: 95279625000418924}
   - component: {fileID: 3568264277685101182}
-  - component: {fileID: 4918076902992361824}
   - component: {fileID: 5827459687758689018}
   m_Layer: 0
   m_Name: Battle_Player
@@ -1645,7 +1644,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileIdx: {x: 0, y: 0, z: 0}
   currentTile: {fileID: 0}
-  characterStats: {fileID: 0}
   AP: 0
   audibleDistance: 4
   status: 0
@@ -1653,53 +1651,6 @@ MonoBehaviour:
   isFullApMove: 0
   direction: 0
   alertList: []
---- !u!114 &4918076902992361824
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1274019000965958}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22f41aed4eb818c418a8f27b08318d4c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  character: {fileID: 0}
-  weapon:
-    type: 0
-    mainWeapon: {fileID: 0}
-    subWeapon: {fileID: 0}
-    fireCount: 0
-    AccurRate_base: 0
-    CritDmg: 0
-    MainWeaponBullet: 0
-    SubWeaponBullet: 0
-    MpPerAp: 0
-    FirstShotAp: 0
-    OtherShotAp: 0
-    LoadAp: 0
-    MinRange: 0
-    MaxRange: 0
-    OverRange_Penalty: 0
-    UnderRange_Penalty: 0
-  skillMgr:
-    activeSkills: []
-    passiveSkills: []
-  MaxHp: 0
-  currentHp: 0
-  HpChance: 0
-  HpRise: 0
-  Weight: 0
-  sensivity: 0
-  avoidRate: 0
-  concentration: 0
-  willpower: 0
-  critRate: 0
-  level: 0
-  bagLevel: 0
-  currentWeight: 0
-  saveId: 0
 --- !u!65 &5827459687758689018
 BoxCollider:
   m_ObjectHideFlags: 0

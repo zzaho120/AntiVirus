@@ -125,6 +125,9 @@ public class BattleMgr : MonoBehaviour
                 monsterMgr.UpdateTurn();
                 break;
         }
+
+        if (Input.GetKeyDown(KeyCode.F1))
+            OnChangeTurn(null);
     }
 
     public void OnChangeTurn(object empty)

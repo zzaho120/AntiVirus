@@ -103,6 +103,8 @@ public class BattlePlayerMgr : MonoBehaviour
         var idx = playerableChars.IndexOf(playerableChar);
         playerableChars.RemoveAt(idx);
         Destroy(playerableChar.gameObject);
+        BattleMgr.Instance.sightMgr.sightList.RemoveAt(idx);
+        BattleMgr.Instance.sightMgr.frontSightList.RemoveAt(idx);
     }
 
     private void CalculateVirusAllChar(PlayerableChar character)
@@ -163,5 +165,16 @@ public class BattlePlayerMgr : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public bool GetPlayerSelected()
+    {
+        foreach (var player in playerableChars)
+        {
+            if (player.isSelected)
+                return true;
+        }
+
+        return false;
     }
 }

@@ -96,5 +96,8 @@ public class BattleMonsterMgr : MonoBehaviour
         var idx = monsters.IndexOf(monster);
         monsters.RemoveAt(idx);
         Destroy(monster.gameObject);
+
+        if (BattleMgr.Instance.turn == BattleTurn.Enemy)
+            EventBusMgr.Publish(EventType.EndEnemy);
     }
 }
