@@ -19,7 +19,8 @@ public class SkillWinMgr : MonoBehaviour
     Color originCharaterSkillColor;
     Color originStatSkillColor;
 
-    public Dictionary<string, ActiveSkill> skillList = new Dictionary<string, ActiveSkill>();
+    public Dictionary<string, ActiveSkill> activeList = new Dictionary<string, ActiveSkill>();
+    public Dictionary<string, PassiveSkill> passiveList = new Dictionary<string, PassiveSkill>();
 
     public void Init()
     {
@@ -35,7 +36,8 @@ public class SkillWinMgr : MonoBehaviour
         skillIndex = -1;
 
         // 스킬리스트 불러오기
-        skillList = playerDataMgr.activeSkillList;
+        activeList = playerDataMgr.activeSkillList;
+        passiveList = playerDataMgr.passiveSkillList;
     }
 
     public void SelectSkill(int index)
@@ -59,6 +61,15 @@ public class SkillWinMgr : MonoBehaviour
     public void SkillAcquisition()
     {
         skillDetailWin.SetActive(false);
+
+        var character = playerDataMgr.currentSquad[currentIndex];
+        var skillBtn = skills[skillIndex].GetComponentInChildren<SkillUnitBase>();
+
+        if (passiveList.ContainsKey(skillBtn.skillId))
+        {
+            character.skillMgr.AddSkill(SkillType.Passive, passiveList[skillBtn.skillId]);
+            Debug.Log($"{passiveList[skillBtn.skillId].skillName} 스킬 추가 완료");
+        }
     }
 
     public void OpenSkillPage()
@@ -76,27 +87,40 @@ public class SkillWinMgr : MonoBehaviour
     public void InitCharSkills()
     {
         CharacterStats character = playerDataMgr.currentSquad[currentIndex];
-        //Debug.Log(character.character.skillA[0]);
-        //Debug.Log(skillList[character.character.skillA[0]].name);
+
         for (int i = 0; i < character.character.skillA.Count; i++)
         {
-            if (skillList.ContainsKey(character.character.skillA[i]))
-                skills[i].GetComponentInChildren<Text>().text = skillList[character.character.skillA[i]].name;
+            if (activeList.ContainsKey(character.character.skillA[i]))
+            {
+                skills[i].GetComponentInChildren<Text>().text = activeList[character.character.skillA[i]].name;
+                skills[i].GetComponentInChildren<SkillUnitBase>().skillId = activeList[character.character.skillA[i]].id;
+            }
         }
         for (int i = 0; i < character.character.skillB.Count; i++)
         {
-            if (skillList.ContainsKey(character.character.skillB[i]))
-                skills[i + 5].GetComponentInChildren<Text>().text = skillList[character.character.skillB[i]].name;
+            if (activeList.ContainsKey(character.character.skillB[i]))
+            {
+                skills[i + 5].GetComponentInChildren<Text>().text = activeList[character.character.skillB[i]].name;
+                skills[i + 5].GetComponentInChildren<SkillUnitBase>().skillId = activeList[character.character.skillB[i]].id;
+
+            }
         }
         for (int i = 0; i < character.character.skillC.Count; i++)
         {
-            if (skillList.ContainsKey(character.character.skillC[i]))
-                skills[i + 10].GetComponentInChildren<Text>().text = skillList[character.character.skillC[i]].name;
+            if (activeList.ContainsKey(character.character.skillC[i]))
+            {
+                skills[i + 10].GetComponentInChildren<Text>().text = activeList[character.character.skillC[i]].name;
+                skills[i + 10].GetComponentInChildren<SkillUnitBase>().skillId = activeList[character.character.skillC[i]].id;
+
+            }
         }
         for (int i = 0; i < character.character.skillD.Count; i++)
         {
-            if (skillList.ContainsKey(character.character.skillD[i]))
-                skills[i + 17].GetComponentInChildren<Text>().text = skillList[character.character.skillD[i]].name;
+            if (activeList.ContainsKey(character.character.skillD[i]))
+            {
+                skills[i + 17].GetComponentInChildren<Text>().text = activeList[character.character.skillD[i]].name;
+                skills[i + 17].GetComponentInChildren<SkillUnitBase>().skillId = activeList[character.character.skillD[i]].id;
+            }
         }
 
         // 스킬창 개수 조절

@@ -15,6 +15,7 @@ public class TileBase : MonoBehaviour
     public int accuracy;
     public int moveAP;
     public int movePoint;
+    public int virusLevel;
 
     [Header("List")]
     public List<TileBase> adjNodes;
@@ -34,7 +35,7 @@ public class TileBase : MonoBehaviour
     public void Init(TileMgr tileMgr)
     {
         mgr = tileMgr;
-
+        virusLevel = int.MaxValue;
         InitIdx();
     }
 

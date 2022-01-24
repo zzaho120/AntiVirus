@@ -16,6 +16,8 @@ public class MonsterChar : BattleTile
     public bool isMoved;
     public bool isSelect;
     public List<GameObject> renList;
+
+    private List<MeshRenderer> virusRenList = new List<MeshRenderer>();
     public override void Init()
     {
         base.Init();
@@ -127,6 +129,7 @@ public class MonsterChar : BattleTile
                 idx = 0;
                 CreateHint(HintType.Footprint, tileIdx);
             }
+            currentTile.EnableDisplay(BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile));
 
             var nextTile = pathMgr.pathList.Pop();
             if (!MoveTile(nextTile.tileBase.tileIdx))
@@ -209,7 +212,6 @@ public class MonsterChar : BattleTile
             }
         }
         hintMgr.AddPrint(hintType, directionType, currentTile.tileIdx);
-        currentTile.EnableDisplay(BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile));
     }
 
     public bool[] CheckFrontSight()
@@ -302,16 +304,70 @@ public class MonsterChar : BattleTile
     {
         if (Input.GetMouseButtonDown(0))
         {
-            isSelect = !isSelect;
+            RaycastHit hit;
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (isSelect)
-                FloodFillVirus();
-            
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject == gameObject)
+                {
+                    isSelect = !isSelect;
+
+                    if (isSelect)
+                        FloodFillVirus();
+                    else
+                        ClearTileColor();
+                }
+            }
         }
     }
 
     public void FloodFillVirus()
     {
+        var cnt = 0;
+        var adjTiles = currentTile.adjNodes;
 
+        foreach (var adjTile in adjTiles)
+        {
+            CheckVirusArea(adjTile, currentTile, monsterStats.virusLevel, cnt);
+        }
+    }
+
+    private void CheckVirusArea(TileBase tile, TileBase origin, int virusLevel, int cnt)
+    {
+        cnt++;
+        var difference = Mathf.Abs(origin.tileIdx.x - tile.tileIdx.x) + Mathf.Abs(origin.tileIdx.z - tile.tileIdx.z);
+
+        if (cnt >= virusLevel)
+            return;
+
+        var level = virusLevel - (int)difference;
+
+        if (BattleMgr.Instance.fieldVirusLevel > level)
+            level = BattleMgr.Instance.fieldVirusLevel;
+
+        if (tile.virusLevel > level)
+            tile.virusLevel = level;
+        var ren = tile.tileObj.GetComponent<MeshRenderer>();
+        var alpha = 1f - (float)level / virusLevel - 0.3f;
+
+        ren.material.color = new Color(1f, alpha, alpha, 1f);
+
+        if (!virusRenList.Contains(ren))
+            virusRenList.Add(ren);
+
+        var adjTiles = tile.adjNodes;
+        foreach (var adjTile in adjTiles)
+        {
+            CheckVirusArea(adjTile, currentTile, virusLevel, cnt);
+        }
+    }
+
+    private void ClearTileColor()
+    {
+        foreach (var ren in virusRenList)
+            ren.material.color = Color.white;
+
+        virusRenList.Clear();
     }
 }
