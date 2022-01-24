@@ -7,7 +7,7 @@ public class MonsterPool : PoolManager
     private Transform[] testZone;
     private int[] monsterNum;
     private bool[] isMaxPool;
-    private List<GameObject> monsterList = new List<GameObject>();
+    //private List<GameObject> monsterList = new List<GameObject>();
 
     public void Init()
     {
@@ -60,6 +60,9 @@ public class MonsterPool : PoolManager
         var ps = pools[poolNum].Pool.Get();
         ps.transform.position = new Vector3(testZone[poolNum + 1].position.x, 0f, testZone[poolNum + 1].position.z);
         //ps.GetComponent<SetMonsterStat>().Init();
+        ps.AddComponent<SetMonsterStat>().Init();
+        var playerSight = ps.AddComponent<InPlayerSight>();
+        playerSight.printType = InPlayerSight.PrintType.Mesh;
         //ps.transform.localScale = new Vector3(10f, 10f, 10f);
 
         //monsterList.Add(ps);

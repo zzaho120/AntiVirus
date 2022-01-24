@@ -421,6 +421,8 @@ GameObject:
   - component: {fileID: 5395120676637928197}
   - component: {fileID: 9013790241831267432}
   - component: {fileID: 8212341617134466299}
+  - component: {fileID: 182206792710698036}
+  - component: {fileID: 3044298051538231213}
   m_Layer: 17
   m_Name: WorldMonster_Jaguar
   m_TagString: Enemy
@@ -569,6 +571,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3385c720ef50673499ea3392d2f8f462, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!54 &182206792710698036
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212895298041781005}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &3044298051538231213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212895298041781005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b8289dc67fbbf742a1906a83e214b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  printType: 0
 --- !u!1 &1213119004451653807
 GameObject:
   m_ObjectHideFlags: 0

@@ -89,8 +89,8 @@ public class PlayerController : MonoBehaviour
                 if (raycastHit.collider.CompareTag("Enemy"))
                 {
                     //// 렌더러가 활성화 되어있을때만 유효하게 // 해당조건 잠깐 Off
-                    //if (raycastHit.collider.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
-                    //{
+                    if (raycastHit.collider.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
+                    {
                         // 위치 저장? 해야되나
                         //SavePlayerPos(raycastHit);
                         popUpMgr.OpenMonsterPopup();
@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
                         // 비전투씬 일시정지
                         timeController.PauseTime();
                         timeController.isPause = true;
-                    //}
+                    }
                 }
                 //// 발자국 클릭 시
                 //if (raycastHit.collider.CompareTag("Footprint"))
@@ -141,8 +141,8 @@ public class PlayerController : MonoBehaviour
                 if (raycastHit.collider.CompareTag("Enemy"))
                 {
                     // 렌더러가 활성화 되어있을때만 유효하게
-                    //if (raycastHit.collider.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
-                    //{
+                    if (raycastHit.collider.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
+                    {
                         // 위치 저장? 해야되나
                         //SavePlayerPos(raycastHit);
                         popUpMgr.OpenMonsterPopup();
@@ -150,7 +150,7 @@ public class PlayerController : MonoBehaviour
                         // 비전투맵 일시정지
                         timeController.PauseTime();
                         timeController.isPause = true;
-                    //}
+                    }
                 }
                 // 발자국 클릭 시
                 //if (raycastHit.collider.CompareTag("Footprint"))
