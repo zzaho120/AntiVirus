@@ -303,7 +303,7 @@ public class PlayerableChar : BattleTile
 
                 if (isHit)
                 {
-                    monster.GetDamage(weapon.Damage);
+                    monster.GetDamage(this);
 
                     var buffMgr = characterStats.buffMgr;
                     var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.Hit);

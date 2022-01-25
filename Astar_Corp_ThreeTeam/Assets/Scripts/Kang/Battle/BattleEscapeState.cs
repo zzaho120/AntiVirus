@@ -5,7 +5,7 @@ using UnityEngine;
 public class BattleEscapeState : StateBase
 {
     private MonsterChar monster;
-    private PlayerableChar target;
+    private bool isActing;
 
     public BattleEscapeState(MonsterChar monster, FSM fsm)
     {
@@ -15,7 +15,7 @@ public class BattleEscapeState : StateBase
 
     public override void Enter()
     {
-        target = monster.target;
+        isActing = false;
     }
 
     public override void Exit()
@@ -24,10 +24,12 @@ public class BattleEscapeState : StateBase
 
     public override void Update()
     {
-
-    }
-
-    private void SetPath()
-    {
+        if (!isActing)
+        {
+            isActing = true;
+            monster.MoveEscape();
+        }
+        else if (monster.isMoved)
+            EventBusMgr.Publish(EventType.EndEnemy);
     }
 }

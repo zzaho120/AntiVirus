@@ -8,6 +8,9 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     // 캐릭터 스탯 관련
     public Dictionary<string, Character> characterList = new Dictionary<string, Character>();
 
+    // 캐릭터 레벨 경험치 관련
+    public Dictionary<string, CharacterExp> characterExpList = new Dictionary<string, CharacterExp>();
+
     // 몬스터 스탯 관련
     public Dictionary<string, Monster> monsterList = new Dictionary<string, Monster>();
     public Dictionary<string, Virus> virusList = new Dictionary<string, Virus>();
@@ -136,6 +139,14 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         {
             otherItemList.Add($"{otherItem.id}", otherItem);
         }
+
+        // 14. Character Exp
+        string characterExpSOPath = "Choi/Datas/CharacterExp";
+        CharacterExp[] characterExpArr = Resources.LoadAll<CharacterExp>(characterExpSOPath);
+        foreach (var characterExp in characterExpArr)
+        {
+            characterExpList.Add($"{characterExp.id}", characterExp);
+        }
     }
 
     /// <summary>
@@ -209,5 +220,14 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     public WorldMonster GetWorldMonster(string id)
     {
         return Instantiate(worldMonsterList[id]);
+    }
+
+
+    /// <summary>
+    /// 매개변수 입력 팁; EXP_0000
+    /// </summary>
+    public CharacterExp GetCharacterExp(string id)
+    {
+        return Instantiate(characterExpList[id]);
     }
 }

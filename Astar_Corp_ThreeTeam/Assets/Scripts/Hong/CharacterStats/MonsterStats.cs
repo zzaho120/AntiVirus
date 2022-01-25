@@ -38,6 +38,7 @@ public class MonsterStats : MonoBehaviour
 
     private int maxHp { get => Hp; }
 
+    public int originMaxHp;
     [HideInInspector]
     public int currentHp;
     [HideInInspector]
@@ -54,11 +55,13 @@ public class MonsterStats : MonoBehaviour
             if (virus != null)
             {
                 hp = baseHp + (virus.hp * virusLevel);
+                originMaxHp = hp;
                 return hp;
             }
             else
             {
                 var Hp = baseHp;
+                originMaxHp = Hp;
                 return Hp;
             }
         }

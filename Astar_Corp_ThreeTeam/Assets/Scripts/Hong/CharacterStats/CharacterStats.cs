@@ -66,6 +66,13 @@ public class CharacterStats
     // 레벨
     [HideInInspector]
     public int level;
+    private readonly int MaxLevel = 12;
+
+    // 현재 경험치 양과 경험치 요구량
+    [HideInInspector]
+    public int currentExp;
+    [HideInInspector]
+    public int totalExp;
 
     //바이러스 패널티 및 내성
     [HideInInspector]
@@ -169,20 +176,19 @@ public class CharacterStats
         willpower       = Willpower;
         //critRate        = CritRate;
         level           = 1;
+        currentExp = 0;
+        totalExp = ScriptableMgr.Instance.GetCharacterExp("EXP_0001").totalExp;
 
         buffMgr = new BuffMgr();
         skillMgr = new SkillMgr();
 
+        VirusPanaltyInit();
+    }
+
+    public void StartGame()
+    {
         // 무기 스탯 초기화
         weapon.Init();
-        VirusPanaltyInit();
-
-        // test
-        //var skilltest = ScriptableMgr.Instance.passiveSkillList["PSK_0001"];
-        //var skilltest = ScriptableMgr.Instance.passiveSkillList["PSK_0009"];
-
-        //skillMgr.AddSkill(SkillType.Passive, skilltest);
-
         var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
 
         foreach (var skill in skillList)
@@ -195,5 +201,25 @@ public class CharacterStats
     {
         weapon.StartTurn();
         buffMgr.StartTurn();
+    }
+
+    public void GetExp(int exp)
+    {
+        if (level < MaxLevel)
+        {
+            currentExp += exp;
+
+            if (currentExp >= totalExp)
+            {
+                LevelUp();
+            }
+        }
+    }
+
+    private void LevelUp()
+    {
+        level++; // 나중에 레벨업 시스템을 구축할 것.
+        currentExp -= totalExp;
+        totalExp = ScriptableMgr.Instance.GetCharacterExp($"EXP_{level}").totalExp;
     }
 }

@@ -69,7 +69,7 @@ public class BattlePlayerMgr : MonoBehaviour
                             player.AP -= weapon.GetWeaponAP();
 
                             if (isHit)
-                                curMonster.GetDamage(player.characterStats.weapon.Damage);
+                                curMonster.GetDamage(player);
                             else
                             {
                                 var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();

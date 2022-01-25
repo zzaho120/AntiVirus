@@ -12,13 +12,13 @@ public class MonsterChar : BattleTile
     public bool turnState;
     public PlayerableChar target;
 
-
     public bool IsNullTarget { get => target == null; }
     public bool isMoved;
     public bool isSelect;
     public List<GameObject> renList;
 
     private int cumulativeDmg;
+    private PlayerableChar lastAttacker;
 
     public bool IsfatalDmg
     {
@@ -47,9 +47,11 @@ public class MonsterChar : BattleTile
         cumulativeDmg = 0;
     }
 
-    public void GetDamage(int dmg)
+    public void GetDamage(PlayerableChar player)
     {
+        lastAttacker = player;
         var hp = monsterStats.currentHp;
+        var dmg = player.characterStats.weapon.Damage;
         hp -= dmg;
         cumulativeDmg += dmg;
         monsterStats.currentHp = Mathf.Clamp(hp, 0, hp);
@@ -58,7 +60,10 @@ public class MonsterChar : BattleTile
         window.SetMsgText($"{monsterStats.gameObject.name} is damaged {dmg}Point - HP : {monsterStats.currentHp}");
 
         if (monsterStats.currentHp == 0)
+        {
+            player.characterStats.GetExp(monsterStats.monster.exp);
             EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 1 });
+        }
     }
 
     public void SetTarget(PlayerableChar player)
@@ -82,27 +87,40 @@ public class MonsterChar : BattleTile
             MoveTarget(mp, Ap1ByMp);
     }
 
-    public void MoveEscape(PlayerableChar target)
+    public void MoveEscape()
     {
         var Ap1ByMp = monsterStats.Mp;
         var mp = monsterStats.currentAp * Ap1ByMp;
 
         var tileDics = BattleMgr.Instance.tileMgr.tileDics;
         var destTile = Vector3.zero;
+
         while (true)
         {
+            var playerIdx = lastAttacker.tileIdx;
+            var dir = tileIdx - playerIdx;
+
+            var newX = 0;
+            var newZ = 0;
+
+            if (dir.x > 0)
+                newX = 1;
+            else if (dir.x < 0)
+                newX = -1;
+
+            if (dir.z > 0)
+                newZ = 1;
+            else if (dir.z < 0)
+                newZ = -1;
+
             var maxTile = mp / 2;
-            var randomX = Random.Range(-maxTile, maxTile + 1);
-            var randomZ = 0;
-            if (randomX > 0)
-                randomZ = maxTile - randomX;
-            else
-                randomZ = maxTile + randomX;
+            var randomX = Random.Range(0, maxTile + 1);
+            var randomZ = maxTile - randomX;
 
-            if (Random.Range(0, 2) == 0)
-                randomZ = -randomZ;
+            var escapeIdx = new Vector3(randomX * newX, 0, randomZ * newZ);
 
-            destTile = tileIdx + new Vector3(randomX, 0, randomZ);
+            destTile = tileIdx + escapeIdx;
+            Debug.Log(destTile);
             if (tileDics.ContainsKey(destTile))
             {
                 BattleMgr.Instance.pathMgr.InitAStar(tileIdx, destTile);
@@ -206,6 +224,9 @@ public class MonsterChar : BattleTile
             monsterStats.currentAp--;
 
         isMoved = true;
+
+        if (monsterStats.originMaxHp > monsterStats.currentHp)
+            CreateHint(HintType.Bloodprint, currentTile.tileIdx);
     }
 
     public bool MoveTile(Vector3 nextIdx)
@@ -253,7 +274,7 @@ public class MonsterChar : BattleTile
                 case -1:
                     directionType = DirectionType.Left;
                     break;
-            }    
+            }
         }
         else if (directionIdx.z != 0)
         {

@@ -83,10 +83,9 @@ public class CharacterSO
                     character.minCharCost           = int.Parse(splitData[35]);
                     character.maxCharCost           = int.Parse(splitData[36]);
 
-                    character.exp                   = int.Parse(splitData[37]);
-                    character.resistGauge           = int.Parse(splitData[38]);
-                    character.virusDec_Lev0         = int.Parse(splitData[39]);
-                    character.virusDec_Lev1         = int.Parse(splitData[40]);
+                    character.resistGauge           = int.Parse(splitData[37]);
+                    character.virusDec_Lev0         = int.Parse(splitData[38]);
+                    character.virusDec_Lev1         = int.Parse(splitData[49]);
 
 
                     // 무기 리스트

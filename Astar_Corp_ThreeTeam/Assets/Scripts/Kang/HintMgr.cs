@@ -27,7 +27,6 @@ public class HintMgr : MonoBehaviour
 
     public void AddPrint(HintType hintType, DirectionType directionType, Vector3 tileIdx)
     {
-        var newVector = tileIdx + new Vector3(0, .5f, 0);
         GameObject prefab = null;
         switch (hintType)
         {
@@ -38,6 +37,7 @@ public class HintMgr : MonoBehaviour
                 prefab = bloodprint;
                 break;
         }
+        var newVector = tileIdx + new Vector3(0, .5f, 0);
         var printGo = Instantiate(prefab, newVector, Quaternion.identity);
         var hintBase = printGo.GetComponent<HintBase>();
         hintBase.Init(directionType);
