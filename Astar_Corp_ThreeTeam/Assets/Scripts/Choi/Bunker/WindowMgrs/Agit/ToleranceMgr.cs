@@ -29,11 +29,11 @@ public class ToleranceMgr : MonoBehaviour
         if (currentIndex == -1) return;
         var stat = playerDataMgr.currentSquad[currentIndex];
 
-        var eVirusLevel = stat.virusPanalty["E"].penaltyLevel;
-        var bVirusLevel = stat.virusPanalty["B"].penaltyLevel;
-        var pVirusLevel = stat.virusPanalty["P"].penaltyLevel;
-        var iVirusLevel = stat.virusPanalty["I"].penaltyLevel;
-        var tVirusLevel = stat.virusPanalty["T"].penaltyLevel;
+        var eVirusLevel = stat.virusPenalty["E"].penaltyLevel;
+        var bVirusLevel = stat.virusPenalty["B"].penaltyLevel;
+        var pVirusLevel = stat.virusPenalty["P"].penaltyLevel;
+        var iVirusLevel = stat.virusPenalty["I"].penaltyLevel;
+        var tVirusLevel = stat.virusPenalty["T"].penaltyLevel;
 
         //테스트용.
         //eVirusLevel = 3;
@@ -46,17 +46,17 @@ public class ToleranceMgr : MonoBehaviour
         uiStatsRadarChart.SetStats(stats);
 
         //현재 레벨Txt.
-        eVirusTxt.text = $"현재 내성 레벨 {stat.virusPanalty["E"].penaltyLevel}";
-        bVirusTxt.text = $"현재 내성 레벨 {stat.virusPanalty["B"].penaltyLevel}";
-        pVirusTxt.text = $"현재 내성 레벨 {stat.virusPanalty["P"].penaltyLevel}";
-        iVirusTxt.text = $"현재 내성 레벨 {stat.virusPanalty["I"].penaltyLevel}";
-        tVirusTxt.text = $"현재 내성 레벨 {stat.virusPanalty["T"].penaltyLevel}";
+        eVirusTxt.text = $"현재 내성 레벨 {stat.virusPenalty["E"].penaltyLevel}";
+        bVirusTxt.text = $"현재 내성 레벨 {stat.virusPenalty["B"].penaltyLevel}";
+        pVirusTxt.text = $"현재 내성 레벨 {stat.virusPenalty["P"].penaltyLevel}";
+        iVirusTxt.text = $"현재 내성 레벨 {stat.virusPenalty["I"].penaltyLevel}";
+        tVirusTxt.text = $"현재 내성 레벨 {stat.virusPenalty["T"].penaltyLevel}";
 
         //바이러스 바.
-        eVirusBar.value = (float)stat.virusPanalty["E"].penaltyGauge / stat.virusPanalty["E"].GetMaxGauge();
-        bVirusBar.value = (float)stat.virusPanalty["B"].penaltyGauge / stat.virusPanalty["E"].GetMaxGauge();
-        pVirusBar.value = (float)stat.virusPanalty["P"].penaltyGauge / stat.virusPanalty["E"].GetMaxGauge();
-        iVirusBar.value = (float)stat.virusPanalty["I"].penaltyGauge / stat.virusPanalty["E"].GetMaxGauge();
-        tVirusBar.value = (float)stat.virusPanalty["T"].penaltyGauge / stat.virusPanalty["E"].GetMaxGauge();
+        eVirusBar.value = (float)stat.virusPenalty["E"].penaltyGauge / stat.virusPenalty["E"].GetMaxGauge();
+        bVirusBar.value = (float)stat.virusPenalty["B"].penaltyGauge / stat.virusPenalty["E"].GetMaxGauge();
+        pVirusBar.value = (float)stat.virusPenalty["P"].penaltyGauge / stat.virusPenalty["E"].GetMaxGauge();
+        iVirusBar.value = (float)stat.virusPenalty["I"].penaltyGauge / stat.virusPenalty["E"].GetMaxGauge();
+        tVirusBar.value = (float)stat.virusPenalty["T"].penaltyGauge / stat.virusPenalty["E"].GetMaxGauge();
     }
 }

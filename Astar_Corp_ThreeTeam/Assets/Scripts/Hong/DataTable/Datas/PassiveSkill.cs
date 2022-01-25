@@ -18,7 +18,7 @@ public enum Stat
     None = -1,
     Sight,
     Reduction,
-    MP,
+    Mp,
     Aggro,
     Virus,
     Weight,
@@ -29,7 +29,9 @@ public enum Stat
     Accuracy,
     AASR,
     MoveSRAccuracy,
-    MaxMPLimit
+    MaxMPLimit,
+    Damage,
+    Hp
 }
 
 public class PassiveSkill : SkillBase

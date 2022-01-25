@@ -251,9 +251,4 @@ public class MonsterStats : MonoBehaviour
     {
         currentAp -= CloseAttackAp;
     }
-
-    public bool CheckRunMonster()
-    {
-        return currentHp < maxHp * (monster.escapeHpDec / 100f);
-    }
 }

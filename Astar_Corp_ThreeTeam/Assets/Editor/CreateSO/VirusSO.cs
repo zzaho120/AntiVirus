@@ -38,7 +38,7 @@ public class VirusSO
                     virus.id           = splitData[0];
                     virus.name         = splitData[1];
                                        
-                    virus.penaltyType  = int.Parse(splitData[2]);
+                    virus.penaltyType  = (VirusPenalyType)int.Parse(splitData[2]);
                     virus.hp_Dec       = int.Parse(splitData[3]);
                     virus.stat_Dec     = int.Parse(splitData[4]);
                                        

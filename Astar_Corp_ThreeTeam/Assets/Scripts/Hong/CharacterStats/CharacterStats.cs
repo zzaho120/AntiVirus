@@ -69,7 +69,7 @@ public class CharacterStats
 
     //바이러스 패널티 및 내성
     [HideInInspector]
-    public Dictionary<string, VirusPenalty> virusPanalty = new Dictionary<string, VirusPenalty>();
+    public Dictionary<string, VirusPenalty> virusPenalty = new Dictionary<string, VirusPenalty>();
 
     //가방.
     public Dictionary<string, int> bag = new Dictionary<string, int>();
@@ -148,25 +148,13 @@ public class CharacterStats
 
     public void VirusPanaltyInit()
     {
-        if (virusPanalty.Count == 0)
+        if (virusPenalty.Count == 0)
         {
-            virusPanalty.Add("E", new VirusPenalty(ScriptableMgr.Instance.GetVirus("E"), character));
-            virusPanalty.Add("B", new VirusPenalty(ScriptableMgr.Instance.GetVirus("B"), character));
-            virusPanalty.Add("P", new VirusPenalty(ScriptableMgr.Instance.GetVirus("P"), character));
-            virusPanalty.Add("I", new VirusPenalty(ScriptableMgr.Instance.GetVirus("I"), character));
-            virusPanalty.Add("T", new VirusPenalty(ScriptableMgr.Instance.GetVirus("T"), character));
-        }
-    }
-
-    private void Update()
-    {
-        // 테스트용 스탯 설정
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            //Debug.Log(weapon.mainWeaponBullet);
-
-            // 무기 스탯 테스트 (데미지)
-            Debug.Log(weapon.Damage);
+            virusPenalty.Add("E", new VirusPenalty(ScriptableMgr.Instance.GetVirus("E"), character));
+            virusPenalty.Add("B", new VirusPenalty(ScriptableMgr.Instance.GetVirus("B"), character));
+            virusPenalty.Add("P", new VirusPenalty(ScriptableMgr.Instance.GetVirus("P"), character));
+            virusPenalty.Add("I", new VirusPenalty(ScriptableMgr.Instance.GetVirus("I"), character));
+            virusPenalty.Add("T", new VirusPenalty(ScriptableMgr.Instance.GetVirus("T"), character));
         }
     }
 
@@ -183,6 +171,7 @@ public class CharacterStats
         level           = 1;
 
         buffMgr = new BuffMgr();
+        skillMgr = new SkillMgr();
 
         // 무기 스탯 초기화
         weapon.Init();
@@ -194,12 +183,12 @@ public class CharacterStats
 
         //skillMgr.AddSkill(SkillType.Passive, skilltest);
 
-        //var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
+        var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
 
-        //foreach (var skill in skillList)
-        //{
-        //    skill.Invoke(buffMgr);
-        //}
+        foreach (var skill in skillList)
+        {
+            skill.Invoke(buffMgr);
+        }
     }
 
     public void StartTurn()

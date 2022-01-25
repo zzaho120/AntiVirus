@@ -160,11 +160,11 @@ public class HospitalMgr : MonoBehaviour
         //character.virusPanalty["I"].penaltyGauge = 140;
         //character.virusPanalty["T"].penaltyGauge = 180;
 
-        eVirusSlider.value = (float)character.virusPanalty["E"].penaltyGauge / character.virusPanalty["E"].GetMaxGauge();
-        bVirusSlider.value = (float)character.virusPanalty["B"].penaltyGauge / character.virusPanalty["B"].GetMaxGauge();
-        pVirusSlider.value = (float)character.virusPanalty["P"].penaltyGauge / character.virusPanalty["P"].GetMaxGauge();
-        iVirusSlider.value = (float)character.virusPanalty["I"].penaltyGauge / character.virusPanalty["I"].GetMaxGauge();
-        tVirusSlider.value = (float)character.virusPanalty["T"].penaltyGauge / character.virusPanalty["T"].GetMaxGauge();
+        eVirusSlider.value = (float)character.virusPenalty["E"].penaltyGauge / character.virusPenalty["E"].GetMaxGauge();
+        bVirusSlider.value = (float)character.virusPenalty["B"].penaltyGauge / character.virusPenalty["B"].GetMaxGauge();
+        pVirusSlider.value = (float)character.virusPenalty["P"].penaltyGauge / character.virusPenalty["P"].GetMaxGauge();
+        iVirusSlider.value = (float)character.virusPenalty["I"].penaltyGauge / character.virusPenalty["I"].GetMaxGauge();
+        tVirusSlider.value = (float)character.virusPenalty["T"].penaltyGauge / character.virusPenalty["T"].GetMaxGauge();
     }
 
     public void SelectVirus(string str)
@@ -180,7 +180,7 @@ public class HospitalMgr : MonoBehaviour
         child = sliders[currentVirus].transform.GetChild(0).gameObject;
         child.GetComponent<Image>().color = Color.red;
 
-        int level = level = playerDataMgr.currentSquad[currentIndex].virusPanalty[str].penaltyLevel;
+        int level = level = playerDataMgr.currentSquad[currentIndex].virusPenalty[str].penaltyLevel;
         switch (str)
         {
             case "E":

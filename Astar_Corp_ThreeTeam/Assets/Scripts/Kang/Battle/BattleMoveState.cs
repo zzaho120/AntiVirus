@@ -25,12 +25,6 @@ public class BattleMoveState : StateBase
 
     public override void Update()
     {
-        if (monster.monsterStats.CheckRunMonster())
-            Debug.Log("run");
-
-        if (Input.GetKeyDown(KeyCode.Tab))
-            monster.monsterStats.currentHp = 1;
-
         if (player == null)
         {
             if (!isActing)

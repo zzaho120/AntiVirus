@@ -49,7 +49,9 @@ public class PlayerableChar : BattleTile
     public override void Init()
     {
         base.Init();
-        //characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
+        characterStats = new CharacterStats();
+        characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
+        characterStats.weapon = new WeaponStats();
         characterStats.weapon.mainWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/AssaultRifle_01"));
         characterStats.weapon.subWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/FireAxe_01"));
         
@@ -209,7 +211,7 @@ public class PlayerableChar : BattleTile
         var mpPerAp = characterStats.weapon.MpPerAp;
         var buffMgr = characterStats.buffMgr;
 
-        var mpList = buffMgr.GetBuffList(Stat.MP);
+        var mpList = buffMgr.GetBuffList(Stat.Mp);
         foreach (var buff in mpList)
         {
             mpPerAp += (int)buff.GetAmount();
@@ -397,11 +399,26 @@ public class PlayerableChar : BattleTile
                     virusType = "T";
                     break;
             }
-            characterStats.virusPanalty[virusType].Calculation(monsterStats.virusLevel, monsterStats.monster.virusGauge);
+            characterStats.virusPenalty[virusType].Calculation(monsterStats.virusLevel, monsterStats.monster.virusGauge);
         }
 
         var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
         window.SetMsgText($"Player is damaged {dmg} Point - HP : {characterStats.currentHp}");
+
+        if (characterStats.currentHp == 0)
+        {
+            EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 0 });
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool GetDamage(int dmg)
+    {
+        var hp = characterStats.currentHp;
+        hp -= dmg;
+        characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
 
         if (characterStats.currentHp == 0)
         {

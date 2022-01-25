@@ -12,6 +12,16 @@ public enum VirusType
     T
 }
 
+public enum VirusPenalyType
+{
+    None,
+    DmgDec,
+    HpDec,
+    MpDec,
+    AccuracyDec,
+    All
+}
+
 public class VirusPenalty
 {
     public Virus virus;

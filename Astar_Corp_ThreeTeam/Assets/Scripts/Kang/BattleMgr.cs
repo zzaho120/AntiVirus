@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public enum BattleTurn
 {
+    None,
     Player,
     Enemy
 }
@@ -178,6 +179,7 @@ public class BattleMgr : MonoBehaviour
     {
         if (playerMgr.playerableChars.Count == 0 || monsterMgr.monsters.Count == 0)
         {
+            turn = BattleTurn.None;
             battleWindowMgr.Open((int)BattleWindows.ResultWindow - 1);
         }
     }

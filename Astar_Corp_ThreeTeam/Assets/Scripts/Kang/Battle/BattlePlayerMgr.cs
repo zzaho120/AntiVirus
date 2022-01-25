@@ -109,8 +109,14 @@ public class BattlePlayerMgr : MonoBehaviour
 
     private void CalculateVirusAllChar(PlayerableChar character)
     {
+        CalCulateVirusByMonster(character);
+        CalculateVirusPenaly(character);
+    }
+    private void CalCulateVirusByMonster(PlayerableChar character)
+    {
         var levelList = new List<int>();
         var monsters = BattleMgr.Instance.monsterMgr.monsters;
+
         var buffMgr = character.characterStats.buffMgr;
         var reductionList = buffMgr.GetBuffList(Stat.Reduction);
         var reductionBuff = 1f;
@@ -149,22 +155,66 @@ public class BattlePlayerMgr : MonoBehaviour
             switch (pair.Key)
             {
                 case "VIR_0001":
-                    character.characterStats.virusPanalty["E"].Calculation(pair.Value, virusBuff, reductionBuff);
+                    character.characterStats.virusPenalty["E"].Calculation(pair.Value, virusBuff, reductionBuff);
                     break;
                 case "VIR_0002":
-                    character.characterStats.virusPanalty["B"].Calculation(pair.Value, virusBuff, reductionBuff);
+                    character.characterStats.virusPenalty["B"].Calculation(pair.Value, virusBuff, reductionBuff);
                     break;
                 case "VIR_0003":
-                    character.characterStats.virusPanalty["P"].Calculation(pair.Value, virusBuff, reductionBuff);
+                    character.characterStats.virusPenalty["P"].Calculation(pair.Value, virusBuff, reductionBuff);
                     break;
                 case "VIR_0004":
-                    character.characterStats.virusPanalty["I"].Calculation(pair.Value, virusBuff, reductionBuff);
+                    character.characterStats.virusPenalty["I"].Calculation(pair.Value, virusBuff, reductionBuff);
                     break;
                 case "VIR_0005":
-                    character.characterStats.virusPanalty["T"].Calculation(pair.Value, virusBuff, reductionBuff);
+                    character.characterStats.virusPenalty["T"].Calculation(pair.Value, virusBuff, reductionBuff);
                     break;
             }
         }
+    }
+
+    private void CalculateVirusPenaly(PlayerableChar character)
+    {
+        var virusPenaltyDics = character.characterStats.virusPenalty;
+        var level = 0;
+        foreach (var pair in virusPenaltyDics)
+        {
+            var virusPenalty = pair.Value;
+            level += virusPenalty.penaltyLevel;
+            if (virusPenalty.penaltyLevel > 0)
+            {
+                var virus = virusPenalty.virus;
+                var buffList = new List<BuffBase>();
+                switch (virus.penaltyType)
+                {
+                    case VirusPenalyType.DmgDec:
+                        buffList.Add(new BuffBase(Stat.Damage, virus.stat_Dec, 1, false));
+                        break;
+                    case VirusPenalyType.HpDec:
+                        buffList.Add(new BuffBase(Stat.Hp, virus.stat_Dec, 1, false));
+                        break;
+                    case VirusPenalyType.MpDec:
+                        buffList.Add(new BuffBase(Stat.Mp, virus.stat_Dec, 1, false));
+                        break;
+                    case VirusPenalyType.AccuracyDec:
+                        buffList.Add(new BuffBase(Stat.Accuracy, virus.stat_Dec, 1, false));
+                        break;
+                    case VirusPenalyType.All:
+                        buffList.Add(new BuffBase(Stat.Damage, virus.stat_Dec, 1, false));
+                        buffList.Add(new BuffBase(Stat.Hp, virus.stat_Dec, 1, false));
+                        buffList.Add(new BuffBase(Stat.Mp, virus.stat_Dec, 1, false));
+                        buffList.Add(new BuffBase(Stat.Accuracy, virus.stat_Dec, 1, false));
+                        break;
+                }
+
+                foreach (var buff in buffList)
+                {
+                    character.characterStats.buffMgr.Addbuff(buff);
+                }
+            }
+        }
+
+        character.GetDamage(level);
     }
 
     public bool GetPlayerSelected()

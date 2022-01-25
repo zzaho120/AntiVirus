@@ -22,7 +22,7 @@ public class BattleInfoPanel : MonoBehaviour
         sb.Append($"Wp : {player.characterStats.weapon.curWeapon.name}\n");
         sb.Append($"Bullet : {stats.weapon.MainWeaponBullet}\n\n");
 
-        foreach (var elem in stats.virusPanalty)
+        foreach (var elem in stats.virusPenalty)
         {
             sb.Append($"Virus {elem.Key} : Lv.{elem.Value.penaltyLevel} / {elem.Value.penaltyGauge}\n");
             sb.Append($"Reduction {elem.Key} : Lv.{elem.Value.reductionLevel} / {elem.Value.reductionGauge}\n\n");

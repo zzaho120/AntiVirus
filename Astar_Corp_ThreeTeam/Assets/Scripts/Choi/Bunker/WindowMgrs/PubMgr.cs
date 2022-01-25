@@ -113,18 +113,11 @@ public class PubMgr : MonoBehaviour
 
             stat.VirusPanaltyInit();
 
-            stat.virusPanalty["E"].penaltyGauge = 0;
-            stat.virusPanalty["B"].penaltyGauge = 0;
-            stat.virusPanalty["P"].penaltyGauge = 0;
-            stat.virusPanalty["I"].penaltyGauge = 0;
-            stat.virusPanalty["T"].penaltyGauge = 0;
-
-            stat.virusPanalty["E"].penaltyLevel = 1;
-            stat.virusPanalty["B"].penaltyLevel = 1;
-            stat.virusPanalty["P"].penaltyLevel = 1;
-            stat.virusPanalty["I"].penaltyLevel = 1;
-            stat.virusPanalty["T"].penaltyLevel = 1;
-
+            stat.virusPenalty["E"].penaltyGauge = 0;
+            stat.virusPenalty["B"].penaltyGauge = 0;
+            stat.virusPenalty["P"].penaltyGauge = 0;
+            stat.virusPenalty["I"].penaltyGauge = 0;
+            stat.virusPenalty["T"].penaltyGauge = 0;
             stat.weapon = new WeaponStats();
             stat.weapon.mainWeapon = null;
             stat.weapon.subWeapon =  null;

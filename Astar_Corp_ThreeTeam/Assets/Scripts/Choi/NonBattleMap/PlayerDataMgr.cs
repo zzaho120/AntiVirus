@@ -327,17 +327,17 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     stat.weapon.mainWeapon = (saveData.mainWeapon[i] == null) ? null : equippableList[saveData.mainWeapon[i]];
                     stat.weapon.subWeapon = (saveData.subWeapon[i] == null) ? null : equippableList[saveData.subWeapon[i]];
 
-                    stat.virusPanalty["E"].penaltyLevel = saveData.levelE[i];
-                    stat.virusPanalty["B"].penaltyLevel = saveData.levelB[i];
-                    stat.virusPanalty["P"].penaltyLevel = saveData.levelP[i];
-                    stat.virusPanalty["I"].penaltyLevel = saveData.levelI[i];
-                    stat.virusPanalty["T"].penaltyLevel = saveData.levelT[i];
+                    stat.virusPenalty["E"].penaltyLevel = saveData.levelE[i];
+                    stat.virusPenalty["B"].penaltyLevel = saveData.levelB[i];
+                    stat.virusPenalty["P"].penaltyLevel = saveData.levelP[i];
+                    stat.virusPenalty["I"].penaltyLevel = saveData.levelI[i];
+                    stat.virusPenalty["T"].penaltyLevel = saveData.levelT[i];
 
-                    stat.virusPanalty["E"].penaltyGauge = saveData.gaugeE[i];
-                    stat.virusPanalty["B"].penaltyGauge = saveData.gaugeB[i];
-                    stat.virusPanalty["P"].penaltyGauge = saveData.gaugeP[i];
-                    stat.virusPanalty["I"].penaltyGauge = saveData.gaugeI[i];
-                    stat.virusPanalty["T"].penaltyGauge = saveData.gaugeT[i];
+                    stat.virusPenalty["E"].penaltyGauge = saveData.gaugeE[i];
+                    stat.virusPenalty["B"].penaltyGauge = saveData.gaugeB[i];
+                    stat.virusPenalty["P"].penaltyGauge = saveData.gaugeP[i];
+                    stat.virusPenalty["I"].penaltyGauge = saveData.gaugeI[i];
+                    stat.virusPenalty["T"].penaltyGauge = saveData.gaugeT[i];
 
                     //List<string> activeSkill = new List<string>();
                     //int activeSkillNum = activeSkillList.Count;
@@ -466,17 +466,17 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.willPower.Add(stat.willpower);
             saveData.bagLevel.Add(1);
 
-            saveData.gaugeE.Add(stat.virusPanalty["E"].penaltyGauge);
-            saveData.gaugeB.Add(stat.virusPanalty["B"].penaltyGauge);
-            saveData.gaugeP.Add(stat.virusPanalty["P"].penaltyGauge);
-            saveData.gaugeI.Add(stat.virusPanalty["I"].penaltyGauge);
-            saveData.gaugeT.Add(stat.virusPanalty["T"].penaltyGauge);
+            saveData.gaugeE.Add(stat.virusPenalty["E"].penaltyGauge);
+            saveData.gaugeB.Add(stat.virusPenalty["B"].penaltyGauge);
+            saveData.gaugeP.Add(stat.virusPenalty["P"].penaltyGauge);
+            saveData.gaugeI.Add(stat.virusPenalty["I"].penaltyGauge);
+            saveData.gaugeT.Add(stat.virusPenalty["T"].penaltyGauge);
 
-            saveData.levelE.Add(stat.virusPanalty["E"].penaltyLevel);
-            saveData.levelB.Add(stat.virusPanalty["B"].penaltyLevel);
-            saveData.levelP.Add(stat.virusPanalty["P"].penaltyLevel);
-            saveData.levelI.Add(stat.virusPanalty["I"].penaltyLevel);
-            saveData.levelT.Add(stat.virusPanalty["T"].penaltyLevel);
+            saveData.levelE.Add(stat.virusPenalty["E"].penaltyLevel);
+            saveData.levelB.Add(stat.virusPenalty["B"].penaltyLevel);
+            saveData.levelP.Add(stat.virusPenalty["P"].penaltyLevel);
+            saveData.levelI.Add(stat.virusPenalty["I"].penaltyLevel);
+            saveData.levelT.Add(stat.virusPenalty["T"].penaltyLevel);
 
             string mainWeaponStr = (stat.weapon.mainWeapon != null) ? stat.weapon.mainWeapon.id : null;
             saveData.mainWeapon.Add(mainWeaponStr);

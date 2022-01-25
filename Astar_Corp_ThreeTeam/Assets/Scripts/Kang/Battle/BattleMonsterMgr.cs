@@ -32,12 +32,17 @@ public class BattleMonsterMgr : MonoBehaviour
         for (var idx = 0; idx < monsters.Count; ++idx)
         {
             var monster = monsters[idx];
+
+            if (monster.IsfatalDmg)
+                monster.fsm.ChangeState((int)BattleMonState.Escape);
+            else
+                monster.fsm.ChangeState((int)BattleMonState.Idle);
+            
             monster.StartTurn();
             sightMgr.InitMonsterSight(idx);
             if (monster.target == null)
                 monster.SetTarget(sightMgr.GetPlayerInMonsterSight(idx));
-
-            monster.fsm.ChangeState((int)BattleMonState.Idle);
+            
         }
         curMonster = monsters[0];
     }
@@ -68,26 +73,6 @@ public class BattleMonsterMgr : MonoBehaviour
         else
         {
             curMonster = monsters[monsterIdx];
-        }
-    }
-
-    private void RecognizePlayer()
-    {
-        foreach (var monster in monsters)
-        {
-            //monster.target = null;
-            foreach (var player in playerableChars)
-            {
-
-                //if (monster.recognition > dist)
-                //{
-                //    monster.target = player;
-                //    monster.ren.material.color = Color.cyan;
-                //}
-            }
-
-            //if (monster.target == null)
-            //    monster.ren.material.color = Color.red;
         }
     }
 

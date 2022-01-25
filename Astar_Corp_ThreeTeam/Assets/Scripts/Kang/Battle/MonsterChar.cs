@@ -10,12 +10,24 @@ public class MonsterChar : BattleTile
     public MonsterStats monsterStats;
     public BattleMonsterFSM fsm;
     public bool turnState;
-
     public PlayerableChar target;
+
+
     public bool IsNullTarget { get => target == null; }
     public bool isMoved;
     public bool isSelect;
     public List<GameObject> renList;
+
+    private int cumulativeDmg;
+
+    public bool IsfatalDmg
+    {
+        get
+        {
+            var monster = monsterStats.monster;
+            return cumulativeDmg > monster.maxHp * (monster.escapeHpDec / 100f);
+        }
+    }
 
     private List<MeshRenderer> virusRenList = new List<MeshRenderer>();
     public override void Init()
@@ -32,12 +44,14 @@ public class MonsterChar : BattleTile
     {
         monsterStats.StartTurn();
         isMoved = false;
+        cumulativeDmg = 0;
     }
 
     public void GetDamage(int dmg)
     {
         var hp = monsterStats.currentHp;
         hp -= dmg;
+        cumulativeDmg += dmg;
         monsterStats.currentHp = Mathf.Clamp(hp, 0, hp);
 
         var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
@@ -67,6 +81,38 @@ public class MonsterChar : BattleTile
         else
             MoveTarget(mp, Ap1ByMp);
     }
+
+    public void MoveEscape(PlayerableChar target)
+    {
+        var Ap1ByMp = monsterStats.Mp;
+        var mp = monsterStats.currentAp * Ap1ByMp;
+
+        var tileDics = BattleMgr.Instance.tileMgr.tileDics;
+        var destTile = Vector3.zero;
+        while (true)
+        {
+            var maxTile = mp / 2;
+            var randomX = Random.Range(-maxTile, maxTile + 1);
+            var randomZ = 0;
+            if (randomX > 0)
+                randomZ = maxTile - randomX;
+            else
+                randomZ = maxTile + randomX;
+
+            if (Random.Range(0, 2) == 0)
+                randomZ = -randomZ;
+
+            destTile = tileIdx + new Vector3(randomX, 0, randomZ);
+            if (tileDics.ContainsKey(destTile))
+            {
+                BattleMgr.Instance.pathMgr.InitAStar(tileIdx, destTile);
+                break;
+            }
+        }
+
+        StartCoroutine(CoMove(Ap1ByMp, destTile));
+    }
+
 
     public void MoveRandomTile(int mp, int Ap1ByMp)
     {

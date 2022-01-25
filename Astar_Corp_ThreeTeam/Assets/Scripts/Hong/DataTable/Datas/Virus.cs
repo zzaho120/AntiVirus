@@ -9,7 +9,7 @@ public class Virus : ScriptableObject
 	public string name;
 
 	// 캐릭터 패널티
-	public int penaltyType;		// 패널티 타입
+	public VirusPenalyType penaltyType;		// 패널티 타입
 	public int hp_Dec;			// 체력 감소
 	public int stat_Dec;		// 레벨별 패널티 양
 
