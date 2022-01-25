@@ -23,6 +23,10 @@ public class TrunkMgr : MonoBehaviour
     public Text trunkWeightTxt;
     public Text storageWeightTxt;
 
+    [Header("버튼 관련")]
+    public List<GameObject> trunkButtons;
+    public List<GameObject> storageButtons;
+
     [Header("총알 관련")]
     public Text trunkBullet5Txt;
     public Text trunkBullet7Txt;
@@ -64,6 +68,9 @@ public class TrunkMgr : MonoBehaviour
     Dictionary<string, int> truckOtherItemNumInfo = new Dictionary<string, int>();
 
     public PlayerDataMgr playerDataMgr;
+    int storageLevel;
+    int maxStorageCapacity;
+
     Color originColor;
     string currentKey;
     InvenKind currentInvenKind;
@@ -73,11 +80,31 @@ public class TrunkMgr : MonoBehaviour
     int trunkCurrentWeight;
     int trunkTotalWeight;
     int storageCurrentWeight;
-    int storageTotalWeight;
-
+    
     public void Init()
     {
         ClosePopup();
+
+        storageLevel = playerDataMgr.saveData.storageLevel;
+        Bunker storageLevelInfo = playerDataMgr.bunkerList["BUN_0002"];
+        switch (storageLevel)
+        {
+            case 1:
+                maxStorageCapacity = storageLevelInfo.level1;
+                break;
+            case 2:
+                maxStorageCapacity = storageLevelInfo.level2;
+                break;
+            case 3:
+                maxStorageCapacity = storageLevelInfo.level3;
+                break;
+            case 4:
+                maxStorageCapacity = storageLevelInfo.level4;
+                break;
+            case 5:
+                maxStorageCapacity = storageLevelInfo.level5;
+                break;
+        }
 
         if (storageWeaponInfo.Count != 0) storageWeaponInfo.Clear();
         if (storageWeaponNumInfo.Count != 0) storageWeaponNumInfo.Clear();
@@ -151,6 +178,13 @@ public class TrunkMgr : MonoBehaviour
         //2.Consumables
         //3.OtherItems
 
+        //버튼 초기화.
+        foreach (var element in trunkButtons)
+        {
+            if (element.GetComponent<Image>().color == Color.red)
+                element.GetComponent<Image>().color = Color.white;
+        }
+
         switch (index)
         {
             case 0:
@@ -166,6 +200,7 @@ public class TrunkMgr : MonoBehaviour
                 trunkMode = TrunkMode.OtherItems;
                 break;
         }
+        trunkButtons[index].GetComponent<Image>().color = Color.red;
 
         if (truckList.Count != 0)
         {
@@ -290,6 +325,13 @@ public class TrunkMgr : MonoBehaviour
         //2.Consumables
         //3.OtherItems
 
+        //버튼 초기화.
+        foreach (var element in storageButtons)
+        {
+            if (element.GetComponent<Image>().color == Color.red)
+                element.GetComponent<Image>().color = Color.white;
+        }
+
         switch (index)
         {
             case 0:
@@ -305,6 +347,7 @@ public class TrunkMgr : MonoBehaviour
                 storageMode = StorageMode.OtherItems;
                 break;
         }
+        storageButtons[index].GetComponent<Image>().color = Color.red;
 
         if (storageList.Count != 0)
         {
@@ -323,7 +366,6 @@ public class TrunkMgr : MonoBehaviour
         int bullet12Num = 0;
 
         storageCurrentWeight = 0;
-        storageTotalWeight = 0;
         foreach (var element in playerDataMgr.currentEquippables)
         {
             if (storageMode != StorageMode.Consumables && storageMode != StorageMode.OtherItems)
@@ -399,9 +441,7 @@ public class TrunkMgr : MonoBehaviour
                     break;
             }
         }
-        storageTotalWeight = 3000;
-        //레벨에 따라 구현해야 함.
-        storageWeightTxt.text = $"무게 {storageCurrentWeight}/{storageTotalWeight}";
+        storageWeightTxt.text = $"무게 {storageCurrentWeight}/{maxStorageCapacity}";
 
         storageBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
         storageBullet7Txt.text = $"7탄x{bullet7Num.ToString("D3")}";
@@ -814,7 +854,7 @@ public class TrunkMgr : MonoBehaviour
         if (truckWeaponInfo.ContainsKey(currentKey))
         {
             var weight = playerDataMgr.equippableList[currentKey].weight;
-            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+            if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
 
             //json.
             int index=0;
@@ -907,7 +947,7 @@ public class TrunkMgr : MonoBehaviour
         else if (truckConsumableInfo.ContainsKey(currentKey))
         {
             var weight = playerDataMgr.consumableList[currentKey].weight;
-            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+            if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
 
             //json.
             int index;
@@ -1000,7 +1040,7 @@ public class TrunkMgr : MonoBehaviour
         else if (truckOtherItemInfo.ContainsKey(currentKey))
         {
             var weight = int.Parse(playerDataMgr.otherItemList[currentKey].weight);
-            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+            if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
 
             //json.
             int index;

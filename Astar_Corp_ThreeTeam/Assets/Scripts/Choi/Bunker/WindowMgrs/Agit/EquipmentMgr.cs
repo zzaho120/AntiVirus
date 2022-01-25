@@ -8,7 +8,8 @@ public enum EquipKind
     None,
     MainWeapon,
     SubWeapon,
-    UtilityItem
+    UtilityItem,
+    Bag
 }
 
 public class EquipmentMgr : MonoBehaviour
@@ -74,6 +75,8 @@ public class EquipmentMgr : MonoBehaviour
         currentKind = EquipKind.None;
     }
 
+   
+
     public void RefreshEquipList()
     {
         if (currentIndex != -1)
@@ -100,6 +103,9 @@ public class EquipmentMgr : MonoBehaviour
             case 1:
                 currentKind = EquipKind.SubWeapon;
                 break;
+            //case 2:
+            //    currentKind = EquipKind.UtilityItem;
+            //    break;
             case 2:
                 currentKind = EquipKind.UtilityItem;
                 break;
@@ -128,6 +134,10 @@ public class EquipmentMgr : MonoBehaviour
 
     public void Equip()
     {
+        var weaponType = playerDataMgr.equippableList[currentKey].type;
+        if (!playerDataMgr.currentSquad[currentIndex].character.weapons.Contains(weaponType))
+            return;
+
         Disarm();
         if (currentKind == EquipKind.MainWeapon)
         {
@@ -223,6 +233,22 @@ public class EquipmentMgr : MonoBehaviour
                 playerDataMgr.currentEquippablesNum[id] -= 1;
             }
         }
+        CloseEquipWin2();
+    }
+
+    public void ClickDisarmButton()
+    {
+        Disarm();
+        switch (currentKind)
+        {
+            case EquipKind.MainWeapon:
+                mainWeaponTxt.text = "비어있음";
+                break;
+            case EquipKind.SubWeapon:
+                subWeaponTxt.text = "비어있음";
+                break;
+        }
+
         CloseEquipWin2();
     }
 
@@ -331,6 +357,56 @@ public class EquipmentMgr : MonoBehaviour
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] += 1;
             }
+        }
+        else if (playerDataMgr.currentSquad[currentIndex].bagLevel != 0 && currentKind == EquipKind.Bag)
+        {
+            playerDataMgr.saveData.bagLevel[currentIndex] = 0;
+            playerDataMgr.currentSquad[currentIndex].bagLevel = 0;
+
+            //json.
+            //int index = 0;
+            //if (!playerDataMgr.saveData.equippableList.Contains(id))
+            //{
+            //    playerDataMgr.saveData.equippableList.Add(id);
+            //    playerDataMgr.saveData.equippableNumList.Add(1);
+            //}
+            //else
+            //{
+            //    index = playerDataMgr.saveData.equippableList.IndexOf(id);
+            //    playerDataMgr.saveData.equippableNumList[index] += 1;
+            //}
+            //PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+            ////playerDataMgr.
+            //if (!playerDataMgr.currentEquippables.ContainsKey(id))
+            //{
+            //    //현재데이터 관련.
+            //    itemInfo.Add(id, 1);
+
+            //    var go = Instantiate(itemPrefab, itemListContents.transform);
+            //    var child = go.transform.GetChild(0).gameObject;
+            //    child.GetComponent<Text>().text = weapon.name;
+            //    child = go.transform.GetChild(1).gameObject;
+            //    child.GetComponent<Text>().text = $"1개";
+
+            //    var button = go.AddComponent<Button>();
+            //    button.onClick.AddListener(delegate { SelectItem(id); });
+            //    itemObjs.Add(id, go);
+
+            //    //플레이어 데이터 매니저 관련.
+            //    playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
+            //    playerDataMgr.currentEquippablesNum.Add(id, 1);
+            //}
+            //else
+            //{
+            //    //현재데이터 관련.
+            //    itemInfo[id] += 1;
+            //    var child = itemObjs[id].transform.GetChild(1).gameObject;
+            //    child.GetComponent<Text>().text = $"{itemInfo[id]}개";
+
+            //    //플레이어 데이터 매니저 관련.
+            //    playerDataMgr.currentEquippablesNum[id] += 1;
+            //}
         }
     }
 

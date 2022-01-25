@@ -44,6 +44,11 @@ public class BunkerSO
                     bunker.level4   = int.Parse(splitData[6]);
                     bunker.level5   = int.Parse(splitData[7]);
 
+                    bunker.level1Cost = int.Parse(splitData[8]);
+                    bunker.level2Cost = int.Parse(splitData[9]);
+                    bunker.level3Cost = int.Parse(splitData[10]);
+                    bunker.level4Cost = int.Parse(splitData[11]);
+                    bunker.level5Cost = int.Parse(splitData[12]);
                     AssetDatabase.CreateAsset(bunker, $"Assets//Resources/Choi/Datas/Bunkers/{bunker.name}.asset");
                     bunkerNum++;
                 }

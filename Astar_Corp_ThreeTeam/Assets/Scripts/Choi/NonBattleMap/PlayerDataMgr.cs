@@ -69,7 +69,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         filePath = @$"{Application.persistentDataPath}\PlayerData.json";
         if (saveData.id == null)
         {
-            saveData.bunkerKind = new List<int>();
+            //saveData.bunkerKind = new List<int>();
             saveData.cars = new List<string>();
             saveData.speedLv = new List<int>();
             saveData.sightLv = new List<int>();
@@ -151,38 +151,37 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
                 saveData.money = 1000000;
                 saveData.bunkerExitNum = 0;
-                for (int i = 0; i < 20; i++)
-                {
-                    switch (i)
-                    {
-                        case 2:
-                            saveData.bunkerKind.Add(5);
-                            break;
-                        case 7:
-                            saveData.bunkerKind.Add(4);
-                            break;
-                        case 11:
-                            saveData.bunkerKind.Add(3);
-                            break;
-                        case 12:
-                            saveData.bunkerKind.Add(2);
-                            break;
-                        case 13:
-                            saveData.bunkerKind.Add(1);
-                            break;
-                        case 14:
-                            saveData.bunkerKind.Add(6);
-                            break;
-                        default:
-                            saveData.bunkerKind.Add(7);
-                            break;
-                    }
-                }
+                //for (int i = 0; i < 20; i++)
+                //{
+                //    switch (i)
+                //    {
+                //        case 2:
+                //            saveData.bunkerKind.Add(5);
+                //            break;
+                //        case 7:
+                //            saveData.bunkerKind.Add(4);
+                //            break;
+                //        case 11:
+                //            saveData.bunkerKind.Add(3);
+                //            break;
+                //        case 12:
+                //            saveData.bunkerKind.Add(2);
+                //            break;
+                //        case 13:
+                //            saveData.bunkerKind.Add(1);
+                //            break;
+                //        case 14:
+                //            saveData.bunkerKind.Add(6);
+                //            break;
+                //        default:
+                //            saveData.bunkerKind.Add(7);
+                //            break;
+                //    }
+                //}
 
                 saveData.agitLevel = 1;
                 saveData.storageLevel = 1;
                 saveData.garageLevel = 1;
-                saveData.carCenterLevel = 1;
                 saveData.hospitalLevel = 1;
                 saveData.storeLevel = 1;
                 saveData.pubLevel = 1;

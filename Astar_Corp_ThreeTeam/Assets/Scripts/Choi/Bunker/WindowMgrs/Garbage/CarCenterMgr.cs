@@ -46,7 +46,7 @@ public class CarCenterMgr : MonoBehaviour
     List<string> owned = new List<string>();
     List<string> notOwned = new List<string>();
 
-    int carCenterLevel;
+    int garageLevel;
     int maxCarLevel;
     Color originColor;
     Color selectedColor;
@@ -59,24 +59,24 @@ public class CarCenterMgr : MonoBehaviour
         if (carListPopup.activeSelf) carListPopup.SetActive(false);
 
         moneyTxt.text = playerDataMgr.saveData.money.ToString();
-        carCenterLevel = playerDataMgr.saveData.carCenterLevel;
-        Bunker carCenterLevelInfo = playerDataMgr.bunkerList["BUN_0004"];
-        switch (carCenterLevel)
+        garageLevel = playerDataMgr.saveData.garageLevel;
+        Bunker garageLevelInfo = playerDataMgr.bunkerList["BUN_0003"];
+        switch (garageLevel)
         {
             case 1:
-                maxCarLevel = carCenterLevelInfo.level1;
+                maxCarLevel = garageLevelInfo.level1;
                 break;
             case 2:
-                maxCarLevel = carCenterLevelInfo.level2;
+                maxCarLevel = garageLevelInfo.level2;
                 break;
             case 3:
-                maxCarLevel = carCenterLevelInfo.level3;
+                maxCarLevel = garageLevelInfo.level3;
                 break;
             case 4:
-                maxCarLevel = carCenterLevelInfo.level4;
+                maxCarLevel = garageLevelInfo.level4;
                 break;
             case 5:
-                maxCarLevel = carCenterLevelInfo.level5;
+                maxCarLevel = garageLevelInfo.level5;
                 break;
         }
 
@@ -342,9 +342,6 @@ public class CarCenterMgr : MonoBehaviour
         }
         if (playerDataMgr.saveData.money - cost < 0) return;
 
-        playerDataMgr.saveData.money -= cost;
-        moneyTxt.text = playerDataMgr.saveData.money.ToString();
-
         var speedObj = gaugeList[0];
         var trunkObj = gaugeList[1];
         var sightObj = gaugeList[2];
@@ -352,6 +349,7 @@ public class CarCenterMgr : MonoBehaviour
         if (currentStat == TruckStat.Speed)
         {
             if (playerDataMgr.saveData.speedLv[index] == 5) return;
+            if (playerDataMgr.saveData.speedLv[index] == maxCarLevel) return;
             playerDataMgr.saveData.speedLv[index] += 1;
             var speedLv = playerDataMgr.saveData.speedLv[index];
 
@@ -364,6 +362,7 @@ public class CarCenterMgr : MonoBehaviour
         else if (currentStat == TruckStat.Trunk)
         {
             if (playerDataMgr.saveData.weightLv[index] == 5) return;
+            if (playerDataMgr.saveData.weightLv[index] == maxCarLevel) return;
             playerDataMgr.saveData.weightLv[index] += 1;
             var trunkLv = playerDataMgr.saveData.weightLv[index];
 
@@ -376,6 +375,7 @@ public class CarCenterMgr : MonoBehaviour
         else if (currentStat == TruckStat.FieldOfView)
         {
             if (playerDataMgr.saveData.sightLv[index] == 5) return;
+            if (playerDataMgr.saveData.sightLv[index] == maxCarLevel) return;
             playerDataMgr.saveData.sightLv[index] += 1;
             var sightLv = playerDataMgr.saveData.sightLv[index];
 
@@ -386,6 +386,9 @@ public class CarCenterMgr : MonoBehaviour
             }
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+        playerDataMgr.saveData.money -= cost;
+        moneyTxt.text = playerDataMgr.saveData.money.ToString();
     }
 
     public void Buy()

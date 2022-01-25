@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class UpgradeMgr : MonoBehaviour
 {
@@ -12,14 +13,13 @@ public class UpgradeMgr : MonoBehaviour
     public List<GameObject> bunkers;
     public GameObject prefab;
 
-    BunkerMgr bunkerMgr;
+    public BunkerMgr bunkerMgr;
+    public Action CloseWindow;
     [HideInInspector]
     public Dictionary<int, GameObject> prefabs = new Dictionary<int, GameObject>();
 
     public void Init()
     {
-        bunkerMgr = GameObject.Find("BunkerMgr").GetComponent<BunkerMgr>();
-
         //초기화.
         if (prefabs.Count != 0)
         {
@@ -58,9 +58,6 @@ public class UpgradeMgr : MonoBehaviour
                 case "Garage":
                     currentLevel = playerDataMgr.saveData.garageLevel;
                     break;
-                case "CarCenter":
-                    currentLevel = playerDataMgr.saveData.carCenterLevel;
-                    break;
                 case "Hospital":
                     currentLevel = playerDataMgr.saveData.hospitalLevel;
                     break;
@@ -80,6 +77,11 @@ public class UpgradeMgr : MonoBehaviour
             child = go.transform.GetChild(2).gameObject;
             var button = child.GetComponent<Button>();
             button.onClick.AddListener(delegate { Upgrade(bunkerBase.bunkerName, num); });
+
+            child = go.transform.GetChild(3).gameObject;
+            button = child.GetComponent<Button>();
+            button.onClick.AddListener(delegate { CloseWindow(); });
+
             if (currentLevel == 5)
             {
                 child.transform.GetChild(0).gameObject.GetComponent<Text>().text = "-";
@@ -108,9 +110,6 @@ public class UpgradeMgr : MonoBehaviour
             case "Garage":
                 currentLevel = playerDataMgr.saveData.garageLevel;
                 break;
-            case "CarCenter":
-                currentLevel = playerDataMgr.saveData.carCenterLevel;
-                break;
             case "Hospital":
                 currentLevel = playerDataMgr.saveData.hospitalLevel;
                 break;
@@ -134,28 +133,29 @@ public class UpgradeMgr : MonoBehaviour
                 break;
             case "Storage":
                 playerDataMgr.saveData.storageLevel += 1;
-                //bunkerMgr.sto.Init();
+                bunkerMgr.storageMgr.Init();//창고.
                 currentLevel = playerDataMgr.saveData.storageLevel;
                 break;
             case "Garage":
                 playerDataMgr.saveData.garageLevel += 1;
+                bunkerMgr.garageMgr.Init();
+                bunkerMgr.carCenterMgr.Init();
                 currentLevel = playerDataMgr.saveData.garageLevel;
-                break;
-            case "CarCenter":
-                playerDataMgr.saveData.carCenterLevel += 1;
-                currentLevel = playerDataMgr.saveData.carCenterLevel;
                 break;
             case "Hospital":
                 playerDataMgr.saveData.hospitalLevel += 1;
+                bunkerMgr.hospitalMgr.Init();
                 currentLevel = playerDataMgr.saveData.hospitalLevel;
                 break;
             case "Store":
                 playerDataMgr.saveData.storeLevel += 1;
+                playerDataMgr.saveData.storeReset = true;
                 bunkerMgr.storeMgr.Init();
                 currentLevel = playerDataMgr.saveData.storeLevel;
                 break;
             case "Pub":
                 playerDataMgr.saveData.pubLevel += 1;
+                bunkerMgr.pubMgr.Init();
                 currentLevel = playerDataMgr.saveData.pubLevel;
                 break;
         }

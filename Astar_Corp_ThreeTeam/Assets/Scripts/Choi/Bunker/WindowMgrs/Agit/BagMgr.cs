@@ -30,6 +30,10 @@ public class BagMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
 
+    [Header("버튼 관련")]
+    public List<GameObject> bagButtons;
+    public List<GameObject> storageButtons;
+   
     [Header("총알 관련")]
     public Text bagBullet5Txt;
     public Text bagBullet7Txt;
@@ -77,9 +81,10 @@ public class BagMgr : MonoBehaviour
 
     int bagTotalWeight;
     int bagCurrentWeight;
-    int storageTotalWeight;
     int storageCurrentWeight;
 
+    int storageLevel;
+    int maxStorageCapacity;
     public int currentIndex;
     InventoryKind currentInvenKind;
     BagMode bagMode;
@@ -89,6 +94,27 @@ public class BagMgr : MonoBehaviour
     public void Init()
     {
         ClosePopup();
+
+        storageLevel = playerDataMgr.saveData.storageLevel;
+        Bunker storageLevelInfo = playerDataMgr.bunkerList["BUN_0002"];
+        switch (storageLevel)
+        {
+            case 1:
+                maxStorageCapacity = storageLevelInfo.level1;
+                break;
+            case 2:
+                maxStorageCapacity = storageLevelInfo.level2;
+                break;
+            case 3:
+                maxStorageCapacity = storageLevelInfo.level3;
+                break;
+            case 4:
+                maxStorageCapacity = storageLevelInfo.level4;
+                break;
+            case 5:
+                maxStorageCapacity = storageLevelInfo.level5;
+                break;
+        }
 
         //이전 정보 삭제.
         if (storageObjs.Count != 0)
@@ -244,6 +270,13 @@ public class BagMgr : MonoBehaviour
         //2.Consumables
         //3.OtherItems
 
+        //버튼 초기화.
+        foreach (var element in bagButtons)
+        {
+            if (element.GetComponent<Image>().color == Color.red)
+                element.GetComponent<Image>().color = Color.white;
+        }
+
         switch (index)
         {
             case 0:
@@ -259,6 +292,7 @@ public class BagMgr : MonoBehaviour
                 bagMode = BagMode.OtherItems;
                 break;
         }
+        bagButtons[index].GetComponent<Image>().color = Color.red;
 
         if (bagObjs.Count != 0)
         {
@@ -345,6 +379,13 @@ public class BagMgr : MonoBehaviour
         //2.Consumables
         //3.OtherItems
 
+        //버튼 초기화.
+        foreach (var element in storageButtons)
+        {
+            if (element.GetComponent<Image>().color == Color.red)
+                element.GetComponent<Image>().color = Color.white;
+        }
+
         switch (index)
         {
             case 0:
@@ -360,6 +401,7 @@ public class BagMgr : MonoBehaviour
                 storageMode = StorageMode.OtherItems;
                 break;
         }
+        storageButtons[index].GetComponent<Image>().color = Color.red;
 
         if (storageObjs.Count != 0)
         {
@@ -378,8 +420,7 @@ public class BagMgr : MonoBehaviour
         int bullet12Num = 0;
 
         storageCurrentWeight = 0;
-        storageTotalWeight = 0;
-
+        
         foreach (var element in playerDataMgr.currentEquippables)
         {
             if (storageMode != StorageMode.Consumables && storageMode != StorageMode.OtherItems)
@@ -462,9 +503,8 @@ public class BagMgr : MonoBehaviour
             storageCurrentWeight += (int.Parse(element.Value.weight) * playerDataMgr.currentOtherItemsNum[element.Key]);
         }
        
-        storageTotalWeight = 3000;
         //레벨에 따라 구현해야 함.
-        storageWeightTxt.text = $"무게 {storageCurrentWeight}/{storageTotalWeight}";
+        storageWeightTxt.text = $"무게 {storageCurrentWeight}/{maxStorageCapacity}";
 
         storageBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
         storageBullet7Txt.text = $"7탄x{bullet7Num.ToString("D3")}";
@@ -859,7 +899,7 @@ public class BagMgr : MonoBehaviour
         if (bagWeaponInfo.ContainsKey(currentKey))
         {
             var weight = bagWeaponInfo[currentKey].weight;
-            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+            if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
 
             //json.
             int index = 0;
@@ -970,7 +1010,7 @@ public class BagMgr : MonoBehaviour
         else if (bagConsumableInfo.ContainsKey(currentKey))
         {
             var weight = bagConsumableInfo[currentKey].weight;
-            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+            if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
 
             //json.
             int index;
@@ -1081,7 +1121,7 @@ public class BagMgr : MonoBehaviour
         else if (bagOtherItemInfo.ContainsKey(currentKey))
         {
             var weight = int.Parse(bagOtherItemInfo[currentKey].weight);
-            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+            if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
 
             //json.
             int index = 0;

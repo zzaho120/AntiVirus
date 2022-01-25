@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems;
 
 public enum WarehouseKind
 { 
@@ -46,6 +45,10 @@ public class TruckMgr : MonoBehaviour
     public GameObject char4Inventory;
 
     //지은.
+    [Header("버튼 관련")]
+    public List<GameObject> trunkButtons;
+    public List<GameObject> bagButtons;
+    
     [Header("총알 관련")]
     public Text trunkBullet5Txt;
     public Text trunkBullet7Txt;
@@ -74,6 +77,9 @@ public class TruckMgr : MonoBehaviour
     public GameObject subWeaponButton;
     public GameObject bagButton;
     public GameObject disarmButton;
+    public GameObject Add10Button;
+    public GameObject Add100Button;
+    public GameObject AddMaxButton;
 
     public GameObject truckContents;
     public GameObject truckPrefab;
@@ -122,11 +128,6 @@ public class TruckMgr : MonoBehaviour
     public void GoToBunker()
     {
         SceneManager.LoadScene("Bunker");
-    }
-
-    private void Start()
-    {
-        Init();
     }
 
     public void Init()
@@ -270,9 +271,9 @@ public class TruckMgr : MonoBehaviour
             truckOtherItemInfo.Add(element.Key, element.Value);
             truckOtherItemNumInfo.Add(element.Key, playerDataMgr.truckOtherItemsNum[element.Key]);
         }
-        
-        EventSystem.current.SetSelectedGameObject(trunkAllToggle);
-        DisplayBagItem(0);
+
+       DisplayTruckItem(0);
+       DisplayBagItem(0);
     }
 
     //// 트럭 아이템 카테고리 선택 (장비 vs 소비)
@@ -313,7 +314,10 @@ public class TruckMgr : MonoBehaviour
     {
         if (currentIndex == -1) return;
         if (currentKey == null) return;
-        
+        var weaponType = playerDataMgr.equippableList[currentKey].type;
+        if (!playerDataMgr.currentSquad[currentIndex].character.weapons.Contains(weaponType))
+            return;
+
         Disarm();
         if (currentEquipKind == EquipKind.MainWeapon)
         {
@@ -466,17 +470,17 @@ public class TruckMgr : MonoBehaviour
                 truckWeaponInfo.Add(id, weapon);
                 truckWeaponNumInfo.Add(id, 1);
 
-                var go = Instantiate(truckPrefab, truckContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = weapon.name;
+                //var go = Instantiate(truckPrefab, truckContents.transform);
+                //var child = go.transform.GetChild(0).gameObject;
+                //child.GetComponent<Text>().text = weapon.name;
 
-                child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"1개";
+                //child = go.transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"1개";
 
-                var button = go.AddComponent<Button>();
-                string selectedKey = id;
-                button.onClick.AddListener(delegate { SelectItem(selectedKey, WarehouseKind.Trunk); });
-                truckObjs.Add(selectedKey, go);
+                //var button = go.AddComponent<Button>();
+                //string selectedKey = id;
+                //button.onClick.AddListener(delegate { SelectItem(selectedKey, WarehouseKind.Trunk); });
+                //truckObjs.Add(selectedKey, go);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckEquippables.Add(id, playerDataMgr.equippableList[id]);
@@ -486,13 +490,12 @@ public class TruckMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 truckWeaponNumInfo[id] += 1;
-                var child = truckObjs[id].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{truckWeaponNumInfo[id]}개";
+                //var child = truckObjs[id].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{truckWeaponNumInfo[id]}개";
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckEquippablesNum[id] += 1;
             }
-
         }
         else if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null && currentEquipKind == EquipKind.SubWeapon
             || disarmMode == 1)
@@ -524,17 +527,17 @@ public class TruckMgr : MonoBehaviour
                 truckWeaponInfo.Add(id, weapon);
                 truckWeaponNumInfo.Add(id, 1);
 
-                var go = Instantiate(truckPrefab, truckContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = weapon.name;
+                //var go = Instantiate(truckPrefab, truckContents.transform);
+                //var child = go.transform.GetChild(0).gameObject;
+                //child.GetComponent<Text>().text = weapon.name;
 
-                child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"1개";
+                //child = go.transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"1개";
 
-                var button = go.AddComponent<Button>();
-                string selectedKey = id;
-                button.onClick.AddListener(delegate { SelectItem(selectedKey, WarehouseKind.Trunk); });
-                truckObjs.Add(selectedKey, go);
+                //var button = go.AddComponent<Button>();
+                //string selectedKey = id;
+                //button.onClick.AddListener(delegate { SelectItem(selectedKey, WarehouseKind.Trunk); });
+                //truckObjs.Add(selectedKey, go);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckEquippables.Add(id, playerDataMgr.equippableList[id]);
@@ -544,13 +547,15 @@ public class TruckMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 truckWeaponNumInfo[id] += 1;
-                var child = truckObjs[id].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{truckWeaponNumInfo[id]}개";
+                //var child = truckObjs[id].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{truckWeaponNumInfo[id]}개";
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckEquippablesNum[id] += 1;
             }
         }
+        var currentMode = (int)trunkMode;
+        DisplayTruckItem(currentMode);
     }
 
     public void DisplayTruckItem(int index)
@@ -559,6 +564,13 @@ public class TruckMgr : MonoBehaviour
         //1.Equippables
         //2.Consumables
         //3.OtherItems
+
+        //버튼 초기화.
+        foreach (var element in trunkButtons)
+        {
+            if (element.GetComponent<Image>().color == Color.red)
+                element.GetComponent<Image>().color = Color.white;
+        }
 
         switch (index)
         {
@@ -575,6 +587,7 @@ public class TruckMgr : MonoBehaviour
                 trunkMode = TrunkMode.OtherItems;
                 break;
         }
+        trunkButtons[index].GetComponent<Image>().color = Color.red;
 
         if (truckObjs.Count != 0)
         {
@@ -684,6 +697,13 @@ public class TruckMgr : MonoBehaviour
 
     public void DisplayBagItem(int index)
     {
+        //버튼 초기화.
+        foreach (var element in bagButtons)
+        {
+            if (element.GetComponent<Image>().color == Color.red)
+                element.GetComponent<Image>().color = Color.white;
+        }
+
         if (currentIndex == -1)
         {
             var charName = GameObject.Find("Char Name").GetComponent<TextMeshProUGUI>();
@@ -696,6 +716,8 @@ public class TruckMgr : MonoBehaviour
             bagBullet9Txt.text = $"9탄x{0.ToString("D3")}";
             bagBullet45Txt.text = $"45탄x{0.ToString("D3")}";
             bagBullet12Txt.text = $"12게이지x{0.ToString("D3")}";
+
+            bagButtons[0].GetComponent<Image>().color = Color.red;
 
             return;
         }
@@ -719,6 +741,7 @@ public class TruckMgr : MonoBehaviour
                 bagMode = BagMode.OtherItems;
                 break;
         }
+        bagButtons[index].GetComponent<Image>().color = Color.red;
 
         if (bagObjs.Count != 0)
         {
@@ -829,6 +852,10 @@ public class TruckMgr : MonoBehaviour
 
     public void SelectItem(string key, WarehouseKind kind)
     {
+        if (!Add10Button.activeSelf) Add10Button.SetActive(true);
+        if (!Add100Button.activeSelf) Add100Button.SetActive(true);
+        if (!AddMaxButton.activeSelf) AddMaxButton.SetActive(true);
+
         if (currentKey != null)
         {
             if (kind == WarehouseKind.Trunk && truckObjs.ContainsKey(currentKey))
@@ -845,6 +872,17 @@ public class TruckMgr : MonoBehaviour
 
         currentKey = key;
         currentKind = kind;
+
+        if (playerDataMgr.equippableList.ContainsKey(currentKey))
+        {
+            if (!mainWeaponButton.activeSelf) mainWeaponButton.SetActive(true);
+            if (!subWeaponButton.activeSelf) subWeaponButton.SetActive(true);
+        }
+        else if (playerDataMgr.otherItemList.ContainsKey(currentKey))
+        {
+            if (mainWeaponButton.activeSelf) mainWeaponButton.SetActive(false);
+            if (subWeaponButton.activeSelf) subWeaponButton.SetActive(false);
+        }
 
         if (currentKind == WarehouseKind.Trunk)
         {
@@ -863,6 +901,11 @@ public class TruckMgr : MonoBehaviour
             {
                 itemNameTxt.text = truckConsumableInfo[currentKey].name;
                 slider.maxValue = truckConsumableNumInfo[currentKey];
+            }
+            else if (truckOtherItemInfo.ContainsKey(currentKey))
+            {
+                itemNameTxt.text = truckOtherItemInfo[currentKey].name;
+                slider.maxValue = truckOtherItemNumInfo[currentKey];
             }
         }
         else if (currentKind == WarehouseKind.Bag)
@@ -947,6 +990,14 @@ public class TruckMgr : MonoBehaviour
         if (bagConsumableNumInfo.Count != 0) bagConsumableNumInfo.Clear();
         if (bagOtherItemInfo.Count != 0) bagOtherItemInfo.Clear();
         if (bagOtherItemNumInfo.Count != 0) bagOtherItemNumInfo.Clear();
+
+        //버튼 초기화.
+        foreach (var element in BattleSqudeObj)
+        {
+            if (element.Value.GetComponent<Image>().color == Color.red)
+                element.Value.GetComponent<Image>().color = Color.white;
+        }
+        BattleSqudeObj[key].GetComponent<Image>().color = Color.red;
 
         currentIndex = key;
         if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
@@ -1654,17 +1705,25 @@ public class TruckMgr : MonoBehaviour
     {
         if (currentIndex == -1) return;
 
+        if (Add10Button.activeSelf) Add10Button.SetActive(false);
+        if (Add100Button.activeSelf) Add100Button.SetActive(false);
+        if (AddMaxButton.activeSelf) AddMaxButton.SetActive(false);
+
         switch (index)
         {
             case 0:
                 if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon == null) return;
                 disarmMode = index;
                 mainWeaponObj.GetComponent<Image>().color = Color.red;
+                var name = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name;
+                itemNameTxt.text = $"{name}";
                 break;
             case 1:
                 if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon == null) return;
                 disarmMode = index;
                 subWeaponObj.GetComponent<Image>().color = Color.red;
+                name = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.name;
+                itemNameTxt.text = $"{name}";
                 break;
         }
 
@@ -1677,8 +1736,8 @@ public class TruckMgr : MonoBehaviour
         {
             if (slider.gameObject.activeSelf) slider.gameObject.SetActive(false);
             if (itemNumTxt.gameObject.activeSelf) itemNumTxt.gameObject.SetActive(false);
-            if (mainWeaponButton.activeSelf) mainWeaponButton.SetActive(false);
-            if (subWeaponButton.activeSelf) subWeaponButton.SetActive(false);
+            //if (mainWeaponButton.activeSelf) mainWeaponButton.SetActive(false);
+            //if (subWeaponButton.activeSelf) subWeaponButton.SetActive(false);
             if (bagButton.activeSelf) bagButton.SetActive(false);
             if (!disarmButton.activeSelf) disarmButton.SetActive(true);
         }
@@ -1686,8 +1745,8 @@ public class TruckMgr : MonoBehaviour
         {
             if (!slider.gameObject.activeSelf) slider.gameObject.SetActive(true);
             if (!itemNumTxt.gameObject.activeSelf) itemNumTxt.gameObject.SetActive(true);
-            if (!mainWeaponButton.activeSelf) mainWeaponButton.SetActive(true);
-            if (!subWeaponButton.activeSelf) subWeaponButton.SetActive(true);
+            //if (!mainWeaponButton.activeSelf) mainWeaponButton.SetActive(true);
+            //if (!subWeaponButton.activeSelf) subWeaponButton.SetActive(true);
             if (!bagButton.activeSelf) bagButton.SetActive(true);
             if (disarmButton.activeSelf) disarmButton.SetActive(false);
         }

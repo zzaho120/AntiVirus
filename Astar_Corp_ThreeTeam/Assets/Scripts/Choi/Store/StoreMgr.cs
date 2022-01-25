@@ -16,6 +16,10 @@ public class StoreMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
 
+    [Header("버튼 관련")]
+    public List<GameObject> storageButtons;
+    public List<GameObject> storeButtons;
+
     [Header("총알 관련")]
     public Text storageBullet5Txt;
     public Text storageBullet7Txt;
@@ -59,14 +63,16 @@ public class StoreMgr : MonoBehaviour
 
     int storeLevel;
     int maxItemNum;
+    int storageLevel;
+    int maxStorageCapacity;
+
     int currentStoreKey;
     string currentStorageKey;
     StoreMode storeMode;
     StorageMode storageMode;
 
     int storageCurrentWeight;
-    int storageTotalWeight;
-
+    
     int grade1TotalVal;
     int grade2TotalVal;
     int grade3TotalVal;
@@ -91,6 +97,27 @@ public class StoreMgr : MonoBehaviour
                 break;
             case 5:
                 maxItemNum = storeLevelInfo.level5;
+                break;
+        }
+
+        storageLevel = playerDataMgr.saveData.storageLevel;
+        Bunker storageLevelInfo = playerDataMgr.bunkerList["BUN_0002"];
+        switch (storageLevel)
+        {
+            case 1:
+                maxStorageCapacity = storageLevelInfo.level1;
+                break;
+            case 2:
+                maxStorageCapacity = storageLevelInfo.level2;
+                break;
+            case 3:
+                maxStorageCapacity = storageLevelInfo.level3;
+                break;
+            case 4:
+                maxStorageCapacity = storageLevelInfo.level4;
+                break;
+            case 5:
+                maxStorageCapacity = storageLevelInfo.level5;
                 break;
         }
 
@@ -209,69 +236,70 @@ public class StoreMgr : MonoBehaviour
                 }
             }
 
-            switch (storeLevel)
+            for (int i = 0; i < maxItemNum; i++)
             {
-                case 1:
-                    for (int i = 0; i < maxItemNum; i++)
-                    {
-                        int sum = 0;
-                        var ranNum = UnityEngine.Random.Range(1, grade1TotalVal + 1);
-                        foreach (var element in playerDataMgr.equippableList)
-                        {
-                            if (element.Value.grade != 1) continue;
-                            var previous = sum;
-                            sum += element.Value.value;
-                            if (!(ranNum > previous && ranNum <= sum)) continue;
+                int sum = 0;
+                int ranNum = 0;
+                if (storeLevel == 1) ranNum = UnityEngine.Random.Range(1, grade1TotalVal + 1);
+                else if (storeLevel == 2) ranNum = UnityEngine.Random.Range(1, grade1TotalVal + grade2TotalVal + 1);
+                else ranNum = UnityEngine.Random.Range(1, grade1TotalVal +grade2TotalVal + grade3TotalVal + 1);
 
-                            int num = i;
-                            //json.
-                            playerDataMgr.saveData.storeItem.Add(element.Key);
-                            playerDataMgr.saveData.storeItemNum.Add(element.Value.itemQuantity);
-                            
-                            //현재데이터.
-                            storeWeaponInfo.Add(num, element.Key);
-                            storeWeaponNumInfo.Add(num, element.Value.itemQuantity);
-                        }
-                        foreach (var element in playerDataMgr.consumableList)
-                        {
-                            if (element.Value.grade != 1) continue;
-                            var previous = sum;
-                            sum += element.Value.value;
-                            if (!(ranNum > previous && ranNum <= sum)) continue;
+                foreach (var element in playerDataMgr.equippableList)
+                {
+                    if (storeLevel == 1 && element.Value.grade != 1) continue;
+                    else if (storeLevel == 2 && element.Value.grade == 3) continue;
+                    
+                    var previous = sum;
+                    sum += element.Value.value;
+                    if (!(ranNum > previous && ranNum <= sum)) continue;
 
-                            int num = i;
-                            //json.
-                            playerDataMgr.saveData.storeItem.Add(element.Key);
-                            playerDataMgr.saveData.storeItemNum.Add(element.Value.itemQuantity);
+                    int num = i;
+                    //json.
+                    playerDataMgr.saveData.storeItem.Add(element.Key);
+                    playerDataMgr.saveData.storeItemNum.Add(element.Value.itemQuantity);
 
-                            //현재데이터.
-                            storeConsumableInfo.Add(num, element.Key);
-                            storeConsumableNumInfo.Add(num, element.Value.itemQuantity);
-                        }
-                        foreach (var element in playerDataMgr.otherItemList)
-                        {
-                            if (String.IsNullOrEmpty(element.Value.grade)) continue;
-                            var grade = int.Parse(element.Value.grade);
-                            if (grade != 1) continue;
-                            var previous = sum;
-                            sum += 30;
-                            if (!(ranNum > previous && ranNum <= sum)) continue;
+                    //현재데이터.
+                    storeWeaponInfo.Add(num, element.Key);
+                    storeWeaponNumInfo.Add(num, element.Value.itemQuantity);
+                }
+                foreach (var element in playerDataMgr.consumableList)
+                {
+                    if (storeLevel == 1 && element.Value.grade != 1) continue;
+                    else if (storeLevel == 2 && element.Value.grade == 3) continue;
 
-                            int num = i;
-                            //json.
-                            playerDataMgr.saveData.storeItem.Add(element.Key);
-                            playerDataMgr.saveData.storeItemNum.Add(int.Parse(element.Value.itemQuantity));
+                    var previous = sum;
+                    sum += element.Value.value;
+                    if (!(ranNum > previous && ranNum <= sum)) continue;
 
-                            //현재데이터.
-                            storeOtherItemInfo.Add(num, element.Key);
-                            storeOtherItemNumInfo.Add(num, int.Parse(element.Value.itemQuantity));
-                        }
-                    }
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
+                    int num = i;
+                    //json.
+                    playerDataMgr.saveData.storeItem.Add(element.Key);
+                    playerDataMgr.saveData.storeItemNum.Add(element.Value.itemQuantity);
+
+                    //현재데이터.
+                    storeConsumableInfo.Add(num, element.Key);
+                    storeConsumableNumInfo.Add(num, element.Value.itemQuantity);
+                }
+                foreach (var element in playerDataMgr.otherItemList)
+                {
+                    if (String.IsNullOrEmpty(element.Value.grade)) continue;
+                    var grade = int.Parse(element.Value.grade);
+                    if (storeLevel == 1 && grade != 1) continue;
+                    else if (storeLevel == 2 && grade == 3) continue;
+
+                    var previous = sum;
+                    sum += 30;
+                    if (!(ranNum > previous && ranNum <= sum)) continue;
+
+                    int num = i;
+                    //json.
+                    playerDataMgr.saveData.storeItem.Add(element.Key);
+                    playerDataMgr.saveData.storeItemNum.Add(int.Parse(element.Value.itemQuantity));
+
+                    //현재데이터.
+                    storeOtherItemInfo.Add(num, element.Key);
+                    storeOtherItemNumInfo.Add(num, int.Parse(element.Value.itemQuantity));
+                }
             }
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         }
@@ -305,6 +333,13 @@ public class StoreMgr : MonoBehaviour
         //2.Consumables
         //3.OtherItems
 
+        //버튼 초기화.
+        foreach (var element in storeButtons)
+        {
+            if (element.GetComponent<Image>().color == Color.red)
+                element.GetComponent<Image>().color = Color.white;
+        }
+
         switch (index)
         {
             case 0:
@@ -320,6 +355,7 @@ public class StoreMgr : MonoBehaviour
                 storeMode = StoreMode.OtherItems;
                 break;
         }
+        storeButtons[index].GetComponent<Image>().color = Color.red;
 
         if (storeObjs.Count != 0)
         {
@@ -417,6 +453,13 @@ public class StoreMgr : MonoBehaviour
         //2.Consumables
         //3.OtherItems
 
+        //버튼 초기화.
+        foreach (var element in storageButtons)
+        {
+            if (element.GetComponent<Image>().color == Color.red)
+                element.GetComponent<Image>().color = Color.white;
+        }
+
         switch (index)
         {
             case 0:
@@ -432,6 +475,7 @@ public class StoreMgr : MonoBehaviour
                 storageMode = StorageMode.OtherItems;
                 break;
         }
+        storageButtons[index].GetComponent<Image>().color = Color.red;
 
         if (storageObjs.Count != 0)
         {
@@ -450,7 +494,6 @@ public class StoreMgr : MonoBehaviour
         int bullet12Num = 0;
 
         storageCurrentWeight = 0;
-        storageTotalWeight = 0;
         foreach (var element in storageWeaponInfo)
         {
             if (storageMode != StorageMode.Consumables && storageMode != StorageMode.OtherItems)
@@ -521,9 +564,7 @@ public class StoreMgr : MonoBehaviour
             }
         }
 
-        storageTotalWeight = 3000;
-        //레벨에 따라 구현해야 함.
-        storageWeightTxt.text = $"무게 {storageCurrentWeight}/{storageTotalWeight}";
+        storageWeightTxt.text = $"무게 {storageCurrentWeight}/{maxStorageCapacity}";
 
         storageBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
         storageBullet7Txt.text = $"7탄x{bullet7Num.ToString("D3")}";
@@ -642,7 +683,7 @@ public class StoreMgr : MonoBehaviour
             if (playerDataMgr.saveData.money - cost < 0) return;
 
             var weight = playerDataMgr.equippableList[currentKey].weight;
-            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+            if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
 
             if (storageWeaponInfo.ContainsKey(storeWeaponInfo[currentStoreKey]))
             {
@@ -707,7 +748,7 @@ public class StoreMgr : MonoBehaviour
             if (playerDataMgr.saveData.money - cost < 0) return;
 
             var weight = playerDataMgr.consumableList[currentKey].weight;
-            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+            if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
 
             if (storageConsumableInfo.ContainsKey(currentKey))
             {
@@ -772,7 +813,7 @@ public class StoreMgr : MonoBehaviour
             if (playerDataMgr.saveData.money - cost < 0) return;
 
             var weight = int.Parse(playerDataMgr.otherItemList[currentKey].weight);
-            if (storageCurrentWeight + weight * itemNum > storageTotalWeight) return;
+            if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
 
             if (storageOtherItemInfo.ContainsKey(currentKey))
             {
