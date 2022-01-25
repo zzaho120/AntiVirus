@@ -15,7 +15,7 @@ public class MonsterPool : PoolManager
         isMaxPool = new bool[testZone.Length];
         monsterNum = new int[testZone.Length];
 
-        InvokeRepeating("GetMonstersFromPool", 0.5f, 30f);
+        InvokeRepeating("GetMonstersFromPool", 0.5f, 3f);
     }
 
     private void GetMonstersFromPool()
