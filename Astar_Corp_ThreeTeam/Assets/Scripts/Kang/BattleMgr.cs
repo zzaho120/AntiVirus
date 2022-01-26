@@ -178,9 +178,17 @@ public class BattleMgr : MonoBehaviour
 
     private void CheckGameover()
     {
-        if (playerMgr.playerableChars.Count == 0 || monsterMgr.monsters.Count == 0)
+        var playerableChars = playerMgr.playerableChars;
+        if (playerableChars.Count == 0 || monsterMgr.monsters.Count == 0)
         {
             turn = BattleTurn.None;
+
+            var exp = ScriptableMgr.Instance.GetMissionExp($"MEP_{fieldVirusLevel}").exp;
+            foreach (var player in playerableChars)
+            {
+                player.characterStats.GetExp(exp);
+            }
+
             battleWindowMgr.Open((int)BattleWindows.ResultWindow - 1);
         }
     }

@@ -52,11 +52,12 @@ public class PlayerableChar : BattleTile
         characterStats = new CharacterStats();
         characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
         characterStats.weapon = new WeaponStats();
-        characterStats.weapon.mainWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/AssaultRifle_01"));
+        characterStats.weapon.mainWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0013"));
         characterStats.weapon.subWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/FireAxe_01"));
         
         characterStats.Init();  // --> characterStats.weapon.Init();
         direction = DirectionType.None;
+        characterStats.StartGame();
     }
 
     public void Update()
@@ -227,6 +228,9 @@ public class PlayerableChar : BattleTile
 
     private void CheckMoveRange(TileBase tile, int cnt, int mpPerAp, bool isBuff)
     {
+        if (mpPerAp == 0)
+            return;
+
         var totalMp = AP * mpPerAp;
         var moveAP = (cnt + mpPerAp) / mpPerAp;
         if (moveAP > totalMp || moveAP > AP)

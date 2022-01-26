@@ -13,7 +13,12 @@ public class SkillMgr
 {
     public List<ActiveSkill> activeSkills;
     public List<PassiveSkill> passiveSkills;
+    public int skillPoint;
 
+    public bool IsExistSkillPoint
+    {
+        get => skillPoint > 0;
+    }
     public SkillMgr()
     {
         activeSkills = new List<ActiveSkill>();
@@ -48,5 +53,10 @@ public class SkillMgr
                 passiveSkills.Add(skill as PassiveSkill);
                 break;
         }
+    }
+
+    public void LevelUp()
+    {
+        skillPoint++;
     }
 }

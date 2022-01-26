@@ -11,6 +11,8 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     // 캐릭터 레벨 경험치 관련
     public Dictionary<string, CharacterExp> characterExpList = new Dictionary<string, CharacterExp>();
 
+    public Dictionary<string, MissionExp> missionExpList = new Dictionary<string, MissionExp>();
+
     // 몬스터 스탯 관련
     public Dictionary<string, Monster> monsterList = new Dictionary<string, Monster>();
     public Dictionary<string, Virus> virusList = new Dictionary<string, Virus>();
@@ -147,6 +149,14 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         {
             characterExpList.Add($"{characterExp.id}", characterExp);
         }
+
+        // 14. Mission Exp
+        string missionExpSOPath = "Choi/Datas/MissionExp";
+        MissionExp[] missionExpArr = Resources.LoadAll<MissionExp>(missionExpSOPath);
+        foreach (var missionExp in missionExpArr)
+        {
+            missionExpList.Add($"{missionExp.id}", missionExp);
+        }
     }
 
     /// <summary>
@@ -229,5 +239,13 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     public CharacterExp GetCharacterExp(string id)
     {
         return Instantiate(characterExpList[id]);
+    }
+
+    /// <summary>
+    /// 매개변수 입력 팁; MEP_0000
+    /// </summary>
+    public MissionExp GetMissionExp(string id)
+    {
+        return Instantiate(missionExpList[id]);
     }
 }

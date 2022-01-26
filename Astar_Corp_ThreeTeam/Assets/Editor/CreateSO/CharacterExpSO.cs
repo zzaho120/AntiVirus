@@ -4,7 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-public class CharacterExpSO
+public class CharacaterExpSO
 {
     private static string characterExpCSVPath = "/Resources/Choi/CharacterExpDataTable.csv";
 

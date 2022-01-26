@@ -174,10 +174,9 @@ public class CharacterStats
         avoidRate       = AvoidRate;
         concentration   = Concentration;
         willpower       = Willpower;
-        //critRate        = CritRate;
         level           = 1;
-        currentExp = 0;
-        totalExp = ScriptableMgr.Instance.GetCharacterExp("EXP_0001").totalExp;
+        currentExp      = 0;
+        totalExp        = ScriptableMgr.Instance.GetCharacterExp($"EXP_{level}").totalExp;
 
         buffMgr = new BuffMgr();
         skillMgr = new SkillMgr();
@@ -219,7 +218,46 @@ public class CharacterStats
     private void LevelUp()
     {
         level++; // 나중에 레벨업 시스템을 구축할 것.
+        skillMgr.LevelUp();
         currentExp -= totalExp;
         totalExp = ScriptableMgr.Instance.GetCharacterExp($"EXP_{level}").totalExp;
+    }
+
+    private List<int> GetRandomStats()
+    {
+        var statList = new List<int>();
+
+        while (statList.Count == 2)
+        {
+            var randomRate = Random.Range(0, 100);
+            if (!statList.Exists(x => x == 1))
+            {
+                if (randomRate < character.hpChance)
+                    statList.Add(1);
+            }
+            randomRate = Random.Range(0, 100);
+            if (!statList.Exists(x => x == 2))
+            {
+                if (randomRate < character.concentrationChance)
+                {
+                    statList.Add(2);
+                    if (statList.Count >= 2)
+                        break;
+                }
+            }
+            randomRate = Random.Range(0, 100);
+            if (!statList.Exists(x => x == 3))
+            {
+                if (randomRate < character.senChance)
+                    statList.Add(3);
+            }
+            randomRate = Random.Range(0, 100);
+            if (!statList.Exists(x => x == 4))
+            {
+                if (randomRate < character.willChance)
+                    statList.Add(4);
+            }
+        }
+        return statList;
     }
 }

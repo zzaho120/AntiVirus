@@ -31,6 +31,9 @@ public class BattleInfoPanel : MonoBehaviour
                 break;
         }
 
+        sb.Append($"level : {stats.level}\n");
+        sb.Append($"Exp : {stats.currentExp} / {stats.totalExp}");
+
         infoText.text = sb.ToString();
     }
 
