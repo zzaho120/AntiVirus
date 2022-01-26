@@ -114,11 +114,11 @@ public class HospitalMgr : MonoBehaviour
             button.onClick.AddListener(delegate { SelectCharacter(num); });
 
             standardHp.Add(num, element.Value.currentHp);
-            standardBGauge.Add(num, element.Value.virusPanalty["B"].penaltyGauge);
-            standardEGauge.Add(num, element.Value.virusPanalty["E"].penaltyGauge);
-            standardIGauge.Add(num, element.Value.virusPanalty["I"].penaltyGauge);
-            standardPGauge.Add(num, element.Value.virusPanalty["P"].penaltyGauge);
-            standardTGauge.Add(num, element.Value.virusPanalty["T"].penaltyGauge);
+            standardBGauge.Add(num, element.Value.virusPenalty["B"].penaltyGauge);
+            standardEGauge.Add(num, element.Value.virusPenalty["E"].penaltyGauge);
+            standardIGauge.Add(num, element.Value.virusPenalty["I"].penaltyGauge);
+            standardPGauge.Add(num, element.Value.virusPenalty["P"].penaltyGauge);
+            standardTGauge.Add(num, element.Value.virusPenalty["T"].penaltyGauge);
 
             i++;
         }
@@ -224,7 +224,7 @@ public class HospitalMgr : MonoBehaviour
         if (currentVirus == null) return;
         
         int key = currentIndex;
-        int level = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel;
+        int level = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
 
         if (playerDataMgr.saveData.money - (100 * level) < 0 && !currentVirus.Equals("T")) return;
         if (playerDataMgr.saveData.money - (400 * level) < 0 && currentVirus.Equals("T")) return;
@@ -239,64 +239,64 @@ public class HospitalMgr : MonoBehaviour
             case "B":
                 gauge = standardBGauge[key];
                 recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
-                if (playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge - recoveryAmount <= 0
-                    && playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel != 1)
+                if (playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge - recoveryAmount <= 0
+                    && playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel != 1)
                     standardBGauge[key] = 100;
 
-                playerDataMgr.currentSquad[key].virusPanalty[currentVirus].ReductionCalculation(recoveryAmount);
-                playerDataMgr.saveData.gaugeB[key] = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge;
-                playerDataMgr.saveData.levelB[key] = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel;
+                playerDataMgr.currentSquad[key].virusPenalty[currentVirus].ReductionCalculation(recoveryAmount);
+                playerDataMgr.saveData.gaugeB[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
+                playerDataMgr.saveData.levelB[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
                 break;
             case "E":
                 gauge = standardEGauge[key];
                 recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
-                if (playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge - recoveryAmount <= 0
-                    && playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel != 1)
+                if (playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge - recoveryAmount <= 0
+                    && playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel != 1)
                     standardEGauge[key] = 100;
 
-                playerDataMgr.currentSquad[key].virusPanalty[currentVirus].ReductionCalculation(recoveryAmount);
-                playerDataMgr.saveData.gaugeE[key] = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge;
-                playerDataMgr.saveData.levelE[key] = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel;
+                playerDataMgr.currentSquad[key].virusPenalty[currentVirus].ReductionCalculation(recoveryAmount);
+                playerDataMgr.saveData.gaugeE[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
+                playerDataMgr.saveData.levelE[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
                 break;
             case "P":
                 gauge = standardPGauge[key];
                 recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
-                if (playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge - recoveryAmount <= 0
-                    && playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel != 1)
+                if (playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge - recoveryAmount <= 0
+                    && playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel != 1)
                     standardPGauge[key] = 100;
 
-                playerDataMgr.currentSquad[key].virusPanalty[currentVirus].ReductionCalculation(recoveryAmount);
-                playerDataMgr.saveData.gaugeP[key] = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge;
-                playerDataMgr.saveData.levelP[key] = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel;
+                playerDataMgr.currentSquad[key].virusPenalty[currentVirus].ReductionCalculation(recoveryAmount);
+                playerDataMgr.saveData.gaugeP[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
+                playerDataMgr.saveData.levelP[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
                 break;
             case "I":
                 gauge = standardIGauge[key];
                 recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
-                if (playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge - recoveryAmount <= 0
-                    && playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel != 1)
+                if (playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge - recoveryAmount <= 0
+                    && playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel != 1)
                     standardIGauge[key] = 100;
 
-                playerDataMgr.currentSquad[key].virusPanalty[currentVirus].ReductionCalculation(recoveryAmount);
-                playerDataMgr.saveData.gaugeI[key] = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge;
-                playerDataMgr.saveData.levelI[key] = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel;
+                playerDataMgr.currentSquad[key].virusPenalty[currentVirus].ReductionCalculation(recoveryAmount);
+                playerDataMgr.saveData.gaugeI[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
+                playerDataMgr.saveData.levelI[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
                 break;
             case "T":
                 gauge = standardTGauge[key];
                 recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
-                if (playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge - recoveryAmount <= 0
-                    && playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel != 1)
+                if (playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge - recoveryAmount <= 0
+                    && playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel != 1)
                     standardTGauge[key] = 100;
 
-                playerDataMgr.currentSquad[key].virusPanalty[currentVirus].ReductionCalculation(recoveryAmount);
-                playerDataMgr.saveData.gaugeT[key] = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge;
-                playerDataMgr.saveData.levelT[key] = playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyLevel;
+                playerDataMgr.currentSquad[key].virusPenalty[currentVirus].ReductionCalculation(recoveryAmount);
+                playerDataMgr.saveData.gaugeT[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
+                playerDataMgr.saveData.levelT[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
                 break;
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
         //UIº¯°æ.
         sliders[currentVirus].value
-            = (float)playerDataMgr.currentSquad[key].virusPanalty[currentVirus].penaltyGauge
-            / playerDataMgr.currentSquad[key].virusPanalty[currentVirus].GetMaxGauge();
+            = (float)playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge
+            / playerDataMgr.currentSquad[key].virusPenalty[currentVirus].GetMaxGauge();
     }
 }

@@ -1,21 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class AgitMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
+    public BunkerMgr bunkerMgr;
     public SkillWinMgr skillWinMgr;
     public EquipmentMgr equipmentMgr;
     public ToleranceMgr toleranceMgr;
     public BagMgr bagMgr;
 
+    public Animator menuAnim;
+    bool isMenuOpen;
+
+    [Header("UI")]
+    public GameObject upperUI;
+    public GameObject belowUI;
+    public GameObject characterListUpperUI;
+
+    [Header("Upgrade Win")]
+    public Text agitLevelTxt;
+    public Text capacityTxt;
+    public Text materialTxt;
+
     public GameObject characterListContent;
     public GameObject characterPrefab;
     public List<GameObject> characterObjs;
 
+    public GameObject mainWin;
     public GameObject charcterListWin;
+    public GameObject upgradeWin;
     public GameObject characterInfoWin;
     public Text memberNumTxt;
 
@@ -32,9 +49,12 @@ public class AgitMgr : MonoBehaviour
     int agitLevel;
     int currentMember;
     int maxMember;
+    int nextMaxMember;
+    int upgradeCost;
     bool isDeleteMode;
     int currentIndex;
     Color originColor;
+
     public void Init()
     {
         agitLevel = playerDataMgr.saveData.agitLevel;
@@ -43,23 +63,61 @@ public class AgitMgr : MonoBehaviour
         {
             case 1:
                 maxMember = agitLevelInfo.level1;
+                nextMaxMember = agitLevelInfo.level2;
+                upgradeCost = agitLevelInfo.level2Cost;
                 break;
             case 2:
                 maxMember = agitLevelInfo.level2;
+                nextMaxMember = agitLevelInfo.level3;
+                upgradeCost = agitLevelInfo.level3Cost;
                 break;
             case 3:
                 maxMember = agitLevelInfo.level3;
+                nextMaxMember = agitLevelInfo.level4;
+                upgradeCost = agitLevelInfo.level4Cost;
                 break;
             case 4:
                 maxMember = agitLevelInfo.level4;
+                nextMaxMember = agitLevelInfo.level5;
+                upgradeCost = agitLevelInfo.level5Cost;
                 break;
             case 5:
                 maxMember = agitLevelInfo.level5;
                 break;
         }
-        int currentMemberNum = playerDataMgr.currentSquad.Count;
-        memberNumTxt.text = $"팀원 {currentMemberNum} / {maxMember}";
+       
+        RefreshCharacterList();
 
+        currentIndex = -1;
+        skillWinMgr.currentIndex = currentIndex;
+        equipmentMgr.currentIndex = currentIndex;
+        toleranceMgr.currentIndex = currentIndex;
+        bagMgr.currentIndex = currentIndex;
+
+        skillWinMgr.playerDataMgr = playerDataMgr;
+        skillWinMgr.Init();
+
+        equipmentMgr.playerDataMgr = playerDataMgr;
+        equipmentMgr.Init();
+
+        toleranceMgr.playerDataMgr = playerDataMgr;
+        
+        bagMgr.playerDataMgr = playerDataMgr;
+        bagMgr.Init();
+
+        if (characterInfoWin.activeSelf) characterInfoWin.SetActive(false);
+        if (skillWinMgr.skillPage.activeSelf) skillWinMgr.skillPage.SetActive(false);
+        if (equipmentMgr.equipmentWin.activeSelf) equipmentMgr.equipmentWin.SetActive(false);
+        if (toleranceMgr.toleranceWin.activeSelf) toleranceMgr.toleranceWin.SetActive(false);
+        if (bagMgr.bagWin.activeSelf) bagMgr.bagWin.SetActive(false);
+
+        originColor = characterPrefab.GetComponent<Image>().color;
+        isDeleteMode = false;
+        isMenuOpen = true;
+    }
+
+    public void RefreshCharacterList()
+    {
         //이전 정보 삭제.
         if (characterObjs.Count != 0)
         {
@@ -79,18 +137,29 @@ public class AgitMgr : MonoBehaviour
         {
             var go = Instantiate(characterPrefab, characterListContent.transform);
 
-            go.transform.GetChild(1).GetComponent<Text>().text
-                = element.Value.character.name;
-            go.transform.GetChild(2).GetComponent<Text>().text
-                = $"{element.Value.level}";
-            go.transform.GetChild(3).GetComponent<Text>().text
-                = (element.Value.weapon.mainWeapon != null)?
-                $"{element.Value.weapon.mainWeapon.name}" : "무기 미장착";
-            go.transform.GetChild(4).GetComponent<Text>().text
-                = $"분과";
-            //go.transform.GetChild(5).GetComponent<Slider>().value
-            //   = element.Value.currentHp/ element.Value.maxHp;
-            
+            var child = go.transform.GetChild(0).gameObject;
+            child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                 = $"LV{element.Value.level}";
+
+            child = go.transform.GetChild(1).gameObject;
+            child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                 = element.Value.character.name;
+
+            child = go.transform.GetChild(2).gameObject;
+            child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                 = (element.Value.weapon.mainWeapon != null) ?
+                 element.Value.weapon.mainWeapon.name : "비어있음";
+
+            child = go.transform.GetChild(3).gameObject;
+            child.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                 = element.Value.character.name;
+
+            child = go.transform.GetChild(4).gameObject;
+            child.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                 = $"{element.Value.currentHp}/{element.Value.MaxHp}";
+            child.transform.GetChild(1).gameObject.GetComponent<Slider>().value
+                = element.Value.currentHp;
+
             int num = i;
             var button = go.AddComponent<Button>();
             button.onClick.AddListener(delegate { SelectCharacter(num); });
@@ -100,43 +169,12 @@ public class AgitMgr : MonoBehaviour
 
             i++;
         }
-
-        currentIndex = -1;
-        skillWinMgr.currentIndex = currentIndex;
-        equipmentMgr.currentIndex = currentIndex;
-        toleranceMgr.currentIndex = currentIndex;
-        bagMgr.currentIndex = currentIndex;
-
-        skillWinMgr.playerDataMgr = playerDataMgr;
-        skillWinMgr.Init();
-
-        equipmentMgr.playerDataMgr = playerDataMgr;
-        equipmentMgr.Init();
-
-        toleranceMgr.playerDataMgr = playerDataMgr;
-        
-        bagMgr.playerDataMgr = playerDataMgr;
-        bagMgr.Init();
-
-        if (!charcterListWin.activeSelf) charcterListWin.SetActive(true);
-        if (characterInfoWin.activeSelf) characterInfoWin.SetActive(false);
-        if (skillWinMgr.skillPage.activeSelf) skillWinMgr.skillPage.SetActive(false);
-        if (equipmentMgr.equipmentWin.activeSelf) equipmentMgr.equipmentWin.SetActive(false);
-        if (toleranceMgr.toleranceWin.activeSelf) toleranceMgr.toleranceWin.SetActive(false);
-        if (bagMgr.bagWin.activeSelf) bagMgr.bagWin.SetActive(false);
-
-        originColor = characterPrefab.GetComponent<Image>().color;
-        isDeleteMode = false;
+        int currentMemberNum = playerDataMgr.currentSquad.Count;
+        memberNumTxt.text = $"팀원 {currentMemberNum} / {maxMember}";
     }
 
     public void SelectCharacter(int index)
     {
-        //if (currentIndex != -1)
-        //    characterObjs[currentIndex].GetComponent<Image>().color = originColor;
-
-        //currentIndex = index;
-        //characterObjs[currentIndex].GetComponent<Image>().color = Color.red;
-
         currentIndex = index;
         skillWinMgr.currentIndex = currentIndex;
         equipmentMgr.currentIndex = currentIndex;
@@ -150,155 +188,127 @@ public class AgitMgr : MonoBehaviour
         OpenCharacterInfo();
     }
 
-    public void EnableCheckBox()
-    {
-        if (!isDeleteMode)
-        {
-            isDeleteMode = true;
-            foreach (var element in characterObjs)
-            {
-                element.GetComponent<Button>().enabled = false;
-
-                var go = element.transform.GetChild(6).gameObject;
-                var toggle = go.GetComponent<Toggle>().isOn = false;
-                go.SetActive(true);
-            }
-        }
-    }
-
-    public void DisableCheckBox()
-    {
-        isDeleteMode = false;
-        foreach (var element in characterObjs)
-        {
-            element.GetComponent<Button>().enabled = true;
-
-            var go = element.transform.GetChild(6).gameObject;
-            go.SetActive(false);
-        }
-    }
-
-    public void AllCheckBox(bool value)
-    {
-        if (!isDeleteMode) return;
-        foreach (var element in characterObjs)
-        {
-            var go = element.transform.GetChild(6).gameObject;
-            var toggle = go.GetComponent<Toggle>().isOn = value;
-        }
-    }
-
-    public void CheckAll()
-    {
-        AllCheckBox(true);
-    }
-
-    public void UncheckAll()
-    {
-        AllCheckBox(false);
-    }
-
     public void Fire()
     {
-        if (isAnythingChecked() == false) return;
+        if (isAnythingChecked() == false)
+        {
+            Debug.Log("없음");
+            return;
+        }
 
         int count = characterObjs.Count;
         for (int i = count -1; i > -1; --i)
         {
-            var toggle = characterObjs[i].transform.GetChild(6).GetComponent<Toggle>();
+            var child = characterObjs[i].transform.GetChild(0).gameObject;
+            var toggle = child.transform.GetChild(2).gameObject.GetComponent<Toggle>();
+                 
             if (toggle.isOn)
             {
                 Destroy(characterObjs[i]);
                 characterObjs.RemoveAt(i);
 
-                //데이터 삭제.
-                playerDataMgr.saveData.id.RemoveAt(i);
-                playerDataMgr.saveData.name.RemoveAt(i);
-                playerDataMgr.saveData.hp.RemoveAt(i);
-                playerDataMgr.saveData.maxHp.RemoveAt(i);
-                playerDataMgr.saveData.sensitivity.RemoveAt(i);
-                playerDataMgr.saveData.concentration.RemoveAt(i);
-                playerDataMgr.saveData.willPower.RemoveAt(i);
-
-                playerDataMgr.saveData.gaugeE.RemoveAt(i);
-                playerDataMgr.saveData.gaugeB.RemoveAt(i);
-                playerDataMgr.saveData.gaugeP.RemoveAt(i);
-                playerDataMgr.saveData.gaugeI.RemoveAt(i);
-                playerDataMgr.saveData.gaugeT.RemoveAt(i);
-
-                playerDataMgr.saveData.levelE.RemoveAt(i);
-                playerDataMgr.saveData.levelB.RemoveAt(i);
-                playerDataMgr.saveData.levelP.RemoveAt(i);
-                playerDataMgr.saveData.levelI.RemoveAt(i);
-                playerDataMgr.saveData.levelT.RemoveAt(i);
-
-                int firstIndex = playerDataMgr.saveData.bagEquippableFirstIndex[i];
-                int lastIndex = playerDataMgr.saveData.bagEquippableLastIndex[i];
-                int difference = lastIndex - firstIndex;
-                for (int j = i; j < playerDataMgr.saveData.bagEquippableFirstIndex.Count; j++)
-                {
-                    playerDataMgr.saveData.bagEquippableFirstIndex[j] -= difference;
-                    playerDataMgr.saveData.bagEquippableLastIndex[j] -= difference;
-                }
-
-                for (int j = firstIndex; j < lastIndex; j++)
-                {
-                    playerDataMgr.saveData.bagEquippableList.RemoveAt(i);
-                    playerDataMgr.saveData.bagEquippableNumList.RemoveAt(i);
-                }
-                playerDataMgr.saveData.bagEquippableFirstIndex.RemoveAt(i);
-                playerDataMgr.saveData.bagEquippableLastIndex.RemoveAt(i);
-                
-                firstIndex = playerDataMgr.saveData.bagConsumableFirstIndex[i];
-                lastIndex = playerDataMgr.saveData.bagConsumableLastIndex[i];
-                difference = lastIndex - firstIndex;
-                for (int j = i; j < playerDataMgr.saveData.bagConsumableFirstIndex.Count; j++)
-                {
-                    playerDataMgr.saveData.bagConsumableFirstIndex[j] -= difference;
-                    playerDataMgr.saveData.bagConsumableLastIndex[j] -= difference;
-                }
-
-                for (int j = firstIndex; j < lastIndex; j++)
-                {
-                    playerDataMgr.saveData.bagConsumableList.RemoveAt(i);
-                    playerDataMgr.saveData.bagConsumableNumList.RemoveAt(i);
-                }
-                playerDataMgr.saveData.bagConsumableFirstIndex.RemoveAt(i);
-                playerDataMgr.saveData.bagConsumableLastIndex.RemoveAt(i);
-
-                playerDataMgr.saveData.mainWeapon.RemoveAt(i);
-                playerDataMgr.saveData.subWeapon.RemoveAt(i);
-                
-                int activeSkillNum = playerDataMgr.activeSkillList.Count;
-                
-                for (int j = activeSkillNum-1; j>-1; j--) 
-                {
-                    playerDataMgr.saveData.activeSkillList.RemoveAt(i * activeSkillNum + j); 
-                }
-
-                int passiveSkillNum = playerDataMgr.passiveSkillList.Count;
-                for (int j = passiveSkillNum-1; j >-1; j--)
-                {
-                    playerDataMgr.saveData.passiveSkillList.RemoveAt(i * passiveSkillNum + j);
-                }
-
-                playerDataMgr.currentSquad.Remove(i);
-
-                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+                playerDataMgr.RemoveCharacter(i);
             }
         }
         playerDataMgr.RefreshCurrentSquad();
+        RefreshCharacterList();
+    }
+
+    public void FireAll()
+    {
+        int count = characterObjs.Count;
+        for (int i = count - 1; i > -1; --i)
+        {
+            Destroy(characterObjs[i]);
+            characterObjs.RemoveAt(i);
+
+            playerDataMgr.RemoveCharacter(i);
+        }
+        playerDataMgr.RefreshCurrentSquad();
+        RefreshCharacterList();
     }
 
     bool isAnythingChecked()
     {
-        if (!isDeleteMode) return false;
         foreach (var element in characterObjs)
         {
-            var go = element.transform.GetChild(6).gameObject;
-            if (go.GetComponent<Toggle>().isOn == true) return true;
+            var child = element.transform.GetChild(0).gameObject;
+            var toggle = child.transform.GetChild(2).gameObject.GetComponent<Toggle>();
+            if (toggle.isOn == true) return true;
         }
         return false;
+    }
+
+    public void RefreshUpgradeWin()
+    {
+        if (agitLevel != 5)
+        {
+            agitLevelTxt.text = $"건물 레벨 {agitLevel}→{agitLevel + 1}";
+            capacityTxt.text = $"용별 최대 수량 {maxMember}→{nextMaxMember}";
+            materialTxt.text = $"{upgradeCost}";
+        }
+        else
+        {
+            agitLevelTxt.text = $"건물 레벨{agitLevel}→ -";
+            capacityTxt.text = $"용별 최대 수량 {maxMember}→ -";
+            materialTxt.text = $"-";
+        }
+    }
+
+    //창 관리.
+    public void OpenMainWin()
+    {
+        if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
+        if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
+        if (!upperUI.activeSelf) upperUI.SetActive(true);
+        if (!belowUI.activeSelf) belowUI.SetActive(true);
+
+        if (!mainWin.activeSelf) mainWin.SetActive(true);
+        if (charcterListWin.activeSelf) charcterListWin.SetActive(false);
+        if (characterListUpperUI.activeSelf) characterListUpperUI.SetActive(false);
+        if (upgradeWin.activeSelf) upgradeWin.SetActive(false);
+    }
+
+    public void CloseMainWin()
+    {
+        if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
+        if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
+        if (upperUI.activeSelf) upperUI.SetActive(false);
+        if (belowUI.activeSelf) belowUI.SetActive(false);
+    }
+
+    public void Menu()
+    {
+        isMenuOpen = !isMenuOpen;
+        menuAnim.SetBool("isOpen", isMenuOpen);
+    }
+
+    public void OpenCharacterListWin()
+    {
+        mainWin.SetActive(false);
+        characterListUpperUI.SetActive(true);
+        charcterListWin.SetActive(true);
+    }
+
+    public void CloseCharacterListWin()
+    {
+        characterListUpperUI.SetActive(false);
+        charcterListWin.SetActive(false);
+        mainWin.SetActive(true);
+    }
+
+    public void OpenUpgradeWin()
+    {
+        RefreshUpgradeWin();
+
+        mainWin.SetActive(false);
+        upgradeWin.SetActive(true);
+    }
+
+    public void CloseUpgradeWin()
+    {
+        upgradeWin.SetActive(false);
+        mainWin.SetActive(true);
     }
 
     public void OpenCharacterInfo()
@@ -315,7 +325,6 @@ public class AgitMgr : MonoBehaviour
         willpowerTxt.text = $"정신력 {character.willpower}";
     }
 
-    //창 관리.
     public void CloseCharacterInfo()
     {
         characterInfoWin.SetActive(false);

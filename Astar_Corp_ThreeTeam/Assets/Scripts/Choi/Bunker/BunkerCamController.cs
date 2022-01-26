@@ -43,68 +43,77 @@ public class BunkerCamController : MonoBehaviour
         currentMode = Mode.None;
         isCurrentEmpty = true;
 
-        centerPos = new Vector3(3.60999f, 1.9f, 0f);
+        centerPos = new Vector3(3.53f, 1f, -10f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (multiTouch.Tap) currentMode = Mode.Touch;
-        else if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) currentMode = Mode.Mouse;
+        if (!bunkerMgr.isWinOpen)
+        {
+            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+            {
+                if (!EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+                {
+                    currentMode = Mode.Touch;
+                }
+            }
+            else if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) currentMode = Mode.Mouse;
+        }
 
         if (currentMode != Mode.None)
         {
-            if (isZoomIn && isCurrentEmpty)//빈방 줌아웃.
-            {
-                RaycastHit hit;
-                Ray ray;
+            //if (isZoomIn && isCurrentEmpty)//빈방 줌아웃.
+            //{
+            //    RaycastHit hit;
+            //    Ray ray;
 
-                //터치.
-                if (currentMode == Mode.Touch)
-                {
-                    ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
-                    if (Physics.Raycast(ray, out hit))
-                    {
-                        //비어있을때.
-                        if (hit.collider.gameObject.GetComponent<BunkerBase>() != null
-                            && hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None"))
-                        {
-                            CloseWindow();
-                            Invoke("CompleteZoomOut", 1f);
-                            positionToLook = centerPos;
-                            currentObject = null;
+            //    //터치.
+            //    if (currentMode == Mode.Touch)
+            //    {
+            //        ray = camera.ScreenPointToRay(multiTouch.curTouchPos);
+            //        if (Physics.Raycast(ray, out hit))
+            //        {
+            //            //비어있을때.
+            //            if (hit.collider.gameObject.GetComponent<BunkerBase>() != null
+            //                && hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None"))
+            //            {
+            //                CloseWindow();
+            //                Invoke("CompleteZoomOut", 1f);
+            //                positionToLook = centerPos;
+            //                currentObject = null;
 
-                            if (coroutine != null) StopCoroutine(coroutine);
-                            coroutine = ZoomOut();
-                            StartCoroutine(coroutine);
-                        }
+            //                if (coroutine != null) StopCoroutine(coroutine);
+            //                coroutine = ZoomOut();
+            //                StartCoroutine(coroutine);
+            //            }
 
-                    }
-                }
-                //마우스.
-                else if (currentMode == Mode.Mouse)
-                {
-                    ray = camera.ScreenPointToRay(Input.mousePosition);
-                    if (Physics.Raycast(ray, out hit))
-                    {
-                        //비어있을때.
-                        if (hit.collider.gameObject.GetComponent<BunkerBase>() != null
-                        && hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None"))
-                        {
-                            CloseWindow();
-                            Invoke("CompleteZoomOut", 1f);
-                            positionToLook = centerPos;
-                            currentObject = null;
+            //        }
+            //    }
+            //    //마우스.
+            //    else if (currentMode == Mode.Mouse)
+            //    {
+            //        ray = camera.ScreenPointToRay(Input.mousePosition);
+            //        if (Physics.Raycast(ray, out hit))
+            //        {
+            //            //비어있을때.
+            //            if (hit.collider.gameObject.GetComponent<BunkerBase>() != null
+            //            && hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None"))
+            //            {
+            //                CloseWindow();
+            //                Invoke("CompleteZoomOut", 1f);
+            //                positionToLook = centerPos;
+            //                currentObject = null;
 
-                            if (coroutine != null) StopCoroutine(coroutine);
-                            coroutine = ZoomOut();
-                            StartCoroutine(coroutine);
-                        }
-                    }
-                }
-            }
+            //                if (coroutine != null) StopCoroutine(coroutine);
+            //                coroutine = ZoomOut();
+            //                StartCoroutine(coroutine);
+            //            }
+            //        }
+            //    }
+            //}
 
-            else if (!isZoomIn)//줌인.
+            if (!isZoomIn)//줌인.
             {
                 RaycastHit hit;
                 Ray ray;
@@ -161,6 +170,50 @@ public class BunkerCamController : MonoBehaviour
         currentMode = Mode.None;
     }
 
+    public void SelectBunker(int index)
+    {
+        //1.Agit
+        //2.Pub
+        //3.Store
+        //4.Hospital
+        //5.Garage
+        //6.Storage
+
+        GameObject selectedBunker = null;
+        switch (index)
+        {
+            case 1:
+                selectedBunker = bunkerMgr.bunkerObjs[4];
+                break;
+            case 2:
+                selectedBunker = bunkerMgr.bunkerObjs[2];
+                break;
+            case 3:
+                selectedBunker = bunkerMgr.bunkerObjs[3];
+                break;
+            case 4:
+                selectedBunker = bunkerMgr.bunkerObjs[1];
+                break;
+            case 5:
+                selectedBunker = bunkerMgr.bunkerObjs[0];
+                break;
+            case 6:
+                selectedBunker = bunkerMgr.bunkerObjs[5];
+                break;
+        }
+
+        SetBunkerKind(currentMode, selectedBunker);
+        isCurrentEmpty = false;
+
+        Invoke("CompleteZoomIn", 1f);
+        positionToLook = selectedBunker.transform.position;
+        currentObject = selectedBunker.transform.gameObject;
+
+        if (coroutine != null) StopCoroutine(coroutine);
+        coroutine = ZoomIn();
+        StartCoroutine(coroutine);
+    }
+
     public void CompleteZoomIn()
     {
         isZoomIn = true;
@@ -198,6 +251,7 @@ public class BunkerCamController : MonoBehaviour
         while (progress < .5)
         {
             camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, 5f, progress);
+           
             var x = Mathf.Lerp(transform.position.x, centerPos.x, progress);
             var y = Mathf.Lerp(transform.position.y, centerPos.y, progress);
             transform.position = new Vector3(x, y, transform.position.z);
@@ -212,13 +266,13 @@ public class BunkerCamController : MonoBehaviour
     {
         if (bunkerMgr.destroyButton.activeSelf) bunkerMgr.destroyButton.SetActive(false);
 
+        CloseWindow();
+
         isZoomIn = false;
         positionToLook = centerPos;
 
         if (coroutine != null) StopCoroutine(coroutine);
         coroutine = ZoomOut();
         StartCoroutine(coroutine);
-
-        CloseWindow();
     }
 }

@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using TMPro;
-
+using UnityEngine.UI;
 public enum BunkerKinds
 {
     None,
@@ -41,6 +40,25 @@ public class BunkerMgr : MonoBehaviour
     public BunkerKinds currentBunkerKind;
     int currentWinId;
 
+    public Animator bunkerMenuAnim;
+    bool isBunkerMenuOpen;
+    [Header("창관련")]
+    public GameObject pauseWin;
+    public GameObject optionWin;
+    public bool isWinOpen;
+
+    [Header("상단UI")]
+    public Text bullet5Txt;
+    public Text bullet7Txt;
+    public Text bullet9Txt;
+    public Text bullet45Txt;
+    public Text bullet12Txt;
+    public Text nameTxt;
+    public Text moneyTxt;
+    public GameObject mapButton;
+
+    public GameObject belowUI;
+
     [Header("Prefabs")]
     public GameObject emptyPrefab;
     public GameObject agitPrefab;
@@ -52,7 +70,7 @@ public class BunkerMgr : MonoBehaviour
     public GameObject storagePrefab;
     public GameObject lockedPrefab;
     public List<GameObject> bunkerObjs;
-    
+
     int bunkerCount;
     public int currentBunkerIndex;
 
@@ -73,6 +91,7 @@ public class BunkerMgr : MonoBehaviour
         upgradeMgr = GameObject.Find("UpgradeMgr").GetComponent<UpgradeMgr>();
 
         agitMgr.playerDataMgr = playerDataMgr;
+        agitMgr.bunkerMgr = this;
         pubMgr.playerDataMgr = playerDataMgr;
         storeMgr.playerDataMgr = playerDataMgr;
         hospitalMgr.playerDataMgr = playerDataMgr;
@@ -86,6 +105,18 @@ public class BunkerMgr : MonoBehaviour
 
     private void Start()
     {
+        if (pauseWin.activeSelf) pauseWin.SetActive(false);
+        if (optionWin.activeSelf) optionWin.SetActive(false);
+        isWinOpen = false;
+
+        if (!belowUI.activeSelf) belowUI.SetActive(true);
+        if (!mapButton.activeSelf) mapButton.SetActive(true);
+        if (agitMgr.upperUI.activeSelf) agitMgr.upperUI.SetActive(false);
+        if (agitMgr.belowUI.activeSelf) agitMgr.belowUI.SetActive(false);
+        isBunkerMenuOpen = true;
+
+        RefreshGoods();
+
         agitMgr.Init();
         pubMgr.Init();
         storeMgr.Init();
@@ -100,102 +131,28 @@ public class BunkerMgr : MonoBehaviour
 
         currentWinId = -1;
         currentBunkerKind = BunkerKinds.None;
-
-        //bunkerCount = bunkerObjs.Count;
         currentBunkerIndex = -1;
 
-        //int count = playerDataMgr.saveData.bunkerKind.Count;
-        //for (int i=0; i<count; i++)
-        //{
-        //    int kind = playerDataMgr.saveData.bunkerKind[i];
-        //    BunkerKinds bunkerKinds = (BunkerKinds)kind;
-
-        //    selectedBunker = bunkerObjs[i];
-        //    currentBunkerIndex = i;
-        //    currentBunkerKind = bunkerKinds;
-
-        //    switch (bunkerKinds)
-        //    {
-        //        case BunkerKinds.None:
-        //            break;
-        //        case BunkerKinds.Agit:
-        //            Create(1);
-        //            break;
-        //        case BunkerKinds.Pub:
-        //            Create(2);
-        //            break;
-        //        case BunkerKinds.Store:
-        //            Create(3);
-        //            break;
-        //        case BunkerKinds.Hospital:
-        //            Create(4);
-        //            break;
-        //        case BunkerKinds.Garage:
-        //            Create(5);
-        //            break;
-        //        case BunkerKinds.Storage:
-        //            Create(6);
-        //            break;
-        //        case BunkerKinds.Locked:
-        //            selectedBunker = bunkerObjs[i];
-        //            var go = Instantiate(lockedPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
-
-        //            var script = go.GetComponent<BunkerBase>();
-        //            script.bunkerId = i;
-
-        //            Destroy(selectedBunker);
-        //            selectedBunker = null;
-        //            bunkerObjs[i] = go;
-
-        //            break;
-        //    }
-        //    var bunkerBase = bunkerObjs[currentBunkerIndex].GetComponent<BunkerBase>();
-        //}
-        //CloseWindow();
         selectedBunker = null;
         currentBunkerIndex = -1;
         currentBunkerKind = BunkerKinds.None;
-
-        //if (playerDataMgr.isFirst)
-        //{
-        //    //랜덤으로 잠기도록.
-        //    int[] randomIndexArr = new int[2];
-        //    randomIndexArr[0] = Random.Range(0, 4);
-        //    randomIndexArr[1] = Random.Range(4, 9);
-
-        //    foreach (var element in randomIndexArr)
-        //    {
-        //        selectedBunker = bunkerObjs[element];
-        //        var go = Instantiate(lockedPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
-
-        //        var script = go.GetComponent<BunkerBase>();
-        //        script.bunkerId = element;
-
-        //        Destroy(selectedBunker);
-        //        selectedBunker = null;
-        //        bunkerObjs[element] = go;
-
-        //        playerDataMgr.saveData.bunkerKind[element] = 6;
-        //        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
-        //    }
-        //}
 
         if (destroyButton.activeSelf) destroyButton.SetActive(false);
     }
 
     public void SetBunkerKind(Mode currentMode, GameObject bunker)
     {
-        if (currentMode == Mode.Touch)
-        {
+        //if (currentMode == Mode.Touch)
+        //{
             var script = bunker.GetComponent<BunkerBase>();
             currentBunkerIndex = script.bunkerId;
             var bunkerName = script.bunkerName;
             selectedBunker = bunker;
 
             //현재 벙커 종류.
-            if (!bunkerName.Equals("None"))
-            {
-                if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+            //if (!bunkerName.Equals("None"))
+            //{
+            //    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
 
                 switch (bunkerName)
                 {
@@ -218,63 +175,67 @@ public class BunkerMgr : MonoBehaviour
                         currentBunkerKind = BunkerKinds.Storage;
                         break;
                 }
-            }
-            else
-            {
-                if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
+        //    }
+        //    else
+        //    {
+        //        if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
 
-                currentBunkerKind = BunkerKinds.None;
-            }
-        }
-        else if (currentMode == Mode.Mouse)
-        {
-            var script = bunker.GetComponent<BunkerBase>();
-            currentBunkerIndex = script.bunkerId;
-            var bunkerName = script.bunkerName;
-            selectedBunker = bunker;
+        //        currentBunkerKind = BunkerKinds.None;
+        //    }
+        //}
+        //else if (currentMode == Mode.Mouse)
+        //{
+        //    var script = bunker.GetComponent<BunkerBase>();
+        //    currentBunkerIndex = script.bunkerId;
+        //    var bunkerName = script.bunkerName;
+        //    selectedBunker = bunker;
 
-            //현재 벙커 종류.
-            if (!bunkerName.Equals("None"))
-            {
-                if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
+        //    //현재 벙커 종류.
+        //    if (!bunkerName.Equals("None"))
+        //    {
+        //        if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
 
-                switch (bunkerName)
-                {
-                    case "Agit":
-                        currentBunkerKind = BunkerKinds.Agit;
-                        break;
-                    case "Pub":
-                        currentBunkerKind = BunkerKinds.Pub;
-                        break;
-                    case "Store":
-                        currentBunkerKind = BunkerKinds.Store;
-                        break;
-                    case "Hospital":
-                        currentBunkerKind = BunkerKinds.Hospital;
-                        break;
-                    case "Garage":
-                        currentBunkerKind = BunkerKinds.Garage;
-                        break;
-                    case "Storage":
-                        currentBunkerKind = BunkerKinds.Storage;
-                        break;
-                }
-            }
-            else
-            {
-                if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
+        //        switch (bunkerName)
+        //        {
+        //            case "Agit":
+        //                currentBunkerKind = BunkerKinds.Agit;
+        //                break;
+        //            case "Pub":
+        //                currentBunkerKind = BunkerKinds.Pub;
+        //                break;
+        //            case "Store":
+        //                currentBunkerKind = BunkerKinds.Store;
+        //                break;
+        //            case "Hospital":
+        //                currentBunkerKind = BunkerKinds.Hospital;
+        //                break;
+        //            case "Garage":
+        //                currentBunkerKind = BunkerKinds.Garage;
+        //                break;
+        //            case "Storage":
+        //                currentBunkerKind = BunkerKinds.Storage;
+        //                break;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
 
-                currentBunkerKind = BunkerKinds.None;
-            }
-        }
+        //        currentBunkerKind = BunkerKinds.None;
+        //    }
+        //}
     }
 
     public void OpenWindow()
     {
+        isWinOpen = true;
+        if (mapButton.activeSelf) mapButton.SetActive(false);
         switch (currentBunkerKind)
         {
             case BunkerKinds.Agit:
+                nameTxt.text = "아지트"; 
                 agitMgr.Init();
+                agitMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.AgitWindow - 1;
                 break;
             case BunkerKinds.Pub:
@@ -314,6 +275,10 @@ public class BunkerMgr : MonoBehaviour
     {
         if (currentWinId != -1)
         {
+            nameTxt.text = "벙커";
+            if (!mapButton.activeSelf) mapButton.SetActive(true);
+            isWinOpen = false;
+
             windowManager.windows[currentWinId].Close();
             currentWinId = -1;
         }
@@ -421,5 +386,90 @@ public class BunkerMgr : MonoBehaviour
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         //SceneManager.LoadScene("TestNonBattleMap");
         SceneManager.LoadScene("NonBattleMap");
+    }
+    public void Upgrade(string name)
+    {
+        switch (name)
+        {
+            case "Agit":
+                if (playerDataMgr.saveData.agitLevel == 5) return;
+                playerDataMgr.saveData.agitLevel++;
+                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+                var child = bunkerObjs[4].transform.GetChild(0).gameObject;
+                child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.agitLevel}";
+
+                agitMgr.Init();
+                agitMgr.RefreshUpgradeWin();
+                break;
+        }
+
+
+    }
+
+    public void RefreshGoods()
+    {
+        int bullet5Num = 0;
+        int bullet7Num = 0;
+        int bullet9Num = 0;
+        int bullet45Num = 0;
+        int bullet12Num = 0;
+
+        foreach (var element in playerDataMgr.currentOtherItems)
+        {
+            switch (element.Key)
+            {
+                case "BUL_0004":
+                    bullet5Num += playerDataMgr.currentOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0005":
+                    bullet7Num += playerDataMgr.currentOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0002":
+                    bullet9Num += playerDataMgr.currentOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0003":
+                    bullet45Num += playerDataMgr.currentOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0001":
+                    bullet12Num += playerDataMgr.currentOtherItemsNum[element.Key];
+                    break;
+            }
+        }
+        bullet5Txt.text = $"{bullet5Num}";
+        bullet7Txt.text = $"{bullet7Num}";
+        bullet9Txt.text = $"{bullet9Num}";
+        bullet45Txt.text = $"{bullet45Num}";
+        bullet12Txt.text = $"{bullet12Num}";
+        moneyTxt.text = $"{playerDataMgr.saveData.money}";
+    }
+
+    //창 관련.
+    public void BunkerMenu()
+    {
+        isBunkerMenuOpen = !isBunkerMenuOpen;
+        bunkerMenuAnim.SetBool("isOpen", isBunkerMenuOpen);
+    }
+
+    public void OpenPauseWin()
+    {
+        pauseWin.SetActive(true);
+        isWinOpen = true;
+    }
+
+    public void ClosePauseWin()
+    {
+        pauseWin.SetActive(false);
+        isWinOpen = false;
+    }
+
+    public void OpenOptionWin()
+    {
+        optionWin.SetActive(true);
+    }
+
+    public void CloseOptionWin()
+    {
+        optionWin.SetActive(false);
     }
 }

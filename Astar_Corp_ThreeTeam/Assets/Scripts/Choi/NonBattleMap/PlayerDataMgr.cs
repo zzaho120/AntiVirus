@@ -411,23 +411,23 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             stat.weapon.mainWeapon = (saveData.mainWeapon[i] == null) ? null : equippableList[saveData.mainWeapon[i]];
             stat.weapon.subWeapon = (saveData.subWeapon[i] == null) ? null : equippableList[saveData.subWeapon[i]];
 
-            List<string> activeSkill = new List<string>();
-            int activeSkillNum = activeSkillList.Count;
-            for (int j = 0; j < activeSkillNum; j++) { activeSkill.Add(saveData.activeSkillList[i * activeSkillNum + j]); }
-            foreach (var element in activeSkill)
-            {
-                if (element == null) continue;
-                stat.skillMgr.activeSkills.Add(activeSkillList[element]);
-            }
+            //List<string> activeSkill = new List<string>();
+            //int activeSkillNum = activeSkillList.Count;
+            //for (int j = 0; j < activeSkillNum; j++) { activeSkill.Add(saveData.activeSkillList[i * activeSkillNum + j]); }
+            //foreach (var element in activeSkill)
+            //{
+            //    if (element == null) continue;
+            //    stat.skillMgr.activeSkills.Add(activeSkillList[element]);
+            //}
 
-            List<string> passiveSkill = new List<string>();
-            int passiveSkillNum = passiveSkillList.Count;
-            for (int j = 0; j < passiveSkillNum; j++) { passiveSkill.Add(saveData.passiveSkillList[i * passiveSkillNum + j]); }
-            foreach (var element in passiveSkill)
-            {
-                if (element == null) continue;
-                stat.skillMgr.passiveSkills.Add(passiveSkillList[element]);
-            }
+            //List<string> passiveSkill = new List<string>();
+            //int passiveSkillNum = passiveSkillList.Count;
+            //for (int j = 0; j < passiveSkillNum; j++) { passiveSkill.Add(saveData.passiveSkillList[i * passiveSkillNum + j]); }
+            //foreach (var element in passiveSkill)
+            //{
+            //    if (element == null) continue;
+            //    stat.skillMgr.passiveSkills.Add(passiveSkillList[element]);
+            //}
 
             for (int j = saveData.bagEquippableFirstIndex[i]; j < saveData.bagEquippableLastIndex[i]; j++)
             {
@@ -482,16 +482,16 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.mainWeapon.Add(mainWeaponStr);
             string subWeaponStr = (stat.weapon.subWeapon != null) ? stat.weapon.subWeapon.id : null;
             saveData.subWeapon.Add(subWeaponStr);
-            for (int k = 0; k < 5; k++) 
-            {
-                string activeSkillStr = (stat.skillMgr.activeSkills[k] != null) ? stat.skillMgr.activeSkills[k].id : null;
-                saveData.activeSkillList.Add(activeSkillStr); 
-            }
-            for (int k = 0; k < 5; k++) 
-            {
-                string passiveSkillStr = (stat.skillMgr.passiveSkills[k] != null) ? stat.skillMgr.passiveSkills[k].id : null;
-                saveData.passiveSkillList.Add(passiveSkillStr); 
-            }
+            //for (int k = 0; k < 5; k++) 
+            //{
+            //    string activeSkillStr = (stat.skillMgr.activeSkills[k] != null) ? stat.skillMgr.activeSkills[k].id : null;
+            //    saveData.activeSkillList.Add(activeSkillStr); 
+            //}
+            //for (int k = 0; k < 5; k++) 
+            //{
+            //    string passiveSkillStr = (stat.skillMgr.passiveSkills[k] != null) ? stat.skillMgr.passiveSkills[k].id : null;
+            //    saveData.passiveSkillList.Add(passiveSkillStr); 
+            //}
 
             if (num == 0)
             {
@@ -518,46 +518,100 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             stat.saveId = num;
             currentSquad.Add(num, stat);
         }
-        //else //기존거 변경.
+        PlayerSaveLoadSystem.Save(saveData);
+    }
+
+    public void RemoveCharacter(int i)
+    {
+        saveData.boarding.RemoveAt(i);
+        saveData.id.RemoveAt(i);
+        saveData.name.RemoveAt(i);
+        saveData.hp.RemoveAt(i);
+        saveData.maxHp.RemoveAt(i);
+        saveData.sensitivity.RemoveAt(i);
+        saveData.concentration.RemoveAt(i);
+        saveData.willPower.RemoveAt(i);
+        saveData.bagLevel.RemoveAt(i);
+
+        saveData.gaugeE.RemoveAt(i);
+        saveData.gaugeB.RemoveAt(i);
+        saveData.gaugeP.RemoveAt(i);
+        saveData.gaugeI.RemoveAt(i);
+        saveData.gaugeT.RemoveAt(i);
+
+        saveData.levelE.RemoveAt(i);
+        saveData.levelB.RemoveAt(i);
+        saveData.levelP.RemoveAt(i);
+        saveData.levelI.RemoveAt(i);
+        saveData.levelT.RemoveAt(i);
+
+        saveData.mainWeapon.RemoveAt(i);
+        saveData.subWeapon.RemoveAt(i);
+
+        //int activeSkillNum = activeSkillList.Count;
+        //for (int j = activeSkillNum - 1; j > -1; j--)
         //{
-        //    saveData.id[num] = stat.character.id;
-        //    saveData.name[num] = stat.character.name;
-        //    saveData.hp[num] = stat.currentHp;
-        //    saveData.maxHp[num] = stat.maxHp;
-        //    saveData.sensitivity[num] = stat.sensivity;
-        //    saveData.concentration[num] =stat.concentration;
-        //    saveData.willPower[num] =stat.willpower;
-
-        //    saveData.gaugeE[num] = stat.virusPanalty["E"].penaltyGauge;
-        //    saveData.gaugeB[num] = stat.virusPanalty["B"].penaltyGauge;
-        //    saveData.gaugeP[num] = stat.virusPanalty["P"].penaltyGauge;
-        //    saveData.gaugeI[num] = stat.virusPanalty["I"].penaltyGauge;
-        //    saveData.gaugeT[num] = stat.virusPanalty["T"].penaltyGauge;
-
-        //    saveData.levelE[num] = stat.virusPanalty["E"].penaltyLevel;
-        //    saveData.levelB[num] = stat.virusPanalty["B"].penaltyLevel;
-        //    saveData.levelP[num] = stat.virusPanalty["P"].penaltyLevel;
-        //    saveData.levelI[num] = stat.virusPanalty["I"].penaltyLevel;
-        //    saveData.levelT[num] = stat.virusPanalty["T"].penaltyLevel;
-
-        //    string mainWeaponStr = (stat.weapon.mainWeapon != null) ? stat.weapon.mainWeapon.id : null;
-        //    saveData.mainWeapon[num] = mainWeaponStr;
-        //    string subWeaponStr = (stat.weapon.subWeapon != null) ? stat.weapon.subWeapon.id : null;
-        //    saveData.subWeapon[num] = subWeaponStr;
-
-        //    for (int k = 0; k < 5; k++)
-        //    {
-        //        string activeSkillStr = (stat.skills.activeSkills[k] != null) ? stat.skills.activeSkills[k].id : null;
-        //        saveData.activeSkillList[num * 5 + k] = activeSkillStr;
-        //    }
-        //    for (int k = 0; k < 5; k++)
-        //    {
-        //        string passiveSkillStr = (stat.skills.passiveSkills[k] != null) ? stat.skills.passiveSkills[k].id : null;
-        //        saveData.passiveSkillList[num * 5 + k] =passiveSkillStr;
-        //    }
-
-        //    currentSquad[num] = stat;
+        //    saveData.activeSkillList.RemoveAt(i * activeSkillNum + j);
         //}
+
+        //int passiveSkillNum = passiveSkillList.Count;
+        //for (int j = passiveSkillNum - 1; j > -1; j--)
+        //{
+        //    saveData.passiveSkillList.RemoveAt(i * passiveSkillNum + j);
+        //}
+
+        int firstIndex = saveData.bagEquippableFirstIndex[i];
+        int lastIndex = saveData.bagEquippableLastIndex[i];
+        int difference = lastIndex - firstIndex;
+        for (int j = i; j < saveData.bagEquippableFirstIndex.Count; j++)
+        {
+            saveData.bagEquippableFirstIndex[j] -= difference;
+            saveData.bagEquippableLastIndex[j] -= difference;
+        }
+
+        for (int j = firstIndex; j < lastIndex; j++)
+        {
+            saveData.bagEquippableList.RemoveAt(i);
+            saveData.bagEquippableNumList.RemoveAt(i);
+        }
+        saveData.bagEquippableFirstIndex.RemoveAt(i);
+        saveData.bagEquippableLastIndex.RemoveAt(i);
+
+        firstIndex = saveData.bagConsumableFirstIndex[i];
+        lastIndex = saveData.bagConsumableLastIndex[i];
+        difference = lastIndex - firstIndex;
+        for (int j = i; j < saveData.bagConsumableFirstIndex.Count; j++)
+        {
+            saveData.bagConsumableFirstIndex[j] -= difference;
+            saveData.bagConsumableLastIndex[j] -= difference;
+        }
+
+        for (int j = firstIndex; j < lastIndex; j++)
+        {
+            saveData.bagConsumableList.RemoveAt(i);
+            saveData.bagConsumableNumList.RemoveAt(i);
+        }
+        saveData.bagConsumableFirstIndex.RemoveAt(i);
+        saveData.bagConsumableLastIndex.RemoveAt(i);
+
+        firstIndex = saveData.bagOtherItemFirstIndex[i];
+        lastIndex = saveData.bagOtherItemLastIndex[i];
+        difference = lastIndex - firstIndex;
+        for (int j = i; j < saveData.bagOtherItemFirstIndex.Count; j++)
+        {
+            saveData.bagOtherItemFirstIndex[j] -= difference;
+            saveData.bagOtherItemLastIndex[j] -= difference;
+        }
+
+        for (int j = firstIndex; j < lastIndex; j++)
+        {
+            saveData.bagOtherItemList.RemoveAt(i);
+            saveData.bagOtherItemNumList.RemoveAt(i);
+        }
+        saveData.bagOtherItemFirstIndex.RemoveAt(i);
+        saveData.bagOtherItemLastIndex.RemoveAt(i);
+
+        currentSquad.Remove(i);
 
         PlayerSaveLoadSystem.Save(saveData);
     }
