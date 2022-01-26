@@ -142,10 +142,12 @@ public class CreateMonsterAreas : MonoBehaviour
                 ////PlayerPrefs.SetInt(str, randScale);
 
                 var go = Instantiate(monsterAreaPrefab, position, Quaternion.identity);
-                go.transform.SetParent(GameObject.Find("MonsterArea").transform);   // 부모오브젝트 설정
+                go.transform.SetParent(GameObject.Find("MonsterPool").transform);   // 부모오브젝트 설정
+                //go.transform.SetParent(GameObject.Find("MonsterArea").transform);   // 부모오브젝트 설정
                 //go.transform.localScale = new Vector3(randScale, randScale, randScale);
 
-                monsterAreaList.Add(go);
+                //poolInfo.monsterArea.Add(go);
+                //monsterAreaList.Add(go);
             }
         }
         // 게임 이어서 할 때

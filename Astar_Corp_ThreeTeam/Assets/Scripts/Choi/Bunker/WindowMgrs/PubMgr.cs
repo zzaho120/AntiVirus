@@ -111,7 +111,7 @@ public class PubMgr : MonoBehaviour
             stat.skillMgr = new SkillMgr();
             stat.buffMgr = new BuffMgr();
 
-            stat.VirusPanaltyInit();
+            stat.VirusPenaltyInit();
 
             stat.virusPenalty["E"].penaltyGauge = 0;
             stat.virusPenalty["B"].penaltyGauge = 0;

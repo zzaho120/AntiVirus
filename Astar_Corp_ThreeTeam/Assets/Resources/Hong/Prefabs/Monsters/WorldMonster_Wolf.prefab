@@ -1539,8 +1539,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monster: {fileID: 0}
   virus: {fileID: 0}
-  nonBattleMonster: {fileID: 11400000, guid: 3347762eabcd67946ab64a77ebef4ae9, type: 2}
+  nonBattleMonster: {fileID: 0}
   virusLevel: 0
+  originMaxHp: 0
   currentHp: 0
   currentAp: 0
 --- !u!65 &6149440996000563482
@@ -1570,8 +1571,8 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  m_Constraints: 36
+  m_CollisionDetection: 1
 --- !u!114 &-3565011287147954051
 MonoBehaviour:
   m_ObjectHideFlags: 0

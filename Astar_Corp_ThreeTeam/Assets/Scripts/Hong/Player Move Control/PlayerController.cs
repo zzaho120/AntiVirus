@@ -73,13 +73,16 @@ public class PlayerController : MonoBehaviour
     //void Update()
     public void PlayerControllerUpdate()
     {
+        // 조건 정리
+        bool terms = !EventSystem.current.IsPointerOverGameObject() && timeController.isPause == false && !playerMove.cameraMovement.isWorldMapMode;
+
         // Raycast parameters
         int facilitiesLayer = LayerMask.GetMask("Facilities");
         int monsterLayer    = LayerMask.GetMask("EliteMonster");
         int rayRange = 1000;
 
         #region New Input System
-        if ((multiTouch.Tap && !EventSystem.current.IsPointerOverGameObject() && timeController.isPause == false))              
+        if (multiTouch.Tap && terms)              
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
             RaycastHit raycastHit;
@@ -130,7 +133,7 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         #region Mouse Click
-        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && timeController.isPause == false)
+        if (Input.GetMouseButtonDown(0) && terms)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;

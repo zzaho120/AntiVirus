@@ -4,15 +4,14 @@ using UnityEngine;
 public class PoolManager : MonoBehaviour
 {
     public List<ObjectPool> pools;
-    private GameObject newPool;
+    protected GameObject newPool;
     protected GameObject[] poolBox;
 
-    private void Awake()
-    {
-        poolBox = new GameObject[pools.Count];
-
-        CreatePoolsTr();
-    }
+    //private void Awake()
+    //{
+    //    poolBox = new GameObject[pools.Count];
+    //    CreatePoolsTr();
+    //}
 
     // Ç® »ý¼º
     public virtual void CreatePoolsTr()

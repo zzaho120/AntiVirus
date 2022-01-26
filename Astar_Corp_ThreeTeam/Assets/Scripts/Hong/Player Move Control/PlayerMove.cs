@@ -15,6 +15,7 @@ public class PlayerMove : MonoBehaviour
     // to get CharacterController from the unity
     private CharacterController characterController;
     private PlayerController playerController;
+    public CameraMovement cameraMovement;
 
     //to calculate
     //private Vector3 calcVelocity = Vector3.zero;
@@ -25,6 +26,8 @@ public class PlayerMove : MonoBehaviour
 
     public void Init()
     {
+        cameraMovement = Camera.main.GetComponent<CameraMovement>();
+
         //to get CharacterController from the unity
         characterController = GetComponent<CharacterController>();
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -37,11 +40,13 @@ public class PlayerMove : MonoBehaviour
 
     public void PlayerMoveUpdate()
     {
+        bool terms = !EventSystem.current.IsPointerOverGameObject() && playerController.timeController.isPause == false && !cameraMovement.isWorldMapMode;
+        
         int facilitiesLayer = LayerMask.GetMask("Facilities");
         int monsterLayer = LayerMask.GetMask("EliteMonster");
 
         // Mouse Click
-        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && playerController.timeController.isPause == false) 
+        if (Input.GetMouseButtonDown(0) && terms) 
         {
             // Make ray from screen to world
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -60,7 +65,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         // New Input System
-        if ((playerController.multiTouch.Tap && !EventSystem.current.IsPointerOverGameObject() && playerController.timeController.isPause == false))
+        if (playerController.multiTouch.Tap && terms)
         {
             // Make ray from screen to world
             Ray ray = Camera.main.ScreenPointToRay(playerController.multiTouch.curTouchPos);

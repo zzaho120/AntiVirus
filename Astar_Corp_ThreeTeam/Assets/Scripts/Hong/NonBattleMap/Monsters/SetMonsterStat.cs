@@ -18,7 +18,6 @@ public class SetMonsterStat : MonoBehaviour
     //    Gizmos.DrawSphere(center, radius);
     //}
 
-
     public void Init()
     {
         scriptableMgr = ScriptableMgr.Instance;
@@ -83,25 +82,10 @@ public class SetMonsterStat : MonoBehaviour
                 // 바이러스 타입 설정
                 var labInfo = hitColliders[i].GetComponent<LaboratoryInfo>();
                 monsterStats.virus = scriptableMgr.GetVirus(labInfo.virusType);
-
-                //// Area2
-                //if (labInfo.isActiveZone2 && !labInfo.isActiveZone3)
-                //{
-                //    monsterStats.virusLevel = Random.Range(1, 2 + 1);
-                //}
-                //// Area3
-                //else if (labInfo.isActiveZone2 && labInfo.isActiveZone3)
-                //{
-                //    monsterStats.virusLevel = Random.Range(1, 3 + 1);
-                //}
-                //// Area1
-                //else
-                //{
-                //    monsterStats.virusLevel = 1;
-                //}
-                ////break;
             }
-        }
+         }
+
+        // 레벨 설정
         if (hitColliders.Length >= 3)
         {
             monsterStats.virusLevel = 3;

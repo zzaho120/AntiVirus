@@ -10,7 +10,8 @@ public class NonBattleMgr : MonoBehaviour
     // 벙커 위치 담기
     public Transform bunkerPos;
     // Monster Area
-    public CreateMonsterAreas[] monsterArea;
+    public CreateMonsterAreas[] createMonsterArea;
+    //public List<GameObject> monsterArea;
 
     [Header("Public Class")]
     public CreateLabArea laboratoryArea;
@@ -36,9 +37,9 @@ public class NonBattleMgr : MonoBehaviour
 
         // 클래스들 초기화
         laboratoryArea.Init();
-        for (int i = 0; i < monsterArea.Length; i++)
+        for (int i = 0; i < createMonsterArea.Length; i++)
         {
-            monsterArea[i].Init();
+            createMonsterArea[i].Init();
         }
         monsterPool.Init();
         playerMove.Init();

@@ -153,7 +153,7 @@ public class CharacterStats
     #endregion
 
 
-    public void VirusPanaltyInit()
+    public void VirusPenaltyInit()
     {
         if (virusPenalty.Count == 0)
         {
@@ -181,7 +181,7 @@ public class CharacterStats
         buffMgr = new BuffMgr();
         skillMgr = new SkillMgr();
 
-        VirusPanaltyInit();
+        VirusPenaltyInit();
     }
 
     public void StartGame()

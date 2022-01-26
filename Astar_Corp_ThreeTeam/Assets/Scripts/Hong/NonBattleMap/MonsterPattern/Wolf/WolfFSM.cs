@@ -10,6 +10,6 @@ public class WolfFSM : FSM
         AddState(new Wolf_IdleState(this));         // State 1
         AddState(new Wolf_PatrolState(this));       // State 2
         AddState(new Wolf_ChaseState(this));        // State 3
-        ChangeState(STATE.Patrol);                    // 초기상태 설정
+        ChangeState(STATE.Idle);                  // 초기상태 설정
     }
 }

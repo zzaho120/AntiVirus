@@ -9,7 +9,7 @@ public class MultiTouch : MonoBehaviour
 {
     private float touchTime;                // use swipe
     private float swipeDelayTime = 1f;      // use swipe
-    private Vector2 touchStartPos;
+    public Vector2 touchStartPos;
     public Vector2 curTouchPos;
     public Vector2 primaryDeltaPos;
     public Vector2 curSecTouchPos;
