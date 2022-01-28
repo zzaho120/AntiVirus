@@ -92,12 +92,16 @@ public class BunkerMgr : MonoBehaviour
 
         agitMgr.playerDataMgr = playerDataMgr;
         agitMgr.bunkerMgr = this;
+
         pubMgr.playerDataMgr = playerDataMgr;
         storeMgr.playerDataMgr = playerDataMgr;
         hospitalMgr.playerDataMgr = playerDataMgr;
         garageMgr.playerDataMgr = playerDataMgr;
         carCenterMgr.playerDataMgr = playerDataMgr;
+        
         storageMgr.playerDataMgr = playerDataMgr;
+        storageMgr.bunkerMgr = this;
+
         upgradeMgr.playerDataMgr = playerDataMgr;
         upgradeMgr.bunkerMgr = this;
         upgradeMgr.CloseWindow = CloseWindow;
@@ -255,6 +259,7 @@ public class BunkerMgr : MonoBehaviour
                 break;
             case BunkerKinds.Storage:
                 storageMgr.Init();
+                storageMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.StorageWindow - 1;
                 break;
         }
@@ -401,6 +406,17 @@ public class BunkerMgr : MonoBehaviour
 
                 agitMgr.Init();
                 agitMgr.RefreshUpgradeWin();
+                break;
+            case "Storage":
+                if (playerDataMgr.saveData.storageLevel == 5) return;
+                playerDataMgr.saveData.storageLevel++;
+                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+                child = bunkerObjs[5].transform.GetChild(0).gameObject;
+                child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.storageLevel}";
+
+                storageMgr.Init();
+                storageMgr.RefreshUpgradeWin();
                 break;
         }
 

@@ -8,7 +8,6 @@ public enum EquipKind
     None,
     MainWeapon,
     SubWeapon,
-    UtilityItem,
     Bag
 }
 
@@ -19,23 +18,31 @@ public class EquipmentMgr : MonoBehaviour
     public GameObject equipmentWin;
     public GameObject equipmentWin1;
     public GameObject equipmentWin2;
+    public GameObject detailWin;
 
     //창1 관련.
     public Text mainWeaponTxt;
     public Text subWeaponTxt;
-    public Text utilityItemTxt;
-
+    
     //창2 관련.
-    public GameObject WeaponWin;
     public GameObject SpecCompareWin;
-    public Text weaponSpecTxt;
     public Text currentWeaSpecTxt;
     public Text changeWeaSpecTxt;
+    public Text weaponKindTxt;
+
+    [Header("Detail Win")]
+    public Text weaponName;
+    public Text typeNameTxt;
+    public Text accuracyNumTxt;
+    public Text damageNumTxt;
+    public Text criticalNumTxt;
+    public Text bulletNumTxt;
+    public Text shootingRangeNumTxt;
 
     public GameObject itemListContents;
     public GameObject itemPrefab;
     public Dictionary<string, GameObject> itemObjs = new Dictionary<string, GameObject>();
-    public Dictionary<string, int> itemInfo = new Dictionary<string, int>();
+    //public Dictionary<string, int> itemInfo = new Dictionary<string, int>();
    
     public int currentIndex;
     string currentKey;
@@ -44,7 +51,16 @@ public class EquipmentMgr : MonoBehaviour
     public void Init()
     {
         OpenEquipWin1();
-        
+
+        currentKey = null;
+        currentKind = EquipKind.None;
+    }
+
+    public void WeaponList(int index)
+    {
+        //1. 주무기
+        //2. 보조무기
+
         if (itemObjs.Count != 0)
         {
             foreach (var element in itemObjs)
@@ -54,28 +70,57 @@ public class EquipmentMgr : MonoBehaviour
             itemListContents.transform.DetachChildren();
             itemObjs.Clear();
         }
-        if (itemInfo.Count != 0) itemInfo.Clear();
+        //if (itemInfo.Count != 0) itemInfo.Clear();
 
         foreach (var element in playerDataMgr.currentEquippables)
         {
+            if (index != int.Parse(element.Value.type)) continue;
             var go = Instantiate(itemPrefab, itemListContents.transform);
             var button = go.AddComponent<Button>();
             button.onClick.AddListener(delegate { SelectItem(element.Key); });
 
             var child = go.transform.GetChild(0).gameObject;
-            child.GetComponent<Text>().text = element.Value.name;
+            child.transform.GetChild(0).GetComponent<Text>().text = element.Value.name;
+
+            string type = GetTypeStr(element.Value.kind);
+
             child = go.transform.GetChild(1).gameObject;
-            child.GetComponent<Text>().text = $"{playerDataMgr.currentEquippablesNum[element.Key]}개";
+            child.transform.GetChild(0).GetComponent<Text>().text = $"{type}";
 
             itemObjs.Add(element.Key, go);
-            itemInfo.Add(element.Key, playerDataMgr.currentEquippablesNum[element.Key]);
+            //itemInfo.Add(element.Key, playerDataMgr.currentEquippablesNum[element.Key]);
         }
-
-        currentKey = null;
-        currentKind = EquipKind.None;
     }
 
-   
+    string GetTypeStr(string kind)
+    {
+        string type = string.Empty;
+        switch (kind)
+        {
+            case "1":
+                type = "Handgun";
+                break;
+            case "2":
+                type = "SG";
+                break;
+            case "3":
+                type = "SMG";
+                break;
+            case "4":
+                type = "AR";
+                break;
+            case "5":
+                type = "LMG";
+                break;
+            case "6":
+                type = "SR";
+                break;
+            case "7":
+                type = "근접무기";
+                break;
+        }
+        return type;
+    }
 
     public void RefreshEquipList()
     {
@@ -87,9 +132,6 @@ public class EquipmentMgr : MonoBehaviour
             subWeaponTxt.text =
                 (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null) ?
                 playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.name : "비어있음";
-            //utilityItemTxt.text =
-            //            (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null) ?
-            //            playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name : "비어있음";
         }
     }
 
@@ -99,15 +141,16 @@ public class EquipmentMgr : MonoBehaviour
         {
             case 0:
                 currentKind = EquipKind.MainWeapon;
+                weaponKindTxt.text = "주무기";
+                WeaponList(1);
                 break;
             case 1:
                 currentKind = EquipKind.SubWeapon;
+                weaponKindTxt.text = "보조무기";
+                WeaponList(2);
                 break;
-            //case 2:
-            //    currentKind = EquipKind.UtilityItem;
-            //    break;
             case 2:
-                currentKind = EquipKind.UtilityItem;
+                currentKind = EquipKind.Bag;
                 break;
         }
         OpenEquipWin2();
@@ -126,7 +169,7 @@ public class EquipmentMgr : MonoBehaviour
 
     public void OpenWeaponInfo()
     {
-        if(!WeaponWin.activeSelf) WeaponWin.SetActive(true);
+        if(!detailWin.activeSelf) detailWin.SetActive(true);
         if (!SpecCompareWin.activeSelf) SpecCompareWin.SetActive(true);
 
         RefreshSpec();
@@ -164,7 +207,7 @@ public class EquipmentMgr : MonoBehaviour
             if (playerDataMgr.currentEquippablesNum[id] - 1 == 0)
             {
                 //현재 데이터.
-                itemInfo.Remove(currentKey);
+                //itemInfo.Remove(currentKey);
                 Destroy(itemObjs[currentKey]);
                 itemObjs.Remove(currentKey);
 
@@ -178,12 +221,12 @@ public class EquipmentMgr : MonoBehaviour
             else
             {
                 //현재 데이터.
-                itemInfo[currentKey] -= 1;
-                var child = itemObjs[currentKey].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{itemInfo[currentKey]}개";
+                //itemInfo[currentKey] -= 1;
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] -= 1;
+                //var child = itemObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{playerDataMgr.currentEquippablesNum[id]}개";
             }
         }
         else if (currentKind == EquipKind.SubWeapon)
@@ -211,7 +254,7 @@ public class EquipmentMgr : MonoBehaviour
             if (playerDataMgr.currentEquippablesNum[id] - 1 == 0)
             {
                 //현재 데이터.
-                itemInfo.Remove(currentKey);
+                //itemInfo.Remove(currentKey);
                 Destroy(itemObjs[currentKey]);
                 itemObjs.Remove(currentKey);
 
@@ -225,12 +268,12 @@ public class EquipmentMgr : MonoBehaviour
             else
             {
                 //현재 데이터.
-                itemInfo[currentKey] -= 1;
-                var child = itemObjs[currentKey].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{itemInfo[currentKey]}개";
+                //itemInfo[currentKey] -= 1;
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] -= 1;
+                //var child = itemObjs[currentKey].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{playerDataMgr.currentEquippablesNum[id]}개";
             }
         }
         CloseEquipWin2();
@@ -279,17 +322,17 @@ public class EquipmentMgr : MonoBehaviour
             if (!playerDataMgr.currentEquippables.ContainsKey(id))
             {
                 //현재데이터 관련.
-                itemInfo.Add(id, 1);
+                //itemInfo.Add(id, 1);
                 
-                var go = Instantiate(itemPrefab, itemListContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = weapon.name;
-                child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"1개";
+                //var go = Instantiate(itemPrefab, itemListContents.transform);
+                //var child = go.transform.GetChild(0).gameObject;
+                //child.GetComponent<Text>().text = weapon.name;
+                //child = go.transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"1개";
 
-                var button = go.AddComponent<Button>();
-                button.onClick.AddListener(delegate { SelectItem(id); });
-                itemObjs.Add(id, go);
+                //var button = go.AddComponent<Button>();
+                //button.onClick.AddListener(delegate { SelectItem(id); });
+                //itemObjs.Add(id, go);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
@@ -298,13 +341,14 @@ public class EquipmentMgr : MonoBehaviour
             else
             {
                 //현재데이터 관련.
-                itemInfo[id] += 1;
-                var child = itemObjs[id].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{itemInfo[id]}개";
-
+                //itemInfo[id] += 1;
+                
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] += 1;
+                //var child = itemObjs[id].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{playerDataMgr.currentEquippablesNum[id]}개";
             }
+            WeaponList(1);
         }
         else if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null && currentKind == EquipKind.SubWeapon)
         {
@@ -331,17 +375,17 @@ public class EquipmentMgr : MonoBehaviour
             if (!playerDataMgr.currentEquippables.ContainsKey(id))
             {
                 //현재데이터 관련.
-                itemInfo.Add(id, 1);
+                //itemInfo.Add(id, 1);
 
-                var go = Instantiate(itemPrefab, itemListContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = weapon.name;
-                child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"1개";
+                //var go = Instantiate(itemPrefab, itemListContents.transform);
+                //var child = go.transform.GetChild(0).gameObject;
+                //child.GetComponent<Text>().text = weapon.name;
+                //child = go.transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"1개";
 
-                var button = go.AddComponent<Button>();
-                button.onClick.AddListener(delegate { SelectItem(id); });
-                itemObjs.Add(id, go);
+                //var button = go.AddComponent<Button>();
+                //button.onClick.AddListener(delegate { SelectItem(id); });
+                //itemObjs.Add(id, go);
 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
@@ -350,13 +394,14 @@ public class EquipmentMgr : MonoBehaviour
             else
             {
                 //현재데이터 관련.
-                itemInfo[id] += 1;
-                var child = itemObjs[id].transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{itemInfo[id]}개";
-
+                //itemInfo[id] += 1;
+            
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] += 1;
+                //var child = itemObjs[id].transform.GetChild(1).gameObject;
+                //child.GetComponent<Text>().text = $"{playerDataMgr.currentEquippablesNum[id]}개";
             }
+            WeaponList(2);
         }
         else if (playerDataMgr.currentSquad[currentIndex].bagLevel != 0 && currentKind == EquipKind.Bag)
         {
@@ -419,7 +464,14 @@ public class EquipmentMgr : MonoBehaviour
             $"데미지 : {weapon.minDamage} ~ {weapon.maxDamage} \n" +
             $"탄창 클립수 : {weapon.bullet} \n" /*+
             $"명중률 감소 : {weapon.accur_Rate_Dec}%"*/;
-        weaponSpecTxt.text = selectedWeaStr;
+
+        weaponName.text = $"{weapon.name}";
+        typeNameTxt.text = $"{GetTypeStr(weapon.kind)}";
+        accuracyNumTxt.text = $"{weapon.accurRateBase}%";
+        damageNumTxt.text = $"{weapon.minDamage} ~ {weapon.maxDamage}";
+        criticalNumTxt.text = $"{weapon.critRate}%";
+        bulletNumTxt.text = $"{weapon.bullet}";
+        shootingRangeNumTxt.text = $"{weapon.minRange} ~ {weapon.maxRange}";
 
         Weapon currentWeapon;
         if (currentKind == EquipKind.MainWeapon)
@@ -491,7 +543,7 @@ public class EquipmentMgr : MonoBehaviour
         equipmentWin1.SetActive(false);
         equipmentWin2.SetActive(true);
 
-        if (WeaponWin.activeSelf) WeaponWin.SetActive(false);
+        if (detailWin.activeSelf) detailWin.SetActive(false);
         if (SpecCompareWin.activeSelf) SpecCompareWin.SetActive(false);
     }
 

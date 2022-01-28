@@ -175,6 +175,24 @@ public class AgitMgr : MonoBehaviour
 
     public void SelectCharacter(int index)
     {
+        ChangeCharacter(index);
+        OpenCharacterInfo();
+    }
+
+    public void NextCharacter()
+    {
+        if (currentIndex + 1 == playerDataMgr.currentSquad.Count) return;
+        ChangeCharacter(currentIndex + 1);
+    }
+
+    public void PreviousCharacter()
+    {
+        if (currentIndex - 1 < 0) return;
+        ChangeCharacter(currentIndex - 1);
+    }
+
+    void ChangeCharacter(int index)
+    {
         currentIndex = index;
         skillWinMgr.currentIndex = currentIndex;
         equipmentMgr.currentIndex = currentIndex;
@@ -184,8 +202,6 @@ public class AgitMgr : MonoBehaviour
         equipmentMgr.RefreshEquipList();
         toleranceMgr.Refresh();
         bagMgr.Init();
-        
-        OpenCharacterInfo();
     }
 
     public void Fire()

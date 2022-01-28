@@ -21,6 +21,13 @@ public class PubMgr : MonoBehaviour
     public Text willPowerTxt;
     Dictionary<int, GameObject> characterObjs = new Dictionary<int, GameObject>();
 
+    [Header("Detail Win")]
+    public Text nameTxt;
+    public Text levelTxt;
+    public List<GameObject> mainWeaponList;
+    public Text simpleStat;
+    public Text detailStat;
+
     //힌트 수집 창.
     public List<GameObject> hintList;
     public GameObject hintPopup;
@@ -97,7 +104,7 @@ public class PubMgr : MonoBehaviour
 
             CharacterStats stat = new CharacterStats();
             var character = playerDataMgr.characterList[key];
-            stat.level = 0;
+            stat.level = 1;
             stat.currentHp = Random.Range(character.minHp, character.maxHp);
             stat.MaxHp = stat.currentHp;
             stat.sensivity = Random.Range(character.minSensitivity, character.maxSensitivity);
@@ -122,11 +129,11 @@ public class PubMgr : MonoBehaviour
             stat.weapon.mainWeapon = null;
             stat.weapon.subWeapon =  null;
 
-            stat.skillMgr = new SkillMgr();
-            stat.skillMgr.activeSkills = new List<ActiveSkill>();
-            for (int k = 0; k < 5; k++) stat.skillMgr.activeSkills.Add(null);
-            stat.skillMgr.passiveSkills = new List<PassiveSkill>();
-            for (int k = 0; k < 5; k++) stat.skillMgr.passiveSkills.Add(null);
+            //stat.skillMgr = new SkillMgr();
+            //stat.skillMgr.activeSkills = new List<ActiveSkill>();
+            //for (int k = 0; k < 5; k++) stat.skillMgr.activeSkills.Add(null);
+            //stat.skillMgr.passiveSkills = new List<PassiveSkill>();
+            //for (int k = 0; k < 5; k++) stat.skillMgr.passiveSkills.Add(null);
 
             int num = j;
             soliders.Add(num, stat);
@@ -138,17 +145,22 @@ public class PubMgr : MonoBehaviour
         foreach (var element in soliders)
         {
             var go = Instantiate(characterPrefab, characterListContent.transform);
+            var child = go.transform.GetChild(1).gameObject;
+            
+            var childObj = child.transform.GetChild(0).gameObject;
+            childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                = $"가격 {costs[i]}";
+            
+            childObj = child.transform.GetChild(1).gameObject;
+            childObj.GetComponent<Text>().text = $"{element.Value.character.name}/성별";
+           
+            childObj = child.transform.GetChild(2).gameObject;
+            childObj.GetComponent<Text>().text = $"{element.Value.character.name}/Lv{element.Value.level}/착용 중인 주무기";
 
-            go.transform.GetChild(1).GetComponent<Text>().text
-                = element.Value.Name;
-            go.transform.GetChild(2).GetComponent<Text>().text
-                = $"Lv {element.Value.level}";
-            go.transform.GetChild(3).GetComponent<Text>().text
-                = "무기 미장착";
-            go.transform.GetChild(4).GetComponent<Text>().text
-                = $"분과 {element.Value.character.name}";
-            go.transform.GetChild(5).GetComponent<Text>().text
-                = $"금액 {costs[i]}";
+            childObj = child.transform.GetChild(3).gameObject;
+            var slider = childObj.GetComponent<Slider>();
+            slider.maxValue = element.Value.MaxHp;
+            slider.value = element.Value.currentHp;
 
             int num = i;
             var button = go.AddComponent<Button>();
@@ -178,10 +190,60 @@ public class PubMgr : MonoBehaviour
     {
         if(!DetailInfoWin.activeSelf) DetailInfoWin.SetActive(true);
 
-        hpTxt.text = $"체력{soliders[currentIndex].currentHp}";
-        conTxt.text = $"집중력{soliders[currentIndex].concentration}";
-        senTxt.text = $"예민함{soliders[currentIndex].sensivity}";
-        willPowerTxt.text = $"정신력{soliders[currentIndex].willpower}";
+        nameTxt.text = $"{soliders[currentIndex].character.name}";
+        levelTxt.text = $"Lv{soliders[currentIndex].level}";
+
+        foreach (var element in mainWeaponList)
+        {
+            element.SetActive(false);
+        }
+
+        int i = 0;
+        foreach (var element in soliders[currentIndex].character.weapons)
+        {
+            if (element.Equals("1") || element.Equals("7")) continue;
+            
+            mainWeaponList[i].SetActive(true);
+            var child = mainWeaponList[i].transform.GetChild(0).gameObject;
+            child.GetComponent<Text>().text = $"{GetTypeStr(element)}";
+            i++;
+        }
+
+        simpleStat.text = $"체력{soliders[currentIndex].currentHp} 예민함 {soliders[currentIndex].sensivity}\n"
+            + $"집중력 {soliders[currentIndex].concentration} 정신력 {soliders[currentIndex].willpower}";
+
+        detailStat.text = $"HP {soliders[currentIndex].currentHp} 무게 {soliders[currentIndex].character.weight}\n";
+        //+$"회피율 {soliders[currentIndex].}"
+    }
+
+    string GetTypeStr(string kind)
+    {
+        string type = string.Empty;
+        switch (kind)
+        {
+            case "1":
+                type = "Handgun";
+                break;
+            case "2":
+                type = "SG";
+                break;
+            case "3":
+                type = "SMG";
+                break;
+            case "4":
+                type = "AR";
+                break;
+            case "5":
+                type = "LMG";
+                break;
+            case "6":
+                type = "SR";
+                break;
+            case "7":
+                type = "근접무기";
+                break;
+        }
+        return type;
     }
 
     public void Hire()

@@ -59,6 +59,7 @@ public class BagMgr : MonoBehaviour
     [Header("팝업창 관련")]
     public GameObject popupWin;
     public Text itemNameTxt;
+    public Text valueTxt;
     public Text itemNumTxt;
     public Slider slider;
 
@@ -117,15 +118,6 @@ public class BagMgr : MonoBehaviour
         }
 
         //이전 정보 삭제.
-        if (storageObjs.Count != 0)
-        {
-            foreach (var element in storageObjs)
-            {
-                Destroy(element.Value);
-            }
-            storageObjs.Clear();
-            storageContents.transform.DetachChildren();
-        }
         if (storageWeaponInfo.Count != 0) storageWeaponInfo.Clear();
         if (storageWeaponNumInfo.Count != 0) storageWeaponNumInfo.Clear();
         if (storageConsumableInfo.Count != 0) storageConsumableInfo.Clear();
@@ -193,7 +185,7 @@ public class BagMgr : MonoBehaviour
 
     public void NumAdjustment()
     {
-        itemNumTxt.text = $"{slider.value}개";
+        itemNumTxt.text = $"(선택 개수) {slider.value}개";
     }
 
     public void SelectItem(string key, InventoryKind kind)
@@ -223,16 +215,19 @@ public class BagMgr : MonoBehaviour
             if (storageWeaponInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageWeaponInfo[currentKey].name;
+                valueTxt.text = (Mathf.FloorToInt( storageWeaponInfo[currentKey].price * 0.7f) * storageWeaponNumInfo[currentKey]).ToString();
                 slider.maxValue = storageWeaponNumInfo[currentKey];
             }
             else if (storageConsumableInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageConsumableInfo[currentKey].name;
+                valueTxt.text = (Mathf.FloorToInt(storageConsumableInfo[currentKey].price * 0.7f) * storageConsumableNumInfo[currentKey]).ToString();
                 slider.maxValue = storageConsumableNumInfo[currentKey];
             }
             else if (storageOtherItemInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageOtherItemInfo[currentKey].name;
+                valueTxt.text = (Mathf.FloorToInt(int.Parse(storageOtherItemInfo[currentKey].price) * 0.7f) * storageOtherItemNumInfo[currentKey]).ToString();
                 slider.maxValue = storageOtherItemNumInfo[currentKey];
             }
         }
@@ -244,22 +239,25 @@ public class BagMgr : MonoBehaviour
             if (bagWeaponInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = bagWeaponInfo[currentKey].name;
+                valueTxt.text = (Mathf.FloorToInt(bagWeaponInfo[currentKey].price * 0.7f) * bagWeaponNumInfo[currentKey]).ToString();
                 slider.maxValue = bagWeaponNumInfo[currentKey];
             }
             else if (bagConsumableInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = bagConsumableInfo[currentKey].name;
+                valueTxt.text = (Mathf.FloorToInt(bagConsumableInfo[currentKey].price * 0.7f) * bagConsumableNumInfo[currentKey]).ToString();
                 slider.maxValue = bagConsumableNumInfo[currentKey];
             }
             else if (bagOtherItemInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = bagOtherItemInfo[currentKey].name;
+                valueTxt.text = (Mathf.FloorToInt(int.Parse(bagOtherItemInfo[currentKey].price) * 0.7f) * bagOtherItemNumInfo[currentKey]).ToString();
                 slider.maxValue = bagOtherItemNumInfo[currentKey];
             }
         }
 
         slider.value = 0;
-        itemNumTxt.text = $"0개";
+        itemNumTxt.text = $"(선택 개수) 0개";
         OpenPopup();
     }
 
@@ -347,10 +345,40 @@ public class BagMgr : MonoBehaviour
             else if (index == 3 && !playerDataMgr.otherItemList.ContainsKey(element.Key)) continue;
             var go = Instantiate(bagPrefab, bagContents.transform);
             var child = go.transform.GetChild(0).gameObject;
-            child.GetComponent<Text>().text = $"{element.Value}개";
+            string name = string.Empty;
+            int value = 0;
+            int weight = 0;
+            if (playerDataMgr.equippableList.ContainsKey(element.Key))
+            {
+                name = playerDataMgr.equippableList[element.Key].name;
+                value = Mathf.FloorToInt( playerDataMgr.equippableList[element.Key].price * 0.7f )* element.Value;
+                weight = playerDataMgr.equippableList[element.Key].weight * element.Value;
+            }
+            else if (playerDataMgr.consumableList.ContainsKey(element.Key))
+            {
+                name = playerDataMgr.consumableList[element.Key].name;
+                value = Mathf.FloorToInt(playerDataMgr.consumableList[element.Key].price *0.7f)* element.Value;
+                weight = playerDataMgr.consumableList[element.Key].weight * element.Value;
+            }
+            else if (playerDataMgr.otherItemList.ContainsKey(element.Key))
+            {
+                name = playerDataMgr.otherItemList[element.Key].name;
+                value = Mathf.FloorToInt(int.Parse(playerDataMgr.otherItemList[element.Key].price) *0.7f)* element.Value;
+                weight = int.Parse(playerDataMgr.otherItemList[element.Key].weight) * element.Value;
+            }
+            child.GetComponent<Text>().text = $"{name}";
+
+            child = go.transform.GetChild(1).gameObject;
+            child.GetComponent<Text>().text = $"{element.Value}";
+
+            child = go.transform.GetChild(2).gameObject;
+            child.GetComponent<Text>().text = $"{weight}";
+
+            child = go.transform.GetChild(3).gameObject;
+            child.GetComponent<Text>().text = $"{value}";
 
             string key = element.Key;
-            var button = go.AddComponent<Button>();
+            var button = go.transform.GetChild(4).gameObject.GetComponent<Button>();
             button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Bag); });
 
             bagObjs.Add(key, go);
@@ -365,11 +393,11 @@ public class BagMgr : MonoBehaviour
         }
         bagWeightTxt.text = $"무게 {bagCurrentWeight}/{bagTotalWeight}";
         
-        bagBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
-        bagBullet7Txt.text = $"7탄x{bullet7Num.ToString("D3")}";
-        bagBullet9Txt.text = $"9탄x{bullet9Num.ToString("D3")}";
-        bagBullet45Txt.text = $"45탄x{bullet45Num.ToString("D3")}";
-        bagBullet12Txt.text = $"12게이지x{bullet12Num.ToString("D3")}";
+        bagBullet5Txt.text = $"{bullet5Num}";
+        bagBullet7Txt.text = $"{bullet7Num}";
+        bagBullet9Txt.text = $"{bullet9Num}";
+        bagBullet45Txt.text = $"{bullet45Num}";
+        bagBullet12Txt.text = $"{bullet12Num}";
     }
 
     public void DisplayStorage(int index)
@@ -431,11 +459,19 @@ public class BagMgr : MonoBehaviour
 
                 var itemNum = playerDataMgr.currentEquippablesNum[element.Key];
                 child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                child.GetComponent<Text>().text = $"{itemNum}";
+
+                child = go.transform.GetChild(2).gameObject;
+                child.GetComponent<Text>().text = $"{ element.Value.weight * itemNum}";
+
+                child = go.transform.GetChild(3).gameObject;
+                child.GetComponent<Text>().text = $"{ Mathf.FloorToInt(element.Value.price * 0.7f) * itemNum}";
 
                 string key = element.Key;
-                var button = go.AddComponent<Button>();
+                var button = go.transform.GetChild(4).gameObject.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Storage); });
+
+                //이미지.
 
                 storageObjs.Add(key, go);
             }
@@ -452,10 +488,16 @@ public class BagMgr : MonoBehaviour
 
                 var itemNum = playerDataMgr.currentConsumablesNum[element.Key];
                 child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                child.GetComponent<Text>().text = $"{itemNum}";
+
+                child = go.transform.GetChild(2).gameObject;
+                child.GetComponent<Text>().text = $"{ element.Value.weight * itemNum}";
+
+                child = go.transform.GetChild(3).gameObject;
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt(element.Value.price *0.7f) * itemNum}";
 
                 string key = element.Key;
-                var button = go.AddComponent<Button>();
+                var button = go.transform.GetChild(4).gameObject.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Storage); });
 
                 storageObjs.Add(key, go);
@@ -492,11 +534,19 @@ public class BagMgr : MonoBehaviour
 
                 var itemNum = playerDataMgr.currentOtherItemsNum[element.Key];
                 child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                child.GetComponent<Text>().text = $"{itemNum}";
+
+                child = go.transform.GetChild(2).gameObject;
+                child.GetComponent<Text>().text = $"{ int.Parse(element.Value.weight) * itemNum}";
+
+                child = go.transform.GetChild(3).gameObject;
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt( int.Parse( element.Value.price) *0.7f) * itemNum}";
 
                 string key = element.Key;
-                var button = go.AddComponent<Button>();
+                var button = go.transform.GetChild(4).gameObject.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(key, InventoryKind.Storage); });
+
+                //이미지.
 
                 storageObjs.Add(key, go);
             }
@@ -506,11 +556,11 @@ public class BagMgr : MonoBehaviour
         //레벨에 따라 구현해야 함.
         storageWeightTxt.text = $"무게 {storageCurrentWeight}/{maxStorageCapacity}";
 
-        storageBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
-        storageBullet7Txt.text = $"7탄x{bullet7Num.ToString("D3")}";
-        storageBullet9Txt.text = $"9탄x{bullet9Num.ToString("D3")}";
-        storageBullet45Txt.text = $"45탄x{bullet45Num.ToString("D3")}";
-        storageBullet12Txt.text = $"12게이지x{bullet12Num.ToString("D3")}";
+        storageBullet5Txt.text = $"{bullet5Num}";
+        storageBullet7Txt.text = $"{bullet7Num}";
+        storageBullet9Txt.text = $"{bullet9Num}";
+        storageBullet45Txt.text = $"{bullet45Num}";
+        storageBullet12Txt.text = $"{bullet12Num}";
     }
 
     public void Move()
@@ -528,12 +578,12 @@ public class BagMgr : MonoBehaviour
         if (slider.value + plus >= slider.maxValue)
         {
             slider.value = slider.maxValue;
-            itemNumTxt.text = $"{slider.value}개";
+            itemNumTxt.text = $"(선택 개수) {slider.value}개";
         }
         else
         {
             slider.value += plus;
-            itemNumTxt.text = $"{slider.value}개";
+            itemNumTxt.text = $"(선택 개수) {slider.value}개";
         }
     }
 
