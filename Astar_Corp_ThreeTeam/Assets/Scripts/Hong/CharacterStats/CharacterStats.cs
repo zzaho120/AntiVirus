@@ -34,35 +34,41 @@ public class CharacterStats
     [HideInInspector]
     public int currentHp;
 
-    // 1-1. 렙업 시 선택될 확률
-    public int HpChance;
-
-    // 1-2. 선택될 시 증가하는 체력
-    public int HpRise;
-
     // 2. 무게
     public int Weight;
 
-    // 2. 예민함
+    // 3. 예민함
     [HideInInspector]
     public int sensivity;
 
-    // 3. 회피율
+    // 4. 회피율
     [HideInInspector]
     public int avoidRate;
 
-    // 4. 집중력
+    // 5. 집중력
     [HideInInspector]
     public int concentration;
 
-    // 5. 정신력
+    // 6. 집중력에 의한 추가 명중률
+    [HideInInspector]
+    public int accuracy;
+
+    // 7. 정신력
     [HideInInspector]
     public int willpower;
 
-    // 6. 치명타 확률
+    // 8. 치명타 확률
     [HideInInspector]
     public int critRate;
 
+    // 9. 경계 명중률 증가량
+    public int alertAccuracy;
+
+    // 10. 크리티컬 저항율
+    public int critResistRate;
+
+    // 11. 시야 범위
+    public int sightDistance;
     // 레벨
     [HideInInspector]
     public int level;
@@ -171,12 +177,19 @@ public class CharacterStats
         MaxHp           = Hp;    
         currentHp       = MaxHp;
         sensivity       = Sensivity;
-        avoidRate       = AvoidRate;
+        avoidRate       = AvoidRate + (sensivity * character.avoidRateRisePerSen);
         concentration   = Concentration;
         willpower       = Willpower;
         level           = 1;
         currentExp      = 0;
         totalExp        = ScriptableMgr.Instance.GetCharacterExp($"EXP_{level}").totalExp;
+        sightDistance = 3;
+
+        Weight = character.weight;
+        accuracy = concentration * character.accurRatePerCon;
+        critResistRate = willpower * character.critResistRateRise;
+        alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
+        critRate = (willpower / 3) * character.critRateRise;
 
         buffMgr = new BuffMgr();
         skillMgr = new SkillMgr();
@@ -221,43 +234,87 @@ public class CharacterStats
         skillMgr.LevelUp();
         currentExp -= totalExp;
         totalExp = ScriptableMgr.Instance.GetCharacterExp($"EXP_{level}").totalExp;
+        GrowStats(GetRandomStats());
     }
 
     private List<int> GetRandomStats()
     {
-        var statList = new List<int>();
+        var statsList = new List<int>();
 
-        while (statList.Count == 2)
+        while (statsList.Count == 2)
         {
             var randomRate = Random.Range(0, 100);
-            if (!statList.Exists(x => x == 1))
+            if (!statsList.Exists(x => x == 1))
             {
                 if (randomRate < character.hpChance)
-                    statList.Add(1);
+                {
+                    statsList.Add(1);
+                    if (statsList.Count >= 2)
+                        break;
+                }
             }
+
             randomRate = Random.Range(0, 100);
-            if (!statList.Exists(x => x == 2))
+            if (!statsList.Exists(x => x == 2))
             {
                 if (randomRate < character.concentrationChance)
                 {
-                    statList.Add(2);
-                    if (statList.Count >= 2)
+                    statsList.Add(2);
+                    if (statsList.Count >= 2)
                         break;
                 }
             }
             randomRate = Random.Range(0, 100);
-            if (!statList.Exists(x => x == 3))
+            if (!statsList.Exists(x => x == 3))
             {
                 if (randomRate < character.senChance)
-                    statList.Add(3);
+                {
+                    statsList.Add(3);
+                    if (statsList.Count >= 2)
+                        break;
+                }
             }
             randomRate = Random.Range(0, 100);
-            if (!statList.Exists(x => x == 4))
+            if (!statsList.Exists(x => x == 4))
             {
                 if (randomRate < character.willChance)
-                    statList.Add(4);
+                {
+                    statsList.Add(4);
+                    if (statsList.Count >= 2)
+                        break;
+                }
             }
         }
-        return statList;
+        return statsList;
+    }
+
+    private void GrowStats(List<int> statsList)
+    {
+        foreach (var stats in statsList)
+        {
+            switch (stats)
+            {
+                case 1:
+                    MaxHp += character.hpRise;
+                    Weight += character.weight_Rise;
+                    break;
+                case 2:
+                    sensivity += character.senRise;
+                    avoidRate = AvoidRate + (sensivity * character.avoidRateRisePerSen);
+                    // 10, 20p 마다 시야 1 증가
+                    // 15, 25 마다 mp 1 증가
+                    break;
+                case 3:
+                    concentration += character.concentrationRise;
+                    accuracy = concentration * character.accurRatePerCon;
+                    break;
+                case 4:
+                    willpower += character.willRise;
+                    critResistRate = willpower * character.critResistRateRise;
+                    alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
+                    critRate = (willpower / 3) * character.critRateRise;
+                    break;
+            }
+        }
     }
 }

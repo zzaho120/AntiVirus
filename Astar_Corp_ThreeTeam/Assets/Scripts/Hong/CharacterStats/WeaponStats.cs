@@ -51,7 +51,43 @@ public class WeaponStats
 
     // 크리티컬 데미지
     [HideInInspector]
-    public int CritDmg;
+    public int CritDmg
+    {
+        get
+        {
+            var critDmg = 0;
+            switch (type)
+            {
+                case WeaponType.Main:
+                    critDmg = mainWeapon.critDamage;
+                    break;
+                case WeaponType.Sub:
+                    critDmg = subWeapon.critDamage;
+                    break;
+            }
+            return critDmg;
+        }
+    }
+
+    // 크리티컬 확률
+    [HideInInspector]
+    public int CritRate
+    {
+        get
+        {
+            var critRate = 0;
+            switch (type)
+            {
+                case WeaponType.Main:
+                    critRate = mainWeapon.critRate;
+                    break;
+                case WeaponType.Sub:
+                    critRate = subWeapon.critRate;
+                    break;
+            }
+            return critRate;
+        }
+    }
 
     // 탄창 클립 수
     [HideInInspector] 
@@ -159,9 +195,6 @@ public class WeaponStats
                 // 명중률
                 AccurRate_base = mainWeapon.accurRateBase;
 
-                // 크뎀
-                CritDmg = mainWeapon.critDamage;
-
                 // 탄알
                 MainWeaponBullet = mainWeapon.bullet;
 
@@ -193,9 +226,6 @@ public class WeaponStats
             {
                 // 명중률
                 AccurRate_base = subWeapon.accurRateBase;
-
-                // 크뎀
-                CritDmg = subWeapon.critDamage;
 
                 // 탄알
                 SubWeaponBullet = subWeapon.bullet;
@@ -234,30 +264,12 @@ public class WeaponStats
         return LoadAp;
     }
 
-    public bool CheckAttackAccuracy(int accuracy)
+    public int GetAttackAccuracy(int accuracy)
     {
         var totalAccuracy = CalCulateAccuracy(accuracy, AccurRate_base);
-        var result = Random.Range(0, 100) < totalAccuracy;
         fireCount++;
         WeaponBullet--;
-        return result;
-    }
-
-
-    // 홍수진
-    // 여기 스탯 수정 됐어요 !!!!!!!!!!!!!!!!!!!!!!!!! -> 수정된 친구들 주석처리 함
-    // \    /\
-    //  )  ( ')
-    // (  /  )
-    //  \(__)|
-    // =================
-    // 고양이
-    public bool CheckAlertAccuracy(int accuracy)
-    {
-        var totalAccuracy = CalCulateAccuracy(accuracy, (int)(AccurRate_alert - (/*AccurRate_dec **/ fireCount)));
-        var result = Random.Range(0, 100) < totalAccuracy;
-        fireCount++;
-        return result;
+        return totalAccuracy;
     }
 
     // 홍수진

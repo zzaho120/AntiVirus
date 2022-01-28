@@ -24,8 +24,16 @@ public class BattleAttackState : StateBase
         var player = monster.CheckAttackRange();
         if (player != null && monster.monsterStats.CheckAttackAp())
         {
-            if (player.GetDamage(monster.monsterStats))
-                monster.SetTarget(null);
+            var isHit = Random.Range(0, 100) > monster.target.characterStats.avoidRate;
+
+            if (isHit)
+            {
+                var isCrit = Random.Range(0, 100) < monster.monsterStats.Crit_Rate - monster.target.characterStats.critResistRate;
+                if (player.GetDamage(monster.monsterStats, isCrit))
+                    monster.SetTarget(null);
+
+            }
+
         }
         else
             EventBusMgr.Publish(EventType.EndEnemy);

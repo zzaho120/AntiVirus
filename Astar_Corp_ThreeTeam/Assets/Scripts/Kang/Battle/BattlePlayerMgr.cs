@@ -65,11 +65,16 @@ public class BattlePlayerMgr : MonoBehaviour
                     {
                         if (weapon.CheckAvailShot(player.AP, CharacterState.Alert))
                         {
-                            var isHit = weapon.CheckAlertAccuracy(curMonster.currentTile.accuracy);
+                            var isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(curMonster.currentTile.accuracy) + player.characterStats.alertAccuracy;
                             player.AP -= weapon.GetWeaponAP();
 
+
+
                             if (isHit)
-                                curMonster.GetDamage(player);
+                            {
+                                var isCrit = Random.Range(0, 100) < player.characterStats.weapon.CritRate + player.characterStats.critRate - curMonster.monsterStats.critResist;
+                                curMonster.GetDamage(player, isCrit);
+                            }
                             else
                             {
                                 var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();

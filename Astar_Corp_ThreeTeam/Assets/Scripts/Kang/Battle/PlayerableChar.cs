@@ -18,7 +18,6 @@ public class PlayerableChar : BattleTile
 
     [Header("Value")]
     public int AP;
-    private int sightDistance = 3;
     public int SightDistance
     {
         get
@@ -29,7 +28,7 @@ public class PlayerableChar : BattleTile
             {
                 result = buff.GetAmount();
             }
-            return sightDistance + (int)result;
+            return characterStats.sightDistance + (int)result;
         }
     }
 
@@ -297,7 +296,7 @@ public class PlayerableChar : BattleTile
         {
             if (weapon.CheckAvailShot(AP, CharacterState.Attack) || isFullApMove)
             {
-                var isHit = weapon.CheckAttackAccuracy(monster.currentTile.accuracy);
+                var isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(monster.currentTile.accuracy) + characterStats.accuracy;
 
                 if (!isFullApMove)
                     AP -= weapon.GetWeaponAP();
@@ -307,7 +306,8 @@ public class PlayerableChar : BattleTile
 
                 if (isHit)
                 {
-                    monster.GetDamage(this);
+                    var isCrit = Random.Range(0, 100) < weapon.CritRate + characterStats.critRate - monster.monsterStats.critResist;
+                    monster.GetDamage(this, isCrit);
 
                     var buffMgr = characterStats.buffMgr;
                     var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.Hit);
@@ -373,10 +373,16 @@ public class PlayerableChar : BattleTile
         status = CharacterState.Wait;
     }
 
-    public bool GetDamage(MonsterStats monsterStats)
+    public bool GetDamage(MonsterStats monsterStats, bool isCrit)
     {
         var hp = characterStats.currentHp;
-        var dmg = monsterStats.Damage;
+        var dmg = 0;
+
+        if (!isCrit)
+            dmg = monsterStats.Damage;
+        else
+            dmg = (int)(monsterStats.Damage * (monsterStats.CritDmg / 100f));
+
         hp -= dmg;
         characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
 

@@ -47,11 +47,16 @@ public class MonsterChar : BattleTile
         cumulativeDmg = 0;
     }
 
-    public void GetDamage(PlayerableChar player)
+    public void GetDamage(PlayerableChar player, bool isCrit)
     {
         lastAttacker = player;
         var hp = monsterStats.currentHp;
-        var dmg = player.characterStats.weapon.Damage;
+        var dmg = 0;
+        if (!isCrit)
+            dmg = player.characterStats.weapon.Damage;
+        else
+            dmg = (int)(player.characterStats.weapon.Damage * player.characterStats.weapon.CritDmg / 100f);
+
         hp -= dmg;
         cumulativeDmg += dmg;
         monsterStats.currentHp = Mathf.Clamp(hp, 0, hp);
