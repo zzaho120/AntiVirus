@@ -9,6 +9,10 @@ public class Spider_PatrolState : StateBase
     private bool isChase;
     private float randTimer;
 
+    // 애니메이션 재생
+    private bool isMoving;
+    private Animator animator;
+
     private float moveRange = Constants.spiderRange;   // 이동 범위 설정
     private float distance = Constants.spiderDistance;    // 플레이어, 몬스터간 거리
     private int atkChance = 8;
@@ -26,6 +30,7 @@ public class Spider_PatrolState : StateBase
         if (this.fsm != null)
         {
             agent = fsm.GetComponent<NavMeshAgent>();
+            animator = fsm.GetComponent<Animator>();
             startPos = fsm.transform.position;  // 시작 위치 저장
             agent.transform.position = startPos;
 
@@ -67,6 +72,15 @@ public class Spider_PatrolState : StateBase
 
     public override void Update()
     {
+        if (agent.velocity != Vector3.zero)
+        {
+            animator.SetBool("IsWalking", true);
+        }
+        if (agent.velocity == Vector3.zero)
+        {
+            animator.SetBool("IsWalking", false);
+        }
+
         agent.SetDestination(targetPos);
 
         // 플레이어가 몹 인식범위 내로 들어왔을 때
