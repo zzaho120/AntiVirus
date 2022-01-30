@@ -5,12 +5,16 @@ using UnityEngine.AI;
 
 public class MonsterPool : PoolManager
 {
+    private WorldMonsterMgr monsterMgr;
+
     private bool[]  isMaxPool;
     private int[]   monsterNum;
     private int     poolNum;
 
     public void Init()
     {
+        monsterMgr = GameObject.Find("NonBattleMgr").GetComponent<WorldMonsterMgr>();
+
         // 기존 Awake에서 실행
         poolBox = new GameObject[pools.Count];
         poolNum = transform.childCount;
@@ -19,7 +23,7 @@ public class MonsterPool : PoolManager
         isMaxPool = new bool[poolNum];
         monsterNum = new int[poolNum];
         
-        InvokeRepeating("GetMonstersFromPool", 0.5f, 5f);
+        InvokeRepeating("GetMonstersFromPool", 0.5f, 30f);
     }
 
     // 풀 생성
@@ -56,7 +60,6 @@ public class MonsterPool : PoolManager
                 isMaxPool[i] = true;
             }
         }
-
     }
     
     private void CreateMonster(int poolNum)
@@ -74,9 +77,17 @@ public class MonsterPool : PoolManager
             ps.GetComponent<NavMeshAgent>().enabled = true;
         else
             ps.AddComponent<NavMeshAgent>();
+        // NavMesh 높이 설정
+        ps.GetComponent<NavMeshAgent>().height /= 2f;
 
         // 몬스터 스탯 설정해주는 클래스 초기화
         ps.AddComponent<SetMonsterStat>().Init();
+
+        //monsterMgr.monsters.Add(ps.GetComponent<WorldMonsterChar>());
+        monsterMgr.AddMonster(ps.GetComponent<WorldMonsterChar>());
+
+        //if (ps.GetComponent<WorldMonsterChar>() != null)
+        //    ps.GetComponent<WorldMonsterChar>().Init();
 
         // 플레이어 시야 안에서만 보이도록 하는 스크립트 추가
         var playerSight = ps.AddComponent<InPlayerSight>();

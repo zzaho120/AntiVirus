@@ -18,6 +18,7 @@ public class NonBattleMgr : MonoBehaviour
     public MonsterPool monsterPool;
     public PlayerController playerController;
     public PlayerMove playerMove;
+    public WorldMonsterMgr worldMonsterMgr;
 
     private void Awake()
     {
@@ -27,8 +28,10 @@ public class NonBattleMgr : MonoBehaviour
         var player = GameObject.Find("Player");
         laboratoryArea = Instance.GetComponent<CreateLabArea>();
         monsterPool = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
+        worldMonsterMgr = GetComponent<WorldMonsterMgr>();
         playerController = player.GetComponent<PlayerController>();
         playerMove = player.GetComponent<PlayerMove>();
+
     }
 
     private void Start()
@@ -42,6 +45,7 @@ public class NonBattleMgr : MonoBehaviour
             createMonsterArea[i].Init();
         }
         monsterPool.Init();
+        //worldMonsterMgr.Init();
         playerMove.Init();
         playerController.Init(); 
     }
@@ -50,6 +54,7 @@ public class NonBattleMgr : MonoBehaviour
     {
         playerController.PlayerControllerUpdate();
         //playerMove.PlayerMoveUpdate();
+        worldMonsterMgr.MonsterUpdate();
     }
 
     private void LateUpdate()

@@ -15,17 +15,13 @@ public class ReturnToPool : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();    
     }
 
-    void Update()
+    public void Return()
     {
-        // Pool에 Return 해줄 타이밍 체크
-        // Release 해서 돌려주면 됨
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (agent != null)
-                agent.enabled = false;
+        if (agent != null)
+            agent.enabled = false;
 
-            m_pool.Release(gameObject);
-            Debug.Log("Returned at " + DateTime.Now.ToString());
-        }
+        m_pool.Release(gameObject);
+        Debug.Log("Returned at " + DateTime.Now.ToString());
     }
+
 }

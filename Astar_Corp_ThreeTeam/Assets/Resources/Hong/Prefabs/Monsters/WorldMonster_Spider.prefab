@@ -715,12 +715,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4452145282827928786}
   - component: {fileID: 8553460931880399343}
-  - component: {fileID: 2392870055489321032}
   - component: {fileID: 5950904067726041933}
+  - component: {fileID: 8387831912001245760}
   - component: {fileID: 7232659063600332072}
   - component: {fileID: 6685158072501733238}
   - component: {fileID: -6021039269793047033}
-  - component: {fileID: 1526875570657296802}
   m_Layer: 17
   m_Name: WorldMonster_Spider
   m_TagString: Enemy
@@ -765,18 +764,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &2392870055489321032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3927950483457810024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 209ba63e08dbfa6418ca6584bbc6178d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5950904067726041933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -796,6 +783,20 @@ MonoBehaviour:
   originMaxHp: 0
   currentHp: 0
   currentAp: 0
+--- !u!114 &8387831912001245760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927950483457810024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be553f447771754e9139ce6fb8a9325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterStat: {fileID: 0}
+  fsm: {fileID: 0}
 --- !u!114 &7232659063600332072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -837,19 +838,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1526875570657296802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3927950483457810024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b8289dc67fbbf742a1906a83e214b1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  printType: 0
 --- !u!1 &4428068166143674522
 GameObject:
   m_ObjectHideFlags: 0

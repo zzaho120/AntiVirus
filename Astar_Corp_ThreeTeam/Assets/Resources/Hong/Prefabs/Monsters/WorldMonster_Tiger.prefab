@@ -102,12 +102,11 @@ GameObject:
   m_Component:
   - component: {fileID: 7277392636815321209}
   - component: {fileID: 7277392636815321208}
-  - component: {fileID: 5936410212250004596}
   - component: {fileID: 568704148969892533}
+  - component: {fileID: 584283054968570913}
   - component: {fileID: 3475249230926368486}
   - component: {fileID: 1535066927200527218}
   - component: {fileID: 7776682835208216522}
-  - component: {fileID: -3461252639217067399}
   m_Layer: 17
   m_Name: WorldMonster_Tiger
   m_TagString: Enemy
@@ -124,7 +123,7 @@ Transform:
   m_GameObject: {fileID: 7277392636815321211}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7277392636908993009}
@@ -143,9 +142,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7277392636815321211}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 9f271cac34f8a384fbd96577f2846b24, type: 3}
-  m_Controller: {fileID: 9100000, guid: c86aa0252c5b9dc44b202fc847d5311a, type: 2}
+  m_Controller: {fileID: 9100000, guid: 35adbd26bb0a4e342b4367ab1b1d6357, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 1
   m_ApplyRootMotion: 1
@@ -155,18 +154,6 @@ Animator:
   m_HasTransformHierarchy: 0
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &5936410212250004596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7277392636815321211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3303be86667ac5458ca586355252b85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &568704148969892533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,6 +173,19 @@ MonoBehaviour:
   originMaxHp: 0
   currentHp: 0
   currentAp: 0
+--- !u!114 &584283054968570913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277392636815321211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be553f447771754e9139ce6fb8a9325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterStat: {fileID: 0}
 --- !u!114 &3475249230926368486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,19 +227,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-3461252639217067399
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7277392636815321211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b8289dc67fbbf742a1906a83e214b1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  printType: 0
 --- !u!1 &7277392636908993008
 GameObject:
   m_ObjectHideFlags: 0

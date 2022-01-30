@@ -7,13 +7,9 @@ public enum STATE
     Idle,
     Patrol,
     Chase
-
-    //State1,
-    //State2,
-    //State3
 }
 
-public class FSM : MonoBehaviour
+public class FSM
 {
     private List<StateBase> states = new List<StateBase>();
     private StateBase curState;
@@ -22,7 +18,6 @@ public class FSM : MonoBehaviour
     {
         if (curState != null)
             curState.Update();
-        //Debug.Log(states.Count);
     }
 
     public void AddState(StateBase state)
