@@ -20,26 +20,36 @@ public class TileMgr : MonoBehaviour
     public void Init()
     {
         //GenerateTile();
-        var tileCount = tiles.transform.childCount;
-        for (int idx = 0; idx < tileCount; ++idx)
+        var parentCount = tiles.transform.childCount;
+        for (int idx = 0; idx < parentCount; ++idx)
         {
-            var go = tiles.transform.GetChild(idx);
-            
-            var tileBase = go.GetComponent<TileBase>();
-            tileBase.Init(this);
+            var parent = tiles.transform.GetChild(idx).GetChild(0);
+            var tileCount = parent.childCount;
+            for (int tileIdx = 0; tileIdx < tileCount; ++tileIdx)
+            {
+                var go = parent.GetChild(tileIdx);
 
-            tileDics.Add(tileBase.tileIdx, tileBase);
+                var tileBase = go.GetComponent<TileBase>();
+                tileBase.Init(this);
+
+                tileDics.Add(tileBase.tileIdx, tileBase);
+            }
         }
 
-        var wallCount = walls.transform.childCount;
-        for (int idx = 0; idx < wallCount; ++idx)
+        parentCount = walls.transform.childCount;
+        for (int idx = 0; idx < parentCount; ++idx)
         {
-            var go = walls.transform.GetChild(idx);
+            var parent = walls.transform.GetChild(idx).GetChild(0);
+            var wallCount = parent.childCount;
+            for (int wallIdx = 0; wallIdx < wallCount; ++wallIdx)
+            {
+                var go = parent.GetChild(wallIdx);
 
-            var wallBase = go.GetComponent<TileBase>();
-            wallBase.Init(this);
+                var wallBase = go.GetComponent<TileBase>();
+                wallBase.Init(this);
 
-            wallDics.Add(wallBase.tileIdx, wallBase);
+                wallDics.Add(wallBase.tileIdx, wallBase);
+            }
         }
 
         foreach (var pair in tileDics)

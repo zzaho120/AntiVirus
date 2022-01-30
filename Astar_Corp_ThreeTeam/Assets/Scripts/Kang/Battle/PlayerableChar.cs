@@ -41,6 +41,7 @@ public class PlayerableChar : BattleTile
 
     private Dictionary<TileBase, int> moveDics =
         new Dictionary<TileBase, int>();
+    private List<MoveTile> moveList = new List<MoveTile>();
 
     [Header("Alert")]
     public List<MonsterChar> alertList;
@@ -90,11 +91,19 @@ public class PlayerableChar : BattleTile
                             }
                             break;
                         case CharacterState.Move:
-                            if (hit.collider.tag == "Tile")
+                            if (hit.collider.tag == "MoveTile")
                             {
-                                var tileBase = hit.collider.GetComponent<TileBase>();
+                                var tileBase = hit.collider.GetComponent<MoveTile>().parent;
                                 if (moveDics.ContainsKey(tileBase))
+                                {
                                     ActionMove(tileBase);
+                                    foreach (var moveTile in moveList)
+                                    {
+                                        var returnToPool = moveTile.GetComponent<ReturnToPool>();
+                                        returnToPool.Return();
+                                    }
+                                    moveList.Clear();
+                                }
                             }
                             break;
                         case CharacterState.Attack:
@@ -186,20 +195,6 @@ public class PlayerableChar : BattleTile
         {
             FloodFillMove();
         }
-        else
-        {
-            foreach (var pair in moveDics)
-            {
-                var tile = pair.Key;
-                var tileRen = tile.GetComponent<MeshRenderer>();
-                if (tileRen == null)
-                {
-                    var obj = tile.transform.GetChild(0);
-                    tileRen = obj.GetComponent<MeshRenderer>();
-                }
-                tileRen.material.color = Color.white;
-            }
-        }
     }
 
     private void FloodFillMove()
@@ -258,13 +253,11 @@ public class PlayerableChar : BattleTile
         else
             return;
 
-        var tileRen = tile.GetComponent<MeshRenderer>();
-        if (tileRen == null)
-        {
-            var obj = tile.transform.GetChild(0);
-            tileRen = obj.GetComponent<MeshRenderer>();
-        }
-        tileRen.material.color = Color.blue;
+        var go = BattleMgr.Instance.battlePoolMgr.CreateMoveTile();
+        go.transform.position = tile.tileIdx + new Vector3(0, 0.5f);
+        var moveTile = go.GetComponent<MoveTile>();
+        moveTile.parent = tile;
+        moveList.Add(moveTile);
 
         foreach (var adjNode in tile.adjNodes)
         {

@@ -22,10 +22,11 @@ public class BattleMgr : MonoBehaviour
     public SightMgr sightMgr;
     public PathMgr pathMgr;
     public HintMgr hintMgr;
+    public BattlePoolMgr battlePoolMgr;
     public PlayerDataMgr playerDataMgr;     // 여기 저장하기 위해
 
     [Header("Turn")]
-    public BattleTurn startTurn;
+    public BattleTurn startTurn; // For Test
     public BattleTurn turn;
     public int turnCount;
     public int fieldVirusLevel;
@@ -45,6 +46,7 @@ public class BattleMgr : MonoBehaviour
         battleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
         pathMgr = GameObject.FindWithTag("PathMgr").GetComponent<PathMgr>();
         hintMgr = GameObject.FindWithTag("HintMgr").GetComponent<HintMgr>();
+        battlePoolMgr = GameObject.FindWithTag("BattlePoolMgr").GetComponent<BattlePoolMgr>();
 
         // 비전투씬에서 넘어온 플레이어데이터매니저가 있으면
         // 아래 코드가 동작함

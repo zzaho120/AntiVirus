@@ -5,6 +5,7 @@ using UnityEngine.Pool;
 
 public enum PoolName
 {
+    None = -1,
     Monster,
     Footprint,
     Particle,
@@ -12,11 +13,17 @@ public enum PoolName
     Sound,
 }
 
+public enum BattlePoolName
+{
+    MoveTile,
+}
+
 [System.Serializable]
 public class ObjectPool
 {
     public int quantity;
     public PoolName poolName;
+    public BattlePoolName battlePoolName;
     public GameObject prefab;
 
     [HideInInspector]

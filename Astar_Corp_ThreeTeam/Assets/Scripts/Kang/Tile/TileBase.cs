@@ -47,13 +47,13 @@ public class TileBase : MonoBehaviour
 
     public void EnableDisplay(bool isEnabled)
     {
-        var ren = tileObj.GetComponent<MeshRenderer>();
+        //var ren = tileObj.GetComponent<MeshRenderer>();
 
-        ren.material.color = Color.white;
-        if (isEnabled)
-            ren.material = materials[0];
-        else
-            ren.material = materials[1];
+        //ren.material.color = Color.white;
+        //if (isEnabled)
+        //    ren.material = materials[0];
+        //else
+        //    ren.material = materials[1];
 
         if (charObj != null)
         {

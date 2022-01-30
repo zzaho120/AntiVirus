@@ -44,7 +44,9 @@ public class BattleMonsterMgr : MonoBehaviour
                 monster.SetTarget(sightMgr.GetPlayerInMonsterSight(idx));
             
         }
-        curMonster = monsters[0];
+
+        if (monsters.Count > 0)
+            curMonster = monsters[0];
     }
 
     public void UpdateTurn()
