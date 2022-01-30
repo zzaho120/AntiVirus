@@ -36,8 +36,13 @@ public class PlayerSaveData
     public List<int> hp { get; set; }
     public List<int> maxHp { get; set; }
     public List<int> sensitivity { get; set; }
+    public List<int> avoidRate { get; set; }
     public List<int> concentration { get; set; }
     public List<int> willPower { get; set; }
+    public List<int> level { get; set; }
+    public List<int> currentExp { get; set; }
+    public List<int> sightDistance { get; set; }
+    public List<int> weight { get; set; }
     public List<int> bagLevel { get; set; }
 
     //패널티.
@@ -84,6 +89,18 @@ public class PlayerSaveData
     public List<int> consumableNumList { get; set; }
     public List<string> otherItemList { get; set; }
     public List<int> otherItemNumList { get; set; }
+
+    //용병 관련.
+    public bool pubReset { get; set; }
+    public List<string> soldierName { get; set; }
+    public List<int> soldierHp { get; set; }
+    public List<int> soldierSensitivity { get; set; }
+    public List<int> soldierAvoidRate { get; set; }
+    public List<int> soldierConcentration { get; set; }
+    public List<int> soldierWillPower { get; set; }
+    public List<int> soldierSightDistance { get; set; }
+    public List<string> soldierMainWeapon { get; set; }
+    public List<int> soldierCost { get; set; }
 
     //트럭 데이터.
     public List<string> truckEquippableList { get; set; }

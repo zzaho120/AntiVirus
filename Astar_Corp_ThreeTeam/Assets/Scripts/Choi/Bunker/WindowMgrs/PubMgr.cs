@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class PubMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
+    public BunkerMgr bunkerMgr;
 
     public GameObject mainWin;
     public GameObject recruitmentWin;
+    public GameObject popupWin;
+    public GameObject upgradeWin;
     public GameObject hintCollectionWin;
 
     //용병 모집 창.
@@ -33,19 +37,53 @@ public class PubMgr : MonoBehaviour
     public GameObject hintPopup;
     public Text hintContents;
 
+    [Header("Upgrade Win")]
+    public Text pubLevelTxt;
+    public Text capacityTxt;
+    public Text materialTxt;
+
+    //아지트 관련.
+    int agitLevel;
+    int maxMember;
+
+    //선술집 관련.
     int pubLevel;
     int maxSoldierNum;
+    int nextMaxSoldier;
+    int upgradeCost;
+
     int maxHintNum;
     int currentIndex;
     int currentHintIndex;
     Color originColor;
 
     List<string> characterName = new List<string>();
-    Dictionary<int, CharacterStats> soliders = new Dictionary<int, CharacterStats>();
+    Dictionary<int, CharacterStats> soldiers = new Dictionary<int, CharacterStats>();
     Dictionary<int, int> costs = new Dictionary<int, int>();
 
     public void Init()
     {
+        agitLevel = playerDataMgr.saveData.agitLevel;
+        Bunker agitLevelInfo = playerDataMgr.bunkerList["BUN_0001"];
+        switch (agitLevel)
+        {
+            case 1:
+                maxMember = agitLevelInfo.level1;
+                break;
+            case 2:
+                maxMember = agitLevelInfo.level2;
+                break;
+            case 3:
+                maxMember = agitLevelInfo.level3;
+                break;
+            case 4:
+                maxMember = agitLevelInfo.level4;
+                break;
+            case 5:
+                maxMember = agitLevelInfo.level5;
+                break;
+        }
+        
         pubLevel = playerDataMgr.saveData.pubLevel;
         Bunker pubSoldierLevelInfo = playerDataMgr.bunkerList["BUN_0007"];
         Bunker pubHintLevelInfo = playerDataMgr.bunkerList["BUN_0008"];
@@ -53,18 +91,26 @@ public class PubMgr : MonoBehaviour
         {
             case 1:
                 maxSoldierNum = pubSoldierLevelInfo.level1;
+                nextMaxSoldier = pubSoldierLevelInfo.level2;
+                upgradeCost = pubSoldierLevelInfo.level2Cost;
                 maxHintNum = pubHintLevelInfo.level1;
                 break;
             case 2:
                 maxSoldierNum = pubSoldierLevelInfo.level2;
+                nextMaxSoldier = pubSoldierLevelInfo.level3;
+                upgradeCost = pubSoldierLevelInfo.level3Cost;
                 maxHintNum = pubHintLevelInfo.level2;
                 break;
             case 3:
                 maxSoldierNum = pubSoldierLevelInfo.level3;
+                nextMaxSoldier = pubSoldierLevelInfo.level4;
+                upgradeCost = pubSoldierLevelInfo.level4Cost;
                 maxHintNum = pubHintLevelInfo.level3;
                 break;
             case 4:
                 maxSoldierNum = pubSoldierLevelInfo.level4;
+                nextMaxSoldier = pubSoldierLevelInfo.level5;
+                upgradeCost = pubSoldierLevelInfo.level5Cost;
                 maxHintNum = pubHintLevelInfo.level4;
                 break;
             case 5:
@@ -73,10 +119,15 @@ public class PubMgr : MonoBehaviour
                 break;
         }
 
-        if (!mainWin.activeSelf) mainWin.SetActive(true);
-        if (recruitmentWin.activeSelf) recruitmentWin.SetActive(false);
-        if (hintCollectionWin.activeSelf) hintCollectionWin.SetActive(false);
+        SelectSoldier();
 
+        currentIndex = -1;
+        currentHintIndex = -1;
+        originColor = characterPrefab.GetComponent<Image>().color;
+    }
+
+    public void SelectSoldier()
+    {
         //이전 정보 삭제.
         if (characterObjs.Count != 0)
         {
@@ -88,91 +139,147 @@ public class PubMgr : MonoBehaviour
 
             characterListContent.transform.DetachChildren();
         }
-        
-        //랜덤 용병 생성.
-        foreach (var element in playerDataMgr.characterList)
-        {
-            characterName.Add(element.Key); 
-        }
-
-        if (soliders.Count != 0) soliders.Clear();
+        if (soldiers.Count != 0) soldiers.Clear();
         if (costs.Count != 0) costs.Clear();
-        for (int j = 0; j < maxSoldierNum; j++)
+
+        if (playerDataMgr.saveData.pubReset == true)
         {
-            int randomIndex = Random.Range(0, playerDataMgr.characterList.Count);
-            var key = characterName[randomIndex];
+            playerDataMgr.saveData.pubReset = false;
+            if (playerDataMgr.saveData.soldierName.Count != 0) playerDataMgr.saveData.soldierName.Clear();
+            if (playerDataMgr.saveData.soldierHp.Count != 0) playerDataMgr.saveData.soldierHp.Clear();
+            if (playerDataMgr.saveData.soldierSensitivity.Count != 0) playerDataMgr.saveData.soldierSensitivity.Clear();
+            if (playerDataMgr.saveData.soldierAvoidRate.Count != 0) playerDataMgr.saveData.soldierAvoidRate.Clear();
+            if (playerDataMgr.saveData.soldierConcentration.Count != 0) playerDataMgr.saveData.soldierConcentration.Clear();
+            if (playerDataMgr.saveData.soldierWillPower.Count != 0) playerDataMgr.saveData.soldierWillPower.Clear();
+            if (playerDataMgr.saveData.soldierSightDistance.Count != 0) playerDataMgr.saveData.soldierSightDistance.Clear();
+            if (playerDataMgr.saveData.soldierMainWeapon.Count != 0) playerDataMgr.saveData.soldierMainWeapon.Clear();
 
-            CharacterStats stat = new CharacterStats();
-            var character = playerDataMgr.characterList[key];
-            stat.level = 1;
-            stat.currentHp = Random.Range(character.minHp, character.maxHp);
-            stat.MaxHp = stat.currentHp;
-            stat.sensivity = Random.Range(character.minSensitivity, character.maxSensitivity);
-            stat.concentration = Random.Range(character.minConcentration, character.maxConcentration);
-            stat.willpower = Random.Range(character.minWillpower, character.maxWillpower);
-            stat.bagLevel = 1;
+            //랜덤 용병 생성.
+            foreach (var element in playerDataMgr.characterList)
+            {
+                characterName.Add(element.Key);
+            }
 
-            stat.character = character;
-            stat.character.id = character.id;
+            for (int j = 0; j < maxSoldierNum; j++)
+            {
+                int randomIndex = Random.Range(0, playerDataMgr.characterList.Count);
+                var key = characterName[randomIndex];
 
-            stat.skillMgr = new SkillMgr();
-            stat.buffMgr = new BuffMgr();
+                CharacterStats stat = new CharacterStats();
+                var character = playerDataMgr.characterList[key];
+                stat.character = character;
+                stat.Init();
+                stat.bagLevel = 1;
 
-            stat.VirusPenaltyInit();
+                stat.weapon = new WeaponStats();
+                stat.weapon.mainWeapon = null;
 
-            stat.virusPenalty["E"].penaltyGauge = 0;
-            stat.virusPenalty["B"].penaltyGauge = 0;
-            stat.virusPenalty["P"].penaltyGauge = 0;
-            stat.virusPenalty["I"].penaltyGauge = 0;
-            stat.virusPenalty["T"].penaltyGauge = 0;
-            stat.weapon = new WeaponStats();
-            stat.weapon.mainWeapon = null;
-            stat.weapon.subWeapon =  null;
+                int num = j;
+                soldiers.Add(num, stat);
+                var cost = Random.Range(character.minCharCost, character.maxCharCost);
+                costs.Add(num, cost);
 
-            //stat.skillMgr = new SkillMgr();
-            //stat.skillMgr.activeSkills = new List<ActiveSkill>();
-            //for (int k = 0; k < 5; k++) stat.skillMgr.activeSkills.Add(null);
-            //stat.skillMgr.passiveSkills = new List<PassiveSkill>();
-            //for (int k = 0; k < 5; k++) stat.skillMgr.passiveSkills.Add(null);
+                playerDataMgr.saveData.soldierName.Add(stat.character.name);
+                playerDataMgr.saveData.soldierHp.Add(stat.currentHp);
+                playerDataMgr.saveData.soldierSensitivity.Add(stat.sensivity);
+                playerDataMgr.saveData.soldierAvoidRate.Add(stat.avoidRate);
+                playerDataMgr.saveData.soldierConcentration.Add(stat.concentration);
+                playerDataMgr.saveData.soldierWillPower.Add(stat.willpower);
+                playerDataMgr.saveData.soldierSightDistance.Add(stat.sightDistance);
+                playerDataMgr.saveData.soldierMainWeapon.Add(null);
+                playerDataMgr.saveData.soldierCost.Add(cost);
+            }
+            PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
-            int num = j;
-            soliders.Add(num, stat);
-            var cost = Random.Range(character.minCharCost, character.maxCharCost);
-            costs.Add(num, cost);
+            int i = 0;
+            foreach (var element in soldiers)
+            {
+                var go = Instantiate(characterPrefab, characterListContent.transform);
+                var child = go.transform.GetChild(1).gameObject;
+
+                var childObj = child.transform.GetChild(0).gameObject;
+                childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                    = $"가격 {costs[i]}";
+
+                childObj = child.transform.GetChild(1).gameObject;
+                childObj.GetComponent<Text>().text = $"{element.Value.character.name}/성별";
+
+                childObj = child.transform.GetChild(2).gameObject;
+                childObj.GetComponent<Text>().text = $"{element.Value.character.name}/Lv{element.Value.level}/착용 중인 주무기";
+
+                childObj = child.transform.GetChild(3).gameObject;
+                var slider = childObj.GetComponent<Slider>();
+                slider.maxValue = element.Value.MaxHp;
+                slider.value = element.Value.currentHp;
+
+                int num = i;
+                var button = go.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectCharacter(num); });
+                characterObjs.Add(num, go);
+
+                i++;
+            }
         }
-
-        int i = 0;
-        foreach (var element in soliders)
+        else
         {
-            var go = Instantiate(characterPrefab, characterListContent.transform);
-            var child = go.transform.GetChild(1).gameObject;
+            for (int j = 0; j < playerDataMgr.saveData.soldierName.Count; j++)
+            {
+                CharacterStats stat = new CharacterStats();
+                var key = playerDataMgr.characterList.FirstOrDefault(x => x.Value.name == playerDataMgr.saveData.soldierName[j]).Key;
+                var character = playerDataMgr.characterList[key];
+                stat.character = character;
+                stat.currentHp = playerDataMgr.saveData.soldierHp[j];
+                stat.MaxHp = playerDataMgr.saveData.soldierHp[j];
+                stat.sensivity = playerDataMgr.saveData.soldierSensitivity[j];
+                stat.avoidRate = playerDataMgr.saveData.soldierAvoidRate[j];
+                stat.concentration = playerDataMgr.saveData.soldierConcentration[j];
+                stat.willpower = playerDataMgr.saveData.soldierWillPower[j];
+                stat.level = 1;
+                stat.currentExp = 0;
+                stat.sightDistance = playerDataMgr.saveData.soldierSightDistance[j];
+                stat.Weight = stat.character.weight;
+                stat.bagLevel = 1;
+             
+                stat.Setting();
+
+                stat.weapon = new WeaponStats();
+                if (playerDataMgr.saveData.soldierMainWeapon[j] == null) stat.weapon.mainWeapon = null;
+
+                int num = j;
+                soldiers.Add(num, stat);
+                var cost = playerDataMgr.saveData.soldierCost[j];
+                costs.Add(num, cost);
+            }
             
-            var childObj = child.transform.GetChild(0).gameObject;
-            childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
-                = $"가격 {costs[i]}";
-            
-            childObj = child.transform.GetChild(1).gameObject;
-            childObj.GetComponent<Text>().text = $"{element.Value.character.name}/성별";
-           
-            childObj = child.transform.GetChild(2).gameObject;
-            childObj.GetComponent<Text>().text = $"{element.Value.character.name}/Lv{element.Value.level}/착용 중인 주무기";
+            int i = 0;
+            foreach (var element in soldiers)
+            {
+                var go = Instantiate(characterPrefab, characterListContent.transform);
+                var child = go.transform.GetChild(1).gameObject;
 
-            childObj = child.transform.GetChild(3).gameObject;
-            var slider = childObj.GetComponent<Slider>();
-            slider.maxValue = element.Value.MaxHp;
-            slider.value = element.Value.currentHp;
+                var childObj = child.transform.GetChild(0).gameObject;
+                childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                    = $"가격 {costs[i]}";
 
-            int num = i;
-            var button = go.AddComponent<Button>();
-            button.onClick.AddListener(delegate { SelectCharacter(num); });
-            characterObjs.Add(num, go);
+                childObj = child.transform.GetChild(1).gameObject;
+                childObj.GetComponent<Text>().text = $"{element.Value.character.name}/성별";
 
-            i++;
+                childObj = child.transform.GetChild(2).gameObject;
+                childObj.GetComponent<Text>().text = $"{element.Value.character.name}/Lv{element.Value.level}/착용 중인 주무기";
+
+                childObj = child.transform.GetChild(3).gameObject;
+                var slider = childObj.GetComponent<Slider>();
+                slider.maxValue = element.Value.MaxHp;
+                slider.value = element.Value.currentHp;
+
+                int num = i;
+                var button = go.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectCharacter(num); });
+                characterObjs.Add(num, go);
+
+                i++;
+            }
         }
-
-        currentIndex = -1;
-        currentHintIndex = -1;
-        originColor = characterPrefab.GetComponent<Image>().color;
     }
 
     public void SelectCharacter(int index)
@@ -190,8 +297,8 @@ public class PubMgr : MonoBehaviour
     {
         if(!DetailInfoWin.activeSelf) DetailInfoWin.SetActive(true);
 
-        nameTxt.text = $"{soliders[currentIndex].character.name}";
-        levelTxt.text = $"Lv{soliders[currentIndex].level}";
+        nameTxt.text = $"{soldiers[currentIndex].character.name}";
+        levelTxt.text = $"Lv{soldiers[currentIndex].level}";
 
         foreach (var element in mainWeaponList)
         {
@@ -199,7 +306,7 @@ public class PubMgr : MonoBehaviour
         }
 
         int i = 0;
-        foreach (var element in soliders[currentIndex].character.weapons)
+        foreach (var element in soldiers[currentIndex].character.weapons)
         {
             if (element.Equals("1") || element.Equals("7")) continue;
             
@@ -209,11 +316,12 @@ public class PubMgr : MonoBehaviour
             i++;
         }
 
-        simpleStat.text = $"체력{soliders[currentIndex].currentHp} 예민함 {soliders[currentIndex].sensivity}\n"
-            + $"집중력 {soliders[currentIndex].concentration} 정신력 {soliders[currentIndex].willpower}";
+        simpleStat.text = $"체력{soldiers[currentIndex].currentHp} 예민함 {soldiers[currentIndex].sensivity}\n"
+            + $"집중력 {soldiers[currentIndex].concentration} 정신력 {soldiers[currentIndex].willpower}";
 
-        detailStat.text = $"HP {soliders[currentIndex].currentHp} 무게 {soliders[currentIndex].character.weight}\n";
-        //+$"회피율 {soliders[currentIndex].}"
+        detailStat.text = $"HP {soldiers[currentIndex].currentHp} 무게 {soldiers[currentIndex].character.weight}\n"
+        + $"회피율 {soldiers[currentIndex].avoidRate} 시야범위 {soldiers[currentIndex].sightDistance}\n"
+        + $"명중률 {soldiers[currentIndex].accuracy} 경계명중률 {soldiers[currentIndex].alertAccuracy} 크리티컬 확률 {soldiers[currentIndex].critRate}";
     }
 
     string GetTypeStr(string kind)
@@ -250,48 +358,96 @@ public class PubMgr : MonoBehaviour
     {
         if (playerDataMgr.saveData.money - costs[currentIndex] < 0) return;
 
-        int agitLevel = playerDataMgr.saveData.agitLevel;
-        Bunker agitLevelInfo = playerDataMgr.bunkerList["BUN_0001"];
-        int maxMember = 0;
-        switch (agitLevel)
-        {
-            case 1:
-                maxMember = agitLevelInfo.level1;
-                break;
-            case 2:
-                maxMember = agitLevelInfo.level2;
-                break;
-            case 3:
-                maxMember = agitLevelInfo.level3;
-                break;
-            case 4:
-                maxMember = agitLevelInfo.level4;
-                break;
-            case 5:
-                maxMember = agitLevelInfo.level5;
-                break;
-        }
         int currentMemberNum = playerDataMgr.currentSquad.Count;
-
         if (currentMemberNum + 1 > maxMember) return;
+
+        //json.
+        playerDataMgr.saveData.soldierName.RemoveAt(currentIndex);
+        playerDataMgr.saveData.soldierHp.RemoveAt(currentIndex);
+        playerDataMgr.saveData.soldierSensitivity.RemoveAt(currentIndex);
+        playerDataMgr.saveData.soldierAvoidRate.RemoveAt(currentIndex);
+        playerDataMgr.saveData.soldierConcentration.RemoveAt(currentIndex);
+        playerDataMgr.saveData.soldierWillPower.RemoveAt(currentIndex);
+        playerDataMgr.saveData.soldierSightDistance.RemoveAt(currentIndex);
+        playerDataMgr.saveData.soldierMainWeapon.RemoveAt(currentIndex);
+        playerDataMgr.saveData.soldierCost.RemoveAt(currentIndex);
 
         string squadNum = "SquadNum";
         int currentNum = PlayerPrefs.HasKey(squadNum) ? PlayerPrefs.GetInt(squadNum) : 0;
-        playerDataMgr.AddCharacter(currentNum, soliders[currentIndex]);
-        playerDataMgr.saveData.money -= costs[currentIndex];
-        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+        playerDataMgr.AddCharacter(currentNum, soldiers[currentIndex]);
         PlayerPrefs.SetInt(squadNum, currentNum + 1);
 
-        Refresh();
+        playerDataMgr.saveData.money -= costs[currentIndex];
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+       
+        currentIndex = -1;
+        SelectSoldier();
         DetailInfoWin.SetActive(false);
     }
 
-    public void Refresh()
+    public void ElectiveEmployment()
     {
-        Destroy(characterObjs[currentIndex]);
-        characterObjs.Remove(currentIndex);
-        costs.Remove(currentIndex);
+        int totalCost = 0;
+        int totalNum = 0;
+        bool isAnythingChecked = false;
+        foreach (var element in characterObjs)
+        {
+            var child = element.Value.transform.GetChild(1).gameObject;
+            var toggle = child.transform.GetChild(4).gameObject.GetComponent<Toggle>();
+            if (toggle.isOn == true)
+            {
+                isAnythingChecked = true;
+                totalCost += costs[element.Key];
+                totalNum++;
+            }
+        }
+        if (isAnythingChecked == false) return;
+        if (playerDataMgr.saveData.money - totalCost < 0) return;
+
+        int currentMemberNum = playerDataMgr.currentSquad.Count;
+        if (currentMemberNum + totalNum > maxMember) return;
+
+        int count = characterObjs.Count;
+        for (int i = count - 1; i > -1; --i)
+        {
+            var child = characterObjs[i].transform.GetChild(1).gameObject;
+            var toggle = child.transform.GetChild(4).gameObject.GetComponent<Toggle>();
+
+            if (toggle.isOn)
+            {
+                //json.
+                playerDataMgr.saveData.soldierName.RemoveAt(i);
+                playerDataMgr.saveData.soldierHp.RemoveAt(i);
+                playerDataMgr.saveData.soldierSensitivity.RemoveAt(i);
+                playerDataMgr.saveData.soldierAvoidRate.RemoveAt(i);
+                playerDataMgr.saveData.soldierConcentration.RemoveAt(i);
+                playerDataMgr.saveData.soldierWillPower.RemoveAt(i);
+                playerDataMgr.saveData.soldierSightDistance.RemoveAt(i);
+                playerDataMgr.saveData.soldierMainWeapon.RemoveAt(i);
+                playerDataMgr.saveData.soldierCost.RemoveAt(i);
+
+                string squadNum = "SquadNum";
+                int currentNum = PlayerPrefs.HasKey(squadNum) ? PlayerPrefs.GetInt(squadNum) : 0;
+                playerDataMgr.AddCharacter(currentNum, soldiers[i]);
+                PlayerPrefs.SetInt(squadNum, currentNum + 1);
+
+                playerDataMgr.saveData.money -= costs[i];
+            }
+        }
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         currentIndex = -1;
+        SelectSoldier();
+        DetailInfoWin.SetActive(false);
+    }
+
+    public void SelectAll()
+    {
+        foreach (var element in characterObjs)
+        {
+            var child = element.Value.transform.GetChild(1).gameObject;
+            var toggle = child.transform.GetChild(4).gameObject.GetComponent<Toggle>();
+            toggle.isOn = true;
+        }
     }
 
     //힌트 수집 창 관련.
@@ -318,19 +474,70 @@ public class PubMgr : MonoBehaviour
 
         if (hintPopup.activeSelf) hintPopup.SetActive(false);
     }
-    
-    //창이동.
-    public void MoveToMainWin()
+
+    public void RefreshUpgradeWin()
     {
+        if (pubLevel != 5)
+        {
+            pubLevelTxt.text = $"건물 레벨 {pubLevel}→{pubLevel + 1}";
+            capacityTxt.text = $"등장 용병 숫자 {maxSoldierNum}→{nextMaxSoldier}";
+            materialTxt.text = $"{upgradeCost}";
+        }
+        else
+        {
+            pubLevelTxt.text = $"건물 레벨{pubLevel}→ -";
+            capacityTxt.text = $"등장 용병 숫자 {maxSoldierNum}→ -";
+            materialTxt.text = $"-";
+        }
+    }
+
+    //창이동.
+    public void OpenMainWin()
+    {
+        if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
+        if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
+
         if (recruitmentWin.activeSelf) recruitmentWin.SetActive(false);
+        if (upgradeWin.activeSelf) upgradeWin.SetActive(false);
+        if (popupWin.activeSelf) popupWin.SetActive(false);
         if (hintCollectionWin.activeSelf) hintCollectionWin.SetActive(false);
-        mainWin.SetActive(true);
+        if (!mainWin.activeSelf) mainWin.SetActive(true);
+    }
+
+    public void CloseMainWin()
+    {
+        if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
+        if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
     }
 
     public void MoveToRecruitWin()
     {
         mainWin.SetActive(false);
         recruitmentWin.SetActive(true);
+    }
+
+    public void OpenPopup()
+    {
+        popupWin.SetActive(true);
+    }
+
+    public void ClosePopup()
+    {
+        popupWin.SetActive(false);
+    }
+
+    public void OpenUpgradeWin()
+    {
+        RefreshUpgradeWin();
+
+        mainWin.SetActive(false);
+        upgradeWin.SetActive(true);
+    }
+
+    public void CloseUpgradeWin()
+    {
+        upgradeWin.SetActive(false);
+        mainWin.SetActive(true);
     }
 
     public void MoveToHintCollectionWin()

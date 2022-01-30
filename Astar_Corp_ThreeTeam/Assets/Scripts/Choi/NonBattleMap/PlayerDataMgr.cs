@@ -85,8 +85,13 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.hp = new List<int>();
             saveData.maxHp = new List<int>();
             saveData.sensitivity = new List<int>();
+            saveData.avoidRate = new List<int>();
             saveData.concentration = new List<int>();
             saveData.willPower = new List<int>();
+            saveData.level = new List<int>();
+            saveData.currentExp = new List<int>();
+            saveData.sightDistance = new List<int>();
+            saveData.weight = new List<int>();
             saveData.bagLevel = new List<int>();
 
             saveData.mainWeapon = new List<string>();
@@ -128,6 +133,16 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.levelI = new List<int>();
             saveData.levelT = new List<int>();
 
+            saveData.soldierName = new List<string>();
+            saveData.soldierHp = new List<int>();
+            saveData.soldierSensitivity = new List<int>();
+            saveData.soldierAvoidRate = new List<int>();
+            saveData.soldierConcentration = new List<int>();
+            saveData.soldierWillPower = new List<int>();
+            saveData.soldierSightDistance = new List<int>();
+            saveData.soldierMainWeapon = new List<string>();
+            saveData.soldierCost = new List<int>();
+
             saveData.truckEquippableList = new List<string>();
             saveData.truckEquippableNumList = new List<int>();
             saveData.truckConsumableList = new List<string>();
@@ -148,37 +163,11 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 PlayerPrefs.SetInt(str, 1);
 
                 saveData.storeReset = true;
+                saveData.pubReset = true;
 
                 saveData.money = 1000000;
                 saveData.bunkerExitNum = 0;
-                //for (int i = 0; i < 20; i++)
-                //{
-                //    switch (i)
-                //    {
-                //        case 2:
-                //            saveData.bunkerKind.Add(5);
-                //            break;
-                //        case 7:
-                //            saveData.bunkerKind.Add(4);
-                //            break;
-                //        case 11:
-                //            saveData.bunkerKind.Add(3);
-                //            break;
-                //        case 12:
-                //            saveData.bunkerKind.Add(2);
-                //            break;
-                //        case 13:
-                //            saveData.bunkerKind.Add(1);
-                //            break;
-                //        case 14:
-                //            saveData.bunkerKind.Add(6);
-                //            break;
-                //        default:
-                //            saveData.bunkerKind.Add(7);
-                //            break;
-                //    }
-                //}
-
+               
                 saveData.agitLevel = 1;
                 saveData.storageLevel = 1;
                 saveData.garageLevel = 1;
@@ -191,65 +180,6 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.speedLv.Add(1);
                 saveData.sightLv.Add(1);
                 saveData.weightLv.Add(1);
-
-                //테스트용.
-                //////////////////////////////
-                //foreach (var element in equippableList)
-                //{
-                //    saveData.equippableList.Add(element.Key);
-                //    int random = Random.Range(1, 3);
-                //    saveData.equippableNumList.Add(random);
-                //    currentEquippables.Add(element.Key, element.Value);
-                //    currentEquippablesNum.Add(element.Key, random);
-                //}
-
-                //foreach (var element in consumableList)
-                //{
-                //    saveData.consumableList.Add(element.Key);
-                //    int random = Random.Range(1, 3);
-                //    saveData.consumableNumList.Add(random);
-                //    currentConsumables.Add(element.Key, element.Value);
-                //    currentConsumablesNum.Add(element.Key, random);
-                //}
-
-                //foreach (var element in otherItemList)
-                //{
-                //    saveData.otherItemList.Add(element.Key);
-                //    int random = Random.Range(1, 3);
-                //    saveData.otherItemNumList.Add(random);
-                //    currentOtherItems.Add(element.Key, element.Value);
-                //    currentOtherItemsNum.Add(element.Key, random);
-                //}
-
-                //foreach (var element in equippableList)
-                //{
-                //    saveData.truckEquippableList.Add(element.Key);
-                //    int random = Random.Range(1, 3);
-                //    saveData.truckEquippableNumList.Add(random);
-                //    truckEquippables.Add(element.Key, element.Value);
-                //    truckEquippablesNum.Add(element.Key, random);
-                //}
-
-                //foreach (var element in consumableList)
-                //{
-                //    saveData.truckConsumableList.Add(element.Key);
-                //    int random = Random.Range(1, 3);
-                //    saveData.truckConsumableNumList.Add(random);
-                //    truckConsumables.Add(element.Key, element.Value);
-                //    truckConsumablesNum.Add(element.Key, random);
-                //}
-
-                //foreach (var element in otherItemList)
-                //{
-                //    saveData.truckOtherItemList.Add(element.Key);
-                //    int random = Random.Range(1, 3);
-                //    saveData.truckOtherItemNumList.Add(random);
-                //    truckOtherItems.Add(element.Key, element.Value);
-                //    truckOtherItemsNum.Add(element.Key, random);
-                //}
-
-                //PlayerSaveLoadSystem.Save(saveData);
-                //////////////////////////////
             }
             //이어하기.
             else
@@ -316,17 +246,15 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     stat.currentHp = saveData.hp[i];
                     stat.MaxHp = saveData.maxHp[i];
                     stat.sensivity = saveData.sensitivity[i];
+                    stat.avoidRate = saveData.avoidRate[i];
                     stat.concentration = saveData.concentration[i];
                     stat.willpower = saveData.willPower[i];
+                    stat.level = saveData.level[i];
+                    stat.currentExp = saveData.currentExp[i];
+                    stat.sightDistance = saveData.sightDistance[i];
+                    stat.Weight = saveData.weight[i];
                     stat.character = characterList[saveData.id[i]];
-                    stat.character.id = saveData.id[i];
-                    stat.bagLevel = saveData.bagLevel[i];
-                    stat.VirusPenaltyInit();
-
-                    stat.weapon = new WeaponStats();
-                    stat.weapon.mainWeapon = (saveData.mainWeapon[i] == null) ? null : equippableList[saveData.mainWeapon[i]];
-                    stat.weapon.subWeapon = (saveData.subWeapon[i] == null) ? null : equippableList[saveData.subWeapon[i]];
-
+                    stat.Setting();
                     stat.virusPenalty["E"].penaltyLevel = saveData.levelE[i];
                     stat.virusPenalty["B"].penaltyLevel = saveData.levelB[i];
                     stat.virusPenalty["P"].penaltyLevel = saveData.levelP[i];
@@ -338,6 +266,12 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     stat.virusPenalty["P"].penaltyGauge = saveData.gaugeP[i];
                     stat.virusPenalty["I"].penaltyGauge = saveData.gaugeI[i];
                     stat.virusPenalty["T"].penaltyGauge = saveData.gaugeT[i];
+
+                    stat.bagLevel = saveData.bagLevel[i];
+                   
+                    stat.weapon = new WeaponStats();
+                    stat.weapon.mainWeapon = (saveData.mainWeapon[i] == null) ? null : equippableList[saveData.mainWeapon[i]];
+                    stat.weapon.subWeapon = (saveData.subWeapon[i] == null) ? null : equippableList[saveData.subWeapon[i]];
 
                     //List<string> activeSkill = new List<string>();
                     //int activeSkillNum = activeSkillList.Count;
@@ -401,10 +335,27 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             stat.currentHp = saveData.hp[i];
             stat.MaxHp = saveData.maxHp[i];
             stat.sensivity = saveData.sensitivity[i];
+            stat.avoidRate = saveData.avoidRate[i];
             stat.concentration = saveData.concentration[i];
             stat.willpower = saveData.willPower[i];
+            stat.level = saveData.level[i];
+            stat.currentExp = saveData.currentExp[i];
+            stat.sightDistance = saveData.sightDistance[i];
+            stat.Weight = saveData.weight[i];
             stat.character = characterList[saveData.id[i]];
-            stat.character.id = saveData.id[i];
+            stat.Setting();
+            stat.virusPenalty["E"].penaltyLevel = saveData.levelE[i];
+            stat.virusPenalty["B"].penaltyLevel = saveData.levelB[i];
+            stat.virusPenalty["P"].penaltyLevel = saveData.levelP[i];
+            stat.virusPenalty["I"].penaltyLevel = saveData.levelI[i];
+            stat.virusPenalty["T"].penaltyLevel = saveData.levelT[i];
+
+            stat.virusPenalty["E"].penaltyGauge = saveData.gaugeE[i];
+            stat.virusPenalty["B"].penaltyGauge = saveData.gaugeB[i];
+            stat.virusPenalty["P"].penaltyGauge = saveData.gaugeP[i];
+            stat.virusPenalty["I"].penaltyGauge = saveData.gaugeI[i];
+            stat.virusPenalty["T"].penaltyGauge = saveData.gaugeT[i];
+
             stat.bagLevel = saveData.bagLevel[i];
 
             stat.weapon = new WeaponStats();
@@ -445,6 +396,8 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             }
 
             currentSquad.Add(i, stat);
+
+            if (saveData.boarding[i] != -1) boardingSquad.Add(saveData.boarding[i], i);
         }
     }
 
@@ -457,14 +410,19 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         if (num > totalSquadNum - 1)
         {
             saveData.boarding.Add(-1);
+           
             saveData.id.Add(stat.character.id);
             saveData.name.Add(stat.character.name);
             saveData.hp.Add(stat.currentHp);
             saveData.maxHp.Add(stat.MaxHp);
             saveData.sensitivity.Add(stat.sensivity);
+            saveData.avoidRate.Add(stat.avoidRate);
             saveData.concentration.Add(stat.concentration);
             saveData.willPower.Add(stat.willpower);
-            saveData.bagLevel.Add(1);
+            saveData.level.Add(stat.level);
+            saveData.currentExp.Add(stat.currentExp);
+            saveData.sightDistance.Add(stat.sightDistance);
+            saveData.weight.Add(stat.Weight);
 
             saveData.gaugeE.Add(stat.virusPenalty["E"].penaltyGauge);
             saveData.gaugeB.Add(stat.virusPenalty["B"].penaltyGauge);
@@ -477,6 +435,8 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.levelP.Add(stat.virusPenalty["P"].penaltyLevel);
             saveData.levelI.Add(stat.virusPenalty["I"].penaltyLevel);
             saveData.levelT.Add(stat.virusPenalty["T"].penaltyLevel);
+
+            saveData.bagLevel.Add(1);
 
             string mainWeaponStr = (stat.weapon.mainWeapon != null) ? stat.weapon.mainWeapon.id : null;
             saveData.mainWeapon.Add(mainWeaponStr);
@@ -516,6 +476,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             }
 
             stat.saveId = num;
+            stat.Setting();
             currentSquad.Add(num, stat);
         }
         PlayerSaveLoadSystem.Save(saveData);
@@ -529,8 +490,14 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         saveData.hp.RemoveAt(i);
         saveData.maxHp.RemoveAt(i);
         saveData.sensitivity.RemoveAt(i);
+        saveData.avoidRate.RemoveAt(i);
         saveData.concentration.RemoveAt(i);
         saveData.willPower.RemoveAt(i);
+        saveData.level.RemoveAt(i);
+        saveData.currentExp.RemoveAt(i);
+        saveData.sightDistance.RemoveAt(i);
+        saveData.weight.RemoveAt(i);
+
         saveData.bagLevel.RemoveAt(i);
 
         saveData.gaugeE.RemoveAt(i);

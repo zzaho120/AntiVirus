@@ -94,7 +94,11 @@ public class BunkerMgr : MonoBehaviour
         agitMgr.bunkerMgr = this;
 
         pubMgr.playerDataMgr = playerDataMgr;
+        pubMgr.bunkerMgr = this;
+
         storeMgr.playerDataMgr = playerDataMgr;
+        storeMgr.bunkerMgr = this;
+
         hospitalMgr.playerDataMgr = playerDataMgr;
         garageMgr.playerDataMgr = playerDataMgr;
         carCenterMgr.playerDataMgr = playerDataMgr;
@@ -243,10 +247,12 @@ public class BunkerMgr : MonoBehaviour
                 currentWinId = (int)BunkerWindows.AgitWindow - 1;
                 break;
             case BunkerKinds.Pub:
+                pubMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.PubWindow - 1;
                 break;
             case BunkerKinds.Store:
                 storeMgr.Init();
+                storeMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.StoreWindow - 1;
                 break;
             case BunkerKinds.Hospital:
@@ -386,6 +392,7 @@ public class BunkerMgr : MonoBehaviour
         if (playerDataMgr.saveData.bunkerExitNum == 5)
         {
             playerDataMgr.saveData.storeReset = true;
+            playerDataMgr.saveData.pubReset = true;
             playerDataMgr.saveData.bunkerExitNum = 0;
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
@@ -394,11 +401,32 @@ public class BunkerMgr : MonoBehaviour
     }
     public void Upgrade(string name)
     {
+        int upgradeCost = 0;
         switch (name)
         {
             case "Agit":
                 if (playerDataMgr.saveData.agitLevel == 5) return;
+
+                Bunker agitLevelInfo = playerDataMgr.bunkerList["BUN_0001"];
+                switch (playerDataMgr.saveData.agitLevel)
+                {
+                    case 1:
+                       upgradeCost = agitLevelInfo.level2Cost;
+                        break;
+                    case 2:
+                       upgradeCost = agitLevelInfo.level3Cost;
+                        break;
+                    case 3:
+                       upgradeCost = agitLevelInfo.level4Cost;
+                        break;
+                    case 4:
+                       upgradeCost = agitLevelInfo.level5Cost;
+                        break;
+                }
+                if (playerDataMgr.saveData.money - upgradeCost < 0) return;
+
                 playerDataMgr.saveData.agitLevel++;
+                playerDataMgr.saveData.money -= upgradeCost;
                 PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
                 var child = bunkerObjs[4].transform.GetChild(0).gameObject;
@@ -409,7 +437,27 @@ public class BunkerMgr : MonoBehaviour
                 break;
             case "Storage":
                 if (playerDataMgr.saveData.storageLevel == 5) return;
+
+                Bunker storageLevelInfo = playerDataMgr.bunkerList["BUN_0002"];
+                switch (playerDataMgr.saveData.storageLevel)
+                {
+                    case 1:
+                        upgradeCost = storageLevelInfo.level2Cost;
+                        break;
+                    case 2:
+                        upgradeCost = storageLevelInfo.level3Cost;
+                        break;
+                    case 3:
+                        upgradeCost = storageLevelInfo.level4Cost;
+                        break;
+                    case 4:
+                        upgradeCost = storageLevelInfo.level5Cost;
+                        break;
+                }
+                if (playerDataMgr.saveData.money - upgradeCost < 0) return;
+
                 playerDataMgr.saveData.storageLevel++;
+                playerDataMgr.saveData.money -= upgradeCost;
                 PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
                 child = bunkerObjs[5].transform.GetChild(0).gameObject;
@@ -418,9 +466,69 @@ public class BunkerMgr : MonoBehaviour
                 storageMgr.Init();
                 storageMgr.RefreshUpgradeWin();
                 break;
+            case "Pub":
+                if (playerDataMgr.saveData.pubLevel == 5) return;
+
+                Bunker pubSoldierLevelInfo = playerDataMgr.bunkerList["BUN_0007"];
+                switch (playerDataMgr.saveData.pubLevel)
+                {
+                    case 1:
+                        upgradeCost = pubSoldierLevelInfo.level2Cost;
+                        break;
+                    case 2:
+                        upgradeCost = pubSoldierLevelInfo.level3Cost;
+                        break;
+                    case 3:
+                        upgradeCost = pubSoldierLevelInfo.level4Cost;
+                        break;
+                    case 4:
+                        upgradeCost = pubSoldierLevelInfo.level5Cost;
+                        break;
+                }
+                if (playerDataMgr.saveData.money - upgradeCost < 0) return;
+
+                playerDataMgr.saveData.pubLevel++;
+                playerDataMgr.saveData.money -= upgradeCost;
+                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+                child = bunkerObjs[2].transform.GetChild(0).gameObject;
+                child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.pubLevel}";
+
+                pubMgr.Init();
+                pubMgr.RefreshUpgradeWin();
+                break;
+            case "Store":
+                if (playerDataMgr.saveData.storeLevel == 5) return;
+
+                Bunker storeLevelInfo = playerDataMgr.bunkerList["BUN_0006"];
+                switch (playerDataMgr.saveData.storeLevel)
+                {
+                    case 1:
+                        upgradeCost = storeLevelInfo.level2Cost;
+                        break;
+                    case 2:
+                        upgradeCost = storeLevelInfo.level3Cost;
+                        break;
+                    case 3:
+                        upgradeCost = storeLevelInfo.level4Cost;
+                        break;
+                    case 4:
+                        upgradeCost = storeLevelInfo.level5Cost;
+                        break;
+                }
+                if (playerDataMgr.saveData.money - upgradeCost < 0) return;
+
+                playerDataMgr.saveData.storeLevel++;
+                playerDataMgr.saveData.money -= upgradeCost;
+                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+                child = bunkerObjs[3].transform.GetChild(0).gameObject;
+                child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.storeLevel}";
+
+                storeMgr.Init();
+                storeMgr.RefreshUpgradeWin();
+                break;
         }
-
-
     }
 
     public void RefreshGoods()

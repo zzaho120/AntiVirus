@@ -132,6 +132,8 @@ public class StorageMgr : MonoBehaviour
         //2.Consumables
         //3.OtherItems
 
+        bunkerMgr.moneyTxt.text = $"{playerDataMgr.saveData.money}";
+
         //버튼 초기화.
         foreach (var element in buttons)
         {

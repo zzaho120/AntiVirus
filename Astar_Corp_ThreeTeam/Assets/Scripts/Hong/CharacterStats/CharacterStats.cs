@@ -197,6 +197,21 @@ public class CharacterStats
         VirusPenaltyInit();
     }
 
+    public void Setting()
+    {
+        totalExp = ScriptableMgr.Instance.GetCharacterExp($"EXP_{level}").totalExp;
+
+        accuracy = concentration * character.accurRatePerCon;
+        critResistRate = willpower * character.critResistRateRise;
+        alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
+        critRate = (willpower / 3) * character.critRateRise;
+
+        buffMgr = new BuffMgr();
+        skillMgr = new SkillMgr();
+
+        VirusPenaltyInit();
+    }
+
     public void StartGame()
     {
         // 무기 스탯 초기화

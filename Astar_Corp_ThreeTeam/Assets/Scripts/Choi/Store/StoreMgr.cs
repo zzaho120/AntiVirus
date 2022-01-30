@@ -15,6 +15,10 @@ public enum StoreMode
 public class StoreMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
+    public BunkerMgr bunkerMgr;
+    public GameObject mainWin;
+    public GameObject storeWin;
+    public GameObject upgradeWin;
 
     [Header("버튼 관련")]
     public List<GameObject> storageButtons;
@@ -38,11 +42,18 @@ public class StoreMgr : MonoBehaviour
     public GameObject popupWin;
     public Text titleTxt;
     public Text itemNameTxt;
+    public Text itemTypeTxt;
     public Text itemNumTxt;
     public Text itemCostTxt;
+    public Text itemWeightTxt;
     public Slider slider;
     public GameObject buyButton;
     public GameObject sellButton;
+
+    [Header("Upgrade Win")]
+    public Text storeLevelTxt;
+    public Text capacityTxt;
+    public Text materialTxt;
 
     public Dictionary<int, GameObject> storeObjs = new Dictionary<int, GameObject>();
     public Dictionary<string, GameObject> storageObjs = new Dictionary<string, GameObject>();
@@ -63,6 +74,8 @@ public class StoreMgr : MonoBehaviour
 
     int storeLevel;
     int maxItemNum;
+    int nextItemNum;
+    int upgradeCost;
     int storageLevel;
     int maxStorageCapacity;
 
@@ -85,15 +98,23 @@ public class StoreMgr : MonoBehaviour
         {
             case 1:
                 maxItemNum = storeLevelInfo.level1;
+                nextItemNum = storeLevelInfo.level2;
+                upgradeCost = storeLevelInfo.level2Cost;
                 break;
             case 2:
                 maxItemNum = storeLevelInfo.level2;
+                nextItemNum = storeLevelInfo.level3;
+                upgradeCost = storeLevelInfo.level3Cost;
                 break;
             case 3:
                 maxItemNum = storeLevelInfo.level3;
+                nextItemNum = storeLevelInfo.level4;
+                upgradeCost = storeLevelInfo.level4Cost;
                 break;
             case 4:
                 maxItemNum = storeLevelInfo.level4;
+                nextItemNum = storeLevelInfo.level5;
+                upgradeCost = storeLevelInfo.level5Cost;
                 break;
             case 5:
                 maxItemNum = storeLevelInfo.level5;
@@ -373,21 +394,26 @@ public class StoreMgr : MonoBehaviour
             {
                 var go = Instantiate(storePrefab, storeContents.transform);
                 string key = element.Value;
-                var button = go.AddComponent<Button>();
-                button.onClick.AddListener(delegate { SelectStoreItem(element.Key); });
-
-                var cost = playerDataMgr.equippableList[key].price;
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = $"{cost}";
-
-                var num = playerDataMgr.equippableList[key].itemQuantity;
-                var currentAmount = storeWeaponNumInfo[element.Key];
-                child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{currentAmount}/{num}";
 
                 var name = playerDataMgr.equippableList[key].name;
-                child = go.transform.GetChild(2).gameObject;
+                var child = go.transform.GetChild(0).gameObject;
                 child.GetComponent<Text>().text = $"{name}";
+
+                var currentAmount = storeWeaponNumInfo[element.Key];
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{currentAmount}";
+
+                var weight = playerDataMgr.equippableList[key].weight;
+                child = go.transform.GetChild(2).gameObject;
+                child.GetComponent<Text>().text = $"{weight}";
+
+                var price = playerDataMgr.equippableList[key].price;
+                child = go.transform.GetChild(3).gameObject;
+                child.GetComponent<Text>().text = $"{price}";
+
+                child = go.transform.GetChild(4).gameObject;
+                var button = child.GetComponent<Button>();
+                button.onClick.AddListener(delegate { SelectStoreItem(element.Key); });
 
                 storeObjs.Add(element.Key, go);
             }
@@ -399,21 +425,26 @@ public class StoreMgr : MonoBehaviour
             {
                 var go = Instantiate(storePrefab, storeContents.transform);
                 string key = element.Value;
-                var button = go.AddComponent<Button>();
-                button.onClick.AddListener(delegate { SelectStoreItem(element.Key); });
-
-                var cost = playerDataMgr.consumableList[key].price;
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = $"{cost}";
-
-                var num = playerDataMgr.consumableList[key].itemQuantity;
-                var currentAmount = storeConsumableNumInfo[element.Key];
-                child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{currentAmount}/{num}";
 
                 var name = playerDataMgr.consumableList[key].name;
-                child = go.transform.GetChild(2).gameObject;
+                var child = go.transform.GetChild(0).gameObject;
                 child.GetComponent<Text>().text = $"{name}";
+
+                var currentAmount = storeConsumableNumInfo[element.Key];
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{currentAmount}";
+
+                var weight = playerDataMgr.consumableList[key].weight;
+                child = go.transform.GetChild(2).gameObject;
+                child.GetComponent<Text>().text = $"{weight}";
+
+                var price = playerDataMgr.consumableList[key].price;
+                child = go.transform.GetChild(3).gameObject;
+                child.GetComponent<Text>().text = $"{price}";
+
+                child = go.transform.GetChild(4).gameObject;
+                var button = child.GetComponent<Button>();
+                button.onClick.AddListener(delegate { SelectStoreItem(element.Key); });
 
                 storeObjs.Add(element.Key, go);
             }
@@ -425,21 +456,26 @@ public class StoreMgr : MonoBehaviour
             {
                 var go = Instantiate(storePrefab, storeContents.transform);
                 string key = element.Value;
-                var button = go.AddComponent<Button>();
-                button.onClick.AddListener(delegate { SelectStoreItem(element.Key); });
-
-                var cost = playerDataMgr.otherItemList[key].price;
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = $"{cost}";
-
-                var num = playerDataMgr.otherItemList[key].itemQuantity;
-                var currentAmount = storeOtherItemNumInfo[element.Key];
-                child = go.transform.GetChild(1).gameObject;
-                child.GetComponent<Text>().text = $"{currentAmount}/{num}";
 
                 var name = playerDataMgr.otherItemList[key].name;
-                child = go.transform.GetChild(2).gameObject;
+                var child = go.transform.GetChild(0).gameObject;
                 child.GetComponent<Text>().text = $"{name}";
+
+                var currentAmount = storeOtherItemNumInfo[element.Key];
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{currentAmount}";
+
+                var weight = playerDataMgr.otherItemList[key].weight;
+                child = go.transform.GetChild(2).gameObject;
+                child.GetComponent<Text>().text = $"{weight}";
+
+                var price = playerDataMgr.otherItemList[key].price;
+                child = go.transform.GetChild(3).gameObject;
+                child.GetComponent<Text>().text = $"{price}";
+
+                child = go.transform.GetChild(4).gameObject;
+                var button = child.GetComponent<Button>();
+                button.onClick.AddListener(delegate { SelectStoreItem(element.Key); });
 
                 storeObjs.Add(element.Key, go);
             }
@@ -499,11 +535,26 @@ public class StoreMgr : MonoBehaviour
             if (storageMode != StorageMode.Consumables && storageMode != StorageMode.OtherItems)
             {
                 var go = Instantiate(storagePrefab, storageContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = $"{storageWeaponNumInfo[element.Key]}개";
-
                 string key = element.Key;
-                var button = go.AddComponent<Button>();
+
+                var name = playerDataMgr.equippableList[key].name;
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Text>().text = $"{name}";
+
+                var currentAmount = storageWeaponNumInfo[key];
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{currentAmount}";
+
+                var weight = playerDataMgr.equippableList[key].weight;
+                child = go.transform.GetChild(2).gameObject;
+                child.GetComponent<Text>().text = $"{weight * currentAmount}";
+
+                var price = playerDataMgr.equippableList[key].price;
+                child = go.transform.GetChild(3).gameObject;
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt( price * 0.7f)*currentAmount }";
+
+                child = go.transform.GetChild(4).gameObject;
+                var button = child.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectStorageItem(key); });
 
                 storageObjs.Add(key, go);
@@ -516,11 +567,26 @@ public class StoreMgr : MonoBehaviour
             if (storageMode != StorageMode.Equippables && storageMode != StorageMode.OtherItems)
             {
                 var go = Instantiate(storagePrefab, storageContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = $"{storageConsumableNumInfo[element.Key]}개";
-
                 string key = element.Key;
-                var button = go.AddComponent<Button>();
+
+                var name = playerDataMgr.consumableList[key].name;
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Text>().text = $"{name}";
+
+                var currentAmount = storageConsumableNumInfo[key];
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{currentAmount}";
+
+                var weight = playerDataMgr.consumableList[key].weight;
+                child = go.transform.GetChild(2).gameObject;
+                child.GetComponent<Text>().text = $"{weight * currentAmount}";
+
+                var price = playerDataMgr.consumableList[key].price;
+                child = go.transform.GetChild(3).gameObject;
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt( price * 0.7f) * currentAmount}";
+
+                child = go.transform.GetChild(4).gameObject;
+                var button = child.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectStorageItem(key); });
 
                 storageObjs.Add(key, go);
@@ -533,11 +599,26 @@ public class StoreMgr : MonoBehaviour
             if (storageMode != StorageMode.Equippables && storageMode != StorageMode.Consumables)
             {
                 var go = Instantiate(storagePrefab, storageContents.transform);
-                var child = go.transform.GetChild(0).gameObject;
-                child.GetComponent<Text>().text = $"{storageOtherItemNumInfo[element.Key]}개";
-
                 string key = element.Key;
-                var button = go.AddComponent<Button>();
+
+                var name = playerDataMgr.otherItemList[key].name;
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Text>().text = $"{name}";
+
+                var currentAmount = storageOtherItemNumInfo[key];
+                child = go.transform.GetChild(1).gameObject;
+                child.GetComponent<Text>().text = $"{currentAmount}";
+
+                var weight = playerDataMgr.otherItemList[key].weight;
+                child = go.transform.GetChild(2).gameObject;
+                child.GetComponent<Text>().text = $"{int.Parse( weight) * currentAmount}";
+
+                var price = playerDataMgr.otherItemList[key].price;
+                child = go.transform.GetChild(3).gameObject;
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt(int.Parse( price)*0.7f)*currentAmount }";
+
+                child = go.transform.GetChild(4).gameObject;
+                var button = child.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectStorageItem(key); });
 
                 storageObjs.Add(key, go);
@@ -563,7 +644,6 @@ public class StoreMgr : MonoBehaviour
                     break;
             }
         }
-
         storageWeightTxt.text = $"무게 {storageCurrentWeight}/{maxStorageCapacity}";
 
         storageBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
@@ -592,6 +672,7 @@ public class StoreMgr : MonoBehaviour
             var id = storeWeaponInfo[currentStoreKey];
             var name = playerDataMgr.equippableList[id].name;
             itemNameTxt.text = name;
+            itemTypeTxt.text = "전투";
             slider.maxValue = storeWeaponNumInfo[currentStoreKey];
         }
         else if (storeConsumableInfo.ContainsKey(currentStoreKey))
@@ -697,10 +778,6 @@ public class StoreMgr : MonoBehaviour
 
                 //현재데이터.
                 storageWeaponNumInfo[currentKey] += itemNum;
-
-                //GameObject.
-                //var child = storageObjs[currentKey].transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = $"{storageWeaponNumInfo[currentKey]}개";
             }
             else
             {
@@ -717,29 +794,9 @@ public class StoreMgr : MonoBehaviour
                 //현재데이터.
                 storageWeaponInfo.Add(currentKey, weapon);
                 storageWeaponNumInfo.Add(currentKey, itemNum);
-
-                //GameObject.
-                //var go = Instantiate(storagePrefab, storageContents.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = $"{storageWeaponNumInfo[currentKey]}개";
-
-                //string key = currentKey;
-                //var button = go.AddComponent<Button>();
-                //button.onClick.AddListener(delegate { SelectStorageItem(key); });
-
-                //storageObjs.Add(key, go);
             }
-            //json.
-            playerDataMgr.saveData.storeItemNum[currentStoreKey] -= itemNum;
+
             playerDataMgr.saveData.money -= cost;
-
-            //현재 데이터.
-            storeWeaponNumInfo[currentStoreKey] -= itemNum;
-
-            var childObj = storeObjs[currentStoreKey].transform.GetChild(1).gameObject;
-            var maxItemNum = playerDataMgr.equippableList[storeWeaponInfo[currentStoreKey]].itemQuantity;
-            childObj.GetComponent<Text>().text = $"{storeWeaponNumInfo[currentStoreKey]} / {maxItemNum}";
-            moneyTxt.text = $"돈 : {playerDataMgr.saveData.money}";
         }
         else if (storeConsumableInfo.ContainsKey(currentStoreKey))
         {
@@ -762,10 +819,6 @@ public class StoreMgr : MonoBehaviour
 
                 //현재데이터.
                 storageConsumableNumInfo[currentKey] += itemNum;
-
-                //GameObject.
-                //var child = storageObjs[currentKey].transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
             }
             else
             {
@@ -782,29 +835,9 @@ public class StoreMgr : MonoBehaviour
                 //현재데이터.
                 storageConsumableInfo.Add(currentKey, consumable);
                 storageConsumableNumInfo.Add(currentKey, itemNum);
-
-                //GameObject.
-                //var go = Instantiate(storagePrefab, storageContents.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
-
-                //string key = currentKey;
-                //var button = go.AddComponent<Button>();
-                //button.onClick.AddListener(delegate { SelectStorageItem(key); });
-
-                //storageObjs.Add(key, go);
             }
-            //json.
-            playerDataMgr.saveData.storeItemNum[currentStoreKey] -= itemNum;
+
             playerDataMgr.saveData.money -= cost;
-
-            //현재 데이터.
-            storeConsumableNumInfo[currentStoreKey] -= itemNum;
-
-            var childObj = storeObjs[currentStoreKey].transform.GetChild(1).gameObject;
-            var maxItemNum = playerDataMgr.consumableList[storeConsumableInfo[currentStoreKey]].itemQuantity;
-            childObj.GetComponent<Text>().text = $"{storeConsumableNumInfo[currentStoreKey]} / {maxItemNum}";
-            moneyTxt.text = $"돈 : {playerDataMgr.saveData.money}";
         }
         else if (storeOtherItemInfo.ContainsKey(currentStoreKey))
         {
@@ -827,10 +860,6 @@ public class StoreMgr : MonoBehaviour
 
                 //현재데이터.
                 storageOtherItemNumInfo[currentKey] += itemNum;
-
-                //GameObject.
-                //var child = storageObjs[currentKey].transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = $"{storageOtherItemNumInfo[currentKey]}개";
             }
             else
             {
@@ -847,32 +876,35 @@ public class StoreMgr : MonoBehaviour
                 //현재데이터.
                 storageOtherItemInfo.Add(currentKey, otherItem);
                 storageOtherItemNumInfo.Add(currentKey, itemNum);
-
-                //GameObject.
-                //var go = Instantiate(storagePrefab, storageContents.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = $"{storageOtherItemNumInfo[currentKey]}개";
-
-                //string key = currentKey;
-                //var button = go.AddComponent<Button>();
-                //button.onClick.AddListener(delegate { SelectStorageItem(key); });
-
-                //storageObjs.Add(key, go);
             }
+
+            playerDataMgr.saveData.money -= cost;
+        }
+
+        if (playerDataMgr.saveData.storeItemNum[currentStoreKey] - itemNum == 0)
+        {
+            //json.
+            playerDataMgr.saveData.storeItem.RemoveAt(currentStoreKey);
+            playerDataMgr.saveData.storeItemNum.RemoveAt(currentStoreKey);
+
+            //현재데이터.
+            SelectStoreItem();
+        }
+        else
+        {
             //json.
             playerDataMgr.saveData.storeItemNum[currentStoreKey] -= itemNum;
-            playerDataMgr.saveData.money -= cost;
 
             //현재 데이터.
-            storeOtherItemNumInfo[currentStoreKey] -= itemNum;
-
-            var childObj = storeObjs[currentStoreKey].transform.GetChild(1).gameObject;
-            var maxItemNum = playerDataMgr.otherItemList[storeOtherItemInfo[currentStoreKey]].itemQuantity;
-            childObj.GetComponent<Text>().text = $"{storeOtherItemNumInfo[currentStoreKey]} / {maxItemNum}";
-            moneyTxt.text = $"돈 : {playerDataMgr.saveData.money}";
+            if(storeWeaponNumInfo.ContainsKey(currentStoreKey)) storeWeaponNumInfo[currentStoreKey] -= itemNum;
+            else if (storeConsumableNumInfo.ContainsKey(currentStoreKey)) storeConsumableNumInfo[currentStoreKey] -= itemNum;
+            else if (storeOtherItemNumInfo.ContainsKey(currentStoreKey)) storeOtherItemNumInfo[currentStoreKey] -= itemNum;
         }
+
         var currentMode = (int)storageMode;
         DisplayStorageItem(currentMode);
+        currentMode = (int)storeMode;
+        DisplayStoreItem(currentMode);
 
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
@@ -903,10 +935,6 @@ public class StoreMgr : MonoBehaviour
 
                 //현재데이터.
                 storageWeaponNumInfo[currentKey] -= itemNum;
-
-                //GameObject.
-                //var child = storageObjs[currentKey].transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = $"{storageWeaponNumInfo[currentKey]}개";
             }
             else
             {
@@ -923,10 +951,6 @@ public class StoreMgr : MonoBehaviour
                 //현재데이터.
                 storageWeaponInfo.Remove(currentKey);
                 storageWeaponNumInfo.Remove(currentKey);
-
-                //GameObject.
-                //Destroy(storageObjs[currentKey]);
-                //storageObjs.Remove(currentKey);
             }
         }
         else if (storageConsumableInfo.ContainsKey(currentStorageKey))
@@ -946,10 +970,6 @@ public class StoreMgr : MonoBehaviour
 
                 //현재데이터.
                 storageConsumableNumInfo[currentKey] -= itemNum;
-
-                //GameObject.
-                //var child = storageObjs[currentKey].transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = $"{ storageConsumableNumInfo[currentKey]}개";
             }
             else
             {
@@ -966,10 +986,6 @@ public class StoreMgr : MonoBehaviour
                 //현재데이터.
                 storageConsumableInfo.Remove(currentKey);
                 storageConsumableNumInfo.Remove(currentKey);
-
-                //GameObject.
-                //Destroy(storageObjs[currentKey]);
-                //storageObjs.Remove(currentKey);
             }
         }
         else if (storageOtherItemInfo.ContainsKey(currentStorageKey))
@@ -989,10 +1005,6 @@ public class StoreMgr : MonoBehaviour
 
                 //현재데이터.
                 storageOtherItemNumInfo[currentKey] -= itemNum;
-
-                //GameObject.
-                //var child = storageObjs[currentKey].transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = $"{ storageOtherItemNumInfo[currentKey]}개";
             }
             else
             {
@@ -1009,20 +1021,14 @@ public class StoreMgr : MonoBehaviour
                 //현재데이터.
                 storageOtherItemInfo.Remove(currentKey);
                 storageOtherItemNumInfo.Remove(currentKey);
-
-                //GameObject.
-                //Destroy(storageObjs[currentKey]);
-                //storageObjs.Remove(currentKey);
             }
         }
         var currentMode = (int)storageMode;
         DisplayStorageItem(currentMode);
 
         playerDataMgr.saveData.money += cost;
-        moneyTxt.text = $"돈 : {playerDataMgr.saveData.money}";
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
-        //if(storageObjs.ContainsKey(currentStorageKey)) storageObjs[currentStorageKey].GetComponent<Image>().color = Color.white;
         currentStorageKey = null;
     }
 
@@ -1101,7 +1107,52 @@ public class StoreMgr : MonoBehaviour
         AddSliderValue(Mathf.FloorToInt(slider.maxValue));
     }
 
+    public void RefreshUpgradeWin()
+    {
+        if (storeLevel != 5)
+        {
+            storeLevelTxt.text = $"건물 레벨 {storeLevel}→{storeLevel + 1}";
+            capacityTxt.text = $"등장 품목 수량 {maxItemNum}→{nextItemNum}";
+            materialTxt.text = $"{upgradeCost}";
+        }
+        else
+        {
+            storeLevelTxt.text = $"건물 레벨{storeLevel}→ -";
+            capacityTxt.text = $"등장 품목 수량 {maxItemNum}→ -";
+            materialTxt.text = $"-";
+        }
+    }
+
     //창 관련.
+    public void OpenMainWin()
+    {
+        if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
+        if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
+        if (!mainWin.activeSelf) mainWin.SetActive(true);
+        if (storeWin.activeSelf) storeWin.SetActive(false);
+        if (upgradeWin.activeSelf) upgradeWin.SetActive(false);
+    }
+
+    public void CloseMainWin()
+    {
+        if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
+        if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
+    }
+
+    public void OpenStoreWin()
+    {
+        mainWin.SetActive(false);
+        storeWin.SetActive(true);
+    }
+
+    public void CloseStoreWin()
+    {
+        if (popupWin.activeSelf) popupWin.SetActive(false);
+        storeWin.SetActive(false);
+        mainWin.SetActive(true);
+    }
+
+
     public void OpenPopup()
     {
         popupWin.SetActive(true);
@@ -1124,5 +1175,19 @@ public class StoreMgr : MonoBehaviour
 
         currentStorageKey = null;
         currentStoreKey = -1;
+    }
+
+    public void OpenUpgradeWin()
+    {
+        RefreshUpgradeWin();
+
+        mainWin.SetActive(false);
+        upgradeWin.SetActive(true);
+    }
+
+    public void CloseUpgradeWin()
+    {
+        upgradeWin.SetActive(false);
+        mainWin.SetActive(true);
     }
 }
