@@ -41,7 +41,10 @@ public class TileBase : MonoBehaviour
 
     private void InitIdx()
     {
-        tileIdx = transform.position;
+        if (!isWall)
+            tileIdx = transform.position;
+        else
+            tileIdx = new Vector3(transform.position.x, 1f, transform.position.z);
         gameObject.name = $"Tile ({tileIdx.x}, {tileIdx.y}, {tileIdx.z})";
     }
 

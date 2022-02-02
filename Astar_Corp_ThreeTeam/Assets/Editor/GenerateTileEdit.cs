@@ -13,5 +13,9 @@ public class GenerateTileEdit : Editor
         {
             generator.Generate();
         }
+        if (GUILayout.Button("Generate Building"))
+        {
+            generator.GenerateBuilding();
+        }
     }
 }

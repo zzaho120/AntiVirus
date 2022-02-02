@@ -23,7 +23,7 @@ public class TileMgr : MonoBehaviour
         var parentCount = tiles.transform.childCount;
         for (int idx = 0; idx < parentCount; ++idx)
         {
-            var parent = tiles.transform.GetChild(idx).GetChild(0);
+            var parent = tiles.transform.GetChild(idx).GetChild(1);
             var tileCount = parent.childCount;
             for (int tileIdx = 0; tileIdx < tileCount; ++tileIdx)
             {
@@ -39,7 +39,8 @@ public class TileMgr : MonoBehaviour
         parentCount = walls.transform.childCount;
         for (int idx = 0; idx < parentCount; ++idx)
         {
-            var parent = walls.transform.GetChild(idx).GetChild(0);
+            Debug.Log(walls.transform.GetChild(idx).childCount);
+            var parent = walls.transform.GetChild(idx).GetChild(1);
             var wallCount = parent.childCount;
             for (int wallIdx = 0; wallIdx < wallCount; ++wallIdx)
             {
