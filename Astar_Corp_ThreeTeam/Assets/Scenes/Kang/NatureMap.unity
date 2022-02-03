@@ -36812,6 +36812,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1031783265}
   - component: {fileID: 1031783266}
+  - component: {fileID: 1031783267}
   m_Layer: 0
   m_Name: BattleMgr
   m_TagString: Untagged
@@ -36860,6 +36861,33 @@ MonoBehaviour:
   turnCount: 0
   fieldVirusLevel: 2
   playerPrefab: {fileID: 1274019000965958, guid: 191b5d62c3c2edb4b91049dda0d9e331, type: 3}
+--- !u!114 &1031783267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031783264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b63a08c1e32ac841a54eec3bea11d90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPos:
+  - {x: 20, y: 20}
+  monsterPos:
+  - {x: 21, y: 21}
+  monsters: 00000000
+  monsterVirus: 00000000
+  monsterVirusLevel: 02000000
+  monsterPrefabs:
+  - {fileID: 3621399027185249656, guid: 6660a4b7d51b9ce4da99237382e23a93, type: 3}
+  - {fileID: 1669035159882148, guid: c0f38ba9d5afa3440967f15a77d6bbcd, type: 3}
+  - {fileID: 1541523258012542, guid: bcf476591b96c4f498d05a1ebea022f2, type: 3}
+  - {fileID: 1270496922300936, guid: 882bad51c50a2794497c83be9b4e5e37, type: 3}
+  - {fileID: 7783689679491805921, guid: 06e4bfc9c5e2135449c98bc4129cf7c8, type: 3}
+  - {fileID: 1674863437055274, guid: 054b583807a9f7f4082040b25090fd09, type: 3}
+  - {fileID: 338513474952805475, guid: f08c43c48aa4ced4aad132353e457b5c, type: 3}
 --- !u!1001 &1032185846
 PrefabInstance:
   m_ObjectHideFlags: 0

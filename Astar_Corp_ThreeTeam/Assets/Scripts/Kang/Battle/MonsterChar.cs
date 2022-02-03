@@ -33,8 +33,6 @@ public class MonsterChar : BattleTile
     public override void Init()
     {
         base.Init();
-        monsterStats = GetComponent<MonsterStats>();
-        monsterStats.monster = (Monster)Instantiate(Resources.Load("Choi/Datas/Monsters/Fox"));
         monsterStats.Init();
         fsm = new BattleMonsterFSM();
         fsm.Init(this);

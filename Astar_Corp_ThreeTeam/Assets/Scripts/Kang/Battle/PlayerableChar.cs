@@ -74,6 +74,7 @@ public class PlayerableChar : BattleTile
                 
                 if (Physics.Raycast(ray, out hit))
                 {
+                    Debug.Log(hit.collider.gameObject.name);
                     switch (status)
                     {
                         case CharacterState.Wait:
