@@ -15,6 +15,7 @@ public class PlayerableChar : BattleTile
 {
     [Header("Character")]
     public CharacterStats characterStats;
+    public Animator animator;
 
     [Header("Value")]
     public int AP;
@@ -58,6 +59,8 @@ public class PlayerableChar : BattleTile
         characterStats.Init();  // --> characterStats.weapon.Init();
         direction = DirectionType.None;
         characterStats.StartGame();
+
+        animator = GetComponent<Animator>();
     }
 
     public void Update()
@@ -146,16 +149,27 @@ public class PlayerableChar : BattleTile
         var path = BattleMgr.Instance.pathMgr.pathList;
         while (path.Count > 0)
         {
+            if (path.Count == 2 || path.Count == 1)
+            {
+                if (!animator.GetBool("Run Stop"))
+                {
+                    animator.SetBool("Run Stop", true);
+                    animator.SetBool("Run", false);
+                }
+            }
+
             var aStarTile = path.Pop();
 
+            
             if (aStarTile.tileBase.charObj != null && !aStarTile.tileBase.charObj.CompareTag("BattlePlayer"))
                 break;
 
-            MoveTile(aStarTile.tileBase.tileIdx);
+            yield return MoveTile(aStarTile.tileBase.tileIdx);
             BattleMgr.Instance.sightMgr.UpdateFog(this);
-            yield return new WaitForSeconds(0.1f);
         }
         AP -= currentTile.moveAP;
+        animator.SetBool("Run Stop", false);
+        animator.SetBool("Idle", true);
         if (currentTile.moveAP == 6)
         {
             var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.FullApMove);
@@ -169,18 +183,45 @@ public class PlayerableChar : BattleTile
         window.OnActiveDirectionBtns(false, true);
     }
 
-    private void MoveTile(Vector3 nextIdx)
+    private IEnumerator MoveTile(Vector3 nextIdx)
     {
         foreach (var tile in currentTile.adjNodes)
         {
             if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
             {
+                var dir = (currentTile.tileIdx - nextIdx).normalized;
+
+                var rotY = 0;
+                if (dir.x > 0)
+                    rotY = 270;
+                else if (dir.x < 0)
+                    rotY = 90;
+                else if (dir.z > 0)
+                    rotY = 180;
+                else if (dir.z < 0)
+                    rotY = 0;
+                transform.rotation = Quaternion.Euler(0f, rotY, 0f);
+
                 currentTile.charObj = null;
                 tileIdx = nextIdx;
                 currentTile = tile;
                 currentTile.charObj = gameObject;
-                transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 0.5f, tile.tileIdx.z);
+                if (!animator.GetBool("Run") && !animator.GetBool("Run Stop"))
+                    animator.SetBool("Run", true);
+                yield return StartCoroutine(CoMoveChar(nextIdx + new Vector3(0f, 0.5f, 0f)));
             }
+        }
+    }
+
+    private IEnumerator CoMoveChar(Vector3 nextIdx)
+    {
+        var origin = transform.position;
+        var timer = 0f;
+        while (timer < 1)
+        {
+            timer += Time.deltaTime * 5;
+            transform.position = Vector3.Lerp(origin, nextIdx, timer);
+            yield return null;
         }
     }
 
@@ -463,23 +504,50 @@ public class PlayerableChar : BattleTile
     public void SetDirection(DirectionType direction)
     {
         this.direction = direction;
-
+        var nextRot = Quaternion.identity; 
         switch (direction)
         {
             case DirectionType.None:
                 break;
             case DirectionType.Top:
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                nextRot = Quaternion.Euler(0, 0, 0);
                 break;
             case DirectionType.Bot:
-                transform.rotation = Quaternion.Euler(0, 180, 0);
+                nextRot = Quaternion.Euler(0, 180, 0);
                 break;
             case DirectionType.Left:
-                transform.rotation = Quaternion.Euler(0, 270, 0);
+                nextRot = Quaternion.Euler(0, 270, 0);
                 break;
             case DirectionType.Right:
-                transform.rotation = Quaternion.Euler(0, 90, 0);
+                nextRot = Quaternion.Euler(0, 90, 0);
                 break;
         }
+        StartCoroutine(CoRotateChar(nextRot));
+    }
+
+    private IEnumerator CoRotateChar(Quaternion nextRot)
+    {
+        var timer = 0f;
+        var origin = transform.rotation;
+        var angle = Mathf.Abs(transform.rotation.eulerAngles.y) - nextRot.eulerAngles.y;
+        Debug.Log(angle);
+        animator.SetBool("Idle", false);
+        if (angle == -90)
+            animator.SetBool("Turn Right", true);
+        else if (angle == 90)
+            animator.SetBool("Turn Left", true);
+
+        while (timer < 1)
+        {
+            timer += Time.deltaTime * 3;
+            transform.rotation = Quaternion.Lerp(origin, nextRot, timer);
+            yield return null;
+        }
+
+        animator.SetBool("Idle", true);
+        if (angle == -90)
+            animator.SetBool("Turn Right", false);
+        else if (angle == 90)
+            animator.SetBool("Turn Left", false);
     }
 }

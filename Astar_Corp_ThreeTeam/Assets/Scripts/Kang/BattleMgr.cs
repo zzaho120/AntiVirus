@@ -52,7 +52,7 @@ public class BattleMgr : MonoBehaviour
         // 아래 코드가 동작함
 
         var vectorList = new List<Vector3>();
-        //vectorList.Add(new Vector3(15, 0.5f, 15));
+        vectorList.Add(new Vector3(15, 0.5f, 15));
         //vectorList.Add(new Vector3(15, 0.5f, 14));
         //vectorList.Add(new Vector3(14, 0.5f, 14));
         //vectorList.Add(new Vector3(14, 0.5f, 15));
