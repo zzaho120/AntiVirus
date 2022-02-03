@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     // Get NavMesh
     private PlayerMove playerMove;
     private NavMeshAgent agent;
+    private CameraMovement cameraMovement;
 
     // Sight
     [HideInInspector]
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviour
         popUpMgr        = nonBattleMgr.GetComponent<PopUpMgr>();
         timeController  = GameObject.Find("TimeController").GetComponent<TimeController>();
         playerMove      = GetComponent<PlayerMove>();
+        cameraMovement  = Camera.main.GetComponent<CameraMovement>();
         agent           = playerMove.navMeshAgent;
         footprintUI     = GameObject.Find("Footprint Info");
 
@@ -74,7 +76,7 @@ public class PlayerController : MonoBehaviour
     public void PlayerControllerUpdate()
     {
         // 조건 정리
-        bool terms = !EventSystem.current.IsPointerOverGameObject() && timeController.isPause == false && !playerMove.cameraMovement.isWorldMapMode;
+        bool terms = !EventSystem.current.IsPointerOverGameObject() && timeController.isPause == false && !cameraMovement.isWorldMapMode;
 
         // Raycast parameters
         int facilitiesLayer = LayerMask.GetMask("Facilities");

@@ -14,7 +14,7 @@ public class CameraMovement : MonoBehaviour
     private MeshRenderer mapRenderer;
 
     [HideInInspector]
-    public bool isWorldMapMode;
+    public bool isWorldMapMode = false;
 
     private void Start()
     {
