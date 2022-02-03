@@ -413,7 +413,8 @@ public class StoreMgr : MonoBehaviour
 
                 child = go.transform.GetChild(4).gameObject;
                 var button = child.GetComponent<Button>();
-                button.onClick.AddListener(delegate { SelectStoreItem(element.Key); });
+                int itemKey = element.Key;
+                button.onClick.AddListener(delegate { SelectStoreItem(itemKey); });
 
                 storeObjs.Add(element.Key, go);
             }
@@ -444,7 +445,8 @@ public class StoreMgr : MonoBehaviour
 
                 child = go.transform.GetChild(4).gameObject;
                 var button = child.GetComponent<Button>();
-                button.onClick.AddListener(delegate { SelectStoreItem(element.Key); });
+                int itemKey = element.Key;
+                button.onClick.AddListener(delegate { SelectStoreItem(itemKey); });
 
                 storeObjs.Add(element.Key, go);
             }
@@ -475,7 +477,8 @@ public class StoreMgr : MonoBehaviour
 
                 child = go.transform.GetChild(4).gameObject;
                 var button = child.GetComponent<Button>();
-                button.onClick.AddListener(delegate { SelectStoreItem(element.Key); });
+                int itemKey = element.Key;
+                button.onClick.AddListener(delegate { SelectStoreItem(itemKey); });
 
                 storeObjs.Add(element.Key, go);
             }
@@ -644,13 +647,13 @@ public class StoreMgr : MonoBehaviour
                     break;
             }
         }
-        storageWeightTxt.text = $"무게 {storageCurrentWeight}/{maxStorageCapacity}";
+        storageWeightTxt.text = $"{storageCurrentWeight}/{maxStorageCapacity}";
 
-        storageBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
-        storageBullet7Txt.text = $"7탄x{bullet7Num.ToString("D3")}";
-        storageBullet9Txt.text = $"9탄x{bullet9Num.ToString("D3")}";
-        storageBullet45Txt.text = $"45탄x{bullet45Num.ToString("D3")}";
-        storageBullet12Txt.text = $"12게이지x{bullet12Num.ToString("D3")}";
+        storageBullet5Txt.text = $"{bullet5Num}";
+        storageBullet7Txt.text = $"{bullet7Num}";
+        storageBullet9Txt.text = $"{bullet9Num}";
+        storageBullet45Txt.text = $"{bullet45Num}";
+        storageBullet12Txt.text = $"{bullet12Num}";
     }
 
     public void SelectStoreItem(int key)
@@ -680,6 +683,7 @@ public class StoreMgr : MonoBehaviour
             var id = storeConsumableInfo[currentStoreKey];
             var name = playerDataMgr.consumableList[id].name;
             itemNameTxt.text = name;
+            itemTypeTxt.text = "소모";
             slider.maxValue = storeConsumableNumInfo[currentStoreKey];
         }
         else if (storeOtherItemInfo.ContainsKey(currentStoreKey))
@@ -687,17 +691,19 @@ public class StoreMgr : MonoBehaviour
             var id = storeOtherItemInfo[currentStoreKey];
             var name = playerDataMgr.otherItemList[id].name;
             itemNameTxt.text = name;
+            itemTypeTxt.text = "기타";
             slider.maxValue = storeOtherItemNumInfo[currentStoreKey];
         }
 
         //팝업 관련.
-        titleTxt.text = "구매";
+        //titleTxt.text = "구매";
         if (sellButton.activeSelf) sellButton.SetActive(false);
         if (!buyButton.activeSelf) buyButton.SetActive(true);
 
         slider.value = 0;
-        itemNumTxt.text = $"0개";
+        itemNumTxt.text = $"(선택 개수) 0개";
         itemCostTxt.text = "0";
+        itemWeightTxt.text = "0";
         OpenPopup();
     }
 
@@ -1037,19 +1043,19 @@ public class StoreMgr : MonoBehaviour
         if (slider.value + plus >= slider.maxValue)
         {
             slider.value = slider.maxValue;
-            itemNumTxt.text = $"{slider.value}개";
+            itemNumTxt.text = $"(선택 개수) {slider.value}개";
         }
         else
         {
             slider.value += plus;
-            itemNumTxt.text = $"{slider.value}개";
+            itemNumTxt.text = $"(선택 개수) {slider.value}개";
         }
     }
 
     //팝업 관련.
     public void NumAdjustment()
     {
-        itemNumTxt.text = $"{slider.value}개";
+        itemNumTxt.text = $"(선택 개수) {slider.value}개";
 
         if (currentStoreKey != -1)
         {
@@ -1058,18 +1064,24 @@ public class StoreMgr : MonoBehaviour
                 var key = storeWeaponInfo[currentStoreKey];
                 var cost = playerDataMgr.equippableList[key].price;
                 itemCostTxt.text = $"{cost * slider.value}";
+                var weight = playerDataMgr.equippableList[key].weight;
+                itemWeightTxt.text = $"{weight * slider.value}";
             }
             else if (storeConsumableInfo.ContainsKey(currentStoreKey))
             {
                 var key = storeConsumableInfo[currentStoreKey];
                 var cost = playerDataMgr.consumableList[key].price;
                 itemCostTxt.text = $"{cost * slider.value}";
+                var weight = playerDataMgr.consumableList[key].weight;
+                itemWeightTxt.text = $"{weight * slider.value}";
             }
             else if (storeOtherItemInfo.ContainsKey(currentStoreKey))
             {
                 var key = storeOtherItemInfo[currentStoreKey];
                 var cost = int.Parse(playerDataMgr.otherItemList[key].price);
                 itemCostTxt.text = $"{cost * slider.value}";
+                var weight = int.Parse(playerDataMgr.otherItemList[key].weight);
+                itemWeightTxt.text = $"{weight * slider.value}";
             }
         }
         else if (currentStorageKey != null)
@@ -1078,16 +1090,22 @@ public class StoreMgr : MonoBehaviour
             {
                 var cost = Mathf.FloorToInt(playerDataMgr.equippableList[currentStorageKey].price * 0.7f);
                 itemCostTxt.text = $"{cost * slider.value}";
+                var weight = playerDataMgr.equippableList[currentStorageKey].weight;
+                itemWeightTxt.text = $"{weight * slider.value}";
             }
             else if (storageConsumableInfo.ContainsKey(currentStorageKey))
             {
                 var cost = Mathf.FloorToInt(playerDataMgr.consumableList[currentStorageKey].price * 0.7f);
                 itemCostTxt.text = $"{cost * slider.value}";
+                var weight = playerDataMgr.consumableList[currentStorageKey].weight;
+                itemWeightTxt.text = $"{weight * slider.value}";
             }
             else if (storageOtherItemInfo.ContainsKey(currentStorageKey))
             {
                 var cost = Mathf.FloorToInt(int.Parse(playerDataMgr.otherItemList[currentStorageKey].price) * 0.7f);
                 itemCostTxt.text = $"{cost * slider.value}";
+                var weight = int.Parse(playerDataMgr.otherItemList[currentStorageKey].weight);
+                itemWeightTxt.text = $"{weight * slider.value}";
             }
         }
     }

@@ -73,6 +73,8 @@ public class WeaponSO
                     equippable.value                = int.Parse(splitData[23]);
                     equippable.dropRate             = float.Parse(splitData[24]);
                     equippable.itemQuantity         = int.Parse(splitData[25]);
+                    //equippable.img = Resources.Load<Sprite>($"Choi/Sprites/Images/Items/Weapons/{splitData[26]}");
+                    equippable.img = Resources.Load($"Choi/Sprites/Images/Items/Weapons/{splitData[26]}", typeof(Sprite)) as Sprite;
 
                     //// Item 정보 담고 있는 List
                     //List<string> itemInfo = new List<string>();

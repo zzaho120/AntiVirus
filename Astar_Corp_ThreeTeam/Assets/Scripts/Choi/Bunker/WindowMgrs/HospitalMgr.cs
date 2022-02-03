@@ -5,33 +5,39 @@ using UnityEngine.UI;
 
 public class HospitalMgr : MonoBehaviour
 {
+    public BunkerMgr bunkerMgr;
+    public GameObject mainWin;
     public GameObject hospitalWin;
+    public GameObject upgradeWin;
+
     public GameObject characterListContent;
     public GameObject characterPrefab;
-    public GameObject stateWin;
-    public GameObject hpRecoveryButton;
-    public GameObject virusRecoveryButton;
+
+    public Text recoveryCostTxt;
+    public GameObject recoveryButton;
 
     //상태창.
-    public Slider hpSlider;
-    public Slider eVirusSlider;
-    public Slider bVirusSlider;
-    public Slider pVirusSlider;
-    public Slider iVirusSlider;
-    public Slider tVirusSlider;
-    public Dictionary<string, Slider> sliders = new Dictionary<string, Slider>();
+    public List<Slider> sliders = new List<Slider>();
+    public List<Button> buttons = new List<Button>();
+
+    [Header("Upgrade Win")]
+    public Text hospitalLevelTxt;
+    public Text costTxt;
+    public Text materialTxt;
 
     public PlayerDataMgr playerDataMgr;
 
     List<GameObject> characterObjs = new List<GameObject>();
     int hospitalLevel;
+    int reductionPercentage;
+    int nextReductionPercentage;
+    int upgradeCost;
 
     int virusRecoveryCost;
     int hpRecoveryCost;
-    int reductionPercentage;
     
     int currentIndex;
-    string currentVirus;
+    int currentKey;
     Color originColor;
 
     //기준 수치.
@@ -57,34 +63,33 @@ public class HospitalMgr : MonoBehaviour
         {
             case 1:
                 reductionPercentage = hospitalLevelInfo.level1;
+                nextReductionPercentage = hospitalLevelInfo.level2;
+                upgradeCost = hospitalLevelInfo.level2Cost;
                 break;
             case 2:
                 reductionPercentage = hospitalLevelInfo.level2;
+                nextReductionPercentage = hospitalLevelInfo.level3;
+                upgradeCost = hospitalLevelInfo.level3Cost;
                 break;
             case 3:
                 reductionPercentage = hospitalLevelInfo.level3;
+                nextReductionPercentage = hospitalLevelInfo.level4;
+                upgradeCost = hospitalLevelInfo.level4Cost;
                 break;
             case 4:
                 reductionPercentage = hospitalLevelInfo.level4;
+                nextReductionPercentage = hospitalLevelInfo.level5;
+                upgradeCost = hospitalLevelInfo.level5Cost;
                 break;
             case 5:
                 reductionPercentage = hospitalLevelInfo.level5;
                 break;
         }
 
-        if (sliders.Count == 0) 
+        foreach (var element in buttons)
         {
-            sliders.Add("E", eVirusSlider);
-            sliders.Add("B", bVirusSlider);
-            sliders.Add("P", pVirusSlider);
-            sliders.Add("I", iVirusSlider);
-            sliders.Add("T", tVirusSlider);
-        }
-
-        foreach (var element in sliders)
-        {
-            if (element.Value.transform.GetChild(0).GetComponent<Image>().color == Color.red)
-                element.Value.transform.GetChild(0).GetComponent<Image>().color = Color.white;
+            if (element.transform.GetComponent<Image>().color == Color.red)
+                element.transform.GetComponent<Image>().color = Color.white;
         }
 
         //이전 정보 삭제.   
@@ -99,14 +104,35 @@ public class HospitalMgr : MonoBehaviour
             characterListContent.transform.DetachChildren();
         }
         
-        if (stateWin.activeSelf) stateWin.SetActive(false);
-
         //생성.
         int i = 0;
         foreach (var element in playerDataMgr.currentSquad)
         {
             var go = Instantiate(characterPrefab, characterListContent.transform);
-            go.transform.GetChild(1).GetComponent<Text>().text = element.Value.character.name;
+            var childObj = go.transform.GetChild(0).gameObject;
+            childObj.transform.GetChild(1).gameObject.GetComponent<Text>().text 
+                = $"LV{element.Value.level}";
+
+            childObj = go.transform.GetChild(1).gameObject;
+            childObj.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                = $"{element.Value.character.name}";
+
+            childObj = go.transform.GetChild(2).gameObject;
+            string mainWeaponTxt = (element.Value.weapon.mainWeapon == null) ?
+                "비어있음" : $"{element.Value.weapon.mainWeapon.name}";
+            childObj.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                = $"{mainWeaponTxt}";
+
+            childObj = go.transform.GetChild(3).gameObject;
+            childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                = $"{element.Value.character.name}";
+
+            childObj = go.transform.GetChild(4).gameObject;
+            childObj.transform.GetChild(0).gameObject.GetComponent<Slider>().maxValue = element.Value.MaxHp;
+            childObj.transform.GetChild(0).gameObject.GetComponent<Slider>().value = element.Value.currentHp;
+            childObj.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                = $"{element.Value.currentHp}/{element.Value.MaxHp}";
+
             characterObjs.Add(go);
 
             int num = i;
@@ -125,11 +151,10 @@ public class HospitalMgr : MonoBehaviour
 
         virusRecoveryCost = 0;
         hpRecoveryCost = (int)(100 * (1 - 0.01 * reductionPercentage));
-        var child = hpRecoveryButton.transform.GetChild(1).gameObject;
-        child.GetComponent<Text>().text = $"{ hpRecoveryCost}";
+        recoveryCostTxt.text = $"회복 비용 nnn";
 
         currentIndex = -1;
-        currentVirus = null;
+        currentKey = -1;
         originColor = characterPrefab.GetComponent<Image>().color;
     }
 
@@ -144,64 +169,78 @@ public class HospitalMgr : MonoBehaviour
         currentIndex = index;
         characterObjs[currentIndex].GetComponent<Image>().color = Color.red;
 
-        //상태창 관리.
-        stateWin.SetActive(true);
-
         var character = playerDataMgr.currentSquad[currentIndex];
-        
-        //테스트.
-        //character.currentHp = 20;
-        //hpSlider.value = (float)character.currentHp / character.maxHp;
 
-        //테스트.
-        //character.virusPanalty["E"].penaltyGauge = 30;
-        //character.virusPanalty["B"].penaltyGauge = 50;
-        //character.virusPanalty["P"].penaltyGauge = 100;
-        //character.virusPanalty["I"].penaltyGauge = 140;
-        //character.virusPanalty["T"].penaltyGauge = 180;
+        sliders[0].maxValue = character.MaxHp;
+        sliders[0].value = character.currentHp;
 
-        eVirusSlider.value = (float)character.virusPenalty["E"].penaltyGauge / character.virusPenalty["E"].GetMaxGauge();
-        bVirusSlider.value = (float)character.virusPenalty["B"].penaltyGauge / character.virusPenalty["B"].GetMaxGauge();
-        pVirusSlider.value = (float)character.virusPenalty["P"].penaltyGauge / character.virusPenalty["P"].GetMaxGauge();
-        iVirusSlider.value = (float)character.virusPenalty["I"].penaltyGauge / character.virusPenalty["I"].GetMaxGauge();
-        tVirusSlider.value = (float)character.virusPenalty["T"].penaltyGauge / character.virusPenalty["T"].GetMaxGauge();
+        sliders[1].maxValue = character.virusPenalty["E"].GetMaxGauge();
+        sliders[1].value = character.virusPenalty["E"].penaltyGauge;
+
+        sliders[2].maxValue = character.virusPenalty["B"].GetMaxGauge();
+        sliders[2].value = character.virusPenalty["B"].penaltyGauge;
+
+        sliders[3].maxValue = character.virusPenalty["P"].GetMaxGauge();
+        sliders[3].value = character.virusPenalty["P"].penaltyGauge;
+
+        sliders[4].maxValue = character.virusPenalty["I"].GetMaxGauge();
+        sliders[4].value = character.virusPenalty["I"].penaltyGauge;
+
+        sliders[5].maxValue = character.virusPenalty["T"].GetMaxGauge();
+        sliders[5].value = character.virusPenalty["T"].penaltyGauge;
     }
 
-    public void SelectVirus(string str)
+    public void SelectButton(int index)
     {
-        GameObject child;
-        if (currentVirus != null)
+        if (currentKey != -1)
         {
-            child = sliders[currentVirus].transform.GetChild(0).gameObject;
-            child.GetComponent<Image>().color = Color.white;
+            buttons[currentKey].gameObject.GetComponent<Image>().color = Color.white;
         }
 
-        currentVirus = str;
-        child = sliders[currentVirus].transform.GetChild(0).gameObject;
-        child.GetComponent<Image>().color = Color.red;
+        currentKey = index;
+        buttons[currentKey].gameObject.GetComponent<Image>().color = Color.red;
 
-        int level = level = playerDataMgr.currentSquad[currentIndex].virusPenalty[str].penaltyLevel;
-        switch (str)
+        switch (index)
         {
-            case "E":
-            case "B":
-            case "P":
-            case "I":
-                 virusRecoveryCost = (int)(100 * (1 - 0.01 * reductionPercentage)) * level;
+            case 0:
                 break;
-            case "T":
+            case 1:
+                int level = playerDataMgr.currentSquad[currentIndex].virusPenalty["E"].penaltyLevel;
+                virusRecoveryCost = (int)(100 * (1 - 0.01 * reductionPercentage)) * level;
+                break;
+            case 2:
+                level = playerDataMgr.currentSquad[currentIndex].virusPenalty["B"].penaltyLevel;
+                virusRecoveryCost = (int)(100 * (1 - 0.01 * reductionPercentage)) * level;
+                break;
+            case 3:
+                level = playerDataMgr.currentSquad[currentIndex].virusPenalty["P"].penaltyLevel;
+                virusRecoveryCost = (int)(100 * (1 - 0.01 * reductionPercentage)) * level;
+                break;
+            case 4:
+                level = playerDataMgr.currentSquad[currentIndex].virusPenalty["I"].penaltyLevel;
+                virusRecoveryCost = (int)(100 * (1 - 0.01 * reductionPercentage)) * level;
+                break;
+            case 5:
+                level = playerDataMgr.currentSquad[currentIndex].virusPenalty["T"].penaltyLevel;
                 virusRecoveryCost = (int)(400 * (1 - 0.01 * reductionPercentage)) * level;
                 break;
         }
+        
+        if(index == 0)recoveryCostTxt.text = $"회복비용 {hpRecoveryCost}";
+        else recoveryCostTxt.text = $"회복비용 {virusRecoveryCost}";
+    }
 
-        child = virusRecoveryButton.transform.GetChild(1).gameObject;
-        child.GetComponent<Text>().text = $"{virusRecoveryCost}";
+    public void ClickRecoveryButton()
+    {
+        if (currentKey == 0) RecoveryHp();
+        else RecoveryVirusGauge();
     }
 
     public void RecoveryHp()
     {
         if (currentIndex == -1) return;
-        if (playerDataMgr.saveData.money - 100 < 0) return;
+        int cost = (int)(100 * (1 - 0.01 * reductionPercentage));
+        if (playerDataMgr.saveData.money - cost < 0) return;
         
         int key = currentIndex;
         int loss = playerDataMgr.currentSquad[key].MaxHp - standardHp[key];
@@ -215,88 +254,149 @@ public class HospitalMgr : MonoBehaviour
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
         //체력 UI변경.
-        hpSlider.value = (float)playerDataMgr.currentSquad[key].currentHp / playerDataMgr.currentSquad[key].MaxHp;
+        sliders[0].maxValue = playerDataMgr.currentSquad[key].MaxHp;
+        sliders[0].value = playerDataMgr.currentSquad[key].currentHp;
     }
 
     public void RecoveryVirusGauge()
     {
         if (currentIndex == -1) return;
-        if (currentVirus == null) return;
+        if (currentKey == -1) return;
         
-        int key = currentIndex;
-        int level = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
-
-        if (playerDataMgr.saveData.money - (100 * level) < 0 && !currentVirus.Equals("T")) return;
-        if (playerDataMgr.saveData.money - (400 * level) < 0 && currentVirus.Equals("T")) return;
-
-        if (!currentVirus.Equals("T")) playerDataMgr.saveData.money -= (100 * level);
-        if (currentVirus.Equals("T")) playerDataMgr.saveData.money -= (400 * level);
+        if (playerDataMgr.saveData.money - virusRecoveryCost < 0 ) return;
+        playerDataMgr.saveData.money -= virusRecoveryCost;
 
         int gauge = 0;
         int recoveryAmount = 0;
-        switch (currentVirus)
+        int key = currentIndex;
+        string currentVirus = null;
+        switch (currentKey)
         {
-            case "B":
-                gauge = standardBGauge[key];
-                recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
-                if (playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge - recoveryAmount <= 0
-                    && playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel != 1)
-                    standardBGauge[key] = 100;
-
-                playerDataMgr.currentSquad[key].virusPenalty[currentVirus].ReductionCalculation(recoveryAmount);
-                playerDataMgr.saveData.gaugeB[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
-                playerDataMgr.saveData.levelB[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
-                break;
-            case "E":
+            case 1:
+                currentVirus = "E";
                 gauge = standardEGauge[key];
                 recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
-                if (playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge - recoveryAmount <= 0
-                    && playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel != 1)
+                if (playerDataMgr.currentSquad[key].virusPenalty["E"].penaltyGauge - recoveryAmount <= 0
+                    && playerDataMgr.currentSquad[key].virusPenalty["E"].penaltyLevel != 1)
                     standardEGauge[key] = 100;
 
-                playerDataMgr.currentSquad[key].virusPenalty[currentVirus].ReductionCalculation(recoveryAmount);
-                playerDataMgr.saveData.gaugeE[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
-                playerDataMgr.saveData.levelE[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
+                playerDataMgr.currentSquad[key].virusPenalty["E"].ReductionCalculation(recoveryAmount);
+                playerDataMgr.saveData.gaugeB[key] = playerDataMgr.currentSquad[key].virusPenalty["E"].penaltyGauge;
+                playerDataMgr.saveData.levelB[key] = playerDataMgr.currentSquad[key].virusPenalty["E"].penaltyLevel;
                 break;
-            case "P":
+            case 2:
+                currentVirus = "B";
+                gauge = standardBGauge[key];
+                recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
+                if (playerDataMgr.currentSquad[key].virusPenalty["B"].penaltyGauge - recoveryAmount <= 0
+                    && playerDataMgr.currentSquad[key].virusPenalty["B"].penaltyLevel != 1)
+                    standardBGauge[key] = 100;
+
+                playerDataMgr.currentSquad[key].virusPenalty["B"].ReductionCalculation(recoveryAmount);
+                playerDataMgr.saveData.gaugeE[key] = playerDataMgr.currentSquad[key].virusPenalty["B"].penaltyGauge;
+                playerDataMgr.saveData.levelE[key] = playerDataMgr.currentSquad[key].virusPenalty["B"].penaltyLevel;
+                break;
+            case 3:
+                currentVirus = "P";
                 gauge = standardPGauge[key];
                 recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
-                if (playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge - recoveryAmount <= 0
-                    && playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel != 1)
+                if (playerDataMgr.currentSquad[key].virusPenalty["P"].penaltyGauge - recoveryAmount <= 0
+                    && playerDataMgr.currentSquad[key].virusPenalty["P"].penaltyLevel != 1)
                     standardPGauge[key] = 100;
 
-                playerDataMgr.currentSquad[key].virusPenalty[currentVirus].ReductionCalculation(recoveryAmount);
-                playerDataMgr.saveData.gaugeP[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
-                playerDataMgr.saveData.levelP[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
+                playerDataMgr.currentSquad[key].virusPenalty["P"].ReductionCalculation(recoveryAmount);
+                playerDataMgr.saveData.gaugeP[key] = playerDataMgr.currentSquad[key].virusPenalty["P"].penaltyGauge;
+                playerDataMgr.saveData.levelP[key] = playerDataMgr.currentSquad[key].virusPenalty["P"].penaltyLevel;
                 break;
-            case "I":
+            case 4:
+                currentVirus = "I";
                 gauge = standardIGauge[key];
                 recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
-                if (playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge - recoveryAmount <= 0
-                    && playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel != 1)
+                if (playerDataMgr.currentSquad[key].virusPenalty["I"].penaltyGauge - recoveryAmount <= 0
+                    && playerDataMgr.currentSquad[key].virusPenalty["I"].penaltyLevel != 1)
                     standardIGauge[key] = 100;
 
-                playerDataMgr.currentSquad[key].virusPenalty[currentVirus].ReductionCalculation(recoveryAmount);
-                playerDataMgr.saveData.gaugeI[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
-                playerDataMgr.saveData.levelI[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
+                playerDataMgr.currentSquad[key].virusPenalty["I"].ReductionCalculation(recoveryAmount);
+                playerDataMgr.saveData.gaugeI[key] = playerDataMgr.currentSquad[key].virusPenalty["I"].penaltyGauge;
+                playerDataMgr.saveData.levelI[key] = playerDataMgr.currentSquad[key].virusPenalty["I"].penaltyLevel;
                 break;
-            case "T":
+            case 5:
+                currentVirus = "T";
                 gauge = standardTGauge[key];
                 recoveryAmount = Mathf.FloorToInt(gauge * 0.1f);
-                if (playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge - recoveryAmount <= 0
-                    && playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel != 1)
+                if (playerDataMgr.currentSquad[key].virusPenalty["T"].penaltyGauge - recoveryAmount <= 0
+                    && playerDataMgr.currentSquad[key].virusPenalty["T"].penaltyLevel != 1)
                     standardTGauge[key] = 100;
 
-                playerDataMgr.currentSquad[key].virusPenalty[currentVirus].ReductionCalculation(recoveryAmount);
-                playerDataMgr.saveData.gaugeT[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
-                playerDataMgr.saveData.levelT[key] = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyLevel;
+                playerDataMgr.currentSquad[key].virusPenalty["T"].ReductionCalculation(recoveryAmount);
+                playerDataMgr.saveData.gaugeT[key] = playerDataMgr.currentSquad[key].virusPenalty["T"].penaltyGauge;
+                playerDataMgr.saveData.levelT[key] = playerDataMgr.currentSquad[key].virusPenalty["T"].penaltyLevel;
                 break;
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
         //UI변경.
-        sliders[currentVirus].value
-            = (float)playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge
-            / playerDataMgr.currentSquad[key].virusPenalty[currentVirus].GetMaxGauge();
+        sliders[currentKey].maxValue = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].GetMaxGauge();
+        sliders[currentKey].value = playerDataMgr.currentSquad[key].virusPenalty[currentVirus].penaltyGauge;
+    }
+
+    public void RefreshUpgradeWin()
+    {
+        if (hospitalLevel != 5)
+        {
+            hospitalLevelTxt.text = $"건물 레벨 {hospitalLevel}→{hospitalLevel + 1}";
+            costTxt.text = $"체력 회복 비용 감소 {reductionPercentage}%→{nextReductionPercentage}%\n"
+                +$"바이러스 회복 비용 감소 {reductionPercentage}%→{nextReductionPercentage}%";
+            materialTxt.text = $"{upgradeCost}";
+        }
+        else
+        {
+            hospitalLevelTxt.text = $"건물 레벨{hospitalLevel}→ -";
+            costTxt.text = $"체력 회복 비용 감소 {reductionPercentage}%→ -%\n"
+                + $"바이러스 회복 비용 감소 {reductionPercentage}%→ -%";
+            materialTxt.text = $"-";
+        }
+    }
+
+    //창 관련.
+    public void OpenMainWin()
+    {
+        if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
+        if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
+        if (!mainWin.activeSelf) mainWin.SetActive(true);
+        if (hospitalWin.activeSelf) hospitalWin.SetActive(false);
+        if (upgradeWin.activeSelf) upgradeWin.SetActive(false);
+    }
+
+    public void CloseMainWin()
+    {
+        if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
+        if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
+    }
+
+    public void OpenHospitalWin()
+    {
+        mainWin.SetActive(false);
+        hospitalWin.SetActive(true);
+    }
+
+    public void CloseHospitalWin()
+    {
+        hospitalWin.SetActive(false);
+        mainWin.SetActive(true);
+    }
+
+    public void OpenUpgradeWin()
+    {
+        RefreshUpgradeWin();
+
+        mainWin.SetActive(false);
+        upgradeWin.SetActive(true);
+    }
+
+    public void CloseUpgradeWin()
+    {
+        upgradeWin.SetActive(false);
+        mainWin.SetActive(true);
     }
 }

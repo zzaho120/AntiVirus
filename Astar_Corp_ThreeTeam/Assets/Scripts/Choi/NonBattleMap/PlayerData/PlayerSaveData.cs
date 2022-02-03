@@ -12,7 +12,7 @@ public class PlayerSaveData
     //public List<int> bunkerKind { get; set; }
     public int agitLevel { get; set; }
     public int storageLevel { get; set; }
-    public int garageLevel { get; set; }
+    public int carCenterLevel { get; set; }
     public int hospitalLevel { get; set; }
     public int storeLevel { get; set; }
     public int pubLevel { get; set; }

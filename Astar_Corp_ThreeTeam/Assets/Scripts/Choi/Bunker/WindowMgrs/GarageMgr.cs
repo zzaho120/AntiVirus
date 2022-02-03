@@ -5,37 +5,36 @@ using UnityEngine;
 public class GarageMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
-
+    public BunkerMgr bunkerMgr;
     public GameObject mainWin;
-    public GameObject buyWin;
-    public GameObject trunkWin;
     public GameObject carBoardingWin;
+    public GameObject trunkWin;
 
     public TrunkMgr trunkMgr;
     public BoardingMgr boardingMgr;
 
-    int garageLevel;
+    int carCenterLevel;
     int maxCarCapacity;
     public void Init()
     {
-        garageLevel = playerDataMgr.saveData.garageLevel;
-        Bunker garageLevelInfo = playerDataMgr.bunkerList["BUN_0003"];
-        switch (garageLevel)
+        carCenterLevel = playerDataMgr.saveData.carCenterLevel;
+        Bunker carCenterLevelInfo = playerDataMgr.bunkerList["BUN_0003"];
+        switch (carCenterLevel)
         {
             case 1:
-                maxCarCapacity = garageLevelInfo.level1;
+                maxCarCapacity = carCenterLevelInfo.level1;
                 break;
             case 2:
-                maxCarCapacity = garageLevelInfo.level2;
+                maxCarCapacity = carCenterLevelInfo.level2;
                 break;
             case 3:
-                maxCarCapacity = garageLevelInfo.level3;
+                maxCarCapacity = carCenterLevelInfo.level3;
                 break;
             case 4:
-                maxCarCapacity = garageLevelInfo.level4;
+                maxCarCapacity = carCenterLevelInfo.level4;
                 break;
             case 5:
-                maxCarCapacity = garageLevelInfo.level5;
+                maxCarCapacity = carCenterLevelInfo.level5;
                 break;
         }
         int currentCarNum = playerDataMgr.saveData.cars.Count;
@@ -46,11 +45,23 @@ public class GarageMgr : MonoBehaviour
         boardingMgr.playerDataMgr = playerDataMgr;
         boardingMgr.Init();
 
-        //창 관련.
+        OpenMainWin();
+    }
+
+    //창 관련.
+    public void OpenMainWin()
+    {
+        if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
+        if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
+        if (!mainWin.activeSelf) mainWin.SetActive(true);
         if (carBoardingWin.activeSelf) carBoardingWin.SetActive(false);
         if (trunkWin.activeSelf) trunkWin.SetActive(false);
-        if(buyWin.activeSelf) buyWin.SetActive(false);
-        if (!mainWin.activeSelf) mainWin.SetActive(true);
+    }
+
+    public void CloseMainWin()
+    {
+        if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
+        if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
     }
 
     public void OpenCarBoardingWin()
@@ -74,18 +85,6 @@ public class GarageMgr : MonoBehaviour
     public void CloseTrunkWin()
     {
         trunkWin.SetActive(false);
-        mainWin.SetActive(true);
-    }
-
-    public void OpenBuyWin()
-    {
-        mainWin.SetActive(false);
-        buyWin.SetActive(true);
-    }
-
-    public void CloseBuyWin()
-    {
-        buyWin.SetActive(false);
         mainWin.SetActive(true);
     }
 }

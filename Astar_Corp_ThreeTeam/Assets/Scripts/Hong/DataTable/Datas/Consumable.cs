@@ -8,6 +8,7 @@ public class Consumable : ItemBase
     public string iconId;
     public string prefabsId;
     //public string name;
+    public Sprite img;
 
     public string description;
     public string type;

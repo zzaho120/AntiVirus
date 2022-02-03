@@ -68,17 +68,31 @@ public class BoardingMgr : MonoBehaviour
                 i++;
                 continue;
             }
+            
+            int num = i;
 
             var go = Instantiate(characterPrefab, ListContent.transform);
             var button = go.AddComponent<Button>();
-
-            var child = go.transform.GetChild(0).gameObject;
-            child.GetComponent<Text>().text = element.Value.character.name;
-            
-            int num = i;
             button.onClick.AddListener(delegate { SelectCharacter(num); });
+
+            var child = go.transform.GetChild(1).gameObject;
+            var childObj = child.transform.GetChild(0).gameObject;
+            childObj.GetComponent<Text>().text
+                = $"{element.Value.character.name}/성별";
+
+            childObj = child.transform.GetChild(1).gameObject;
+            string mainWeaponTxt = (element.Value.weapon.mainWeapon == null) ?
+                "비어있음" : element.Value.weapon.mainWeapon.name; 
+
+            childObj.GetComponent<Text>().text
+                = $"{element.Value.character.name}/LV{element.Value.level}/{mainWeaponTxt}";
+
+            childObj = child.transform.GetChild(2).gameObject;
+            var slider = childObj.GetComponent<Slider>();
+            slider.maxValue = element.Value.MaxHp;
+            slider.value = element.Value.currentHp;
+
             characters.Add(num, go);
-            
             i++;
         }
 
@@ -294,16 +308,31 @@ public class BoardingMgr : MonoBehaviour
 
         //현재데이터.
         var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
-        child.GetComponent<Text>().text = $"좌석{currentSeatNum+1}";
+        child.GetComponent<Text>().text = $"자리{currentSeatNum+1}";
         
+        int index = currentIndex;
+       
         var go = Instantiate(characterPrefab, ListContent.transform);
         var button = go.AddComponent<Button>();
-
-        child = go.transform.GetChild(0).gameObject;
-        child.GetComponent<Text>().text = playerDataMgr.currentSquad[currentIndex].character.name;
-
-        int index = currentIndex;
         button.onClick.AddListener(delegate { SelectCharacter(index); });
+
+        child = go.transform.GetChild(1).gameObject;
+        var childObj = child.transform.GetChild(0).gameObject;
+        childObj.GetComponent<Text>().text
+            = $"{playerDataMgr.currentSquad[currentIndex].character.name}/성별";
+
+        childObj = child.transform.GetChild(1).gameObject;
+        string mainWeaponTxt = (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon == null) ?
+            "비어있음" : playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name;
+
+        childObj.GetComponent<Text>().text
+            = $"{playerDataMgr.currentSquad[currentIndex].character.name}/LV{playerDataMgr.currentSquad[currentIndex].level}/{mainWeaponTxt}";
+
+        childObj = child.transform.GetChild(2).gameObject;
+        var slider = childObj.GetComponent<Slider>();
+        slider.maxValue = playerDataMgr.currentSquad[currentIndex].MaxHp;
+        slider.value = playerDataMgr.currentSquad[currentIndex].currentHp;
+
         characters.Add(currentIndex, go);
 
         seats[currentSeatNum].GetComponent<Image>().color = Color.white;

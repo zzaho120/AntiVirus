@@ -40,13 +40,15 @@ public class TrunkMgr : MonoBehaviour
     public Text storageBullet45Txt;
     public Text storageBullet12Txt;
 
-    public GameObject truckContent;
+    public GameObject trunkContent;
+    public GameObject trunkPrefab;
     public GameObject storageContent;
-    public GameObject prefab;
+    public GameObject storagePrefab;
 
     [Header("팝업창 관련")]
     public GameObject popupWin;
     public Text itemNameTxt;
+    public Text itemTypeTxt;
     public Text itemNumTxt;
     public Slider slider;
 
@@ -166,7 +168,7 @@ public class TrunkMgr : MonoBehaviour
 
         DisplayTruckItem(0);
         DisplayStorageItem(0);
-        originColor = prefab.GetComponent<Image>().color;
+        originColor = trunkPrefab.GetComponent<Image>().color;
         currentKey = null;
         currentInvenKind = InvenKind.None;
     }
@@ -209,7 +211,7 @@ public class TrunkMgr : MonoBehaviour
                 Destroy(element.Value);
             }
             truckList.Clear();
-            truckContent.transform.DetachChildren();
+            trunkContent.transform.DetachChildren();
         }
 
         int bullet5Num = 0;
@@ -224,15 +226,25 @@ public class TrunkMgr : MonoBehaviour
         {
             if (trunkMode != TrunkMode.Consumables && trunkMode != TrunkMode.OtherItems)
             {
-                var go = Instantiate(prefab, truckContent.transform);
-                var child = go.transform.GetChild(0).gameObject;
+                var go = Instantiate(trunkPrefab, trunkContent.transform);
+                
+                var child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
-                child = go.transform.GetChild(1).gameObject;
+                child = go.transform.GetChild(2).gameObject;
                 var itemNum = playerDataMgr.truckEquippablesNum[element.Key];
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                child.GetComponent<Text>().text = $"{itemNum}";
 
-                var button = go.AddComponent<Button>();
+                child = go.transform.GetChild(3).gameObject;
+                var weight = element.Value.weight;
+                child.GetComponent<Text>().text = $"{weight * itemNum}";
+
+                child = go.transform.GetChild(4).gameObject;
+                var price = element.Value.price;
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt(price * 0.7f) * itemNum}";
+
+                child = go.transform.GetChild(5).gameObject;
+                var button = child.AddComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(element.Key, InvenKind.Truck); });
                 truckList.Add(element.Key, go);
             }
@@ -243,15 +255,25 @@ public class TrunkMgr : MonoBehaviour
         {
             if (trunkMode != TrunkMode.Equippables && trunkMode != TrunkMode.OtherItems)
             {
-                var go = Instantiate(prefab, truckContent.transform);
-                var child = go.transform.GetChild(0).gameObject;
+                var go = Instantiate(trunkPrefab, trunkContent.transform);
+                
+                var child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
-                child = go.transform.GetChild(1).gameObject;
+                child = go.transform.GetChild(2).gameObject;
                 var itemNum = playerDataMgr.truckConsumablesNum[element.Key];
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                child.GetComponent<Text>().text = $"{itemNum}";
 
-                var button = go.AddComponent<Button>();
+                child = go.transform.GetChild(3).gameObject;
+                var weight = element.Value.weight;
+                child.GetComponent<Text>().text = $"{weight * itemNum}";
+
+                child = go.transform.GetChild(4).gameObject;
+                var price = element.Value.price;
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt(price * 0.7f) * itemNum}";
+
+                child = go.transform.GetChild(5).gameObject;
+                var button = child.AddComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(element.Key, InvenKind.Truck); });
                 truckList.Add(element.Key, go);
             }
@@ -262,15 +284,25 @@ public class TrunkMgr : MonoBehaviour
         {
             if (trunkMode != TrunkMode.Equippables && trunkMode != TrunkMode.Consumables)
             {
-                var go = Instantiate(prefab, truckContent.transform);
-                var child = go.transform.GetChild(0).gameObject;
+                var go = Instantiate(trunkPrefab, trunkContent.transform);
+                
+                var child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
-                child = go.transform.GetChild(1).gameObject;
+                child = go.transform.GetChild(2).gameObject;
                 var itemNum = playerDataMgr.truckOtherItemsNum[element.Key];
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                child.GetComponent<Text>().text = $"{itemNum}";
 
-                var button = go.AddComponent<Button>();
+                child = go.transform.GetChild(3).gameObject;
+                var weight = int.Parse( element.Value.weight );
+                child.GetComponent<Text>().text = $"{weight * itemNum}";
+
+                child = go.transform.GetChild(4).gameObject;
+                var price = int.Parse(element.Value.price);
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt(price * 0.7f) * itemNum}";
+
+                child = go.transform.GetChild(5).gameObject;
+                var button = child.AddComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(element.Key, InvenKind.Truck); });
                 truckList.Add(element.Key, go);
             }
@@ -298,13 +330,13 @@ public class TrunkMgr : MonoBehaviour
 
         var key = playerDataMgr.saveData.currentCar;
         trunkTotalWeight = playerDataMgr.truckList[key].weight;
-        trunkWeightTxt.text = $"무게 {trunkCurrentWeight}/{trunkTotalWeight}";
+        trunkWeightTxt.text = $"{trunkCurrentWeight}/{trunkTotalWeight}";
 
-        trunkBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
-        trunkBullet7Txt.text = $"7탄x{bullet7Num.ToString("D3")}";
-        trunkBullet9Txt.text = $"9탄x{bullet9Num.ToString("D3")}";
-        trunkBullet45Txt.text = $"45탄x{bullet45Num.ToString("D3")}";
-        trunkBullet12Txt.text = $"12게이지x{bullet12Num.ToString("D3")}";
+        trunkBullet5Txt.text = $"{bullet5Num}";
+        trunkBullet7Txt.text = $"{bullet7Num}";
+        trunkBullet9Txt.text = $"{bullet9Num}";
+        trunkBullet45Txt.text = $"{bullet45Num}";
+        trunkBullet12Txt.text = $"{bullet12Num}";
 
         if (trunkCurrentWeight > trunkTotalWeight)
         {
@@ -370,15 +402,25 @@ public class TrunkMgr : MonoBehaviour
         {
             if (storageMode != StorageMode.Consumables && storageMode != StorageMode.OtherItems)
             {
-                var go = Instantiate(prefab, storageContent.transform);
-                var child = go.transform.GetChild(0).gameObject;
+                var go = Instantiate(storagePrefab, storageContent.transform);
+
+                var child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
-                child = go.transform.GetChild(1).gameObject;
+                child = go.transform.GetChild(2).gameObject;
                 var itemNum = playerDataMgr.currentEquippablesNum[element.Key];
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                child.GetComponent<Text>().text = $"{itemNum}";
 
-                var button = go.AddComponent<Button>();
+                child = go.transform.GetChild(3).gameObject;
+                var weight = element.Value.weight;
+                child.GetComponent<Text>().text = $"{weight * itemNum}";
+
+                child = go.transform.GetChild(4).gameObject;
+                var price = element.Value.price;
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt(price * 0.7f) * itemNum}";
+
+                child = go.transform.GetChild(5).gameObject;
+                var button = child.AddComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(element.Key, InvenKind.Storage); });
                 storageList.Add(element.Key, go);
             }
@@ -389,15 +431,25 @@ public class TrunkMgr : MonoBehaviour
         {
             if (storageMode != StorageMode.Equippables && storageMode != StorageMode.OtherItems)
             {
-                var go = Instantiate(prefab, storageContent.transform);
-                var child = go.transform.GetChild(0).gameObject;
+                var go = Instantiate(storagePrefab, storageContent.transform);
+
+                var child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
-                child = go.transform.GetChild(1).gameObject;
+                child = go.transform.GetChild(2).gameObject;
                 var itemNum = playerDataMgr.currentConsumablesNum[element.Key];
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                child.GetComponent<Text>().text = $"{itemNum}";
 
-                var button = go.AddComponent<Button>();
+                child = go.transform.GetChild(3).gameObject;
+                var weight = element.Value.weight;
+                child.GetComponent<Text>().text = $"{weight * itemNum}";
+
+                child = go.transform.GetChild(4).gameObject;
+                var price = element.Value.price;
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt(price * 0.7f) * itemNum}";
+
+                child = go.transform.GetChild(5).gameObject;
+                var button = child.AddComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(element.Key, InvenKind.Storage); });
                 storageList.Add(element.Key, go);
             }
@@ -408,15 +460,26 @@ public class TrunkMgr : MonoBehaviour
         {
             if (storageMode != StorageMode.Equippables && storageMode != StorageMode.Consumables)
             {
-                var go = Instantiate(prefab, storageContent.transform);
-                var child = go.transform.GetChild(0).gameObject;
+                var go = Instantiate(storagePrefab, storageContent.transform);
+               
+                var child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
-                child = go.transform.GetChild(1).gameObject;
+                child = go.transform.GetChild(2).gameObject;
                 var itemNum = playerDataMgr.currentOtherItemsNum[element.Key];
-                child.GetComponent<Text>().text = $"{itemNum}개";
+                child.GetComponent<Text>().text = $"{itemNum}";
 
-                var button = go.AddComponent<Button>();
+
+                child = go.transform.GetChild(3).gameObject;
+                var weight = int.Parse(element.Value.weight);
+                child.GetComponent<Text>().text = $"{weight * itemNum}";
+
+                child = go.transform.GetChild(4).gameObject;
+                var price = int.Parse( element.Value.price );
+                child.GetComponent<Text>().text = $"{Mathf.FloorToInt(price * 0.7f) * itemNum}";
+
+                child = go.transform.GetChild(5).gameObject;
+                var button = child.AddComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(element.Key, InvenKind.Storage); });
                 storageList.Add(element.Key, go);
             }
@@ -441,18 +504,18 @@ public class TrunkMgr : MonoBehaviour
                     break;
             }
         }
-        storageWeightTxt.text = $"무게 {storageCurrentWeight}/{maxStorageCapacity}";
+        storageWeightTxt.text = $"{storageCurrentWeight}/{maxStorageCapacity}";
 
-        storageBullet5Txt.text = $"5탄x{bullet5Num.ToString("D3")}";
-        storageBullet7Txt.text = $"7탄x{bullet7Num.ToString("D3")}";
-        storageBullet9Txt.text = $"9탄x{bullet9Num.ToString("D3")}";
-        storageBullet45Txt.text = $"45탄x{bullet45Num.ToString("D3")}";
-        storageBullet12Txt.text = $"12게이지x{bullet12Num.ToString("D3")}";
+        storageBullet5Txt.text = $"{bullet5Num}";
+        storageBullet7Txt.text = $"{bullet7Num}";
+        storageBullet9Txt.text = $"{bullet9Num}";
+        storageBullet45Txt.text = $"{bullet45Num}";
+        storageBullet12Txt.text = $"{bullet12Num}";
     }
 
     public void NumAdjustment()
     {
-       itemNumTxt.text = $"{slider.value}개";
+       itemNumTxt.text = $"(선택 개수) {slider.value}개";
     }
 
     public void SelectItem(string key, InvenKind kind)
@@ -481,16 +544,19 @@ public class TrunkMgr : MonoBehaviour
             if (storageWeaponInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageWeaponInfo[currentKey].name;
+                itemTypeTxt.text = "전투";
                 slider.maxValue = storageWeaponNumInfo[currentKey];
             }
             else if (storageConsumableInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageConsumableInfo[currentKey].name;
+                itemTypeTxt.text = "소모";
                 slider.maxValue = storageConsumableNumInfo[currentKey];
             }
             else if (storageOtherItemInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageOtherItemInfo[currentKey].name;
+                itemTypeTxt.text = "기타";
                 slider.maxValue = storageOtherItemNumInfo[currentKey];
             }
         }
@@ -502,22 +568,25 @@ public class TrunkMgr : MonoBehaviour
             if (truckWeaponInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = truckWeaponInfo[currentKey].name;
+                itemTypeTxt.text = "전투";
                 slider.maxValue = truckWeaponNumInfo[currentKey];
             }
             else if (truckConsumableInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = truckConsumableInfo[currentKey].name;
+                itemTypeTxt.text = "소모";
                 slider.maxValue = truckConsumableNumInfo[currentKey];
             }
             else if (truckOtherItemInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = truckOtherItemInfo[currentKey].name;
+                itemTypeTxt.text = "기타";
                 slider.maxValue = truckOtherItemNumInfo[currentKey];
             }
         }
 
         slider.value = 0;
-        itemNumTxt.text = $"0개";
+        itemNumTxt.text = $"(선택 개수) nnnn개";
         OpenPopup();
     }
 
@@ -536,12 +605,12 @@ public class TrunkMgr : MonoBehaviour
         if (slider.value + plus >= slider.maxValue)
         {
             slider.value = slider.maxValue;
-            itemNumTxt.text = $"{slider.value}개";
+            itemNumTxt.text = $"(선택 개수) {slider.value}개";
         }
         else
         {
             slider.value += plus;
-            itemNumTxt.text = $"{slider.value}개";
+            itemNumTxt.text = $"(선택 개수) {slider.value}개";
         }
     }
 
@@ -601,18 +670,6 @@ public class TrunkMgr : MonoBehaviour
                 truckWeaponInfo.Add(currentKey, storageWeaponInfo[currentKey]);
                 truckWeaponNumInfo.Add(currentKey, itemNum);
 
-                //var go = Instantiate(prefab, truckContent.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = storageWeaponInfo[currentKey].name;
-                
-                //child = go.transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{itemNum}개";
-
-                //var button = go.AddComponent<Button>();
-                //string selectedKey = currentKey;
-                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InvenKind.Truck); });
-                //truckList.Add(selectedKey, go);
-
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckEquippables.Add(id, playerDataMgr.equippableList[id]);
                 playerDataMgr.truckEquippablesNum.Add(id, itemNum);
@@ -621,9 +678,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 truckWeaponNumInfo[currentKey]+=itemNum;
-                //var child = truckList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{truckWeaponNumInfo[currentKey]}개";
-
+               
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckEquippablesNum[id]+=itemNum;
             }
@@ -635,8 +690,6 @@ public class TrunkMgr : MonoBehaviour
                 //현재 데이터.
                 storageWeaponInfo.Remove(currentKey);
                 storageWeaponNumInfo.Remove(currentKey);
-                //Destroy(storageList[currentKey]);
-                //storageList.Remove(currentKey);
                 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippables.Remove(id);
@@ -649,9 +702,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재 데이터.
                 storageWeaponNumInfo[currentKey]-= itemNum;
-                //var child = storageList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{storageWeaponNumInfo[currentKey]}개";
-
+                
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id]-=itemNum;
             }
@@ -694,18 +745,6 @@ public class TrunkMgr : MonoBehaviour
                 truckConsumableInfo.Add(currentKey, storageConsumableInfo[currentKey]);
                 truckConsumableNumInfo.Add(currentKey, itemNum);
 
-                //var go = Instantiate(prefab, truckContent.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = storageConsumableInfo[currentKey].name;
-
-                //child = go.transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{itemNum}개";
-
-                //var button = go.AddComponent<Button>();
-                //string selectedKey = currentKey;
-                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InvenKind.Truck); });
-                //truckList.Add(selectedKey, go);
-
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckConsumables.Add(id, playerDataMgr.consumableList[id]);
                 playerDataMgr.truckConsumablesNum.Add(id, itemNum);
@@ -714,9 +753,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 truckConsumableNumInfo[currentKey]+=itemNum;
-                //var child = truckList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{truckConsumableNumInfo[currentKey]}개";
-
+                
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckConsumablesNum[id]+=itemNum;
             }
@@ -728,9 +765,7 @@ public class TrunkMgr : MonoBehaviour
                 //현재 데이터.
                 storageConsumableInfo.Remove(currentKey);
                 storageConsumableNumInfo.Remove(currentKey);
-                //Destroy(storageList[currentKey]);
-                //storageList.Remove(currentKey);
-                
+               
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentConsumables.Remove(id);
                 playerDataMgr.currentConsumablesNum.Remove(id);
@@ -742,9 +777,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재 데이터.
                 storageConsumableNumInfo[currentKey]-=itemNum;
-                //var child = storageList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
-
+               
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentConsumablesNum[id]-=itemNum;
             }
@@ -787,18 +820,6 @@ public class TrunkMgr : MonoBehaviour
                 truckOtherItemInfo.Add(currentKey, storageOtherItemInfo[currentKey]);
                 truckOtherItemNumInfo.Add(currentKey, itemNum);
 
-                //var go = Instantiate(prefab, truckContent.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = storageConsumableInfo[currentKey].name;
-
-                //child = go.transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{itemNum}개";
-
-                //var button = go.AddComponent<Button>();
-                //string selectedKey = currentKey;
-                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InvenKind.Truck); });
-                //truckList.Add(selectedKey, go);
-
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckOtherItems.Add(id, playerDataMgr.otherItemList[id]);
                 playerDataMgr.truckOtherItemsNum.Add(id, itemNum);
@@ -807,9 +828,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 truckOtherItemNumInfo[currentKey] += itemNum;
-                //var child = truckList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{truckConsumableNumInfo[currentKey]}개";
-
+               
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckOtherItemsNum[id] += itemNum;
             }
@@ -821,9 +840,7 @@ public class TrunkMgr : MonoBehaviour
                 //현재 데이터.
                 storageOtherItemInfo.Remove(currentKey);
                 storageOtherItemNumInfo.Remove(currentKey);
-                //Destroy(storageList[currentKey]);
-                //storageList.Remove(currentKey);
-
+                
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentOtherItems.Remove(id);
                 playerDataMgr.currentOtherItemsNum.Remove(id);
@@ -835,9 +852,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재 데이터.
                 storageOtherItemNumInfo[currentKey] -= itemNum;
-                //var child = storageList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
-
+               
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentOtherItemsNum[id] -= itemNum;
             }
@@ -887,18 +902,6 @@ public class TrunkMgr : MonoBehaviour
                 storageWeaponInfo.Add(currentKey, truckWeaponInfo[currentKey]);
                 storageWeaponNumInfo.Add(currentKey, itemNum);
 
-                //var go = Instantiate(prefab, storageContent.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = truckWeaponInfo[currentKey].name;
-                
-                //child = go.transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{itemNum}개";
-
-                //var button = go.AddComponent<Button>();
-                //string selectedKey = currentKey;
-                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InvenKind.Storage); });
-                //storageList.Add(selectedKey, go);
-
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
                 playerDataMgr.currentEquippablesNum.Add(id, itemNum);
@@ -907,9 +910,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 storageWeaponNumInfo[currentKey]+=itemNum;
-                //var child = storageList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{storageWeaponNumInfo[currentKey]}개";
-
+               
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id]+=itemNum;
             }
@@ -921,8 +922,6 @@ public class TrunkMgr : MonoBehaviour
                 //현재 데이터.
                 truckWeaponInfo.Remove(currentKey);
                 truckWeaponNumInfo.Remove(currentKey);
-                //Destroy(truckList[currentKey]);
-                //truckList.Remove(currentKey);
                 
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckEquippables.Remove(id);
@@ -935,9 +934,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재 데이터.
                 truckWeaponNumInfo[currentKey]-=itemNum;
-                //var child = truckList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{truckWeaponNumInfo[currentKey]}개";
-
+                
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckEquippablesNum[id]-=itemNum;
             }
@@ -980,18 +977,6 @@ public class TrunkMgr : MonoBehaviour
                 storageConsumableInfo.Add(currentKey, truckConsumableInfo[currentKey]);
                 storageConsumableNumInfo.Add(currentKey, itemNum);
 
-                //var go = Instantiate(prefab, storageContent.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = truckConsumableInfo[currentKey].name;
-
-                //child = go.transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{itemNum}개";
-
-                //var button = go.AddComponent<Button>();
-                //string selectedKey = currentKey;
-                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InvenKind.Storage); });
-                //storageList.Add(selectedKey, go);
-
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentConsumables.Add(id, playerDataMgr.consumableList[id]);
                 playerDataMgr.currentConsumablesNum.Add(id, itemNum);
@@ -1000,9 +985,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 storageConsumableNumInfo[currentKey]+=itemNum;
-                //var child = storageList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
-
+                
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentConsumablesNum[id]+=itemNum;
             }
@@ -1014,9 +997,7 @@ public class TrunkMgr : MonoBehaviour
                 //현재 데이터.
                 truckConsumableInfo.Remove(currentKey);
                 truckConsumableNumInfo.Remove(currentKey);
-                //Destroy(truckList[currentKey]);
-                //truckList.Remove(currentKey);
-                
+               
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckConsumables.Remove(id);
                 playerDataMgr.truckConsumablesNum.Remove(id);
@@ -1028,9 +1009,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재 데이터.
                 truckConsumableNumInfo[currentKey]-=itemNum;
-                //var child = truckList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{truckConsumableNumInfo[currentKey]}개";
-
+               
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckConsumablesNum[id]-=itemNum;
             }
@@ -1073,18 +1052,6 @@ public class TrunkMgr : MonoBehaviour
                 storageOtherItemInfo.Add(currentKey, truckOtherItemInfo[currentKey]);
                 storageOtherItemNumInfo.Add(currentKey, itemNum);
 
-                //var go = Instantiate(prefab, storageContent.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = truckConsumableInfo[currentKey].name;
-
-                //child = go.transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{itemNum}개";
-
-                //var button = go.AddComponent<Button>();
-                //string selectedKey = currentKey;
-                //button.onClick.AddListener(delegate { SelectItem(selectedKey, InvenKind.Storage); });
-                //storageList.Add(selectedKey, go);
-
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentOtherItems.Add(id, playerDataMgr.otherItemList[id]);
                 playerDataMgr.currentOtherItemsNum.Add(id, itemNum);
@@ -1093,9 +1060,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재데이터 관련.
                 storageOtherItemNumInfo[currentKey] += itemNum;
-                //var child = storageList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{storageConsumableNumInfo[currentKey]}개";
-
+                
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentOtherItemsNum[id] += itemNum;
             }
@@ -1107,9 +1072,7 @@ public class TrunkMgr : MonoBehaviour
                 //현재 데이터.
                 truckOtherItemInfo.Remove(currentKey);
                 truckOtherItemNumInfo.Remove(currentKey);
-                //Destroy(truckList[currentKey]);
-                //truckList.Remove(currentKey);
-
+               
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckOtherItems.Remove(id);
                 playerDataMgr.truckOtherItemsNum.Remove(id);
@@ -1121,9 +1084,7 @@ public class TrunkMgr : MonoBehaviour
             {
                 //현재 데이터.
                 truckOtherItemNumInfo[currentKey] -= itemNum;
-                //var child = truckList[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{truckConsumableNumInfo[currentKey]}개";
-
+               
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.truckOtherItemsNum[id] -= itemNum;
             }

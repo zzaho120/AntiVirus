@@ -7,6 +7,7 @@ public class Weapon : ItemBase
     //public string id;
     public string iconId;
     public string prefabId;
+    public Sprite img;
 
     public string type;
     public string kind;

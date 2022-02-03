@@ -56,7 +56,7 @@ public class UpgradeMgr : MonoBehaviour
                     currentLevel = playerDataMgr.saveData.storageLevel;
                     break;
                 case "Garage":
-                    currentLevel = playerDataMgr.saveData.garageLevel;
+                    currentLevel = playerDataMgr.saveData.carCenterLevel;
                     break;
                 case "Hospital":
                     currentLevel = playerDataMgr.saveData.hospitalLevel;
@@ -108,7 +108,7 @@ public class UpgradeMgr : MonoBehaviour
                 currentLevel = playerDataMgr.saveData.storageLevel;
                 break;
             case "Garage":
-                currentLevel = playerDataMgr.saveData.garageLevel;
+                currentLevel = playerDataMgr.saveData.carCenterLevel;
                 break;
             case "Hospital":
                 currentLevel = playerDataMgr.saveData.hospitalLevel;
@@ -137,10 +137,10 @@ public class UpgradeMgr : MonoBehaviour
                 currentLevel = playerDataMgr.saveData.storageLevel;
                 break;
             case "Garage":
-                playerDataMgr.saveData.garageLevel += 1;
+                playerDataMgr.saveData.carCenterLevel += 1;
                 bunkerMgr.garageMgr.Init();
                 bunkerMgr.carCenterMgr.Init();
-                currentLevel = playerDataMgr.saveData.garageLevel;
+                currentLevel = playerDataMgr.saveData.carCenterLevel;
                 break;
             case "Hospital":
                 playerDataMgr.saveData.hospitalLevel += 1;

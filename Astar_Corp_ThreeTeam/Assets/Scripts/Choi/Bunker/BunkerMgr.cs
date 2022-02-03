@@ -12,6 +12,7 @@ public enum BunkerKinds
     Store,
     Hospital,
     Garage,
+    CarCenter,
     Storage,
     Locked,
 }
@@ -100,8 +101,13 @@ public class BunkerMgr : MonoBehaviour
         storeMgr.bunkerMgr = this;
 
         hospitalMgr.playerDataMgr = playerDataMgr;
+        hospitalMgr.bunkerMgr = this;
+
         garageMgr.playerDataMgr = playerDataMgr;
+        garageMgr.bunkerMgr = this;
+
         carCenterMgr.playerDataMgr = playerDataMgr;
+        carCenterMgr.bunkerMgr = this;
         
         storageMgr.playerDataMgr = playerDataMgr;
         storageMgr.bunkerMgr = this;
@@ -150,88 +156,35 @@ public class BunkerMgr : MonoBehaviour
 
     public void SetBunkerKind(Mode currentMode, GameObject bunker)
     {
-        //if (currentMode == Mode.Touch)
-        //{
-            var script = bunker.GetComponent<BunkerBase>();
-            currentBunkerIndex = script.bunkerId;
-            var bunkerName = script.bunkerName;
-            selectedBunker = bunker;
+        var script = bunker.GetComponent<BunkerBase>();
+        currentBunkerIndex = script.bunkerId;
+        var bunkerName = script.bunkerName;
+        selectedBunker = bunker;
 
-            //현재 벙커 종류.
-            //if (!bunkerName.Equals("None"))
-            //{
-            //    if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
-
-                switch (bunkerName)
-                {
-                    case "Agit":
-                        currentBunkerKind = BunkerKinds.Agit;
-                        break;
-                    case "Pub":
-                        currentBunkerKind = BunkerKinds.Pub;
-                        break;
-                    case "Store":
-                        currentBunkerKind = BunkerKinds.Store;
-                        break;
-                    case "Hospital":
-                        currentBunkerKind = BunkerKinds.Hospital;
-                        break;
-                    case "Garage":
-                        currentBunkerKind = BunkerKinds.Garage;
-                        break;
-                    case "Storage":
-                        currentBunkerKind = BunkerKinds.Storage;
-                        break;
-                }
-        //    }
-        //    else
-        //    {
-        //        if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
-
-        //        currentBunkerKind = BunkerKinds.None;
-        //    }
-        //}
-        //else if (currentMode == Mode.Mouse)
-        //{
-        //    var script = bunker.GetComponent<BunkerBase>();
-        //    currentBunkerIndex = script.bunkerId;
-        //    var bunkerName = script.bunkerName;
-        //    selectedBunker = bunker;
-
-        //    //현재 벙커 종류.
-        //    if (!bunkerName.Equals("None"))
-        //    {
-        //        if (!camController.isZoomIn && !destroyButton.activeSelf) destroyButton.SetActive(true);
-
-        //        switch (bunkerName)
-        //        {
-        //            case "Agit":
-        //                currentBunkerKind = BunkerKinds.Agit;
-        //                break;
-        //            case "Pub":
-        //                currentBunkerKind = BunkerKinds.Pub;
-        //                break;
-        //            case "Store":
-        //                currentBunkerKind = BunkerKinds.Store;
-        //                break;
-        //            case "Hospital":
-        //                currentBunkerKind = BunkerKinds.Hospital;
-        //                break;
-        //            case "Garage":
-        //                currentBunkerKind = BunkerKinds.Garage;
-        //                break;
-        //            case "Storage":
-        //                currentBunkerKind = BunkerKinds.Storage;
-        //                break;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (!camController.isZoomIn && !createButton.activeSelf) createButton.SetActive(true);
-
-        //        currentBunkerKind = BunkerKinds.None;
-        //    }
-        //}
+        switch (bunkerName)
+        {
+            case "Agit":
+                currentBunkerKind = BunkerKinds.Agit;
+                break;
+            case "Pub":
+                currentBunkerKind = BunkerKinds.Pub;
+                break;
+            case "Store":
+                currentBunkerKind = BunkerKinds.Store;
+                break;
+            case "Hospital":
+                currentBunkerKind = BunkerKinds.Hospital;
+                break;
+            case "Garage":
+                currentBunkerKind = BunkerKinds.Garage;
+                break;
+            case "CarCenter":
+                currentBunkerKind = BunkerKinds.CarCenter;
+                break;
+            case "Storage":
+                currentBunkerKind = BunkerKinds.Storage;
+                break;
+        }
     }
 
     public void OpenWindow()
@@ -247,23 +200,35 @@ public class BunkerMgr : MonoBehaviour
                 currentWinId = (int)BunkerWindows.AgitWindow - 1;
                 break;
             case BunkerKinds.Pub:
+                nameTxt.text = "선술집";
                 pubMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.PubWindow - 1;
                 break;
             case BunkerKinds.Store:
+                nameTxt.text = "상점";
                 storeMgr.Init();
                 storeMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.StoreWindow - 1;
                 break;
             case BunkerKinds.Hospital:
+                nameTxt.text = "병원";
                 hospitalMgr.Init();
+                hospitalMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.HospitalWindow - 1;
                 break;
             case BunkerKinds.Garage:
+                nameTxt.text = "차고";
                 garageMgr.Init();
                 currentWinId = (int)BunkerWindows.GarageWindow - 1;
                 break;
+            case BunkerKinds.CarCenter:
+                nameTxt.text = "정비소";
+                carCenterMgr.Init();
+                carCenterMgr.OpenMainWin();
+                currentWinId = (int)BunkerWindows.CarCenterWindow - 1;
+                break;
             case BunkerKinds.Storage:
+                nameTxt.text = "창고";
                 storageMgr.Init();
                 storageMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.StorageWindow - 1;
@@ -307,55 +272,41 @@ public class BunkerMgr : MonoBehaviour
         {
             case 1:
                 currentBunkerKind = BunkerKinds.Agit;
-                //playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 1;
                 go = Instantiate(agitPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 currentLevel = playerDataMgr.saveData.agitLevel;
                 break;
             case 2:
                 currentBunkerKind = BunkerKinds.Pub;
-                //playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 2;
                 go = Instantiate(pubPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 currentLevel = playerDataMgr.saveData.pubLevel;
                 break;
             case 3:
                 currentBunkerKind = BunkerKinds.Store;
-                //playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 3;
                 go = Instantiate(storePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 currentLevel = playerDataMgr.saveData.storeLevel;
                 break;
             case 4:
                 currentBunkerKind = BunkerKinds.Hospital;
-                //playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 4;
                 go = Instantiate(hospitalPrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 currentLevel = playerDataMgr.saveData.hospitalLevel;
                 break;
             case 5:
                 currentBunkerKind = BunkerKinds.Garage;
-                //playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 5;
                 go = Instantiate(garagePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
-                currentLevel = playerDataMgr.saveData.garageLevel;
+                currentLevel = playerDataMgr.saveData.carCenterLevel;
                 break;
             case 6:
                 currentBunkerKind = BunkerKinds.Storage;
-                //playerDataMgr.saveData.bunkerKind[currentBunkerIndex] = 6;
                 go = Instantiate(storagePrefab, selectedBunker.transform.position, selectedBunker.transform.rotation);
                 currentLevel = playerDataMgr.saveData.storageLevel;
                 break;
         }
-        //PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
-
-        //string str = $"BunkerKind{currentBunkerIndex}";
-        //PlayerPrefs.SetInt(str, (int)currentBunkerKind);
-
+     
         var script = go.GetComponent<BunkerBase>();
         script.bunkerId = currentBunkerIndex;
 
         Destroy(selectedBunker);
         selectedBunker = go;
-        //bunkerObjs[script.bunkerId] = go;
-
-        //var child = bunkerObjs[script.bunkerId].transform.GetChild(0).gameObject;
-        //child.GetComponent<TextMeshPro>().text = $"Lv{currentLevel}";
         camController.currentObject = selectedBunker;
 
         OpenWindow();
@@ -396,7 +347,6 @@ public class BunkerMgr : MonoBehaviour
             playerDataMgr.saveData.bunkerExitNum = 0;
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
-        //SceneManager.LoadScene("TestNonBattleMap");
         SceneManager.LoadScene("NonBattleMap");
     }
     public void Upgrade(string name)
@@ -527,6 +477,73 @@ public class BunkerMgr : MonoBehaviour
 
                 storeMgr.Init();
                 storeMgr.RefreshUpgradeWin();
+                break;
+            case "Hospital":
+                if (playerDataMgr.saveData.hospitalLevel == 5) return;
+
+                Bunker hospitalLevelInfo = playerDataMgr.bunkerList["BUN_0005"];
+                switch (playerDataMgr.saveData.hospitalLevel)
+                {
+                    case 1:
+                        upgradeCost = hospitalLevelInfo.level2Cost;
+                        break;
+                    case 2:
+                        upgradeCost = hospitalLevelInfo.level3Cost;
+                        break;
+                    case 3:
+                        upgradeCost = hospitalLevelInfo.level4Cost;
+                        break;
+                    case 4:
+                        upgradeCost = hospitalLevelInfo.level5Cost;
+                        break;
+                }
+                if (playerDataMgr.saveData.money - upgradeCost < 0) return;
+
+                playerDataMgr.saveData.hospitalLevel++;
+                playerDataMgr.saveData.money -= upgradeCost;
+                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+                child = bunkerObjs[1].transform.GetChild(0).gameObject;
+                child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.hospitalLevel}";
+
+                //이부분.
+                hospitalMgr.Init();
+                hospitalMgr.RefreshUpgradeWin();
+                break;
+            case "CarCenter":
+                if (playerDataMgr.saveData.carCenterLevel == 5) return;
+
+                Bunker carCenterLevelInfo = playerDataMgr.bunkerList["BUN_0003"];
+                switch (playerDataMgr.saveData.carCenterLevel)
+                {
+                    case 1:
+                        upgradeCost = carCenterLevelInfo.level2Cost;
+                        break;
+                    case 2:
+                        upgradeCost = carCenterLevelInfo.level3Cost;
+                        break;
+                    case 3:
+                        upgradeCost = carCenterLevelInfo.level4Cost;
+                        break;
+                    case 4:
+                        upgradeCost = carCenterLevelInfo.level5Cost;
+                        break;
+                }
+                if (playerDataMgr.saveData.money - upgradeCost < 0) return;
+
+                playerDataMgr.saveData.carCenterLevel++;
+                playerDataMgr.saveData.money -= upgradeCost;
+                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
+                child = bunkerObjs[0].transform.GetChild(0).gameObject;
+                child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.carCenterLevel}";
+                child = bunkerObjs[6].transform.GetChild(0).gameObject;
+                child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.carCenterLevel}";
+
+                //이부분.
+                garageMgr.Init();
+                carCenterMgr.Init();
+                //carCenterMgr.RefreshUpgradeWin();
                 break;
         }
     }

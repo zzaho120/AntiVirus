@@ -6,6 +6,7 @@ public class OtherItem : ScriptableObject
 {
     public string id;
     public new string name;
+    public Sprite img;
 
     /// <summary>
     /// 빈 값이 있어서 string형으로 썼음. 나중에 int.Parse 혹은 float.Parse해서 사용해주세요

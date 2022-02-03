@@ -6,6 +6,7 @@ public class Truck : ScriptableObject
 {
 	public string id;
 	public string name;
+	public Sprite img;
 
 	// 수용 인원
 	public int capacity;

@@ -170,7 +170,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                
                 saveData.agitLevel = 1;
                 saveData.storageLevel = 1;
-                saveData.garageLevel = 1;
+                saveData.carCenterLevel = 1;
                 saveData.hospitalLevel = 1;
                 saveData.storeLevel = 1;
                 saveData.pubLevel = 1;

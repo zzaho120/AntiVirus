@@ -42,6 +42,7 @@ public class OtherItemSO
                     otherItems.weight       = splitData[4];
                     otherItems.dropRate     = splitData[5];
                     otherItems.itemQuantity = splitData[6];
+                    otherItems.img = Resources.Load($"Choi/Sprites/Images/Items/{splitData[7]}", typeof(Sprite)) as Sprite;
 
                     AssetDatabase.CreateAsset(otherItems, $"Assets//Resources/Choi/Datas/OtherItems/{otherItems.name}.asset");
                     itemSkillNum++;

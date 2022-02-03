@@ -177,7 +177,8 @@ public class BunkerCamController : MonoBehaviour
         //3.Store
         //4.Hospital
         //5.Garage
-        //6.Storage
+        //6.CarCenter
+        //7.Storage
 
         GameObject selectedBunker = null;
         switch (index)
@@ -198,6 +199,9 @@ public class BunkerCamController : MonoBehaviour
                 selectedBunker = bunkerMgr.bunkerObjs[0];
                 break;
             case 6:
+                selectedBunker = bunkerMgr.bunkerObjs[6];
+                break;
+            case 7:
                 selectedBunker = bunkerMgr.bunkerObjs[5];
                 break;
         }

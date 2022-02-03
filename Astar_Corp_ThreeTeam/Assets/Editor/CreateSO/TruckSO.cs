@@ -52,6 +52,7 @@ public class TruckSO
                     truck.weightUp_Cost  = int.Parse(splitData[11]);
                     
                     truck.price         = int.Parse(splitData[12]);
+                    truck.img = Resources.Load($"Choi/Sprites/Images/Å»°Í/{splitData[13]}", typeof(Sprite)) as Sprite;
 
                     AssetDatabase.CreateAsset(truck, $"Assets//Resources/Choi/Datas/Trucks/{truck.name}.asset");
                     truckNum++;
