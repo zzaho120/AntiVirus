@@ -409,7 +409,10 @@ public class MonsterChar : BattleTile
                             FloodFillVirus();
                         }
                         else
-                            ClearTileColor();
+                        {
+                            battleInfo.Close();
+                            ReturnVirusTile();
+                        }
                     }
                 }
             }
@@ -457,7 +460,7 @@ public class MonsterChar : BattleTile
         }
     }
 
-    private void ClearTileColor()
+    public void ReturnVirusTile()
     {
         foreach (var virusTile in virusList)
         {
