@@ -40,7 +40,13 @@ public class BattleInfoWindow : GenericWindow
         monsterInfoPanel.SetInfoMonster(monster, weapon);
         confirmBtn.SetActive(true);
         curMonster = monster;
+    }
 
+    public void EnableMonsterInfo(bool isEnable, MonsterChar monster)
+    {
+        monsterInfoPanel.gameObject.SetActive(isEnable);
+        monsterInfoPanel.SetInfoMonster(monster);
+        curMonster = monster;
     }
     public void EnablePlayerInfo(bool isEnable, PlayerableChar player)
     {

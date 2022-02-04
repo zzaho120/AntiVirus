@@ -51,4 +51,18 @@ public class BattleInfoPanel : MonoBehaviour
 
         infoText.text = sb.ToString();
     }
+
+    public void SetInfoMonster(MonsterChar monster)
+    {
+        var stats = monster.monsterStats;
+        nameText.text = stats.name;
+
+        var sb = new StringBuilder();
+
+        sb.Append($"HP : {stats.currentHp}\n");
+        sb.Append($"Virus {stats.virus.name} : Lv.{stats.virusLevel} / {stats.virus}\n");
+        sb.Append($"MinDmg~MaxDmg {stats.virus.name} : {stats.monster.minDmg} / {stats.monster.maxDmg}\n");
+
+        infoText.text = sb.ToString();
+    }
 }
