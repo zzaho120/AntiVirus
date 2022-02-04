@@ -16,7 +16,7 @@ public class BattleInfoWindow : GenericWindow
         monsterInfoPanel.gameObject.SetActive(false);
         playerInfoPanel.gameObject.SetActive(false);
         confirmBtn.SetActive(false);
-
+        cancelBtn.SetActive(false);
         if (!inited)
         {
             inited = true;
@@ -34,11 +34,27 @@ public class BattleInfoWindow : GenericWindow
         Close();
     }
 
+    public void OnClickCancelBtn()
+    {
+        if (curPlayer != null)
+        {
+            curPlayer.ReturnMoveTile();
+            curPlayer.SetNonSelected();
+        }
+
+        if (curMonster != null)
+        {
+            curMonster.ReturnVirusTile();
+        }
+        Close();
+    }
+
     public void EnableMonsterInfo(bool isEnable, MonsterChar monster, WeaponStats weapon)
     {
         monsterInfoPanel.gameObject.SetActive(isEnable);
         monsterInfoPanel.SetInfoMonster(monster, weapon);
         confirmBtn.SetActive(true);
+        cancelBtn.SetActive(true);
         curMonster = monster;
     }
 
@@ -46,6 +62,7 @@ public class BattleInfoWindow : GenericWindow
     {
         monsterInfoPanel.gameObject.SetActive(isEnable);
         monsterInfoPanel.SetInfoMonster(monster);
+        cancelBtn.SetActive(true);
         curMonster = monster;
     }
     public void EnablePlayerInfo(bool isEnable, PlayerableChar player)
