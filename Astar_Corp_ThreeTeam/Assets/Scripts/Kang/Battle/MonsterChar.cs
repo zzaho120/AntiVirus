@@ -7,6 +7,7 @@ using UnityEngine;
 public class MonsterChar : BattleTile
 {
     [Header("Character")]
+    public int monsterIdx;
     public MonsterStats monsterStats;
     public BattleMonsterFSM fsm;
     public bool turnState;
@@ -220,6 +221,11 @@ public class MonsterChar : BattleTile
             if (monsterStats.currentAp == 0)
                 break;
 
+            var sightMgr = BattleMgr.Instance.sightMgr;
+            sightMgr.InitMonsterSight(idx);
+            if (target == null)
+                SetTarget(sightMgr.GetPlayerInMonsterSight(idx));
+
             if (isInSight)
                 yield return new WaitForSeconds(0.1f);
             else
@@ -397,9 +403,13 @@ public class MonsterChar : BattleTile
                     if (hit.collider.gameObject == gameObject)
                     {
                         isSelect = !isSelect;
+                        var battleInfo = BattleMgr.Instance.battleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
 
                         if (isSelect)
+                        {
+                            battleInfo.EnableMonsterInfo(true, this);
                             FloodFillVirus();
+                        }
                         else
                             ClearTileColor();
                     }

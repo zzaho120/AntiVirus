@@ -12,10 +12,12 @@ public class BattleMonsterMgr : MonoBehaviour
     {
         monsters.Clear();
         var monsterArr = transform.GetComponentsInChildren<MonsterChar>();
-        foreach (var monster in monsterArr)
+        Debug.Log(monsterArr.Length);
+        for (var idx = 0; idx < monsterArr.Length; ++idx)
         {
-            monster.Init();
-            monsters.Add(monster);
+            monsterArr[idx].Init();
+            monsterArr[idx].monsterIdx = idx;
+            monsters.Add(monsterArr[idx]);
         }
 
         EventBusMgr.Subscribe(EventType.EndEnemy, SetEndTurn);
