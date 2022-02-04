@@ -102,7 +102,6 @@ public class PlayerableChar : BattleTile
                                 {
                                     ActionMove(tileBase);
                                     ReturnMoveTile();
-                                    moveList.Clear();
                                 }
                             }
                             break;
@@ -556,5 +555,6 @@ public class PlayerableChar : BattleTile
             var returnToPool = moveTile.GetComponent<ReturnToPool>();
             returnToPool.Return();
         }
+        moveList.Clear();
     }
 }
