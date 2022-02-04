@@ -9,6 +9,7 @@ public class PlayerActionWindow : GenericWindow
     public GameObject moveBtn;
     public GameObject reloadBtn;
     public GameObject cancelBtn;
+    public GameObject turnEndBtn;
     public PlayerableChar curChar;
     public GameObject directionBtns;
     public bool inited;
@@ -16,7 +17,6 @@ public class PlayerActionWindow : GenericWindow
     {
         base.Open();
         OnActiveDirectionBtns(true, false);
-
         if (BattleMgr.Instance.turnCount == 0)
         {
             foreach (var btn in buttons)
@@ -44,8 +44,14 @@ public class PlayerActionWindow : GenericWindow
 
     public void OnClickMoveBtn()
     {
-        curChar.MoveMode();
-        Close();
+        curChar.MoveMode(); 
+        foreach (var btn in buttons)
+        {
+            btn.gameObject.SetActive(false);
+        }
+        moveBtn.SetActive(false);
+        reloadBtn.SetActive(false);
+        turnEndBtn.SetActive(false);
     }
 
     public void OnClickAttackBtn()
@@ -65,6 +71,8 @@ public class PlayerActionWindow : GenericWindow
             curChar.EndPlayer();
         else if (curChar.status == CharacterState.Move)
             curChar.WaitPlayer();
+
+        cancelBtn.SetActive(true);
     }
 
     public void OnClickCancelBtn()
@@ -90,6 +98,11 @@ public class PlayerActionWindow : GenericWindow
         {
             btn.SetActive(enableBtns);
         }
+
+        moveBtn.SetActive(enableBtns);
+        reloadBtn.SetActive(enableBtns);
+        turnEndBtn.SetActive(enableBtns);
+        cancelBtn.SetActive(enableBtns);
         directionBtns.SetActive(enableDir);
     }
 

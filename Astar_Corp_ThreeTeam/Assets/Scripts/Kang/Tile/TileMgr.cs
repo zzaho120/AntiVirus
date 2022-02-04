@@ -14,8 +14,8 @@ public class TileMgr : MonoBehaviour
     public Dictionary<Vector3, TileBase> tileDics = new Dictionary<Vector3, TileBase>();
     public Dictionary<Vector3, TileBase> wallDics = new Dictionary<Vector3, TileBase>();
 
-    public static int MAX_X_IDX = 30;
-    public static int MAX_Z_IDX = 30;
+    public static int MAX_X_IDX = 60;
+    public static int MAX_Z_IDX = 60;
  
     public void Init()
     {

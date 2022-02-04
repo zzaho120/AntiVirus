@@ -101,11 +101,7 @@ public class PlayerableChar : BattleTile
                                 if (moveDics.ContainsKey(tileBase))
                                 {
                                     ActionMove(tileBase);
-                                    foreach (var moveTile in moveList)
-                                    {
-                                        var returnToPool = moveTile.GetComponent<ReturnToPool>();
-                                        returnToPool.Return();
-                                    }
+                                    ReturnMoveTile();
                                     moveList.Clear();
                                 }
                             }
@@ -500,6 +496,7 @@ public class PlayerableChar : BattleTile
         isSelected = false;
         status = CharacterState.Wait;
         CameraController.instance.SetFollowObject(null);
+        ReturnMoveTile();
     }
 
     public void SetDirection(DirectionType direction)
@@ -550,5 +547,14 @@ public class PlayerableChar : BattleTile
             animator.SetBool("Turn Right", false);
         else if (angle == 90)
             animator.SetBool("Turn Left", false);
+    }
+
+    public void ReturnMoveTile()
+    {
+        foreach (var moveTile in moveList)
+        {
+            var returnToPool = moveTile.GetComponent<ReturnToPool>();
+            returnToPool.Return();
+        }
     }
 }
