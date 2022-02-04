@@ -16,6 +16,7 @@ public enum PoolName
 public enum BattlePoolName
 {
     MoveTile,
+    VirusTile
 }
 
 [System.Serializable]

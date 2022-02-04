@@ -14,4 +14,10 @@ public class BattlePoolMgr : PoolManager
         var moveTile = pools[(int)BattlePoolName.MoveTile].Pool.Get();
         return moveTile;
     }
+
+    public GameObject CreateVirusTile()
+    {
+        var virusTile = pools[(int)BattlePoolName.VirusTile].Pool.Get();
+        return virusTile;
+    }
 }

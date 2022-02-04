@@ -20,6 +20,7 @@ public class MonsterChar : BattleTile
     private int cumulativeDmg;
     private PlayerableChar lastAttacker;
 
+    private List<MoveTile> virusList = new List<MoveTile>();
     public bool IsfatalDmg
     {
         get
@@ -433,13 +434,13 @@ public class MonsterChar : BattleTile
 
         if (tile.virusLevel > level)
             tile.virusLevel = level;
-        var ren = tile.tileObj.GetComponent<MeshRenderer>();
         var alpha = 1f - (float)level / virusLevel - 0.3f;
 
-        ren.material.color = new Color(1f, alpha, alpha, 1f);
-
-        if (!virusRenList.Contains(ren))
-            virusRenList.Add(ren);
+        var go = BattleMgr.Instance.battlePoolMgr.CreateVirusTile();
+        go.transform.position = tile.tileIdx + new Vector3(0, 0.5f);
+        var virusTile = go.GetComponent<MoveTile>();
+        virusTile.parent = tile;
+        virusList.Add(virusTile);
 
         var adjTiles = tile.adjNodes;
         foreach (var adjTile in adjTiles)
@@ -450,9 +451,11 @@ public class MonsterChar : BattleTile
 
     private void ClearTileColor()
     {
-        foreach (var ren in virusRenList)
-            ren.material.color = Color.white;
-
-        virusRenList.Clear();
+        foreach (var virusTile in virusList)
+        {
+            var returnToPool = virusTile.GetComponent<ReturnToPool>();
+            returnToPool.Return();
+        }
+        virusList.Clear();
     }
 }
