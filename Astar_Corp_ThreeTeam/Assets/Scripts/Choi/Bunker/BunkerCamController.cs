@@ -237,7 +237,7 @@ public class BunkerCamController : MonoBehaviour
 
         while (progress < .5)
         {
-            camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, 0.4f, progress);
+            camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, 0.6f, progress);
             var x = Mathf.Lerp(transform.position.x, currentObject.transform.position.x, progress);
             var y = Mathf.Lerp(transform.position.y, currentObject.transform.position.y, progress);
             transform.position = new Vector3(x, y, transform.position.z);

@@ -23,6 +23,10 @@ public class CarCenterMgr : MonoBehaviour
     public GameObject popupWin;
     public GameObject upgradeWin;
 
+    public Animator menuAnim;
+    bool isMenuOpen;
+    public GameObject arrowImg;
+
     [Header("Truck Info")]
     public Image truckImg;
     public TextMeshProUGUI text;
@@ -118,6 +122,9 @@ public class CarCenterMgr : MonoBehaviour
 
         upgradeCostTxt.text = "-";
         upgradeButton.interactable = false;
+
+        isMenuOpen = true;
+        arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
     public void Refresh()
@@ -361,7 +368,7 @@ public class CarCenterMgr : MonoBehaviour
                 break;
         }
         if (playerDataMgr.saveData.money - cost < 0) return;
-        Debug.Log("1");
+        
         var speedObj = gaugeList[0];
         var trunkObj = gaugeList[1];
         var sightObj = gaugeList[2];
@@ -405,10 +412,10 @@ public class CarCenterMgr : MonoBehaviour
                     sightObj.transform.GetChild(i).gameObject.GetComponent<Image>().color = Color.red;
             }
         }
-        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
-
         playerDataMgr.saveData.money -= cost;
-        moneyTxt.text = playerDataMgr.saveData.money.ToString();
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+        bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
+        //moneyTxt.text = playerDataMgr.saveData.money.ToString();
     }
 
     public void Buy()
@@ -418,13 +425,14 @@ public class CarCenterMgr : MonoBehaviour
 
         //json.
         playerDataMgr.saveData.money -= playerDataMgr.truckList[selectedCar].price;
-        moneyTxt.text = playerDataMgr.saveData.money.ToString();
+        //moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
         playerDataMgr.saveData.cars.Add(selectedCar);
         playerDataMgr.saveData.speedLv.Add(1);
         playerDataMgr.saveData.sightLv.Add(1);
         playerDataMgr.saveData.weightLv.Add(1);
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+        bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
         Refresh();
         CarDisplay(selectedCar);
@@ -466,6 +474,13 @@ public class CarCenterMgr : MonoBehaviour
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
         if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
+    }
+
+    public void Menu()
+    {
+        arrowImg.GetComponent<RectTransform>().rotation = (isMenuOpen) ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.Euler(0f, 0f, 0f);
+        isMenuOpen = !isMenuOpen;
+        menuAnim.SetBool("isOpen", isMenuOpen);
     }
 
     public void OpenBuyWin()

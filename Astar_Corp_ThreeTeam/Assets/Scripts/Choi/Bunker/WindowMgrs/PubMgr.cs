@@ -15,6 +15,10 @@ public class PubMgr : MonoBehaviour
     public GameObject upgradeWin;
     public GameObject hintCollectionWin;
 
+    public Animator menuAnim;
+    bool isMenuOpen;
+    public GameObject arrowImg;
+
     //용병 모집 창.
     public GameObject characterListContent;
     public GameObject characterPrefab;
@@ -144,6 +148,11 @@ public class PubMgr : MonoBehaviour
 
         if (playerDataMgr.saveData.pubReset == true)
         {
+            //벙커 알람.
+            bunkerMgr.bunkerObjs[2].transform.GetChild(1).gameObject.SetActive(true);
+            bunkerMgr.quickButtons[3].transform.GetChild(1).gameObject.SetActive(true);
+
+            //랜덤 용병 생성.
             playerDataMgr.saveData.pubReset = false;
             if (playerDataMgr.saveData.soldierName.Count != 0) playerDataMgr.saveData.soldierName.Clear();
             if (playerDataMgr.saveData.soldierHp.Count != 0) playerDataMgr.saveData.soldierHp.Clear();
@@ -379,6 +388,7 @@ public class PubMgr : MonoBehaviour
 
         playerDataMgr.saveData.money -= costs[currentIndex];
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+        bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
        
         currentIndex = -1;
         SelectSoldier();
@@ -435,6 +445,7 @@ public class PubMgr : MonoBehaviour
             }
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+        bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
         currentIndex = -1;
         SelectSoldier();
         DetailInfoWin.SetActive(false);
@@ -494,6 +505,13 @@ public class PubMgr : MonoBehaviour
     //창이동.
     public void OpenMainWin()
     {
+        //벙커 알람.
+        if (bunkerMgr.bunkerObjs[2].transform.GetChild(1).gameObject.activeSelf)
+        {
+            bunkerMgr.bunkerObjs[2].transform.GetChild(1).gameObject.SetActive(false);
+            bunkerMgr.quickButtons[3].transform.GetChild(1).gameObject.SetActive(false);
+        }
+
         if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
         if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
 
@@ -502,12 +520,22 @@ public class PubMgr : MonoBehaviour
         if (popupWin.activeSelf) popupWin.SetActive(false);
         if (hintCollectionWin.activeSelf) hintCollectionWin.SetActive(false);
         if (!mainWin.activeSelf) mainWin.SetActive(true);
+
+        isMenuOpen = true;
+        arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
     public void CloseMainWin()
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
         if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
+    }
+
+    public void Menu()
+    {
+        arrowImg.GetComponent<RectTransform>().rotation = (isMenuOpen) ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.Euler(0f, 0f, 0f);
+        isMenuOpen = !isMenuOpen;
+        menuAnim.SetBool("isOpen", isMenuOpen);
     }
 
     public void MoveToRecruitWin()

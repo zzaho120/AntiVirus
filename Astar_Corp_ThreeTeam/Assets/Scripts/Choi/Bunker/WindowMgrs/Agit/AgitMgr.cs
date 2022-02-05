@@ -15,6 +15,7 @@ public class AgitMgr : MonoBehaviour
 
     public Animator menuAnim;
     bool isMenuOpen;
+    public GameObject arrowImg;
 
     [Header("UI")]
     public GameObject upperUI;
@@ -26,6 +27,43 @@ public class AgitMgr : MonoBehaviour
     public Text capacityTxt;
     public Text materialTxt;
 
+    [Header("CharacterInfo Win")]
+    public Text characterName;
+    public Image mainWeaponImg;
+    public Image subWeaponImg;
+    public Text bagNameTxt;
+    public GameObject virusObj;
+    public Slider hpBar;
+
+    [Header("Ability Win")]
+    public GameObject abilityButton;
+    public GameObject healthButton;
+    public Text healthTxt;
+    public GameObject concentrationButton;
+    public Text concentrationText;
+    public GameObject sensitiveButton;
+    public Text sensitiveTxt;
+    public GameObject mentalityButton;
+    public Text mentalityTxt;
+
+    public GameObject hpButton;
+    public Text hpText;
+    public GameObject weightButton;
+    public Text weight;
+    public GameObject mpButton;
+    public Text mpTxt;
+    public GameObject sightButton;
+    public Text sightTxt;
+
+    public GameObject accuracyButton;
+    public Text accuracyTxt;
+    public GameObject avoidButton;
+    public Text avoidTxt;
+    public GameObject criButton;
+    public Text criTxt;
+    public GameObject criResistButton;
+    public Text criResistTxt;
+
     public GameObject characterListContent;
     public GameObject characterPrefab;
     public List<GameObject> characterObjs;
@@ -34,6 +72,10 @@ public class AgitMgr : MonoBehaviour
     public GameObject charcterListWin;
     public GameObject upgradeWin;
     public GameObject characterInfoWin;
+    public GameObject abilityWin;
+    bool isAbilityWinOpen;
+    public GameObject virusWin;
+    bool isVirusWinOpen;
     public Text memberNumTxt;
 
     //캐릭터 정보 확인.
@@ -98,11 +140,13 @@ public class AgitMgr : MonoBehaviour
         skillWinMgr.Init();
 
         equipmentMgr.playerDataMgr = playerDataMgr;
+        equipmentMgr.agitMgr = this;
         equipmentMgr.Init();
 
         toleranceMgr.playerDataMgr = playerDataMgr;
         
         bagMgr.playerDataMgr = playerDataMgr;
+        bagMgr.agitMgr = this;
         bagMgr.Init();
 
         if (characterInfoWin.activeSelf) characterInfoWin.SetActive(false);
@@ -114,6 +158,16 @@ public class AgitMgr : MonoBehaviour
         originColor = characterPrefab.GetComponent<Image>().color;
         isDeleteMode = false;
         isMenuOpen = true;
+        arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
+
+        //벙커 알람.
+        if (playerDataMgr.saveData.agitAlarm)
+        {
+            playerDataMgr.saveData.agitAlarm = false;
+            PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+            bunkerMgr.bunkerObjs[4].transform.GetChild(1).gameObject.SetActive(true);
+            bunkerMgr.quickButtons[0].transform.GetChild(1).gameObject.SetActive(true);
+        }
     }
 
     public void RefreshCharacterList()
@@ -146,6 +200,9 @@ public class AgitMgr : MonoBehaviour
                  = element.Value.character.name;
 
             child = go.transform.GetChild(2).gameObject;
+            child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite
+                = (element.Value.weapon.mainWeapon != null) ?
+                element.Value.weapon.mainWeapon.img : null;
             child.transform.GetChild(1).gameObject.GetComponent<Text>().text
                  = (element.Value.weapon.mainWeapon != null) ?
                  element.Value.weapon.mainWeapon.name : "비어있음";
@@ -157,6 +214,8 @@ public class AgitMgr : MonoBehaviour
             child = go.transform.GetChild(4).gameObject;
             child.transform.GetChild(0).gameObject.GetComponent<Text>().text
                  = $"{element.Value.currentHp}/{element.Value.MaxHp}";
+            child.transform.GetChild(1).gameObject.GetComponent<Slider>().maxValue
+                = element.Value.MaxHp;
             child.transform.GetChild(1).gameObject.GetComponent<Slider>().value
                 = element.Value.currentHp;
 
@@ -170,7 +229,7 @@ public class AgitMgr : MonoBehaviour
             i++;
         }
         int currentMemberNum = playerDataMgr.currentSquad.Count;
-        memberNumTxt.text = $"팀원 {currentMemberNum} / {maxMember}";
+        memberNumTxt.text = $"최대 용병 수용량 {currentMemberNum} / {maxMember}";
     }
 
     public void SelectCharacter(int index)
@@ -196,11 +255,11 @@ public class AgitMgr : MonoBehaviour
         currentIndex = index;
         skillWinMgr.currentIndex = currentIndex;
         equipmentMgr.currentIndex = currentIndex;
-        toleranceMgr.currentIndex = currentIndex;
+        //toleranceMgr.currentIndex = currentIndex;
         bagMgr.currentIndex = currentIndex;
 
         equipmentMgr.RefreshEquipList();
-        toleranceMgr.Refresh();
+        //toleranceMgr.Refresh();
         bagMgr.Init();
     }
 
@@ -255,6 +314,18 @@ public class AgitMgr : MonoBehaviour
         return false;
     }
 
+    public void FireCharacter()
+    {
+        Destroy(characterObjs[currentIndex]);
+        characterObjs.RemoveAt(currentIndex);
+
+        playerDataMgr.RemoveCharacter(currentIndex);    
+        playerDataMgr.RefreshCurrentSquad();
+        RefreshCharacterList();
+
+        CloseCharacterInfo();
+    }
+
     public void RefreshUpgradeWin()
     {
         if (agitLevel != 5)
@@ -274,6 +345,13 @@ public class AgitMgr : MonoBehaviour
     //창 관리.
     public void OpenMainWin()
     {
+        //벙커 알람.
+        if (bunkerMgr.bunkerObjs[4].transform.GetChild(1).gameObject.activeSelf)
+        {
+            bunkerMgr.bunkerObjs[4].transform.GetChild(1).gameObject.SetActive(false);
+            bunkerMgr.quickButtons[0].transform.GetChild(1).gameObject.SetActive(false);
+        }
+
         if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
         if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
         if (!upperUI.activeSelf) upperUI.SetActive(true);
@@ -295,6 +373,7 @@ public class AgitMgr : MonoBehaviour
 
     public void Menu()
     {
+        arrowImg.GetComponent<RectTransform>().rotation = (isMenuOpen) ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.Euler(0f, 0f, 0f);
         isMenuOpen = !isMenuOpen;
         menuAnim.SetBool("isOpen", isMenuOpen);
     }
@@ -329,10 +408,63 @@ public class AgitMgr : MonoBehaviour
 
     public void OpenCharacterInfo()
     {
+        bunkerMgr.upperUI.SetActive(false);
         charcterListWin.SetActive(false);
         characterInfoWin.SetActive(true);
 
+        if (abilityWin.activeSelf) abilityWin.SetActive(false);
+        if (virusWin.activeSelf) virusWin.SetActive(false);
+        isAbilityWinOpen = false;
+        isVirusWinOpen = false;
+
         var character = playerDataMgr.currentSquad[currentIndex];
+        characterName.text = $"{character.character.name}";
+        mainWeaponImg.sprite = (character.weapon.mainWeapon!=null)? 
+            character.weapon.mainWeapon.img : null;
+        subWeaponImg.sprite = (character.weapon.subWeapon != null) ? 
+            character.weapon.subWeapon.img : null;
+        bagNameTxt.text = $"Lv{character.bagLevel} 가방";
+
+        hpBar.maxValue = character.MaxHp;
+        hpBar.value = character.currentHp;
+
+        if (character.virusPenalty["E"].penaltyGauge > 0)
+            virusObj.transform.GetChild(0).gameObject.SetActive(true);
+        else virusObj.transform.GetChild(0).gameObject.SetActive(false);
+
+        if (character.virusPenalty["B"].penaltyGauge > 0)
+            virusObj.transform.GetChild(1).gameObject.SetActive(true);
+        else virusObj.transform.GetChild(1).gameObject.SetActive(false);
+
+        if (character.virusPenalty["P"].penaltyGauge > 0)
+            virusObj.transform.GetChild(2).gameObject.SetActive(true);
+        else virusObj.transform.GetChild(2).gameObject.SetActive(false);
+
+        if (character.virusPenalty["I"].penaltyGauge > 0)
+            virusObj.transform.GetChild(3).gameObject.SetActive(true);
+        else virusObj.transform.GetChild(3).gameObject.SetActive(false);
+
+        if (character.virusPenalty["T"].penaltyGauge > 0)
+            virusObj.transform.GetChild(4).gameObject.SetActive(true);
+        else virusObj.transform.GetChild(4).gameObject.SetActive(false);
+
+        //Ability Win.
+        healthTxt.text = $"{character.currentHp}";
+        concentrationText.text = $"{character.concentration}";
+        sensitiveTxt.text = $"{character.sensivity}";
+        mentalityTxt.text = $"{character.willpower}";
+
+        hpText.text = $"{character.currentHp}";
+        //나중에 수정해야됨.
+        weight.text = $"{character.Weight + playerDataMgr.bagList["BAG_0001"].weight}";
+        mpTxt.text = $"0";
+
+        sightTxt.text = $"{character.sightDistance}";
+        accuracyTxt.text = $"{character.accuracy}";
+        avoidTxt.text = $"{character.avoidRate}";
+        criTxt.text = $"{character.critRate}";
+        criResistTxt.text = $"{character.critResistRate}";
+
         nameTxt.text = $"{character.character.name}";
         levelTxt.text = $"Level {character.level} / 분과";
         hpTxt.text = $"체력 {character.currentHp}";
@@ -343,6 +475,7 @@ public class AgitMgr : MonoBehaviour
 
     public void CloseCharacterInfo()
     {
+        bunkerMgr.upperUI.SetActive(true);
         characterInfoWin.SetActive(false);
         charcterListWin.SetActive(true);
     }
@@ -394,5 +527,17 @@ public class AgitMgr : MonoBehaviour
     {
         bagMgr.bagWin.SetActive(false);
         characterInfoWin.SetActive(true);
+    }
+
+    public void AbilityWin()
+    {
+        isAbilityWinOpen = !isAbilityWinOpen;
+        abilityWin.SetActive(isAbilityWinOpen);
+    }
+
+    public void VirusWin()
+    {
+        isVirusWinOpen = !isVirusWinOpen;
+        virusWin.SetActive(isVirusWinOpen);
     }
 }

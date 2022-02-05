@@ -14,6 +14,7 @@ public enum EquipKind
 public class EquipmentMgr : MonoBehaviour
 {
     public PlayerDataMgr playerDataMgr;
+    public AgitMgr agitMgr;
 
     public GameObject equipmentWin;
     public GameObject equipmentWin1;
@@ -21,6 +22,8 @@ public class EquipmentMgr : MonoBehaviour
     public GameObject detailWin;
 
     //창1 관련.
+    public Image mainWeaponImg;
+    public Image subWeaponImg;
     public Text mainWeaponTxt;
     public Text subWeaponTxt;
     
@@ -29,6 +32,8 @@ public class EquipmentMgr : MonoBehaviour
     public Text currentWeaSpecTxt;
     public Text changeWeaSpecTxt;
     public Text weaponKindTxt;
+    public Image currentWeaponImg;
+    public Image changeWeaponImg;
 
     [Header("Detail Win")]
     public Text weaponName;
@@ -80,11 +85,14 @@ public class EquipmentMgr : MonoBehaviour
             button.onClick.AddListener(delegate { SelectItem(element.Key); });
 
             var child = go.transform.GetChild(0).gameObject;
+            child.GetComponent<Image>().sprite = element.Value.img;
+
+            child = go.transform.GetChild(1).gameObject;
             child.transform.GetChild(0).GetComponent<Text>().text = element.Value.name;
 
             string type = GetTypeStr(element.Value.kind);
 
-            child = go.transform.GetChild(1).gameObject;
+            child = go.transform.GetChild(2).gameObject;
             child.transform.GetChild(0).GetComponent<Text>().text = $"{type}";
 
             itemObjs.Add(element.Key, go);
@@ -126,9 +134,16 @@ public class EquipmentMgr : MonoBehaviour
     {
         if (currentIndex != -1)
         {
+            mainWeaponImg.sprite =
+                 (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null) ?
+                 playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.img : null;
             mainWeaponTxt.text =
                 (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null) ?
                 playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name : "비어있음";
+            
+            subWeaponImg.sprite =
+                (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null) ?
+                playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.img : null;
             subWeaponTxt.text =
                 (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null) ?
                 playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.name : "비어있음";
@@ -189,6 +204,13 @@ public class EquipmentMgr : MonoBehaviour
             playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon = weapon;
 
             mainWeaponTxt.text = weapon.name;
+            mainWeaponImg.sprite = weapon.img;
+            agitMgr.mainWeaponImg.sprite = weapon.img;
+
+            var go = agitMgr.characterObjs[currentIndex];
+            var child = go.transform.GetChild(2).gameObject;
+            child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = mainWeaponImg.sprite;
+            child.transform.GetChild(1).gameObject.GetComponent<Text>().text = weapon.name;
 
             //json.
             var id = currentKey;
@@ -207,7 +229,6 @@ public class EquipmentMgr : MonoBehaviour
             if (playerDataMgr.currentEquippablesNum[id] - 1 == 0)
             {
                 //현재 데이터.
-                //itemInfo.Remove(currentKey);
                 Destroy(itemObjs[currentKey]);
                 itemObjs.Remove(currentKey);
 
@@ -220,13 +241,8 @@ public class EquipmentMgr : MonoBehaviour
             }
             else
             {
-                //현재 데이터.
-                //itemInfo[currentKey] -= 1;
-
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] -= 1;
-                //var child = itemObjs[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{playerDataMgr.currentEquippablesNum[id]}개";
             }
         }
         else if (currentKind == EquipKind.SubWeapon)
@@ -236,6 +252,8 @@ public class EquipmentMgr : MonoBehaviour
             playerDataMgr.currentSquad[currentIndex].weapon.subWeapon = weapon;
 
             subWeaponTxt.text = weapon.name;
+            subWeaponImg.sprite = weapon.img;
+            agitMgr.subWeaponImg.sprite = weapon.img;
 
             //json.
             var id = currentKey;
@@ -254,7 +272,6 @@ public class EquipmentMgr : MonoBehaviour
             if (playerDataMgr.currentEquippablesNum[id] - 1 == 0)
             {
                 //현재 데이터.
-                //itemInfo.Remove(currentKey);
                 Destroy(itemObjs[currentKey]);
                 itemObjs.Remove(currentKey);
 
@@ -267,13 +284,8 @@ public class EquipmentMgr : MonoBehaviour
             }
             else
             {
-                //현재 데이터.
-                //itemInfo[currentKey] -= 1;
-
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] -= 1;
-                //var child = itemObjs[currentKey].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{playerDataMgr.currentEquippablesNum[id]}개";
             }
         }
         CloseEquipWin2();
@@ -285,9 +297,16 @@ public class EquipmentMgr : MonoBehaviour
         switch (currentKind)
         {
             case EquipKind.MainWeapon:
+                mainWeaponImg.sprite = null;
                 mainWeaponTxt.text = "비어있음";
+
+                var go = agitMgr.characterObjs[currentIndex];
+                var child = go.transform.GetChild(2).gameObject;
+                child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = null;
+                child.transform.GetChild(1).gameObject.GetComponent<Text>().text = "비어있음";
                 break;
             case EquipKind.SubWeapon:
+                subWeaponImg.sprite = null;
                 subWeaponTxt.text = "비어있음";
                 break;
         }
@@ -321,32 +340,14 @@ public class EquipmentMgr : MonoBehaviour
             //playerDataMgr.
             if (!playerDataMgr.currentEquippables.ContainsKey(id))
             {
-                //현재데이터 관련.
-                //itemInfo.Add(id, 1);
-                
-                //var go = Instantiate(itemPrefab, itemListContents.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = weapon.name;
-                //child = go.transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"1개";
-
-                //var button = go.AddComponent<Button>();
-                //button.onClick.AddListener(delegate { SelectItem(id); });
-                //itemObjs.Add(id, go);
-
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
                 playerDataMgr.currentEquippablesNum.Add(id, 1);
             }
             else
             {
-                //현재데이터 관련.
-                //itemInfo[id] += 1;
-                
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] += 1;
-                //var child = itemObjs[id].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{playerDataMgr.currentEquippablesNum[id]}개";
             }
             WeaponList(1);
         }
@@ -374,32 +375,14 @@ public class EquipmentMgr : MonoBehaviour
             //playerDataMgr.
             if (!playerDataMgr.currentEquippables.ContainsKey(id))
             {
-                //현재데이터 관련.
-                //itemInfo.Add(id, 1);
-
-                //var go = Instantiate(itemPrefab, itemListContents.transform);
-                //var child = go.transform.GetChild(0).gameObject;
-                //child.GetComponent<Text>().text = weapon.name;
-                //child = go.transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"1개";
-
-                //var button = go.AddComponent<Button>();
-                //button.onClick.AddListener(delegate { SelectItem(id); });
-                //itemObjs.Add(id, go);
-
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
                 playerDataMgr.currentEquippablesNum.Add(id, 1);
             }
             else
             {
-                //현재데이터 관련.
-                //itemInfo[id] += 1;
-            
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] += 1;
-                //var child = itemObjs[id].transform.GetChild(1).gameObject;
-                //child.GetComponent<Text>().text = $"{playerDataMgr.currentEquippablesNum[id]}개";
             }
             WeaponList(2);
         }
@@ -407,51 +390,6 @@ public class EquipmentMgr : MonoBehaviour
         {
             playerDataMgr.saveData.bagLevel[currentIndex] = 0;
             playerDataMgr.currentSquad[currentIndex].bagLevel = 0;
-
-            //json.
-            //int index = 0;
-            //if (!playerDataMgr.saveData.equippableList.Contains(id))
-            //{
-            //    playerDataMgr.saveData.equippableList.Add(id);
-            //    playerDataMgr.saveData.equippableNumList.Add(1);
-            //}
-            //else
-            //{
-            //    index = playerDataMgr.saveData.equippableList.IndexOf(id);
-            //    playerDataMgr.saveData.equippableNumList[index] += 1;
-            //}
-            //PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
-
-            ////playerDataMgr.
-            //if (!playerDataMgr.currentEquippables.ContainsKey(id))
-            //{
-            //    //현재데이터 관련.
-            //    itemInfo.Add(id, 1);
-
-            //    var go = Instantiate(itemPrefab, itemListContents.transform);
-            //    var child = go.transform.GetChild(0).gameObject;
-            //    child.GetComponent<Text>().text = weapon.name;
-            //    child = go.transform.GetChild(1).gameObject;
-            //    child.GetComponent<Text>().text = $"1개";
-
-            //    var button = go.AddComponent<Button>();
-            //    button.onClick.AddListener(delegate { SelectItem(id); });
-            //    itemObjs.Add(id, go);
-
-            //    //플레이어 데이터 매니저 관련.
-            //    playerDataMgr.currentEquippables.Add(id, playerDataMgr.equippableList[id]);
-            //    playerDataMgr.currentEquippablesNum.Add(id, 1);
-            //}
-            //else
-            //{
-            //    //현재데이터 관련.
-            //    itemInfo[id] += 1;
-            //    var child = itemObjs[id].transform.GetChild(1).gameObject;
-            //    child.GetComponent<Text>().text = $"{itemInfo[id]}개";
-
-            //    //플레이어 데이터 매니저 관련.
-            //    playerDataMgr.currentEquippablesNum[id] += 1;
-            //}
         }
     }
 
@@ -460,10 +398,12 @@ public class EquipmentMgr : MonoBehaviour
     public void RefreshSpec()
     {
         var weapon = playerDataMgr.equippableList[currentKey];
-        string selectedWeaStr = $"기본 명중률 : {weapon.accurRateBase}% \n" +
-            $"데미지 : {weapon.minDamage} ~ {weapon.maxDamage} \n" +
-            $"탄창 클립수 : {weapon.bullet} \n" /*+
-            $"명중률 감소 : {weapon.accur_Rate_Dec}%"*/;
+        changeWeaponImg.sprite = weapon.img;
+        string selectedWeaStr = $"명중률{weapon.accurRateBase}%\n" +
+            $"최소 데미지{weapon.minDamage} 최대 데미지{weapon.maxDamage}\n" +
+            $"크리 확률{weapon.critRate}% 크리데미지{weapon.critDamage}\n"+
+            $"탄창수(클립수){weapon.bullet}\n" +
+            $"최소 사거리{weapon.minRange} 최대 사거리{weapon.maxRange}";
 
         weaponName.text = $"{weapon.name}";
         typeNameTxt.text = $"{GetTypeStr(weapon.kind)}";
@@ -480,24 +420,47 @@ public class EquipmentMgr : MonoBehaviour
             if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
             {
                 currentWeapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
-                string str = $"기본 명중률 : {currentWeapon.accurRateBase}%\n" +
-                   $"데미지 : {currentWeapon.minDamage} ~ {currentWeapon.maxDamage}\n" +
-                   $"탄창 클립수 : {currentWeapon.bullet}\n" /*+
-                   $"명중률 감소 : {currentWeapon.accur_Rate_Dec}%"*/;
+                currentWeaponImg.sprite = currentWeapon.img;
+               
+                string str = $"명중률{currentWeapon.accurRateBase}%\n" +
+                   $"최소 데미지{currentWeapon.minDamage} 최대 데미지{currentWeapon.maxDamage}\n" +
+                   $"크리 확률{currentWeapon.critRate}% 크리데미지{currentWeapon.critDamage}\n" +
+                   $"탄창수(클립수){currentWeapon.bullet}\n" +
+                   $"최소 사거리{currentWeapon.minRange} 최대 사거리{currentWeapon.maxRange}";
                 currentWeaSpecTxt.text = str;
 
-                str = $"기본 명중률 : {weapon.accurRateBase - currentWeapon.accurRateBase}%\n" +
-                   $"데미지 : {weapon.minDamage - currentWeapon.minDamage} ~ {weapon.maxDamage - currentWeapon.maxDamage}\n" +
-                   $"탄창 클립수 : {weapon.bullet - currentWeapon.bullet} \n" /*+
-                   $"명중률 감소 : {weapon.accur_Rate_Dec - currentWeapon.accur_Rate_Dec}%"*/;
+                string accurRateDiff = (weapon.accurRateBase - currentWeapon.accurRateBase < 0) ?
+                    $"{weapon.accurRateBase - currentWeapon.accurRateBase}" : $"+{weapon.accurRateBase - currentWeapon.accurRateBase}";
+                string minDamageDiff = (weapon.minDamage - currentWeapon.minDamage < 0) ?
+                    $"{weapon.minDamage - currentWeapon.minDamage}" : $"+{weapon.minDamage - currentWeapon.minDamage}";
+                string maxDamageDiff = (weapon.maxDamage - currentWeapon.maxDamage < 0) ?
+                    $"{weapon.maxDamage - currentWeapon.maxDamage}" : $"+{weapon.maxDamage - currentWeapon.maxDamage}";
+                string criRateDiff = (weapon.critRate - currentWeapon.critRate < 0) ?
+                    $"{weapon.critRate - currentWeapon.critRate}" : $"+{weapon.critRate - currentWeapon.critRate}";
+                string critDamageDiff = (weapon.critDamage - currentWeapon.critDamage < 0) ?
+                    $"{weapon.critDamage - currentWeapon.critDamage}" : $"+{weapon.critDamage - currentWeapon.critDamage}";
+                string bulletDiff = (weapon.bullet - currentWeapon.bullet < 0) ?
+                   $"{weapon.bullet - currentWeapon.bullet}" : $"+{weapon.bullet - currentWeapon.bullet}";
+                string minRangeDiff = (weapon.minRange - currentWeapon.minRange < 0) ?
+                   $"{weapon.minRange - currentWeapon.minRange}" : $"+{weapon.minRange - currentWeapon.minRange}";
+                string maxRangeDiff = (weapon.maxRange - currentWeapon.maxRange < 0) ?
+                  $"{weapon.maxRange - currentWeapon.maxRange}" : $"+{weapon.maxRange - currentWeapon.maxRange}";
+
+                str = $"명중률{accurRateDiff}%\n" +
+                   $"최소 데미지{minDamageDiff} 최대 데미지{maxDamageDiff}\n" +
+                   $"크리 확률{criRateDiff}% 크리데미지{critDamageDiff}\n" +
+                   $"탄창수(클립수){bulletDiff} \n" +
+                   $"최소 사거리{minRangeDiff} 최대 사거리{maxRangeDiff}";
                 changeWeaSpecTxt.text = str;
             }
             else
             {
-                string str = $"기본 명중률 : -% \n" +
-                   $"데미지 : - \n" +
-                   $"탄창 클립수 : - \n" +
-                   $"명중률 감소 : -%";
+                currentWeaponImg.sprite = null;
+                string str = $"명중률 : -% \n" +
+                  $"최소 데미지- 최대 데미지-\n" +
+                   $"크리 확률-% 크리데미지-\n" +
+                   $"탄창수(클립수)-\n" +
+                   $"최소 사거리- 최대 사거리-";
                 currentWeaSpecTxt.text = str;
                 changeWeaSpecTxt.text = selectedWeaStr;
             }
@@ -507,24 +470,47 @@ public class EquipmentMgr : MonoBehaviour
             if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null)
             {
                 currentWeapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
-                string str = $"기본 명중률 : {currentWeapon.accurRateBase}%\n" +
-                   $"데미지 : {currentWeapon.minDamage} ~ {currentWeapon.maxDamage}\n" +
-                   $"탄창 클립수 : {currentWeapon.bullet}\n"; // +
-                   //$"명중률 감소 : {currentWeapon.accur_Rate_Dec}%";
+                currentWeaponImg.sprite = currentWeapon.img;
+                
+                string str = $"명중률 : {currentWeapon.accurRateBase}%\n" +
+                      $"최소 데미지{currentWeapon.minDamage} 최대 데미지{currentWeapon.maxDamage}\n" +
+                   $"크리 확률{currentWeapon.critRate}% 크리데미지{currentWeapon.critDamage}\n" +
+                   $"탄창수(클립수){currentWeapon.bullet}\n" +
+                   $"최소 사거리{currentWeapon.minRange} 최대 사거리{currentWeapon.maxRange}";
                 currentWeaSpecTxt.text = str;
 
-                str = $"기본 명중률 : {weapon.accurRateBase - currentWeapon.accurRateBase}%\n" +
-                   $"데미지 : {weapon.minDamage - currentWeapon.minDamage} ~ {weapon.maxDamage - currentWeapon.maxDamage}\n" +
-                   $"탄창 클립수 : {weapon.bullet - currentWeapon.bullet}\n"; // +
-                   //$"명중률 감소 : {weapon.accur_Rate_Dec - currentWeapon.accur_Rate_Dec}%";
+                string accurRateDiff = (weapon.accurRateBase - currentWeapon.accurRateBase < 0) ?
+                    $"{weapon.accurRateBase - currentWeapon.accurRateBase}" : $"+{weapon.accurRateBase - currentWeapon.accurRateBase}";
+                string minDamageDiff = (weapon.minDamage - currentWeapon.minDamage < 0) ?
+                    $"{weapon.minDamage - currentWeapon.minDamage}" : $"+{weapon.minDamage - currentWeapon.minDamage}";
+                string maxDamageDiff = (weapon.maxDamage - currentWeapon.maxDamage < 0) ?
+                    $"{weapon.maxDamage - currentWeapon.maxDamage}" : $"+{weapon.maxDamage - currentWeapon.maxDamage}";
+                string criRateDiff = (weapon.critRate - currentWeapon.critRate < 0) ?
+                    $"{weapon.critRate - currentWeapon.critRate}" : $"+{weapon.critRate - currentWeapon.critRate}";
+                string critDamageDiff = (weapon.critDamage - currentWeapon.critDamage < 0) ?
+                    $"{weapon.critDamage - currentWeapon.critDamage}" : $"+{weapon.critDamage - currentWeapon.critDamage}";
+                string bulletDiff = (weapon.bullet - currentWeapon.bullet < 0) ?
+                   $"{weapon.bullet - currentWeapon.bullet}" : $"+{weapon.bullet - currentWeapon.bullet}";
+                string minRangeDiff = (weapon.minRange - currentWeapon.minRange < 0) ?
+                   $"{weapon.minRange - currentWeapon.minRange}" : $"+{weapon.minRange - currentWeapon.minRange}";
+                string maxRangeDiff = (weapon.maxRange - currentWeapon.maxRange < 0) ?
+                  $"{weapon.maxRange - currentWeapon.maxRange}" : $"+{weapon.maxRange - currentWeapon.maxRange}";
+
+                str = $"명중률{accurRateDiff}%\n" +
+                   $"최소 데미지{minDamageDiff} 최대 데미지{maxDamageDiff}\n" +
+                   $"크리 확률{criRateDiff}% 크리데미지{critDamageDiff}\n" +
+                   $"탄창수(클립수){bulletDiff} \n" +
+                   $"최소 사거리{minRangeDiff} 최대 사거리{maxRangeDiff}";
                 changeWeaSpecTxt.text = str;
             }
             else
             {
-                string str = $"기본 명중률 : -% \n" +
-                   $"데미지 : - \n" +
-                   $"탄창 클립수 : - \n"; // +
-                   //$"명중률 감소 : -%";
+                currentWeaponImg.sprite = null;
+                string str = $"명중률 : -% \n" +
+                  $"최소 데미지- 최대 데미지-\n" +
+                   $"크리 확률-% 크리데미지-\n" +
+                   $"탄창수(클립수)-\n" +
+                   $"최소 사거리- 최대 사거리-";
                 currentWeaSpecTxt.text = str;
                 changeWeaSpecTxt.text = selectedWeaStr;
             }
@@ -536,6 +522,7 @@ public class EquipmentMgr : MonoBehaviour
     {
         if (equipmentWin2.activeSelf) equipmentWin2.SetActive(false);
         if (!equipmentWin1.activeSelf) equipmentWin1.SetActive(true);
+        RefreshEquipList();
     }
 
     public void OpenEquipWin2()

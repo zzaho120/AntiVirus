@@ -9,7 +9,7 @@ public class PlayerSaveData
     public int bunkerExitNum;
 
     //º¡Ä¿ °ü·Ã.
-    //public List<int> bunkerKind { get; set; }
+    public bool agitAlarm { get; set; }
     public int agitLevel { get; set; }
     public int storageLevel { get; set; }
     public int carCenterLevel { get; set; }

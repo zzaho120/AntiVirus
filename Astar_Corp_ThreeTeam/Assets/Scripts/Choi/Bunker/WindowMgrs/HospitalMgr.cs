@@ -10,6 +10,10 @@ public class HospitalMgr : MonoBehaviour
     public GameObject hospitalWin;
     public GameObject upgradeWin;
 
+    public Animator menuAnim;
+    bool isMenuOpen;
+    public GameObject arrowImg;
+
     public GameObject characterListContent;
     public GameObject characterPrefab;
 
@@ -19,6 +23,7 @@ public class HospitalMgr : MonoBehaviour
     //상태창.
     public List<Slider> sliders = new List<Slider>();
     public List<Button> buttons = new List<Button>();
+    public List<Text> virusTxts = new List<Text>();
 
     [Header("Upgrade Win")]
     public Text hospitalLevelTxt;
@@ -118,6 +123,8 @@ public class HospitalMgr : MonoBehaviour
                 = $"{element.Value.character.name}";
 
             childObj = go.transform.GetChild(2).gameObject;
+            childObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite
+                = (element.Value.weapon.mainWeapon == null) ? null : element.Value.weapon.mainWeapon.img;
             string mainWeaponTxt = (element.Value.weapon.mainWeapon == null) ?
                 "비어있음" : $"{element.Value.weapon.mainWeapon.name}";
             childObj.transform.GetChild(1).gameObject.GetComponent<Text>().text
@@ -156,6 +163,8 @@ public class HospitalMgr : MonoBehaviour
         currentIndex = -1;
         currentKey = -1;
         originColor = characterPrefab.GetComponent<Image>().color;
+        isMenuOpen = true;
+        arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
     void SelectCharacter(int index)
@@ -176,18 +185,23 @@ public class HospitalMgr : MonoBehaviour
 
         sliders[1].maxValue = character.virusPenalty["E"].GetMaxGauge();
         sliders[1].value = character.virusPenalty["E"].penaltyGauge;
+        virusTxts[0].text = $"E바이러스\n레벨 {character.virusPenalty["E"].penaltyLevel}";
 
         sliders[2].maxValue = character.virusPenalty["B"].GetMaxGauge();
         sliders[2].value = character.virusPenalty["B"].penaltyGauge;
+        virusTxts[1].text = $"B바이러스\n레벨 {character.virusPenalty["B"].penaltyLevel}";
 
         sliders[3].maxValue = character.virusPenalty["P"].GetMaxGauge();
         sliders[3].value = character.virusPenalty["P"].penaltyGauge;
+        virusTxts[2].text = $"P바이러스\n레벨 {character.virusPenalty["P"].penaltyLevel}";
 
         sliders[4].maxValue = character.virusPenalty["I"].GetMaxGauge();
         sliders[4].value = character.virusPenalty["I"].penaltyGauge;
+        virusTxts[3].text = $"I바이러스\n레벨 {character.virusPenalty["I"].penaltyLevel}";
 
         sliders[5].maxValue = character.virusPenalty["T"].GetMaxGauge();
         sliders[5].value = character.virusPenalty["T"].penaltyGauge;
+        virusTxts[4].text = $"T바이러스\n레벨 {character.virusPenalty["T"].penaltyLevel}";
     }
 
     public void SelectButton(int index)
@@ -252,6 +266,7 @@ public class HospitalMgr : MonoBehaviour
         playerDataMgr.saveData.hp[key] = playerDataMgr.currentSquad[key].currentHp;
         playerDataMgr.saveData.money -= 100;
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+        bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
         //체력 UI변경.
         sliders[0].maxValue = playerDataMgr.currentSquad[key].MaxHp;
@@ -265,6 +280,7 @@ public class HospitalMgr : MonoBehaviour
         
         if (playerDataMgr.saveData.money - virusRecoveryCost < 0 ) return;
         playerDataMgr.saveData.money -= virusRecoveryCost;
+        bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
         int gauge = 0;
         int recoveryAmount = 0;
@@ -372,6 +388,13 @@ public class HospitalMgr : MonoBehaviour
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
         if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
+    }
+
+    public void Menu()
+    {
+        arrowImg.GetComponent<RectTransform>().rotation = (isMenuOpen) ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.Euler(0f, 0f, 0f);
+        isMenuOpen = !isMenuOpen;
+        menuAnim.SetBool("isOpen", isMenuOpen);
     }
 
     public void OpenHospitalWin()

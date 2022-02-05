@@ -11,6 +11,10 @@ public class StorageMgr : MonoBehaviour
     public GameObject upgradeWin;
     public Text storageWeightTxt;
 
+    public Animator menuAnim;
+    bool isMenuOpen;
+    public GameObject arrowImg;
+
     [Header("ÃÑ¾Ë °ü·Ã")]
     public Text storageBullet5Txt;
     public Text storageBullet7Txt;
@@ -24,6 +28,7 @@ public class StorageMgr : MonoBehaviour
     [Header("ÆË¾÷Ã¢ °ü·Ã")]
     public GameObject popupWin;
     public Text itemNameTxt;
+    public Image itemImg;
     public Text itemTypeTxt;
     public Text detailTxt;
 
@@ -123,6 +128,8 @@ public class StorageMgr : MonoBehaviour
         originColor = prefab.GetComponent<Image>().color;
         currentKey = null;
         currentInvenKind = InvenKind.None;
+        isMenuOpen = true;
+        arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
     public void DisplayStorageItem(int index)
@@ -196,6 +203,10 @@ public class StorageMgr : MonoBehaviour
                 child = go.transform.GetChild(4).gameObject;
                 var button = child.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(element.Key, InvenKind.Storage); });
+
+                child = go.transform.GetChild(5).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.img;
+
                 storageList.Add(element.Key, go);
             }
             storageCurrentWeight += (element.Value.weight * playerDataMgr.currentEquippablesNum[element.Key]);
@@ -222,6 +233,10 @@ public class StorageMgr : MonoBehaviour
                 child = go.transform.GetChild(4).gameObject;
                 var button = child.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(element.Key, InvenKind.Storage); });
+                
+                child = go.transform.GetChild(5).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.img;
+
                 storageList.Add(element.Key, go);
             }
             storageCurrentWeight += (element.Value.weight * playerDataMgr.currentConsumablesNum[element.Key]);
@@ -248,6 +263,10 @@ public class StorageMgr : MonoBehaviour
                 child = go.transform.GetChild(4).gameObject;
                 var button = child.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectItem(element.Key, InvenKind.Storage); });
+
+                child = go.transform.GetChild(5).gameObject;
+                child.GetComponent<Image>().sprite = (element.Value.img == null)? null : element.Value.img;
+
                 storageList.Add(element.Key, go);
             }
             storageCurrentWeight += (int.Parse(element.Value.weight) * playerDataMgr.currentOtherItemsNum[element.Key]);
@@ -302,17 +321,20 @@ public class StorageMgr : MonoBehaviour
             {
                 itemNameTxt.text = storageWeaponInfo[currentKey].name;
                 itemTypeTxt.text = $"{ GetTypeStr( storageWeaponInfo[currentKey].kind)}";
+                itemImg.sprite = storageWeaponInfo[currentKey].img;
                 //detailTxt.text = "";
             }
             else if (storageConsumableInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageConsumableInfo[currentKey].name;
                 itemTypeTxt.text = $"{ GetTypeStr(storageWeaponInfo[currentKey].kind)}";
+                itemImg.sprite = storageConsumableInfo[currentKey].img;
                 //detailTxt.text = "";
             }
             else if (storageOtherItemInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageOtherItemInfo[currentKey].name;
+                itemImg.sprite = (storageOtherItemInfo[currentKey].img == null)? null : storageOtherItemInfo[currentKey].img;
                 //itemTypeTxt.text = $"{ storageOtherItemNumInfo[currentKey]}°³";
                 //detailTxt.text = "";
             }
@@ -381,6 +403,13 @@ public class StorageMgr : MonoBehaviour
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
         if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
+    }
+
+    public void Menu()
+    {
+        arrowImg.GetComponent<RectTransform>().rotation = (isMenuOpen) ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.Euler(0f, 0f, 0f);
+        isMenuOpen = !isMenuOpen;
+        menuAnim.SetBool("isOpen", isMenuOpen);
     }
 
     public void OpenStorageWin()

@@ -164,4 +164,9 @@ public class VirusPenalty
     { 
         return expGauge * (penaltyLevel + 1);
     }
+
+    public int GetMaxReductionGauge()
+    { 
+        return character.resistGauge * (reductionLevel + 1);
+    }
 }

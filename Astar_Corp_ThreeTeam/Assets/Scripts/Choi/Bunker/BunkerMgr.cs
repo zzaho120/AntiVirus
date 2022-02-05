@@ -28,9 +28,10 @@ public class BunkerMgr : MonoBehaviour
     public StoreMgr storeMgr;
     public HospitalMgr hospitalMgr;
     public GarageMgr garageMgr;
-    PlayerDataMgr playerDataMgr;
     public CarCenterMgr carCenterMgr;  //수진
     public StorageMgr storageMgr;
+
+    PlayerDataMgr playerDataMgr;
     UpgradeMgr upgradeMgr;
 
     public GameObject createButton;
@@ -43,12 +44,17 @@ public class BunkerMgr : MonoBehaviour
 
     public Animator bunkerMenuAnim;
     bool isBunkerMenuOpen;
+    public GameObject arrowImg;
+
     [Header("창관련")]
     public GameObject pauseWin;
     public GameObject optionWin;
+    public GameObject questWin;
     public bool isWinOpen;
+    public bool isQuestWinOpen;
 
     [Header("상단UI")]
+    public GameObject upperUI;
     public Text bullet5Txt;
     public Text bullet7Txt;
     public Text bullet9Txt;
@@ -57,8 +63,11 @@ public class BunkerMgr : MonoBehaviour
     public Text nameTxt;
     public Text moneyTxt;
     public GameObject mapButton;
+    public GameObject alarmButton;
 
+    [Header("하단UI")]
     public GameObject belowUI;
+    public List<GameObject> quickButtons;
 
     [Header("Prefabs")]
     public GameObject emptyPrefab;
@@ -121,13 +130,16 @@ public class BunkerMgr : MonoBehaviour
     {
         if (pauseWin.activeSelf) pauseWin.SetActive(false);
         if (optionWin.activeSelf) optionWin.SetActive(false);
+        if (questWin.activeSelf) questWin.SetActive(false);
         isWinOpen = false;
+        isQuestWinOpen = false;
 
-        if (!belowUI.activeSelf) belowUI.SetActive(true);
         if (!mapButton.activeSelf) mapButton.SetActive(true);
+        if (!alarmButton.activeSelf) alarmButton.SetActive(true);
         if (agitMgr.upperUI.activeSelf) agitMgr.upperUI.SetActive(false);
         if (agitMgr.belowUI.activeSelf) agitMgr.belowUI.SetActive(false);
         isBunkerMenuOpen = true;
+        arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f); 
 
         RefreshGoods();
 
@@ -151,6 +163,7 @@ public class BunkerMgr : MonoBehaviour
         currentBunkerIndex = -1;
         currentBunkerKind = BunkerKinds.None;
 
+        if (!belowUI.activeSelf) belowUI.SetActive(true);
         if (destroyButton.activeSelf) destroyButton.SetActive(false);
     }
 
@@ -191,6 +204,7 @@ public class BunkerMgr : MonoBehaviour
     {
         isWinOpen = true;
         if (mapButton.activeSelf) mapButton.SetActive(false);
+        if (alarmButton.activeSelf) alarmButton.SetActive(false);
         switch (currentBunkerKind)
         {
             case BunkerKinds.Agit:
@@ -252,8 +266,9 @@ public class BunkerMgr : MonoBehaviour
         if (currentWinId != -1)
         {
             nameTxt.text = "벙커";
-            if (!mapButton.activeSelf) mapButton.SetActive(true);
             isWinOpen = false;
+            isBunkerMenuOpen = true;
+            arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
 
             windowManager.windows[currentWinId].Close();
             currentWinId = -1;
@@ -378,6 +393,7 @@ public class BunkerMgr : MonoBehaviour
                 playerDataMgr.saveData.agitLevel++;
                 playerDataMgr.saveData.money -= upgradeCost;
                 PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+                moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
                 var child = bunkerObjs[4].transform.GetChild(0).gameObject;
                 child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.agitLevel}";
@@ -409,6 +425,7 @@ public class BunkerMgr : MonoBehaviour
                 playerDataMgr.saveData.storageLevel++;
                 playerDataMgr.saveData.money -= upgradeCost;
                 PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+                moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
                 child = bunkerObjs[5].transform.GetChild(0).gameObject;
                 child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.storageLevel}";
@@ -440,6 +457,7 @@ public class BunkerMgr : MonoBehaviour
                 playerDataMgr.saveData.pubLevel++;
                 playerDataMgr.saveData.money -= upgradeCost;
                 PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+                moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
                 child = bunkerObjs[2].transform.GetChild(0).gameObject;
                 child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.pubLevel}";
@@ -471,6 +489,7 @@ public class BunkerMgr : MonoBehaviour
                 playerDataMgr.saveData.storeLevel++;
                 playerDataMgr.saveData.money -= upgradeCost;
                 PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+                moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
                 child = bunkerObjs[3].transform.GetChild(0).gameObject;
                 child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.storeLevel}";
@@ -502,6 +521,7 @@ public class BunkerMgr : MonoBehaviour
                 playerDataMgr.saveData.hospitalLevel++;
                 playerDataMgr.saveData.money -= upgradeCost;
                 PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+                moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
                 child = bunkerObjs[1].transform.GetChild(0).gameObject;
                 child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.hospitalLevel}";
@@ -534,6 +554,7 @@ public class BunkerMgr : MonoBehaviour
                 playerDataMgr.saveData.carCenterLevel++;
                 playerDataMgr.saveData.money -= upgradeCost;
                 PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+                moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
                 child = bunkerObjs[0].transform.GetChild(0).gameObject;
                 child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.carCenterLevel}";
@@ -543,7 +564,7 @@ public class BunkerMgr : MonoBehaviour
                 //이부분.
                 garageMgr.Init();
                 carCenterMgr.Init();
-                //carCenterMgr.RefreshUpgradeWin();
+                carCenterMgr.RefreshUpgradeWin();
                 break;
         }
     }
@@ -588,6 +609,7 @@ public class BunkerMgr : MonoBehaviour
     //창 관련.
     public void BunkerMenu()
     {
+        arrowImg.GetComponent<RectTransform>().rotation  = (isBunkerMenuOpen)? Quaternion.Euler(0f, 180f, 0f) : Quaternion.Euler(0f, 0f, 0f);
         isBunkerMenuOpen = !isBunkerMenuOpen;
         bunkerMenuAnim.SetBool("isOpen", isBunkerMenuOpen);
     }
@@ -612,5 +634,11 @@ public class BunkerMgr : MonoBehaviour
     public void CloseOptionWin()
     {
         optionWin.SetActive(false);
+    }
+
+    public void QuestWin()
+    {
+        isQuestWinOpen = !isQuestWinOpen;
+        questWin.SetActive(isQuestWinOpen);
     }
 }

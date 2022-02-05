@@ -49,6 +49,7 @@ public class TrunkMgr : MonoBehaviour
     public GameObject popupWin;
     public Text itemNameTxt;
     public Text itemTypeTxt;
+    public Image itemImg;
     public Text itemNumTxt;
     public Slider slider;
 
@@ -70,6 +71,8 @@ public class TrunkMgr : MonoBehaviour
     Dictionary<string, int> truckOtherItemNumInfo = new Dictionary<string, int>();
 
     public PlayerDataMgr playerDataMgr;
+    public GarageMgr garageMgr;
+
     int storageLevel;
     int maxStorageCapacity;
 
@@ -228,7 +231,10 @@ public class TrunkMgr : MonoBehaviour
             {
                 var go = Instantiate(trunkPrefab, trunkContent.transform);
                 
-                var child = go.transform.GetChild(1).gameObject;
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.img;
+
+                child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
                 child = go.transform.GetChild(2).gameObject;
@@ -256,8 +262,11 @@ public class TrunkMgr : MonoBehaviour
             if (trunkMode != TrunkMode.Equippables && trunkMode != TrunkMode.OtherItems)
             {
                 var go = Instantiate(trunkPrefab, trunkContent.transform);
-                
-                var child = go.transform.GetChild(1).gameObject;
+
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.img;
+
+                child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
                 child = go.transform.GetChild(2).gameObject;
@@ -285,8 +294,11 @@ public class TrunkMgr : MonoBehaviour
             if (trunkMode != TrunkMode.Equippables && trunkMode != TrunkMode.Consumables)
             {
                 var go = Instantiate(trunkPrefab, trunkContent.transform);
-                
-                var child = go.transform.GetChild(1).gameObject;
+
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Image>().sprite = (element.Value.img == null)? null : element.Value.img;
+
+                child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
                 child = go.transform.GetChild(2).gameObject;
@@ -404,7 +416,10 @@ public class TrunkMgr : MonoBehaviour
             {
                 var go = Instantiate(storagePrefab, storageContent.transform);
 
-                var child = go.transform.GetChild(1).gameObject;
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.img;
+
+                child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
                 child = go.transform.GetChild(2).gameObject;
@@ -433,7 +448,10 @@ public class TrunkMgr : MonoBehaviour
             {
                 var go = Instantiate(storagePrefab, storageContent.transform);
 
-                var child = go.transform.GetChild(1).gameObject;
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.img;
+
+                child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
                 child = go.transform.GetChild(2).gameObject;
@@ -461,8 +479,11 @@ public class TrunkMgr : MonoBehaviour
             if (storageMode != StorageMode.Equippables && storageMode != StorageMode.Consumables)
             {
                 var go = Instantiate(storagePrefab, storageContent.transform);
-               
-                var child = go.transform.GetChild(1).gameObject;
+
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Image>().sprite = (element.Value.img == null) ? null : element.Value.img;
+
+                child = go.transform.GetChild(1).gameObject;
                 child.GetComponent<Text>().text = element.Value.name;
 
                 child = go.transform.GetChild(2).gameObject;
@@ -511,6 +532,12 @@ public class TrunkMgr : MonoBehaviour
         storageBullet9Txt.text = $"{bullet9Num}";
         storageBullet45Txt.text = $"{bullet45Num}";
         storageBullet12Txt.text = $"{bullet12Num}";
+
+        garageMgr.bunkerMgr.bullet5Txt.text = $"{bullet5Num}";
+        garageMgr.bunkerMgr.bullet7Txt.text = $"{bullet7Num}";
+        garageMgr.bunkerMgr.bullet9Txt.text = $"{bullet9Num}";
+        garageMgr.bunkerMgr.bullet45Txt.text = $"{bullet45Num}";
+        garageMgr.bunkerMgr.bullet12Txt.text = $"{bullet12Num}";
     }
 
     public void NumAdjustment()
@@ -545,18 +572,21 @@ public class TrunkMgr : MonoBehaviour
             {
                 itemNameTxt.text = storageWeaponInfo[currentKey].name;
                 itemTypeTxt.text = "전투";
+                itemImg.sprite = storageWeaponInfo[currentKey].img;
                 slider.maxValue = storageWeaponNumInfo[currentKey];
             }
             else if (storageConsumableInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageConsumableInfo[currentKey].name;
                 itemTypeTxt.text = "소모";
+                itemImg.sprite = storageConsumableInfo[currentKey].img;
                 slider.maxValue = storageConsumableNumInfo[currentKey];
             }
             else if (storageOtherItemInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageOtherItemInfo[currentKey].name;
                 itemTypeTxt.text = "기타";
+                itemImg.sprite = (storageOtherItemInfo[currentKey].img == null)? null : storageOtherItemInfo[currentKey].img;
                 slider.maxValue = storageOtherItemNumInfo[currentKey];
             }
         }
@@ -569,18 +599,21 @@ public class TrunkMgr : MonoBehaviour
             {
                 itemNameTxt.text = truckWeaponInfo[currentKey].name;
                 itemTypeTxt.text = "전투";
+                itemImg.sprite = truckWeaponInfo[currentKey].img;
                 slider.maxValue = truckWeaponNumInfo[currentKey];
             }
             else if (truckConsumableInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = truckConsumableInfo[currentKey].name;
                 itemTypeTxt.text = "소모";
+                itemImg.sprite = truckConsumableInfo[currentKey].img;
                 slider.maxValue = truckConsumableNumInfo[currentKey];
             }
             else if (truckOtherItemInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = truckOtherItemInfo[currentKey].name;
                 itemTypeTxt.text = "기타";
+                itemImg.sprite = (truckOtherItemInfo[currentKey].img == null)? null : truckOtherItemInfo[currentKey].img;
                 slider.maxValue = truckOtherItemNumInfo[currentKey];
             }
         }
@@ -607,11 +640,21 @@ public class TrunkMgr : MonoBehaviour
             slider.value = slider.maxValue;
             itemNumTxt.text = $"(선택 개수) {slider.value}개";
         }
+        else if (slider.value + plus < slider.minValue)
+        {
+            slider.value = slider.minValue;
+            itemNumTxt.text = $"(선택 개수) {slider.value}개";
+        }
         else
         {
             slider.value += plus;
             itemNumTxt.text = $"(선택 개수) {slider.value}개";
         }
+    }
+
+    public void Add1()
+    {
+        AddSliderValue(1);
     }
 
     public void Add10()
@@ -627,6 +670,11 @@ public class TrunkMgr : MonoBehaviour
     public void AddMax()
     {
         AddSliderValue(Mathf.FloorToInt(slider.maxValue));
+    }
+
+    public void Minus1()
+    {
+        AddSliderValue(-1);
     }
 
     public void MoveToTrunk(int itemNum)

@@ -10,6 +10,10 @@ public class GarageMgr : MonoBehaviour
     public GameObject carBoardingWin;
     public GameObject trunkWin;
 
+    public Animator menuAnim;
+    bool isMenuOpen;
+    public GameObject arrowImg;
+
     public TrunkMgr trunkMgr;
     public BoardingMgr boardingMgr;
 
@@ -40,11 +44,14 @@ public class GarageMgr : MonoBehaviour
         int currentCarNum = playerDataMgr.saveData.cars.Count;
 
         trunkMgr.playerDataMgr = playerDataMgr;
+        trunkMgr.garageMgr = this;
         trunkMgr.Init();
 
         boardingMgr.playerDataMgr = playerDataMgr;
         boardingMgr.Init();
 
+        isMenuOpen = true;
+        arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
         OpenMainWin();
     }
 
@@ -62,6 +69,13 @@ public class GarageMgr : MonoBehaviour
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
         if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
+    }
+
+    public void Menu()
+    {
+        arrowImg.GetComponent<RectTransform>().rotation = (isMenuOpen) ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.Euler(0f, 0f, 0f);
+        isMenuOpen = !isMenuOpen;
+        menuAnim.SetBool("isOpen", isMenuOpen);
     }
 
     public void OpenCarBoardingWin()

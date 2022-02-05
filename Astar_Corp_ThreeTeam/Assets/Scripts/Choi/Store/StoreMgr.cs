@@ -20,6 +20,10 @@ public class StoreMgr : MonoBehaviour
     public GameObject storeWin;
     public GameObject upgradeWin;
 
+    public Animator menuAnim;
+    bool isMenuOpen;
+    public GameObject arrowImg;
+
     [Header("버튼 관련")]
     public List<GameObject> storageButtons;
     public List<GameObject> storeButtons;
@@ -31,7 +35,7 @@ public class StoreMgr : MonoBehaviour
     public Text storageBullet45Txt;
     public Text storageBullet12Txt;
 
-    public Text moneyTxt;
+    //public Text moneyTxt;
     public Text storageWeightTxt;
     public GameObject storeContents;
     public GameObject storePrefab;
@@ -42,6 +46,7 @@ public class StoreMgr : MonoBehaviour
     public GameObject popupWin;
     public Text titleTxt;
     public Text itemNameTxt;
+    public Image itemImg;
     public Text itemTypeTxt;
     public Text itemNumTxt;
     public Text itemCostTxt;
@@ -180,7 +185,7 @@ public class StoreMgr : MonoBehaviour
             storageOtherItemInfo.Add(element.Key, element.Value);
             storageOtherItemNumInfo.Add(element.Key, itemNum);
         }
-        moneyTxt.text = $"돈 : {playerDataMgr.saveData.money}";
+        //moneyTxt.text = $"돈 : {playerDataMgr.saveData.money}";
 
         SelectStoreItem();
         DisplayStoreItem(0);
@@ -188,6 +193,9 @@ public class StoreMgr : MonoBehaviour
 
         currentStoreKey = -1;
         currentStorageKey = null;
+
+        isMenuOpen = true;
+        arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
         ClosePopup();
     }
 
@@ -202,6 +210,11 @@ public class StoreMgr : MonoBehaviour
 
         if (playerDataMgr.saveData.storeReset == true)
         {
+            //벙커 알람.
+            bunkerMgr.bunkerObjs[3].transform.GetChild(1).gameObject.SetActive(true);
+            bunkerMgr.quickButtons[1].transform.GetChild(1).gameObject.SetActive(true);
+
+            //랜덤 아이템 생성.
             playerDataMgr.saveData.storeReset = false;
             if (playerDataMgr.saveData.storeItem.Count != 0) playerDataMgr.saveData.storeItem.Clear();
             if (playerDataMgr.saveData.storeItemNum.Count != 0) playerDataMgr.saveData.storeItemNum.Clear();
@@ -416,6 +429,9 @@ public class StoreMgr : MonoBehaviour
                 int itemKey = element.Key;
                 button.onClick.AddListener(delegate { SelectStoreItem(itemKey); });
 
+                child = go.transform.GetChild(5).gameObject;
+                child.GetComponent<Image>().sprite = playerDataMgr.equippableList[key].img;
+
                 storeObjs.Add(element.Key, go);
             }
         }
@@ -448,6 +464,9 @@ public class StoreMgr : MonoBehaviour
                 int itemKey = element.Key;
                 button.onClick.AddListener(delegate { SelectStoreItem(itemKey); });
 
+                child = go.transform.GetChild(5).gameObject;
+                child.GetComponent<Image>().sprite = playerDataMgr.consumableList[key].img;
+
                 storeObjs.Add(element.Key, go);
             }
         }
@@ -479,6 +498,9 @@ public class StoreMgr : MonoBehaviour
                 var button = child.GetComponent<Button>();
                 int itemKey = element.Key;
                 button.onClick.AddListener(delegate { SelectStoreItem(itemKey); });
+
+                child = go.transform.GetChild(5).gameObject;
+                child.GetComponent<Image>().sprite = playerDataMgr.otherItemList[key].img;
 
                 storeObjs.Add(element.Key, go);
             }
@@ -560,6 +582,9 @@ public class StoreMgr : MonoBehaviour
                 var button = child.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectStorageItem(key); });
 
+                child = go.transform.GetChild(5).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.img;
+
                 storageObjs.Add(key, go);
             }
             storageCurrentWeight += (element.Value.weight * storageWeaponNumInfo[element.Key]);
@@ -591,6 +616,9 @@ public class StoreMgr : MonoBehaviour
                 child = go.transform.GetChild(4).gameObject;
                 var button = child.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectStorageItem(key); });
+
+                child = go.transform.GetChild(5).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.img;
 
                 storageObjs.Add(key, go);
             }
@@ -624,6 +652,9 @@ public class StoreMgr : MonoBehaviour
                 var button = child.GetComponent<Button>();
                 button.onClick.AddListener(delegate { SelectStorageItem(key); });
 
+                child = go.transform.GetChild(5).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.img;
+
                 storageObjs.Add(key, go);
             }
             storageCurrentWeight += (int.Parse(element.Value.weight) * storageOtherItemNumInfo[element.Key]);
@@ -654,6 +685,13 @@ public class StoreMgr : MonoBehaviour
         storageBullet9Txt.text = $"{bullet9Num}";
         storageBullet45Txt.text = $"{bullet45Num}";
         storageBullet12Txt.text = $"{bullet12Num}";
+
+        bunkerMgr.bullet5Txt.text = $"{bullet5Num}";
+        bunkerMgr.bullet7Txt.text = $"{bullet7Num}";
+        bunkerMgr.bullet9Txt.text = $"{bullet9Num}";
+        bunkerMgr.bullet45Txt.text = $"{bullet45Num}";
+        bunkerMgr.bullet12Txt.text = $"{bullet12Num}";
+        bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
     }
 
     public void SelectStoreItem(int key)
@@ -675,6 +713,7 @@ public class StoreMgr : MonoBehaviour
             var id = storeWeaponInfo[currentStoreKey];
             var name = playerDataMgr.equippableList[id].name;
             itemNameTxt.text = name;
+            itemImg.sprite = playerDataMgr.equippableList[id].img;
             itemTypeTxt.text = "전투";
             slider.maxValue = storeWeaponNumInfo[currentStoreKey];
         }
@@ -683,6 +722,7 @@ public class StoreMgr : MonoBehaviour
             var id = storeConsumableInfo[currentStoreKey];
             var name = playerDataMgr.consumableList[id].name;
             itemNameTxt.text = name;
+            itemImg.sprite = playerDataMgr.consumableList[id].img;
             itemTypeTxt.text = "소모";
             slider.maxValue = storeConsumableNumInfo[currentStoreKey];
         }
@@ -691,6 +731,8 @@ public class StoreMgr : MonoBehaviour
             var id = storeOtherItemInfo[currentStoreKey];
             var name = playerDataMgr.otherItemList[id].name;
             itemNameTxt.text = name;
+            itemImg.sprite = (playerDataMgr.otherItemList[id].img!=null)?
+                playerDataMgr.otherItemList[id].img : null;
             itemTypeTxt.text = "기타";
             slider.maxValue = storeOtherItemNumInfo[currentStoreKey];
         }
@@ -743,7 +785,7 @@ public class StoreMgr : MonoBehaviour
         if (!sellButton.activeSelf) sellButton.SetActive(true);
 
         slider.value = 0;
-        itemNumTxt.text = $"0개";
+        itemNumTxt.text = $"(선택 개수) 0개";
         itemCostTxt.text = "0";
         OpenPopup();
     }
@@ -1045,6 +1087,11 @@ public class StoreMgr : MonoBehaviour
             slider.value = slider.maxValue;
             itemNumTxt.text = $"(선택 개수) {slider.value}개";
         }
+        else if (slider.value + plus < slider.minValue)
+        {
+            slider.value = slider.minValue;
+            itemNumTxt.text = $"(선택 개수) {slider.value}개";
+        }
         else
         {
             slider.value += plus;
@@ -1109,15 +1156,34 @@ public class StoreMgr : MonoBehaviour
             }
         }
     }
+    public void Add1()
+    {
+        AddSliderValue(1);
+    }
 
     public void Add10()
     {
         AddSliderValue(10);
     }
 
-    public void Add100()
+    public void Add50()
     {
-        AddSliderValue(100);
+        AddSliderValue(50);
+    }
+
+    public void Minus1()
+    {
+        AddSliderValue(-1);
+    }
+
+    public void Minus10()
+    {
+        AddSliderValue(-10);
+    }
+
+    public void Minus50()
+    {
+        AddSliderValue(-50);
     }
 
     public void AddMax()
@@ -1144,6 +1210,13 @@ public class StoreMgr : MonoBehaviour
     //창 관련.
     public void OpenMainWin()
     {
+        //벙커 알람.
+        if (bunkerMgr.bunkerObjs[3].transform.GetChild(1).gameObject.activeSelf)
+        {
+            bunkerMgr.bunkerObjs[3].transform.GetChild(1).gameObject.SetActive(false);
+            bunkerMgr.quickButtons[1].transform.GetChild(1).gameObject.SetActive(false);
+        }
+
         if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
         if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
         if (!mainWin.activeSelf) mainWin.SetActive(true);
@@ -1155,6 +1228,13 @@ public class StoreMgr : MonoBehaviour
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
         if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
+    }
+
+    public void Menu()
+    {
+        arrowImg.GetComponent<RectTransform>().rotation = (isMenuOpen) ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.Euler(0f, 0f, 0f);
+        isMenuOpen = !isMenuOpen;
+        menuAnim.SetBool("isOpen", isMenuOpen);
     }
 
     public void OpenStoreWin()

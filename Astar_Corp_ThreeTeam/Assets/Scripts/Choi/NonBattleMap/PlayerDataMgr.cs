@@ -162,6 +162,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 string str = "Continue";
                 PlayerPrefs.SetInt(str, 1);
 
+                saveData.agitAlarm = false;
                 saveData.storeReset = true;
                 saveData.pubReset = true;
 
