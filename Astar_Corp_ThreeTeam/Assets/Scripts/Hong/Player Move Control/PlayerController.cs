@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     // Get NavMesh
     private PlayerMove playerMove;
     private NavMeshAgent agent;
-    private CameraMovement cameraMovement;
+    private CameraDrag cameraMovement;
 
     // Sight
     [HideInInspector]
@@ -47,15 +47,21 @@ public class PlayerController : MonoBehaviour
 
     public void Init()
     {
+        // NavMesh 컴포넌트 추가
+        //if (gameObject.GetComponent<NavMeshAgent>() != null)
+        //    gameObject.AddComponent<NavMeshAgent>();
+
         // 오브젝트 찾기
         nonBattleMgr    = NonBattleMgr.Instance;
         multiTouch      = GameObject.Find("MultiTouch").GetComponent<MultiTouch>();
         popUpMgr        = nonBattleMgr.GetComponent<PopUpMgr>();
         timeController  = GameObject.Find("TimeController").GetComponent<TimeController>();
         playerMove      = GetComponent<PlayerMove>();
-        cameraMovement  = Camera.main.GetComponent<CameraMovement>();
-        agent           = playerMove.navMeshAgent;
+        cameraMovement  = Camera.main.GetComponent<CameraDrag>();
         footprintUI     = GameObject.Find("Footprint Info");
+
+        playerMove.Init();
+        agent = playerMove.navMeshAgent;
 
         // 위치 저장
         if ((PlayerPrefs.HasKey("p_x") || PlayerPrefs.HasKey("p_y") || PlayerPrefs.HasKey("p_z")))
@@ -64,12 +70,23 @@ public class PlayerController : MonoBehaviour
             pY = PlayerPrefs.GetFloat("p_y");
             pZ = PlayerPrefs.GetFloat("p_z");
             transform.position = new Vector3(pX, pY, pZ);
+
+            agent.nextPosition = transform.position;
+            GameObject.Find("Test Cube").transform.position = new Vector3(pX, pY, pZ);
+
+            Debug.Log($"{pX}, {pY}, {pZ}");
         }
         else
         {
             transform.position = nonBattleMgr.bunkerPos.position;
         }
         saveMode = true;
+
+        if (gameObject.GetComponent<NavMeshAgent>() != null)
+        {
+         gameObject.AddComponent<NavMeshAgent>();
+
+        }
     }
 
     //void Update()
@@ -88,6 +105,7 @@ public class PlayerController : MonoBehaviour
         {
             Ray ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
             RaycastHit raycastHit;
+            // 1. 몬스터 클릭
             if (Physics.Raycast(ray, out raycastHit, rayRange, monsterLayer))
             {
                 // 전투발생
@@ -97,7 +115,7 @@ public class PlayerController : MonoBehaviour
                     if (raycastHit.collider.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
                     {
                         // 위치 저장? 해야되나
-                        //SavePlayerPos(raycastHit);
+                        SavePlayerPos(raycastHit);
                         popUpMgr.OpenMonsterPopup();
 
                         // 비전투씬 일시정지
@@ -116,6 +134,7 @@ public class PlayerController : MonoBehaviour
                 // 클릭하는 위치로 이동하는 것 방지
                 agent.SetDestination(agent.transform.position);
             }
+            // 2. 시설물 클릭 (벙커, 연구소)
             if (Physics.Raycast(ray, out raycastHit, rayRange, facilitiesLayer))
             {
                 if (raycastHit.collider.gameObject.name.Equals("Bunker") /*&& isBunkerClikable*/)
@@ -126,7 +145,7 @@ public class PlayerController : MonoBehaviour
                 }
                 if (raycastHit.collider.gameObject.name.Equals("Laboratory"))
                 {
-                    //SavePlayerPos(raycastHit);
+                    SavePlayerPos(raycastHit);
                     popUpMgr.OpenLaboratoryPopup();
                     agent.SetDestination(agent.transform.position);
                 }
@@ -216,6 +235,11 @@ public class PlayerController : MonoBehaviour
         PlayerPrefs.SetFloat("p_x", pX);
         PlayerPrefs.SetFloat("p_y", pY);
         PlayerPrefs.SetFloat("p_z", pZ);
+    }
+
+    private void LateUpdate()
+    {
+        playerMove.PlayerMoveLateUpdate();
     }
 
     // 몬스터 발자국 정보 출력

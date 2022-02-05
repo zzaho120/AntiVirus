@@ -9,6 +9,8 @@ public class WorldMonsterChar : MonoBehaviour
     public WorldMonsterFSM fsm;
 
     //public void Init()
+    //여기서 몹영역 크기 설정해줘야 될듯
+
     public void OnEnable()
     {
         monsterStat = GetComponent<MonsterStats>();

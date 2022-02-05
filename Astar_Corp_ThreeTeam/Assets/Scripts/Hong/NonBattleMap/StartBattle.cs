@@ -21,8 +21,8 @@ public class StartBattle : MonoBehaviour
         if (other.gameObject.CompareTag("Enemy"))
         {
             // 렌더러가 활성화 되어있을때만 유효하게 // 해당조건 잠깐 Off
-            if (other.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
-            {
+            //if (other.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
+            //{
                  //몬스터 공격 앞뒤 판단
                 GameObject target = other.gameObject;
                 Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
@@ -47,7 +47,7 @@ public class StartBattle : MonoBehaviour
                 // / 전투 팝업창 띄우기
                 var windowId = (int)Windows.MonsterWindow - 1;
                 var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
-            }
+            //}
         }
     }
 }

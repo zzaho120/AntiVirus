@@ -15,9 +15,12 @@ public class PlayerMove : MonoBehaviour
     // to get CharacterController from the unity
     private CharacterController characterController;
     private PlayerController playerController;
-    public CameraMovement cameraMovement;
 
-    //to calculate
+    // to check Camera mode
+    [HideInInspector]
+    public CameraDrag cameraMovement;
+
+    // to calculate
     //private Vector3 calcVelocity = Vector3.zero;
 
     // to set layers
@@ -26,7 +29,7 @@ public class PlayerMove : MonoBehaviour
 
     public void Init()
     {
-        cameraMovement = Camera.main.GetComponent<CameraMovement>();
+        cameraMovement = Camera.main.GetComponent<CameraDrag>();
 
         //to get CharacterController from the unity
         characterController = GetComponent<CharacterController>();

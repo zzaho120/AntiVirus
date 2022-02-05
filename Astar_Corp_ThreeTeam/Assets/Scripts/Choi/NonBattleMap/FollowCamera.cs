@@ -4,36 +4,56 @@ using UnityEngine;
 
 public class FollowCamera : MonoBehaviour
 {
+    //public Transform target;
+    //public float delayTime;
+    //
+    //public Vector3 offset;
+    //private CameraDrag cm;
+    //
+    //private void Start()
+    //{
+    //    cm = GetComponent<CameraDrag>();
+    //}
+    //
+    //private void LateUpdate()
+    //{
+    //    if (!cm.isWorldMapMode)
+    //    {
+    //        Vector3 fixedPos = new Vector3(
+    //            target.transform.position.x + offset.x,
+    //            target.transform.position.y + offset.y,
+    //            target.transform.position.z + offset.z);
+    //        transform.position = Vector3.Lerp(transform.position, fixedPos, Time.deltaTime * delayTime);
+    //    }
+    //}
+
     public Transform target;
     public float dist = 10.0f;
     public float height = 5.0f;
     public float smoothRotate = 5.0f;
-
-    private Transform tr;
-
-    private CameraMovement cm;
-
-    // Start is called before the first frame update
+    
+    private Transform player;
+    private CameraDrag cm;
+    
     void Start()
     {
-        cm = GetComponent<CameraMovement>();
-        tr = GetComponent<Transform>();
+        cm = GetComponent<CameraDrag>();
+        player = GetComponent<Transform>();
     }
-
-    // Update is called once per frame
+    
     void LateUpdate()
     {
         if (!cm.isWorldMapMode)
         {
-            float currYAngle = Mathf.LerpAngle(tr.eulerAngles.y,
+            float currYAngle = Mathf.LerpAngle(player.eulerAngles.y,
                 target.eulerAngles.y, smoothRotate * Time.deltaTime);
-
+            
             Quaternion rot = Quaternion.Euler(0, currYAngle, 0);
-
-            tr.position = target.position - (rot * Vector3.forward * dist) +
+            
+            player.position = target.position - (rot * Vector3.forward * dist) +
                 (Vector3.up * height);
-
-            tr.LookAt(target);
+            
+            player.LookAt(target);
         }
     }
 }

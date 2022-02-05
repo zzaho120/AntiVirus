@@ -23,6 +23,7 @@ public class PatrolState : StateBase
 
     private Transform player;
     private NavMeshAgent agent;
+    private GameObject monsterZone;
 
     private WorldMonsterChar monster;
 
@@ -30,13 +31,17 @@ public class PatrolState : StateBase
     {
         this.fsm = fsm;
         this.monster = monster;
-
+        
         if (this.fsm != null)
         {
+            player = GameObject.FindWithTag("Player").transform;
+
             agent = monster.GetComponent<NavMeshAgent>();
             animator = monster.GetComponent<Animator>();
             startPos = monster.transform.position;  // 시작 위치 저장
             agent.transform.position = startPos;
+            monsterZone = monster.gameObject.transform.parent.GetChild(0).gameObject; // 상위 몬스터 영역 가져오기
+            //Debug.Log(monsterZone.name);
 
             // 몬스터별 스탯 설정
             agent.speed = monster.monsterStat.nonBattleMonster.speed;
@@ -44,7 +49,13 @@ public class PatrolState : StateBase
             distance = monster.monsterStat.nonBattleMonster.sightRange;
             atkChance = monster.monsterStat.nonBattleMonster.suddenAtkRate / 10;
 
-            player = GameObject.FindWithTag("Player").transform;
+            // 영역 크기 설정
+            if (monsterZone.transform.lossyScale.x != moveRange* 2)
+            {
+                monsterZone.transform.localScale = new Vector3(moveRange * 2, monsterZone.transform.localScale.y, moveRange * 2);
+                //monsterZone.transform.parent.GetComponent<SphereCollider>().radius = moveRange;
+            }
+
         }
     }
 

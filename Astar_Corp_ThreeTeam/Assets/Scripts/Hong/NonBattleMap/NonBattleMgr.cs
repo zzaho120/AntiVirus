@@ -7,17 +7,15 @@ public class NonBattleMgr : MonoBehaviour
 {
     public static NonBattleMgr Instance;
 
-    // 벙커 위치 담기
+    // Bunker Position
     public Transform bunkerPos;
     // Monster Area
     public CreateMonsterAreas[] createMonsterArea;
-    //public List<GameObject> monsterArea;
 
     [Header("Public Class")]
     public CreateLabArea laboratoryArea;
     public MonsterPool monsterPool;
     public PlayerController playerController;
-    public PlayerMove playerMove;
     public WorldMonsterMgr worldMonsterMgr;
 
     private void Awake()
@@ -30,14 +28,10 @@ public class NonBattleMgr : MonoBehaviour
         monsterPool = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
         worldMonsterMgr = GetComponent<WorldMonsterMgr>();
         playerController = player.GetComponent<PlayerController>();
-        playerMove = player.GetComponent<PlayerMove>();
-
     }
 
     private void Start()
     {
-        // PlayerPrefs.DeleteAll();
-
         // 클래스들 초기화
         laboratoryArea.Init();
         for (int i = 0; i < createMonsterArea.Length; i++)
@@ -45,21 +39,13 @@ public class NonBattleMgr : MonoBehaviour
             createMonsterArea[i].Init();
         }
         monsterPool.Init();
-        //worldMonsterMgr.Init();
-        playerMove.Init();
         playerController.Init(); 
     }
 
     private void Update()
     {
         playerController.PlayerControllerUpdate();
-        //playerMove.PlayerMoveUpdate();
         worldMonsterMgr.MonsterUpdate();
-    }
-
-    private void LateUpdate()
-    {
-        playerMove.PlayerMoveLateUpdate();
     }
 
     // PlayerPrefs 삭제 테스터
