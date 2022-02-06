@@ -182,12 +182,11 @@ public class MonsterChar : BattleTile
             printIdx = 1;
         else if (Ap1ByMp < 4)
             printIdx = 2;
-        else if (Ap1ByMp > 4)
+        else if (Ap1ByMp >= 4)
             printIdx = 3;
 
         var idx = 1;
         var moveIdx = 0;
-        CreateHint(HintType.Footprint, tileIdx);
 
         var compareIdx = Mathf.Abs(destTile.x) + Mathf.Abs(destTile.z);
         while (Mathf.Abs(tileIdx.x) + Mathf.Abs(tileIdx.z) + monsterStats.AtkRange != compareIdx)
@@ -220,9 +219,9 @@ public class MonsterChar : BattleTile
                 break;
 
             var sightMgr = BattleMgr.Instance.sightMgr;
-            sightMgr.InitMonsterSight(idx);
+            sightMgr.InitMonsterSight(monsterIdx);
             if (target == null)
-                SetTarget(sightMgr.GetPlayerInMonsterSight(idx));
+                SetTarget(sightMgr.GetPlayerInMonsterSight(monsterIdx));
 
             if (isInSight)
                 yield return new WaitForSeconds(0.1f);

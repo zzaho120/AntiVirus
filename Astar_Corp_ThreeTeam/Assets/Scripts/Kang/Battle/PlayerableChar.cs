@@ -16,7 +16,7 @@ public class PlayerableChar : BattleTile
     [Header("Character")]
     public CharacterStats characterStats;
     public Animator animator;
-
+    public int playerIdx;
     [Header("Value")]
     public int AP;
     public int SightDistance
@@ -69,51 +69,61 @@ public class PlayerableChar : BattleTile
         {
             if (Input.GetMouseButtonDown(0))
             {
-                RaycastHit hit;
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                
-                if (Physics.Raycast(ray, out hit))
+                if(BattleMgr.Instance.playerMgr.selectChar == null || BattleMgr.Instance.playerMgr.selectChar == this)
                 {
-                    Debug.Log(hit.collider.gameObject.name);
-                    switch (status)
-                    {
-                        case CharacterState.Wait:
-                            if (hit.collider.gameObject == gameObject)
-                            {
-                                isSelected = !isSelected;
-                                if (isSelected)
-                                {
-                                    var battleInfo = BattleMgr.Instance.battleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
-                                    battleInfo.EnablePlayerInfo(true, this);
+                    RaycastHit hit;
+                    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                                    var playerAction = BattleMgr.Instance.battleWindowMgr.Open(1, false).GetComponent<PlayerActionWindow>();
-                                    playerAction.curChar = this;
-                                    playerAction.EnableReloadBtn();
-                                }
-                                else
-                                    SetNonSelected();
-                            }
-                            break;
-                        case CharacterState.Move:
-                            if (hit.collider.tag == "MoveTile")
-                            {
-                                var tileBase = hit.collider.GetComponent<MoveTile>().parent;
-                                if (moveDics.ContainsKey(tileBase))
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        Debug.Log(hit.collider.gameObject.name);
+                        switch (status)
+                        {
+                            case CharacterState.Wait:
+                                if (hit.collider.gameObject == gameObject)
                                 {
-                                    ActionMove(tileBase);
-                                    ReturnMoveTile();
+                                    isSelected = !isSelected;
+                                    BattleMgr.Instance.playerMgr.selectChar = this;
+                                    if (isSelected)
+                                    {
+                                        var battleInfo = BattleMgr.Instance.battleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
+                                        battleInfo.EnablePlayerInfo(true, this);
+
+                                        var playerAction = BattleMgr.Instance.battleWindowMgr.Open(1, false).GetComponent<PlayerActionWindow>();
+                                        playerAction.curChar = this;
+                                        playerAction.EnableReloadBtn();
+                                    }
+                                    else
+                                    {
+                                        SetNonSelected();
+                                    }
+
                                 }
-                            }
-                            break;
-                        case CharacterState.Attack:
-                            if (hit.collider.tag == "BattleMonster")
-                            {
-                                var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.BattleInfo - 1).GetComponent<BattleInfoWindow>();
-                                window.EnableMonsterInfo(true, hit.collider.GetComponent<MonsterChar>(), characterStats.weapon);
-                            }
-                            break;
-                        case CharacterState.Alert:
-                            break;
+                                break;
+                            case CharacterState.Move:
+                                if (hit.collider.tag == "MoveTile")
+                                {
+                                    var tileBase = hit.collider.GetComponent<MoveTile>().parent;
+                                    if (moveDics.ContainsKey(tileBase))
+                                    {
+                                        if (tileBase.charObj == null)
+                                        {
+                                            ActionMove(tileBase);
+                                            ReturnMoveTile();
+                                        }
+                                    }
+                                }
+                                break;
+                            case CharacterState.Attack:
+                                if (hit.collider.tag == "BattleMonster")
+                                {
+                                    var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.BattleInfo - 1).GetComponent<BattleInfoWindow>();
+                                    window.EnableMonsterInfo(true, hit.collider.GetComponent<MonsterChar>(), characterStats.weapon);
+                                }
+                                break;
+                            case CharacterState.Alert:
+                                break;
+                        }
                     }
                 }
             }
@@ -223,9 +233,7 @@ public class PlayerableChar : BattleTile
 
     public void MoveMode()
     {
-        if (status == CharacterState.Move)
-            status = CharacterState.Wait;
-        else
+        if (status == CharacterState.Wait)
             status = CharacterState.Move;
 
         if (status == CharacterState.Move && isSelected)
@@ -290,11 +298,14 @@ public class PlayerableChar : BattleTile
         else
             return;
 
-        var go = BattleMgr.Instance.battlePoolMgr.CreateMoveTile();
-        go.transform.position = tile.tileIdx + new Vector3(0, 0.5f);
-        var moveTile = go.GetComponent<MoveTile>();
-        moveTile.parent = tile;
-        moveList.Add(moveTile);
+        if (tile.charObj == null)
+        {
+            var go = BattleMgr.Instance.battlePoolMgr.CreateMoveTile();
+            go.transform.position = tile.tileIdx + new Vector3(0, 0.5f);
+            var moveTile = go.GetComponent<MoveTile>();
+            moveTile.parent = tile;
+            moveList.Add(moveTile);
+        }
 
         foreach (var adjNode in tile.adjNodes)
         {
@@ -394,12 +405,14 @@ public class PlayerableChar : BattleTile
             status = CharacterState.TurnEnd;
 
         isSelected = false;
+        BattleMgr.Instance.playerMgr.selectChar = null;
         EventBusMgr.Publish(EventType.EndPlayer);
         CameraController.instance.SetFollowObject(null);
     }
 
     public void WaitPlayer()
     {
+        BattleMgr.Instance.playerMgr.selectChar = null;
         status = CharacterState.Wait;
     }
 
@@ -486,6 +499,7 @@ public class PlayerableChar : BattleTile
 
     public void SetNonSelected()
     {
+        BattleMgr.Instance.playerMgr.selectChar = null;
         var window = BattleMgr.Instance.battleWindowMgr.GetWindow(1);
         var playerAction = window.GetComponent<PlayerActionWindow>();
         playerAction.curChar = null;
