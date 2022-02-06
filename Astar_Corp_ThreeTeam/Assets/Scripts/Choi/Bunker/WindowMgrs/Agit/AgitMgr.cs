@@ -37,6 +37,8 @@ public class AgitMgr : MonoBehaviour
 
     [Header("Ability Win")]
     public GameObject abilityButton;
+    public List<GameObject> statImgs;
+    public Text statExplanationTxt;
     public GameObject healthButton;
     public Text healthTxt;
     public GameObject concentrationButton;
@@ -45,11 +47,12 @@ public class AgitMgr : MonoBehaviour
     public Text sensitiveTxt;
     public GameObject mentalityButton;
     public Text mentalityTxt;
+    int selectStat;
 
     public GameObject hpButton;
     public Text hpText;
     public GameObject weightButton;
-    public Text weight;
+    public Text weightTxt;
     public GameObject mpButton;
     public Text mpTxt;
     public GameObject sightButton;
@@ -64,6 +67,22 @@ public class AgitMgr : MonoBehaviour
     public GameObject criResistButton;
     public Text criResistTxt;
 
+    [Header("Virus Win")]
+    public GameObject virusButton;
+    public List<GameObject> virusImgs;
+    public Text virusExplanationTxt;
+    public Text EVirusLevelTxt;
+    public Text EVirusGaugeTxt;
+    public Text BVirusLevelTxt;
+    public Text BVirusGaugeTxt;
+    public Text PVirusLevelTxt;
+    public Text PVirusGaugeTxt;
+    public Text IVirusLevelTxt;
+    public Text IVirusGaugeTxt;
+    public Text TVirusLevelTxt;
+    public Text TVirusGaugeTxt;
+    int selectVirus;
+
     public GameObject characterListContent;
     public GameObject characterPrefab;
     public List<GameObject> characterObjs;
@@ -77,6 +96,8 @@ public class AgitMgr : MonoBehaviour
     public GameObject virusWin;
     bool isVirusWinOpen;
     public Text memberNumTxt;
+
+    
 
     //캐릭터 정보 확인.
     public Text nameTxt;
@@ -159,6 +180,8 @@ public class AgitMgr : MonoBehaviour
         isDeleteMode = false;
         isMenuOpen = true;
         arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
+        selectStat = -1;
+        selectVirus = -1;
 
         //벙커 알람.
         if (playerDataMgr.saveData.agitAlarm)
@@ -326,6 +349,96 @@ public class AgitMgr : MonoBehaviour
         CloseCharacterInfo();
     }
 
+    public void SelectStat(int index)
+    {
+        if (selectStat != -1)
+        {
+            statImgs[selectStat].GetComponent<Image>().color = Color.white;
+            var child = statImgs[selectVirus].transform.GetChild(0).gameObject;
+            child.GetComponent<Image>().color = Color.black;
+
+            switch (selectStat)
+            {
+                case 0:
+                    hpText.color = Color.black;
+                    weightTxt.color = Color.black;
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+            }
+        }
+
+        selectStat = index;
+        statImgs[selectVirus].GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255);
+        var childObj = statImgs[selectVirus].transform.GetChild(0).gameObject;
+        childObj.GetComponent<Image>().color = new Color(0f / 255, 112f / 255, 192f / 255);
+        
+        switch (selectStat)
+        {
+            case 0:
+                hpButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
+                hpText.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                weightButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
+                weightTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                statExplanationTxt.text =
+                    "건강이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
+                    +"활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다.";
+                break;
+            case 1:
+                statExplanationTxt.text =
+                     "집중력이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
+                    + "활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다."; 
+                break;
+            case 2:
+                statExplanationTxt.text =
+                      "예민함이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
+                    + "활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다."; 
+                break;
+            case 3:
+                statExplanationTxt.text =
+                      "정신력이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
+                    + "활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다.";
+                break;
+        }
+    }
+
+    public void SelectVirus(int index)
+    {
+        if (selectVirus != -1)
+            virusImgs[selectVirus].GetComponent<Image>().color = Color.white;
+        
+        selectVirus = index;
+        virusImgs[selectVirus].GetComponent<Image>().color = new Color(255f/255, 192f/255, 0f/255);
+
+        switch (selectVirus)
+        {
+            case 0:
+                virusExplanationTxt.text =
+                    "E바이러스가 활성화 되어 있기 때문에 E바이러스에 대한 설명이 들어가는 자리입니다.";
+                break;
+            case 1:
+                virusExplanationTxt.text =
+                    "B바이러스가 활성화 되어 있기 때문에 B바이러스에 대한 설명이 들어가는 자리입니다.";
+                break;
+            case 2:
+                virusExplanationTxt.text =
+                    "P바이러스가 활성화 되어 있기 때문에 P바이러스에 대한 설명이 들어가는 자리입니다.";
+                break;
+            case 3:
+                virusExplanationTxt.text =
+                    "I바이러스가 활성화 되어 있기 때문에 I바이러스에 대한 설명이 들어가는 자리입니다.";
+                break;
+            case 4:
+                virusExplanationTxt.text =
+                    "T바이러스가 활성화 되어 있기 때문에 T바이러스에 대한 설명이 들어가는 자리입니다.";
+                break;
+        }
+    }
+
     public void RefreshUpgradeWin()
     {
         if (agitLevel != 5)
@@ -456,7 +569,7 @@ public class AgitMgr : MonoBehaviour
 
         hpText.text = $"{character.currentHp}";
         //나중에 수정해야됨.
-        weight.text = $"{character.Weight + playerDataMgr.bagList["BAG_0001"].weight}";
+        weightTxt.text = $"{character.Weight + playerDataMgr.bagList["BAG_0001"].weight}";
         mpTxt.text = $"0";
 
         sightTxt.text = $"{character.sightDistance}";
@@ -464,6 +577,18 @@ public class AgitMgr : MonoBehaviour
         avoidTxt.text = $"{character.avoidRate}";
         criTxt.text = $"{character.critRate}";
         criResistTxt.text = $"{character.critResistRate}";
+
+        //Virus Win.
+        EVirusLevelTxt.text = $"Lv{character.virusPenalty["E"].penaltyLevel}";
+        EVirusGaugeTxt.text = $"{character.virusPenalty["E"].penaltyGauge}/{character.virusPenalty["E"].GetMaxGauge()}";
+        BVirusLevelTxt.text = $"Lv{character.virusPenalty["B"].penaltyLevel}";
+        BVirusGaugeTxt.text = $"{character.virusPenalty["B"].penaltyGauge}/{character.virusPenalty["B"].GetMaxGauge()}";
+        PVirusLevelTxt.text = $"Lv{character.virusPenalty["P"].penaltyLevel}";
+        PVirusGaugeTxt.text = $"{character.virusPenalty["P"].penaltyGauge}/{character.virusPenalty["P"].GetMaxGauge()}";
+        IVirusLevelTxt.text = $"Lv{character.virusPenalty["I"].penaltyLevel}";
+        IVirusGaugeTxt.text = $"{character.virusPenalty["I"].penaltyGauge}/{character.virusPenalty["I"].GetMaxGauge()}";
+        TVirusLevelTxt.text = $"Lv{character.virusPenalty["T"].penaltyLevel}";
+        TVirusGaugeTxt.text = $"{character.virusPenalty["T"].penaltyGauge}/{character.virusPenalty["T"].GetMaxGauge()}";
 
         nameTxt.text = $"{character.character.name}";
         levelTxt.text = $"Level {character.level} / 분과";
@@ -531,13 +656,84 @@ public class AgitMgr : MonoBehaviour
 
     public void AbilityWin()
     {
+        if (virusWin.activeSelf) virusWin.SetActive(false);
         isAbilityWinOpen = !isAbilityWinOpen;
+
+        //초기화.
+        if (isAbilityWinOpen)
+        {
+            foreach (var element in statImgs)
+            {
+                if (element.GetComponent<Image>().color != Color.white)
+                {
+                    element.GetComponent<Image>().color = Color.white;
+                    var child = element.transform.GetChild(0).gameObject;
+                    child.GetComponent<Image>().color = Color.black ;
+                }
+            }
+            if (hpButton.GetComponent<Image>().color != Color.white)
+            {
+                hpButton.GetComponent<Image>().color = Color.white;
+                hpText.color = Color.black;
+            }
+            if (weightButton.GetComponent<Image>().color != Color.white)
+            {
+                weightButton.GetComponent<Image>().color = Color.white;
+                weightTxt.color = Color.black;
+            }
+            if (mpButton.GetComponent<Image>().color != Color.white)
+            {
+                mpButton.GetComponent<Image>().color = Color.white;
+                mpTxt.color = Color.black;
+            }
+            if (sightButton.GetComponent<Image>().color != Color.white)
+            {
+                sightButton.GetComponent<Image>().color = Color.white;
+                sightTxt.color = Color.black;
+            }
+
+            if (accuracyButton.GetComponent<Image>().color != Color.white)
+            {
+                accuracyButton.GetComponent<Image>().color = Color.white;
+                accuracyTxt.color = Color.black;
+            }
+            if (avoidButton.GetComponent<Image>().color != Color.white)
+            {
+                avoidButton.GetComponent<Image>().color = Color.white;
+                avoidTxt.color = Color.black;
+            }
+            if (criButton.GetComponent<Image>().color != Color.white)
+            {
+                criButton.GetComponent<Image>().color = Color.white;
+                criTxt.color = Color.black;
+            }
+            if (criResistButton.GetComponent<Image>().color != Color.white)
+            {
+                criResistButton.GetComponent<Image>().color = Color.white;
+                criResistTxt.color = Color.black;
+            }
+        }
+        statExplanationTxt.text = string.Empty;
+
         abilityWin.SetActive(isAbilityWinOpen);
     }
 
     public void VirusWin()
     {
+        if (abilityWin.activeSelf) abilityWin.SetActive(false);
         isVirusWinOpen = !isVirusWinOpen;
+
+        //초기화.
+        if (isVirusWinOpen)
+        {
+            foreach (var element in virusImgs)
+            {
+                if (element.GetComponent<Image>().color != Color.white)
+                    element.GetComponent<Image>().color = Color.white;
+            }
+        }
+        virusExplanationTxt.text = string.Empty;
+
         virusWin.SetActive(isVirusWinOpen);
     }
 }
