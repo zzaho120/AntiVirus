@@ -47,10 +47,6 @@ public class PlayerController : MonoBehaviour
 
     public void Init()
     {
-        // NavMesh 컴포넌트 추가
-        //if (gameObject.GetComponent<NavMeshAgent>() != null)
-        //    gameObject.AddComponent<NavMeshAgent>();
-
         // 오브젝트 찾기
         nonBattleMgr    = NonBattleMgr.Instance;
         multiTouch      = GameObject.Find("MultiTouch").GetComponent<MultiTouch>();
@@ -70,11 +66,6 @@ public class PlayerController : MonoBehaviour
             pY = PlayerPrefs.GetFloat("p_y");
             pZ = PlayerPrefs.GetFloat("p_z");
             transform.position = new Vector3(pX, pY, pZ);
-
-            agent.nextPosition = transform.position;
-            GameObject.Find("Test Cube").transform.position = new Vector3(pX, pY, pZ);
-
-            Debug.Log($"{pX}, {pY}, {pZ}");
         }
         else
         {
@@ -83,10 +74,7 @@ public class PlayerController : MonoBehaviour
         saveMode = true;
 
         if (gameObject.GetComponent<NavMeshAgent>() != null)
-        {
-         gameObject.AddComponent<NavMeshAgent>();
-
-        }
+            agent.enabled = true;
     }
 
     //void Update()

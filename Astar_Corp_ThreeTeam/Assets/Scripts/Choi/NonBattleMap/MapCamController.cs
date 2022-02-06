@@ -27,6 +27,7 @@ public class MapCamController : MonoBehaviour
         {
             //ZoomIn.
             isZoomIn = true;
+            Debug.Log("ZoomIn");
 
             if (coroutine != null) StopCoroutine(coroutine);
             coroutine = ZoomIn();
@@ -36,29 +37,12 @@ public class MapCamController : MonoBehaviour
         {
             //ZoomOut.
             isZoomIn = false;
+            Debug.Log("ZoomOut");
 
             if (coroutine != null) StopCoroutine(coroutine);
             coroutine = ZoomOut();
             StartCoroutine(coroutine);
         }
-
-        //테스트를 위한 코드.(삭제해도 됨)
-        //if (multiTouch.Tap && !isZoomIn)
-        //{
-        //    isZoomIn = true;
-
-        //    if (coroutine != null) StopCoroutine(coroutine);
-        //    coroutine = ZoomIn();
-        //    StartCoroutine(coroutine);
-        //}
-        //else if (multiTouch.DoubleTap && isZoomIn)
-        //{
-        //    isZoomIn = false;
-
-        //    if (coroutine != null) StopCoroutine(coroutine);
-        //    coroutine = ZoomOut();
-        //    StartCoroutine(coroutine);
-        //}
     }
 
     IEnumerator ZoomIn()
