@@ -9,6 +9,7 @@ public class BattleInfoWindow : GenericWindow
     public GameObject confirmBtn;
     public PlayerableChar curPlayer;
     public MonsterChar curMonster;
+    public GameObject cancelBtn;
     private bool inited = false;
     public override void Open()
     {
