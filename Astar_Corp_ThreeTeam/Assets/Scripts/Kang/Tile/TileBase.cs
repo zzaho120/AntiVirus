@@ -22,6 +22,7 @@ public class TileBase : MonoBehaviour
 
     [Header("RunTime")]
     public GameObject charObj;
+    public GameObject fogTile;
     public TileBase wallTile;
     public List<HintBase> hintObj = new List<HintBase>();
 
@@ -50,14 +51,6 @@ public class TileBase : MonoBehaviour
 
     public void EnableDisplay(bool isEnabled)
     {
-        //var ren = tileObj.GetComponent<MeshRenderer>();
-
-        //ren.material.color = Color.white;
-        //if (isEnabled)
-        //    ren.material = materials[0];
-        //else
-        //    ren.material = materials[1];
-
         if (charObj != null)
         {
             var charRen = charObj.GetComponent<MeshRenderer>();
