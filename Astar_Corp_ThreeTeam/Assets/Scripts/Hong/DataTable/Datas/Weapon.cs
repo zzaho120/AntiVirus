@@ -11,6 +11,7 @@ public class Weapon : ItemBase
 
     public string type;
     public string kind;
+    public int bulletType;
     //public new string name;
 
     public int accurRateBase;       // 기본 명중률

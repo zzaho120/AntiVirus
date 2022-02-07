@@ -26,8 +26,10 @@ public class EquipmentMgr : MonoBehaviour
     public Image subWeaponImg;
     public Text mainWeaponTxt;
     public Text subWeaponTxt;
-    
+
     //창2 관련.
+    public List<GameObject> menuObjs;
+    int weaponType;
     public GameObject SpecCompareWin;
     public Text currentWeaSpecTxt;
     public Text changeWeaSpecTxt;
@@ -65,6 +67,23 @@ public class EquipmentMgr : MonoBehaviour
     {
         //1. 주무기
         //2. 보조무기
+        int weaponKind = -1;
+        if (currentKind == EquipKind.MainWeapon) weaponKind = 1;
+        else if (currentKind == EquipKind.SubWeapon) weaponKind = 2;
+
+        //1.Handgun 6 
+        //2.SG 2
+        //3.SMG 3
+        //4.AR 1
+        //5.LMG 4
+        //6.SR 5
+        //7.근접무기 6
+        if (weaponType != -1)
+        {
+            menuObjs[weaponType].GetComponent<Image>().color = Color.white;
+        }
+        weaponType = index;
+        menuObjs[weaponType].GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255);
 
         if (itemObjs.Count != 0)
         {
@@ -75,28 +94,121 @@ public class EquipmentMgr : MonoBehaviour
             itemListContents.transform.DetachChildren();
             itemObjs.Clear();
         }
-        //if (itemInfo.Count != 0) itemInfo.Clear();
+        
+        switch (weaponKind)
+        {
+            case 1:
+                if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
+                {
+                    var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
+                    var go = Instantiate(itemPrefab, itemListContents.transform);
+
+                    var child = go.transform.GetChild(4).gameObject;
+                    var button = child.AddComponent<Button>();
+                    button.onClick.AddListener(delegate { SelectItem("mainWeapon"); });
+
+                    go.GetComponent<Image>().sprite = weapon.img;
+
+                    child = go.transform.GetChild(0).gameObject;
+                    var childObj = child.transform.GetChild(1).gameObject;
+                    string type = GetTypeStr(weapon.kind);
+                    childObj.transform.GetChild(0).GetComponent<Text>().text = $"{type}";
+
+                    child = go.transform.GetChild(1).gameObject;
+                    childObj = child.transform.GetChild(1).gameObject;
+                    childObj.transform.GetChild(0).GetComponent<Text>().text =
+                        (weapon.bulletType == 0) ? "-" : $"{GetBulletType(weapon.bulletType)}";
+
+                    child = go.transform.GetChild(2).gameObject;
+                    child.SetActive(true);
+
+                    child = go.transform.GetChild(3).gameObject;
+                    child.SetActive(false);
+
+                    child = go.transform.GetChild(4).gameObject;
+                    child.GetComponent<Text>().text = $"{weapon.name}";
+
+                    child = go.transform.GetChild(5).gameObject;
+                    child.SetActive(false);
+
+                    itemObjs.Add("mainWeapon", go);
+                }
+                break;
+            case 2:
+                if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null)
+                {
+                    var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
+                    var go = Instantiate(itemPrefab, itemListContents.transform);
+
+                    var child = go.transform.GetChild(4).gameObject;
+                    var button = child.AddComponent<Button>();
+                    button.onClick.AddListener(delegate { SelectItem("subWeapon"); });
+
+                    go.GetComponent<Image>().sprite = weapon.img;
+
+                    child = go.transform.GetChild(0).gameObject;
+                    var childObj = child.transform.GetChild(1).gameObject;
+                    string type = GetTypeStr(weapon.kind);
+                    childObj.transform.GetChild(0).GetComponent<Text>().text = $"{type}";
+
+                    child = go.transform.GetChild(1).gameObject;
+                    childObj = child.transform.GetChild(1).gameObject;
+                    childObj.transform.GetChild(0).GetComponent<Text>().text =
+                        (weapon.bulletType == 0) ? "-" : $"{GetBulletType(weapon.bulletType)}";
+
+                    child = go.transform.GetChild(2).gameObject;
+                    child.SetActive(true);
+
+                    child = go.transform.GetChild(3).gameObject;
+                    child.SetActive(false);
+
+                    child = go.transform.GetChild(4).gameObject;
+                    child.GetComponent<Text>().text = $"{weapon.name}";
+
+                    child = go.transform.GetChild(5).gameObject;
+                    child.SetActive(false);
+
+                    itemObjs.Add("subWeapon", go);
+                }
+                break;
+        }
 
         foreach (var element in playerDataMgr.currentEquippables)
         {
-            if (index != int.Parse(element.Value.type)) continue;
-            var go = Instantiate(itemPrefab, itemListContents.transform);
-            var button = go.AddComponent<Button>();
-            button.onClick.AddListener(delegate { SelectItem(element.Key); });
-
-            var child = go.transform.GetChild(0).gameObject;
-            child.GetComponent<Image>().sprite = element.Value.img;
-
-            child = go.transform.GetChild(1).gameObject;
-            child.transform.GetChild(0).GetComponent<Text>().text = element.Value.name;
-
+            if (weaponKind != int.Parse(element.Value.type)) continue;
+            if (index != 0 && index != 7 &&  int.Parse(element.Value.kind) != index) continue;
+            if (index == 7 && (int.Parse(element.Value.kind) != 1 || int.Parse(element.Value.kind) != 7)) continue;
             string type = GetTypeStr(element.Value.kind);
 
+            var go = Instantiate(itemPrefab, itemListContents.transform);
+            var child = go.transform.GetChild(4).gameObject;
+            var button = child.AddComponent<Button>();
+            button.onClick.AddListener(delegate { SelectItem(element.Key); });
+
+            go.GetComponent<Image>().sprite = element.Value.img;
+
+            child = go.transform.GetChild(0).gameObject;
+            var childObj = child.transform.GetChild(1).gameObject;
+            childObj.transform.GetChild(0).GetComponent<Text>().text = $"{type}";
+
+            child = go.transform.GetChild(1).gameObject;
+            childObj = child.transform.GetChild(1).gameObject;
+            childObj.transform.GetChild(0).GetComponent<Text>().text =
+                (element.Value.bulletType == 0) ? "-" : $"{GetBulletType(element.Value.bulletType)}";
+
             child = go.transform.GetChild(2).gameObject;
-            child.transform.GetChild(0).GetComponent<Text>().text = $"{type}";
+            child.SetActive(false);
+
+            child = go.transform.GetChild(3).gameObject;
+            child.GetComponent<Text>().text = $"X {playerDataMgr.currentEquippablesNum[element.Key]}";
+
+            child = go.transform.GetChild(4).gameObject;
+            child.GetComponent<Text>().text = $"{element.Value.name}";
+
+            child = go.transform.GetChild(5).gameObject;
+            child.SetActive(false);
 
             itemObjs.Add(element.Key, go);
-            //itemInfo.Add(element.Key, playerDataMgr.currentEquippablesNum[element.Key]);
         }
     }
 
@@ -130,6 +242,30 @@ public class EquipmentMgr : MonoBehaviour
         return type;
     }
 
+    string GetBulletType(int kind)
+    {
+        string type = string.Empty;
+        switch (kind)
+        {
+            case 1:
+                type = "12";
+                break;
+            case 2:
+                type = "0.45";
+                break;
+            case 3:
+                type = "5.56";
+                break;
+            case 4:
+                type = "7.62";
+                break;
+            case 5:
+                type = "9";
+                break;
+        }
+        return type;
+    }
+
     public void RefreshEquipList()
     {
         if (currentIndex != -1)
@@ -157,12 +293,12 @@ public class EquipmentMgr : MonoBehaviour
             case 0:
                 currentKind = EquipKind.MainWeapon;
                 weaponKindTxt.text = "주무기";
-                WeaponList(1);
+                WeaponList(0);
                 break;
             case 1:
                 currentKind = EquipKind.SubWeapon;
                 weaponKindTxt.text = "보조무기";
-                WeaponList(2);
+                WeaponList(0);
                 break;
             case 2:
                 currentKind = EquipKind.Bag;
@@ -173,11 +309,15 @@ public class EquipmentMgr : MonoBehaviour
 
     public void SelectItem(string key)
     {
-        if (currentKey != null) 
-            itemObjs[currentKey].GetComponent<Image>().color = Color.white;
+        if (currentKey != null)
+        {
+            var child = itemObjs[currentKey].transform.GetChild(6).gameObject;
+            child.GetComponent<Image>().color = Color.white;
+        }
 
         currentKey = key;
-        itemObjs[currentKey].GetComponent<Image>().color = Color.red;
+        var childObj = itemObjs[currentKey].transform.GetChild(6).gameObject;
+        childObj.GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255); ;
 
         OpenWeaponInfo();
     }
@@ -520,6 +660,9 @@ public class EquipmentMgr : MonoBehaviour
     //창 설정.
     public void OpenEquipWin1()
     {
+        weaponType = -1;
+
+
         if (equipmentWin2.activeSelf) equipmentWin2.SetActive(false);
         if (!equipmentWin1.activeSelf) equipmentWin1.SetActive(true);
         RefreshEquipList();
