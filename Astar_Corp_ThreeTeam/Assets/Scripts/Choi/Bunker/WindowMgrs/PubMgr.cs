@@ -246,7 +246,7 @@ public class PubMgr : MonoBehaviour
                 stat.level = 1;
                 stat.currentExp = 0;
                 stat.sightDistance = playerDataMgr.saveData.soldierSightDistance[j];
-                stat.Weight = stat.character.weight;
+                stat.Weight = stat.character.minHp;
                 stat.bagLevel = 1;
              
                 stat.Setting();
@@ -328,7 +328,7 @@ public class PubMgr : MonoBehaviour
         simpleStat.text = $"체력{soldiers[currentIndex].currentHp} 예민함 {soldiers[currentIndex].sensivity}\n"
             + $"집중력 {soldiers[currentIndex].concentration} 정신력 {soldiers[currentIndex].willpower}";
 
-        detailStat.text = $"HP {soldiers[currentIndex].currentHp} 무게 {soldiers[currentIndex].character.weight}\n"
+        detailStat.text = $"HP {soldiers[currentIndex].currentHp} 무게 {soldiers[currentIndex].character.minHp}\n"
         + $"회피율 {soldiers[currentIndex].avoidRate} 시야범위 {soldiers[currentIndex].sightDistance}\n"
         + $"명중률 {soldiers[currentIndex].accuracy} 경계명중률 {soldiers[currentIndex].alertAccuracy} 크리티컬 확률 {soldiers[currentIndex].critRate}";
     }

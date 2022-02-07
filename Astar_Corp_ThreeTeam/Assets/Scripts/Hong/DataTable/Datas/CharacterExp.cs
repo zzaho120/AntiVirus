@@ -8,3 +8,4 @@ public class CharacterExp : ScriptableObject
     public int level;
     public int totalExp;
 }
+

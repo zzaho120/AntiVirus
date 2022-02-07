@@ -141,12 +141,33 @@ public class VirusPenalty
         }
     }
 
+    // ³»¼º °ÔÀÌÁö¿¡ °Á ¾Æ¹«°Å³ª ³Ö¾îµÒ
+    int resistGauge = 1;
+
     public void GetReductionExp(int reduceGauge)
     {
         if (reduceGauge < 0)
         {
             reductionGauge += (-reduceGauge);
-            var maxGauge = character.resistGauge * (reductionLevel + 1);
+            // ¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤
+            // ¦¢       È«¼öÁø_½ºÅÈ¼öÁ¤       ¦¢
+            // ¦¢      ³»¼º°ÔÀÌÁö DB »ý±è     ¦¢
+            // ¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡   ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥
+            //          \/
+
+            //           £¯^  \
+            //          / ^w ^ \
+            //¡¡     _ / \ /    ¡¬ _
+            //      / '/ - £Ù -  /  \
+            //     (  (ß²' ìÑ /     |
+            //     |  / ìÑ ¡¬ £þ£þ\ /
+            //      \£ß£ß£ß>. £ß£ß_£¯
+            //¡¡¡¡      £ü(èÝ /  ¡´
+            //          / \' ¦¡_/\
+            //          /  \_£¯¡¡ |
+            //¡¡        £ü¡¡¡¡/ / /
+            //var maxGauge = character.resistGauge * (reductionLevel + 1);
+            var maxGauge = resistGauge * (reductionLevel + 1);
             if (reductionGauge >= maxGauge)
             {
                 if (reductionLevel != maxLevel)
@@ -166,7 +187,25 @@ public class VirusPenalty
     }
 
     public int GetMaxReductionGauge()
-    { 
-        return character.resistGauge * (reductionLevel + 1);
+    {
+        // ¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤
+        // ¦¢       È«¼öÁø_½ºÅÈ¼öÁ¤       ¦¢
+        // ¦¢      ³»¼º°ÔÀÌÁö DB »ý±è     ¦¢
+        // ¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡   ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥
+        //          \/
+
+        //           £¯^  \
+        //          / ^w ^ \
+        //¡¡     _ / \ /    ¡¬ _
+        //      / '/ - £Ù -  /  \
+        //     (  (ß²' ìÑ /     |
+        //     |  / ìÑ ¡¬ £þ£þ\ /
+        //      \£ß£ß£ß>. £ß£ß_£¯
+        //¡¡¡¡      £ü(èÝ /  ¡´
+        //          / \' ¦¡_/\
+        //          /  \_£¯¡¡ |
+        //¡¡        £ü¡¡¡¡/ / /
+        //return character.resistGauge * (reductionLevel + 1);
+        return resistGauge * (reductionLevel + 1);
     }
 }
