@@ -5,7 +5,7 @@ using UnityEngine;
 public class BattlePlayerMgr : MonoBehaviour
 {
     public List<PlayerableChar> playerableChars;
-
+    public PlayerableChar selectChar;
     public void Init()
     {
         playerableChars.Clear();

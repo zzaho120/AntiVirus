@@ -7,6 +7,7 @@ using UnityEngine;
 public class MonsterChar : BattleTile
 {
     [Header("Character")]
+    public int monsterIdx;
     public MonsterStats monsterStats;
     public BattleMonsterFSM fsm;
     public bool turnState;
@@ -20,6 +21,7 @@ public class MonsterChar : BattleTile
     private int cumulativeDmg;
     private PlayerableChar lastAttacker;
 
+    private List<MoveTile> virusList = new List<MoveTile>();
     public bool IsfatalDmg
     {
         get
@@ -33,8 +35,6 @@ public class MonsterChar : BattleTile
     public override void Init()
     {
         base.Init();
-        monsterStats = GetComponent<MonsterStats>();
-        monsterStats.monster = (Monster)Instantiate(Resources.Load("Choi/Datas/Monsters/Fox"));
         monsterStats.Init();
         fsm = new BattleMonsterFSM();
         fsm.Init(this);
@@ -182,12 +182,11 @@ public class MonsterChar : BattleTile
             printIdx = 1;
         else if (Ap1ByMp < 4)
             printIdx = 2;
-        else if (Ap1ByMp > 4)
+        else if (Ap1ByMp >= 4)
             printIdx = 3;
 
         var idx = 1;
         var moveIdx = 0;
-        CreateHint(HintType.Footprint, tileIdx);
 
         var compareIdx = Mathf.Abs(destTile.x) + Mathf.Abs(destTile.z);
         while (Mathf.Abs(tileIdx.x) + Mathf.Abs(tileIdx.z) + monsterStats.AtkRange != compareIdx)
@@ -218,6 +217,11 @@ public class MonsterChar : BattleTile
                 moveIdx = 0;
             if (monsterStats.currentAp == 0)
                 break;
+
+            var sightMgr = BattleMgr.Instance.sightMgr;
+            sightMgr.InitMonsterSight(monsterIdx);
+            if (target == null)
+                SetTarget(sightMgr.GetPlayerInMonsterSight(monsterIdx));
 
             if (isInSight)
                 yield return new WaitForSeconds(0.1f);
@@ -396,11 +400,18 @@ public class MonsterChar : BattleTile
                     if (hit.collider.gameObject == gameObject)
                     {
                         isSelect = !isSelect;
+                        var battleInfo = BattleMgr.Instance.battleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
 
                         if (isSelect)
+                        {
+                            battleInfo.EnableMonsterInfo(true, this);
                             FloodFillVirus();
+                        }
                         else
-                            ClearTileColor();
+                        {
+                            battleInfo.Close();
+                            ReturnVirusTile();
+                        }
                     }
                 }
             }
@@ -433,13 +444,13 @@ public class MonsterChar : BattleTile
 
         if (tile.virusLevel > level)
             tile.virusLevel = level;
-        var ren = tile.tileObj.GetComponent<MeshRenderer>();
         var alpha = 1f - (float)level / virusLevel - 0.3f;
 
-        ren.material.color = new Color(1f, alpha, alpha, 1f);
-
-        if (!virusRenList.Contains(ren))
-            virusRenList.Add(ren);
+        var go = BattleMgr.Instance.battlePoolMgr.CreateVirusTile();
+        go.transform.position = tile.tileIdx + new Vector3(0, 0.5f);
+        var virusTile = go.GetComponent<MoveTile>();
+        virusTile.parent = tile;
+        virusList.Add(virusTile);
 
         var adjTiles = tile.adjNodes;
         foreach (var adjTile in adjTiles)
@@ -448,11 +459,13 @@ public class MonsterChar : BattleTile
         }
     }
 
-    private void ClearTileColor()
+    public void ReturnVirusTile()
     {
-        foreach (var ren in virusRenList)
-            ren.material.color = Color.white;
-
-        virusRenList.Clear();
+        foreach (var virusTile in virusList)
+        {
+            var returnToPool = virusTile.GetComponent<ReturnToPool>();
+            returnToPool.Return();
+        }
+        virusList.Clear();
     }
 }

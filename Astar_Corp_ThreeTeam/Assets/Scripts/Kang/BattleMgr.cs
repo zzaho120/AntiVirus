@@ -52,7 +52,7 @@ public class BattleMgr : MonoBehaviour
         // 아래 코드가 동작함
 
         var vectorList = new List<Vector3>();
-        //vectorList.Add(new Vector3(15, 0.5f, 15));
+        vectorList.Add(new Vector3(15, 0.5f, 15));
         //vectorList.Add(new Vector3(15, 0.5f, 14));
         //vectorList.Add(new Vector3(14, 0.5f, 14));
         //vectorList.Add(new Vector3(14, 0.5f, 15));
@@ -78,18 +78,21 @@ public class BattleMgr : MonoBehaviour
         }
         else
         {
-            for (var idx = 0; idx < vectorList.Count; ++idx)
-            {
-                var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.Euler(new Vector3(0, 180, 0)));
-                player.transform.SetParent(playerMgr.transform);
-                var playerableChar = player.GetComponent<PlayerableChar>();
-            }
+            //for (var idx = 0; idx < vectorList.Count; ++idx)
+            //{
+            //    var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.Euler(new Vector3(0, 180, 0)));
+            //    player.transform.SetParent(playerMgr.transform);
+            //    var playerableChar = player.GetComponent<PlayerableChar>();
+            //}
+
             startTurn = BattleTurn.Player;
         }
     }
 
     public void Start()
     {
+        var battleTest = GetComponent<BattleTest>();
+        battleTest.Init();
         tileMgr.Init();
         playerMgr.Init();
         monsterMgr.Init();

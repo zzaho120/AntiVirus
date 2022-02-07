@@ -309,8 +309,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monster: {fileID: 11400000, guid: b581ee1423bf18c479ee8c5a667ca59b, type: 2}
-  virus: {fileID: 11400000, guid: 7a957a844e4d7134395059eb1198fca0, type: 2}
+  virus: {fileID: 0}
+  nonBattleMonster: {fileID: 0}
   virusLevel: 1
+  originMaxHp: 0
   currentHp: 0
   currentAp: 0
 --- !u!114 &3097093341033552163
@@ -328,10 +330,11 @@ MonoBehaviour:
   tileIdx: {x: 0, y: 0, z: 0}
   currentTile: {fileID: 0}
   monsterStats: {fileID: 0}
-  fsm: {fileID: 0}
   turnState: 0
   target: {fileID: 0}
   isMoved: 0
+  isSelect: 0
+  renList: []
 --- !u!65 &5151881898737264867
 BoxCollider:
   m_ObjectHideFlags: 0

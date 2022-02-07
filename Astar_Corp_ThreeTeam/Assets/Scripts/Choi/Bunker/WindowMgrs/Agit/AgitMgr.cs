@@ -68,6 +68,7 @@ public class AgitMgr : MonoBehaviour
     public Text criResistTxt;
 
     [Header("Virus Win")]
+    public GameObject virusPopup;
     public GameObject virusButton;
     public List<GameObject> virusImgs;
     public Text virusExplanationTxt;
@@ -82,6 +83,7 @@ public class AgitMgr : MonoBehaviour
     public Text TVirusLevelTxt;
     public Text TVirusGaugeTxt;
     int selectVirus;
+    bool isVirusPopupOpen;
 
     public GameObject characterListContent;
     public GameObject characterPrefab;
@@ -96,8 +98,6 @@ public class AgitMgr : MonoBehaviour
     public GameObject virusWin;
     bool isVirusWinOpen;
     public Text memberNumTxt;
-
-    
 
     //캐릭터 정보 확인.
     public Text nameTxt;
@@ -354,27 +354,43 @@ public class AgitMgr : MonoBehaviour
         if (selectStat != -1)
         {
             statImgs[selectStat].GetComponent<Image>().color = Color.white;
-            var child = statImgs[selectVirus].transform.GetChild(0).gameObject;
+            var child = statImgs[selectStat].transform.GetChild(0).gameObject;
             child.GetComponent<Image>().color = Color.black;
 
             switch (selectStat)
             {
                 case 0:
+                    hpButton.GetComponent<Image>().color = Color.white;
                     hpText.color = Color.black;
+                    weightButton.GetComponent<Image>().color = Color.white;
                     weightTxt.color = Color.black;
+                    criResistButton.GetComponent<Image>().color = Color.white;
+                    criResistTxt.color = Color.black;
                     break;
                 case 1:
+                    accuracyButton.GetComponent<Image>().color = Color.white;
+                    accuracyTxt.color = Color.black;
+                    //수정돼야함.
+                    sightButton.GetComponent<Image>().color = Color.white;
+                    sightTxt.color = Color.black;
                     break;
                 case 2:
+                    avoidButton.GetComponent<Image>().color = Color.white;
+                    avoidTxt.color = Color.black;
+                    //수정돼야함.
+                    mpButton.GetComponent<Image>().color = Color.white;
+                    mpTxt.color = Color.black;
                     break;
                 case 3:
+                    criButton.GetComponent<Image>().color = Color.white;
+                    criTxt.color = Color.black;
                     break;
             }
         }
 
         selectStat = index;
-        statImgs[selectVirus].GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255);
-        var childObj = statImgs[selectVirus].transform.GetChild(0).gameObject;
+        statImgs[selectStat].GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255);
+        var childObj = statImgs[selectStat].transform.GetChild(0).gameObject;
         childObj.GetComponent<Image>().color = new Color(0f / 255, 112f / 255, 192f / 255);
         
         switch (selectStat)
@@ -384,21 +400,35 @@ public class AgitMgr : MonoBehaviour
                 hpText.color = new Color(172f / 255, 201f / 255, 250f / 255);
                 weightButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
                 weightTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                criResistButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
+                criResistTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
                 statExplanationTxt.text =
                     "건강이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
                     +"활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다.";
                 break;
             case 1:
+                accuracyButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
+                accuracyTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                //수정돼야함.
+                sightButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
+                sightTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
                 statExplanationTxt.text =
                      "집중력이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
                     + "활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다."; 
                 break;
             case 2:
+                avoidButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
+                avoidTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                //수정돼야함.
+                mpButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
+                mpTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
                 statExplanationTxt.text =
                       "예민함이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
                     + "활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다."; 
                 break;
             case 3:
+                criButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
+                criTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
                 statExplanationTxt.text =
                       "정신력이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
                     + "활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다.";
@@ -527,8 +557,10 @@ public class AgitMgr : MonoBehaviour
 
         if (abilityWin.activeSelf) abilityWin.SetActive(false);
         if (virusWin.activeSelf) virusWin.SetActive(false);
+        if (virusPopup.activeSelf) virusPopup.SetActive(false);
         isAbilityWinOpen = false;
         isVirusWinOpen = false;
+        isVirusPopupOpen = false;
 
         var character = playerDataMgr.currentSquad[currentIndex];
         characterName.text = $"{character.character.name}";
@@ -656,7 +688,11 @@ public class AgitMgr : MonoBehaviour
 
     public void AbilityWin()
     {
-        if (virusWin.activeSelf) virusWin.SetActive(false);
+        if (isVirusWinOpen)
+        {
+            isVirusWinOpen = !isVirusWinOpen;
+            virusWin.SetActive(false);
+        }    
         isAbilityWinOpen = !isAbilityWinOpen;
 
         //초기화.
@@ -720,7 +756,11 @@ public class AgitMgr : MonoBehaviour
 
     public void VirusWin()
     {
-        if (abilityWin.activeSelf) abilityWin.SetActive(false);
+        if (isAbilityWinOpen)
+        {
+            isAbilityWinOpen = !isAbilityWinOpen;
+            abilityWin.SetActive(false);
+        }
         isVirusWinOpen = !isVirusWinOpen;
 
         //초기화.
@@ -735,5 +775,11 @@ public class AgitMgr : MonoBehaviour
         virusExplanationTxt.text = string.Empty;
 
         virusWin.SetActive(isVirusWinOpen);
+    }
+
+    public void VirusPopup()
+    {
+        isVirusPopupOpen = !isVirusPopupOpen;
+        virusPopup.SetActive(isVirusPopupOpen);
     }
 }

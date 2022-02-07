@@ -15,7 +15,8 @@ public class PlayerableChar : BattleTile
 {
     [Header("Character")]
     public CharacterStats characterStats;
-
+    public Animator animator;
+    public int playerIdx;
     [Header("Value")]
     public int AP;
     public int SightDistance
@@ -58,6 +59,8 @@ public class PlayerableChar : BattleTile
         characterStats.Init();  // --> characterStats.weapon.Init();
         direction = DirectionType.None;
         characterStats.StartGame();
+
+        animator = GetComponent<Animator>();
     }
 
     public void Update()
@@ -66,55 +69,61 @@ public class PlayerableChar : BattleTile
         {
             if (Input.GetMouseButtonDown(0))
             {
-                RaycastHit hit;
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                
-                if (Physics.Raycast(ray, out hit))
+                if(BattleMgr.Instance.playerMgr.selectChar == null || BattleMgr.Instance.playerMgr.selectChar == this)
                 {
-                    switch (status)
-                    {
-                        case CharacterState.Wait:
-                            if (hit.collider.gameObject == gameObject)
-                            {
-                                isSelected = !isSelected;
-                                if (isSelected)
-                                {
-                                    var battleInfo = BattleMgr.Instance.battleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
-                                    battleInfo.EnablePlayerInfo(true, this);
+                    RaycastHit hit;
+                    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                                    var playerAction = BattleMgr.Instance.battleWindowMgr.Open(1, false).GetComponent<PlayerActionWindow>();
-                                    playerAction.curChar = this;
-                                    playerAction.EnableReloadBtn();
-                                }
-                                else
-                                    SetNonSelected();
-                            }
-                            break;
-                        case CharacterState.Move:
-                            if (hit.collider.tag == "MoveTile")
-                            {
-                                var tileBase = hit.collider.GetComponent<MoveTile>().parent;
-                                if (moveDics.ContainsKey(tileBase))
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        Debug.Log(hit.collider.gameObject.name);
+                        switch (status)
+                        {
+                            case CharacterState.Wait:
+                                if (hit.collider.gameObject == gameObject)
                                 {
-                                    ActionMove(tileBase);
-                                    foreach (var moveTile in moveList)
+                                    isSelected = !isSelected;
+                                    BattleMgr.Instance.playerMgr.selectChar = this;
+                                    if (isSelected)
                                     {
-                                        var returnToPool = moveTile.GetComponent<ReturnToPool>();
-                                        returnToPool.Return();
+                                        var battleInfo = BattleMgr.Instance.battleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
+                                        battleInfo.EnablePlayerInfo(true, this);
+
+                                        var playerAction = BattleMgr.Instance.battleWindowMgr.Open(1, false).GetComponent<PlayerActionWindow>();
+                                        playerAction.curChar = this;
+                                        playerAction.EnableReloadBtn();
                                     }
-                                    moveList.Clear();
+                                    else
+                                    {
+                                        SetNonSelected();
+                                    }
+
                                 }
-                            }
-                            break;
-                        case CharacterState.Attack:
-                            if (hit.collider.tag == "BattleMonster")
-                            {
-                                var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.BattleInfo - 1).GetComponent<BattleInfoWindow>();
-                                window.EnableMonsterInfo(true, hit.collider.GetComponent<MonsterChar>(), characterStats.weapon);
-                            }
-                            break;
-                        case CharacterState.Alert:
-                            break;
+                                break;
+                            case CharacterState.Move:
+                                if (hit.collider.tag == "MoveTile")
+                                {
+                                    var tileBase = hit.collider.GetComponent<MoveTile>().parent;
+                                    if (moveDics.ContainsKey(tileBase))
+                                    {
+                                        if (tileBase.charObj == null)
+                                        {
+                                            ActionMove(tileBase);
+                                            ReturnMoveTile();
+                                        }
+                                    }
+                                }
+                                break;
+                            case CharacterState.Attack:
+                                if (hit.collider.tag == "BattleMonster")
+                                {
+                                    var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.BattleInfo - 1).GetComponent<BattleInfoWindow>();
+                                    window.EnableMonsterInfo(true, hit.collider.GetComponent<MonsterChar>(), characterStats.weapon);
+                                }
+                                break;
+                            case CharacterState.Alert:
+                                break;
+                        }
                     }
                 }
             }
@@ -146,16 +155,27 @@ public class PlayerableChar : BattleTile
         var path = BattleMgr.Instance.pathMgr.pathList;
         while (path.Count > 0)
         {
+            if (path.Count == 2 || path.Count == 1)
+            {
+                if (!animator.GetBool("Run Stop"))
+                {
+                    animator.SetBool("Run Stop", true);
+                    animator.SetBool("Run", false);
+                }
+            }
+
             var aStarTile = path.Pop();
 
+            
             if (aStarTile.tileBase.charObj != null && !aStarTile.tileBase.charObj.CompareTag("BattlePlayer"))
                 break;
 
-            MoveTile(aStarTile.tileBase.tileIdx);
+            yield return MoveTile(aStarTile.tileBase.tileIdx);
             BattleMgr.Instance.sightMgr.UpdateFog(this);
-            yield return new WaitForSeconds(0.1f);
         }
         AP -= currentTile.moveAP;
+        animator.SetBool("Run Stop", false);
+        animator.SetBool("Idle", true);
         if (currentTile.moveAP == 6)
         {
             var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.FullApMove);
@@ -169,26 +189,51 @@ public class PlayerableChar : BattleTile
         window.OnActiveDirectionBtns(false, true);
     }
 
-    private void MoveTile(Vector3 nextIdx)
+    private IEnumerator MoveTile(Vector3 nextIdx)
     {
         foreach (var tile in currentTile.adjNodes)
         {
             if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
             {
+                var dir = (currentTile.tileIdx - nextIdx).normalized;
+
+                var rotY = 0;
+                if (dir.x > 0)
+                    rotY = 270;
+                else if (dir.x < 0)
+                    rotY = 90;
+                else if (dir.z > 0)
+                    rotY = 180;
+                else if (dir.z < 0)
+                    rotY = 0;
+                transform.rotation = Quaternion.Euler(0f, rotY, 0f);
+
                 currentTile.charObj = null;
                 tileIdx = nextIdx;
                 currentTile = tile;
                 currentTile.charObj = gameObject;
-                transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 0.5f, tile.tileIdx.z);
+                if (!animator.GetBool("Run") && !animator.GetBool("Run Stop"))
+                    animator.SetBool("Run", true);
+                yield return StartCoroutine(CoMoveChar(nextIdx + new Vector3(0f, 0.5f, 0f)));
             }
+        }
+    }
+
+    private IEnumerator CoMoveChar(Vector3 nextIdx)
+    {
+        var origin = transform.position;
+        var timer = 0f;
+        while (timer < 1)
+        {
+            timer += Time.deltaTime * 5;
+            transform.position = Vector3.Lerp(origin, nextIdx, timer);
+            yield return null;
         }
     }
 
     public void MoveMode()
     {
-        if (status == CharacterState.Move)
-            status = CharacterState.Wait;
-        else
+        if (status == CharacterState.Wait)
             status = CharacterState.Move;
 
         if (status == CharacterState.Move && isSelected)
@@ -253,11 +298,14 @@ public class PlayerableChar : BattleTile
         else
             return;
 
-        var go = BattleMgr.Instance.battlePoolMgr.CreateMoveTile();
-        go.transform.position = tile.tileIdx + new Vector3(0, 0.5f);
-        var moveTile = go.GetComponent<MoveTile>();
-        moveTile.parent = tile;
-        moveList.Add(moveTile);
+        if (tile.charObj == null)
+        {
+            var go = BattleMgr.Instance.battlePoolMgr.CreateMoveTile();
+            go.transform.position = tile.tileIdx + new Vector3(0, 0.5f);
+            var moveTile = go.GetComponent<MoveTile>();
+            moveTile.parent = tile;
+            moveList.Add(moveTile);
+        }
 
         foreach (var adjNode in tile.adjNodes)
         {
@@ -357,12 +405,14 @@ public class PlayerableChar : BattleTile
             status = CharacterState.TurnEnd;
 
         isSelected = false;
+        BattleMgr.Instance.playerMgr.selectChar = null;
         EventBusMgr.Publish(EventType.EndPlayer);
         CameraController.instance.SetFollowObject(null);
     }
 
     public void WaitPlayer()
     {
+        BattleMgr.Instance.playerMgr.selectChar = null;
         status = CharacterState.Wait;
     }
 
@@ -449,6 +499,7 @@ public class PlayerableChar : BattleTile
 
     public void SetNonSelected()
     {
+        BattleMgr.Instance.playerMgr.selectChar = null;
         var window = BattleMgr.Instance.battleWindowMgr.GetWindow(1);
         var playerAction = window.GetComponent<PlayerActionWindow>();
         playerAction.curChar = null;
@@ -458,28 +509,66 @@ public class PlayerableChar : BattleTile
         isSelected = false;
         status = CharacterState.Wait;
         CameraController.instance.SetFollowObject(null);
+        ReturnMoveTile();
     }
 
     public void SetDirection(DirectionType direction)
     {
         this.direction = direction;
-
+        var nextRot = Quaternion.identity; 
         switch (direction)
         {
             case DirectionType.None:
                 break;
             case DirectionType.Top:
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                nextRot = Quaternion.Euler(0, 0, 0);
                 break;
             case DirectionType.Bot:
-                transform.rotation = Quaternion.Euler(0, 180, 0);
+                nextRot = Quaternion.Euler(0, 180, 0);
                 break;
             case DirectionType.Left:
-                transform.rotation = Quaternion.Euler(0, 270, 0);
+                nextRot = Quaternion.Euler(0, 270, 0);
                 break;
             case DirectionType.Right:
-                transform.rotation = Quaternion.Euler(0, 90, 0);
+                nextRot = Quaternion.Euler(0, 90, 0);
                 break;
         }
+        StartCoroutine(CoRotateChar(nextRot));
+    }
+
+    private IEnumerator CoRotateChar(Quaternion nextRot)
+    {
+        var timer = 0f;
+        var origin = transform.rotation;
+        var angle = Mathf.Abs(transform.rotation.eulerAngles.y) - nextRot.eulerAngles.y;
+        Debug.Log(angle);
+        animator.SetBool("Idle", false);
+        if (angle == -90)
+            animator.SetBool("Turn Right", true);
+        else if (angle == 90)
+            animator.SetBool("Turn Left", true);
+
+        while (timer < 1)
+        {
+            timer += Time.deltaTime * 3;
+            transform.rotation = Quaternion.Lerp(origin, nextRot, timer);
+            yield return null;
+        }
+
+        animator.SetBool("Idle", true);
+        if (angle == -90)
+            animator.SetBool("Turn Right", false);
+        else if (angle == 90)
+            animator.SetBool("Turn Left", false);
+    }
+
+    public void ReturnMoveTile()
+    {
+        foreach (var moveTile in moveList)
+        {
+            var returnToPool = moveTile.GetComponent<ReturnToPool>();
+            returnToPool.Return();
+        }
+        moveList.Clear();
     }
 }
