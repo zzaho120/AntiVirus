@@ -103,7 +103,7 @@ public class CharacterStats
         get
         {
             //Debug.Log(character);
-            var baseHp = Random.Range(character.minHp, character.maxHp + 1);
+            var baseHp = Random.Range(character.minHealth, character.maxHealth + 1);
             var hp = baseHp;
             return hp;
         }
@@ -185,10 +185,28 @@ public class CharacterStats
         totalExp        = ScriptableMgr.Instance.GetCharacterExp($"EXP_{level}").totalExp;
         sightDistance = 3;
 
-        Weight = character.weight;
+        Weight = character.minHp;
         accuracy = concentration * character.accurRatePerCon;
         critResistRate = willpower * character.critResistRateRise;
-        alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
+
+        // ¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤
+        // ¦¢       È«¼öÁø_½ºÅÈ¼öÁ¤       ¦¢
+        // ¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡   ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥
+        //          \/
+
+        //           £¯^  \
+        //          / ^w ^ \
+        //¡¡     _ / \ /    ¡¬ _
+        //      / '/ - £Ù -  /  \
+        //     (  (ß²' ìÑ /     |
+        //     |  / ìÑ ¡¬ £þ£þ\ /
+        //      \£ß£ß£ß>. £ß£ß_£¯
+        //¡¡¡¡      £ü(èÝ /  ¡´
+        //          / \' ¦¡_/\
+        //          /  \_£¯¡¡ |
+        //¡¡        £ü¡¡¡¡/ / /
+
+        //alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
         critRate = (willpower / 3) * character.critRateRise;
 
         buffMgr = new BuffMgr();
@@ -203,7 +221,25 @@ public class CharacterStats
 
         accuracy = concentration * character.accurRatePerCon;
         critResistRate = willpower * character.critResistRateRise;
-        alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
+
+        // ¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤
+        // ¦¢       È«¼öÁø_½ºÅÈ¼öÁ¤       ¦¢
+        // ¦¢   °æ°è¸íÁß·ü Áõ°¡·®¾ø¾îÁü    ¦¢
+        // ¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡   ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥
+        //          \/
+
+        //           £¯^  \
+        //          / ^w ^ \
+        //¡¡     _ / \ /    ¡¬ _
+        //      / '/ - £Ù -  /  \
+        //     (  (ß²' ìÑ /     |
+        //     |  / ìÑ ¡¬ £þ£þ\ /
+        //      \£ß£ß£ß>. £ß£ß_£¯
+        //¡¡¡¡      £ü(èÝ /  ¡´
+        //          / \' ¦¡_/\
+        //          /  \_£¯¡¡ |
+        //¡¡        £ü¡¡¡¡/ / /
+        //alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
         critRate = (willpower / 3) * character.critRateRise;
 
         buffMgr = new BuffMgr();
@@ -261,7 +297,7 @@ public class CharacterStats
             var randomRate = Random.Range(0, 100);
             if (!statsList.Exists(x => x == 1))
             {
-                if (randomRate < character.hpChance)
+                if (randomRate < character.healthChance)
                 {
                     statsList.Add(1);
                     if (statsList.Count >= 2)
@@ -310,8 +346,8 @@ public class CharacterStats
             switch (stats)
             {
                 case 1:
-                    MaxHp += character.hpRise;
-                    Weight += character.weight_Rise;
+                    MaxHp += character.helathRise;
+                    Weight += character.maxHp;
                     break;
                 case 2:
                     sensivity += character.senRise;
@@ -326,7 +362,25 @@ public class CharacterStats
                 case 4:
                     willpower += character.willRise;
                     critResistRate = willpower * character.critResistRateRise;
-                    alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
+                    // ¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤
+                    // ¦¢       È«¼öÁø_½ºÅÈ¼öÁ¤       ¦¢
+                    // ¦¢   °æ°è¸íÁß·ü Áõ°¡·®¾ø¾îÁü    ¦¢
+                    // ¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡   ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥
+                    //          \/
+
+                    //           £¯^  \
+                    //          / ^w ^ \
+                    //¡¡     _ / \ /    ¡¬ _
+                    //      / '/ - £Ù -  /  \
+                    //     (  (ß²' ìÑ /     |
+                    //     |  / ìÑ ¡¬ £þ£þ\ /
+                    //      \£ß£ß£ß>. £ß£ß_£¯
+                    //¡¡¡¡      £ü(èÝ /  ¡´
+                    //          / \' ¦¡_/\
+                    //          /  \_£¯¡¡ |
+                    //¡¡        £ü¡¡¡¡/ / /
+                    //alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
+                    //alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
                     critRate = (willpower / 3) * character.critRateRise;
                     break;
             }

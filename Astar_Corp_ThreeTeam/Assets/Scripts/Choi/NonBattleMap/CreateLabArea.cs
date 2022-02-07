@@ -5,7 +5,11 @@ using UnityEngine;
 public class CreateLabArea : MonoBehaviour
 {
     // 바이러스 영역
-    public List<GameObject> virusZones1;
+    public List<GameObject> virusZones;
+
+    // 각 연구소별 제일 큰 바이러스 영역
+    // 몬스터 영역 생성할 때 사용
+    public List<GameObject> maxVirusZone;
 
     //연구소 영역.
     public List<GameObject> randomLaboratory;
@@ -29,50 +33,113 @@ public class CreateLabArea : MonoBehaviour
             randomLaboratory[randomLaboratoryIndex].SetActive(true);
             string laboratoryIndexStr = "randomLaboratoryIndex";
             PlayerPrefs.SetInt(laboratoryIndexStr, randomLaboratoryIndex);
-            laboratoryObjs.Add(randomLaboratory[randomLaboratoryIndex]);
+            laboratoryObjs.Add(randomLaboratory[randomLaboratoryIndex].transform.GetChild(0).gameObject);
 
             //연구소 영역.
             int i = 0;
             foreach (var element in laboratoryObjs)
             {
                 //맨밑이 제일 큼.
-                var virusZone3 = element.transform.GetChild(1).gameObject;  // 렙3
-                var virusZone2 = element.transform.GetChild(2).gameObject;  // 렙2
-                var virusZone1 = element.transform.GetChild(3).gameObject;  // 렙1
+                var virusZone1 = element.transform.GetChild(0).gameObject; 
+                var virusZone2 = element.transform.GetChild(1).gameObject; 
+                var virusZone3 = element.transform.GetChild(2).gameObject; 
 
-                var script = virusZone1.GetComponent<LaboratoryInfo>();
-                int randomNum = (!script.isSpareLab) ? 10 : 8;
+                virusZones.Add(virusZone1);
+                virusZones.Add(virusZone2);
+                virusZones.Add(virusZone3);
 
-                virusZone3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
-                virusZone2.transform.localScale = new Vector3(randomNum * Zone2Magnifi, randomNum * Zone2Magnifi, randomNum * Zone2Magnifi);
-                virusZone1.transform.localScale = new Vector3(randomNum * Zone3Magnifi, randomNum * Zone3Magnifi, randomNum * Zone3Magnifi);
+                //var labInfo = virusZone3.GetComponent<LaboratoryInfo>();
+                //int randomNum = (!labInfo.isSpareLab) ? 10 : 8;
+                var labInfo = element.GetComponent<LaboratoryInfo>();
+                int randomNum = (!labInfo.isSpareLab) ? 1 : 1;
 
-                var radius = virusZone3.GetComponent<SphereCollider>().radius;
-                script.radiusZone3 = radius * virusZone3.transform.lossyScale.x;
-                script.radiusZone2 = radius * virusZone2.transform.lossyScale.x;
-                script.radiusZone1 = radius * virusZone1.transform.lossyScale.x;
+                //virusZone3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
+                //virusZone2.transform.localScale = new Vector3(randomNum * Zone2Magnifi, randomNum * Zone2Magnifi, randomNum * Zone2Magnifi);
+                //virusZone1.transform.localScale = new Vector3(randomNum * Zone3Magnifi, randomNum * Zone3Magnifi, randomNum * Zone3Magnifi);
 
+                // SphereCoiilder 어디서 쓰는지 알아보고 수정
+                var radius = virusZone1.GetComponent<SphereCollider>().radius;
+                labInfo.radiusZone1 = radius * virusZone1.transform.lossyScale.x; 
+                labInfo.radiusZone2 = radius * virusZone2.transform.lossyScale.x; 
+                labInfo.radiusZone3 = radius * virusZone3.transform.lossyScale.x;  
+
+                // 저장되는 부분 나중에 수정하기
                 string str = $"VirusZone1Scale{i}";
                 PlayerPrefs.SetInt(str, randomNum);
 
-                script.isActiveZone2 = (Random.Range(0, 2) == 0) ? true : false;
-                if (!script.isActiveZone2) virusZone2.SetActive(false);
+                // Zone2 : 60% 확률로 활성화
+                labInfo.isActiveZone2 = (Random.Range(0, 3) <= 1) ? true : false;
+                if (!labInfo.isActiveZone2) virusZone2.SetActive(false);
+                // Zone3 (큰원) : 50% 확률로 활성화
+                if (labInfo.isActiveZone2) labInfo.isActiveZone3 = (Random.Range(0, 2) == 0) ? true : false;
+                if (!labInfo.isActiveZone3) virusZone3.SetActive(false);
 
-                if (script.isActiveZone2) script.isActiveZone3 = (Random.Range(0, 2) == 0) ? true : false;
-                if (!script.isActiveZone3) virusZone3.SetActive(false);
+                // 리스트에 바이러스 영역 추가 (제일 큰 애만)
+                if (labInfo.isActiveZone3) {
+                    maxVirusZone.Add(virusZone3); 
+                }
+                else if (labInfo.isActiveZone2) {
+                    maxVirusZone.Add(virusZone2); 
+                }
+                else {
+                    maxVirusZone.Add(virusZone1);
+                }
 
                 str = $"Laboratory{i}Zone2";
-                int num = (script.isActiveZone2 == true) ? 1 : 0;
+                int num = (labInfo.isActiveZone2 == true) ? 1 : 0;
                 PlayerPrefs.SetInt(str, num);
                 str = $"Laboratory{i}Zone3";
-                num = (script.isActiveZone3 == true) ? 1 : 0;
+                num = (labInfo.isActiveZone3 == true) ? 1 : 0;
                 PlayerPrefs.SetInt(str, num);
 
-                script.virusType = randomVirusType[i];
+                labInfo.virusType = randomVirusType[i];
                 str = $"Laboratory{i}VirusType";
                 PlayerPrefs.SetString(str, randomVirusType[i]);
 
                 i++;
+
+
+                //원본코드
+
+                ////맨밑이 제일 큼.
+                //var virusZone3 = element.transform.GetChild(1).gameObject;  // 렙3
+                //var virusZone2 = element.transform.GetChild(2).gameObject;  // 렙2
+                //var virusZone1 = element.transform.GetChild(3).gameObject;  // 렙1
+                //
+                //var labInfo = virusZone1.GetComponent<LaboratoryInfo>();
+                //int randomNum = (!labInfo.isSpareLab) ? 10 : 8;
+                //
+                //-virusZone3.transform.localScale = new Vector3(randomNum, randomNum, randomNum);
+                //-virusZone2.transform.localScale = new Vector3(randomNum * Zone2Magnifi, randomNum * Zone2Magnifi, randomNum * Zone2Magnifi);
+                //-virusZone1.transform.localScale = new Vector3(randomNum * Zone3Magnifi, randomNum * Zone3Magnifi, randomNum * Zone3Magnifi);
+                //
+                //var radius = virusZone3.GetComponent<SphereCollider>().radius;
+                //labInfo.radiusZone3 = radius * virusZone3.transform.lossyScale.x;
+                //labInfo.radiusZone2 = radius * virusZone2.transform.lossyScale.x;
+                //labInfo.radiusZone1 = radius * virusZone1.transform.lossyScale.x;
+                //
+                //// 저장되는 부분 나중에 수정하기
+                //string str = $"VirusZone1Scale{i}";
+                //PlayerPrefs.SetInt(str, randomNum);
+                //
+                //labInfo.isActiveZone2 = (Random.Range(0, 2) == 0) ? true : false;
+                //if (!labInfo.isActiveZone2) virusZone2.SetActive(false);
+                //
+                //if (labInfo.isActiveZone2) labInfo.isActiveZone3 = (Random.Range(0, 2) == 0) ? true : false;
+                //if (!labInfo.isActiveZone3) virusZone3.SetActive(false);
+                //
+                //str = $"Laboratory{i}Zone2";
+                //int num = (labInfo.isActiveZone2 == true) ? 1 : 0;
+                //PlayerPrefs.SetInt(str, num);
+                //str = $"Laboratory{i}Zone3";
+                //num = (labInfo.isActiveZone3 == true) ? 1 : 0;
+                //PlayerPrefs.SetInt(str, num);
+                //
+                //labInfo.virusType = randomVirusType[i];
+                //str = $"Laboratory{i}VirusType";
+                //PlayerPrefs.SetString(str, randomVirusType[i]);
+                //
+                //i++;
             }
         }
         else//이어하기.
