@@ -30,8 +30,6 @@ public class MonsterChar : BattleTile
             return cumulativeDmg > monster.maxHp * (monster.escapeHpDec / 100f);
         }
     }
-
-    private List<MeshRenderer> virusRenList = new List<MeshRenderer>();
     public override void Init()
     {
         base.Init();

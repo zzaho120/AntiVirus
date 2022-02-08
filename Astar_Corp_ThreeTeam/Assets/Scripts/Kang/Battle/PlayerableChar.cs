@@ -36,8 +36,10 @@ public class PlayerableChar : BattleTile
     public int audibleDistance = 4;
     public CharacterState status;
     public bool isSelected;
-    public bool isFullApMove;
-    
+    public bool isMoved;
+    public bool isTankB1Skill;
+    public bool isHMGA1Skill;
+
     public DirectionType direction;
 
     private Dictionary<TileBase, int> moveDics =
@@ -91,6 +93,8 @@ public class PlayerableChar : BattleTile
 
                                         var playerAction = BattleMgr.Instance.battleWindowMgr.Open(1, false).GetComponent<PlayerActionWindow>();
                                         playerAction.curChar = this;
+                                        playerAction.AddBuffList();
+                                        playerAction.AddActiveList();
                                         playerAction.EnableReloadBtn();
                                     }
                                     else
@@ -134,7 +138,9 @@ public class PlayerableChar : BattleTile
     {
         status = CharacterState.Wait;
         isSelected = false;
-        isFullApMove = false;
+        isMoved = false;
+        isTankB1Skill = false;
+        isHMGA1Skill = false;
         AP = 6;
         alertList.Clear();
         characterStats.StartTurn();
@@ -248,7 +254,7 @@ public class PlayerableChar : BattleTile
         moveDics.Add(currentTile, 0);
 
         var cnt = 0; 
-        var mpPerAp = characterStats.weapon.MpPerAp;
+        var mpPerAp = characterStats.weapon.MpPerAp - characterStats.movePoint;
         var buffMgr = characterStats.buffMgr;
 
         var mpList = buffMgr.GetBuffList(Stat.Mp);
@@ -315,9 +321,12 @@ public class PlayerableChar : BattleTile
 
     private void ActionMove(TileBase tileBase)
     {
+        isMoved = true;
         BattleMgr.Instance.pathMgr.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
         MoveMode();
         StartCoroutine(CoMove());
+
+        Debug.Log(characterStats.Weight);
     }
 
     public void AttackMode()
@@ -332,66 +341,88 @@ public class PlayerableChar : BattleTile
 
         var fullAPMoveList = characterStats.buffMgr.GetBuffList(Stat.FullApMove);
         var isFullApMove = fullAPMoveList.Count > 0;
+        var repeat = 1;
+        if (isHMGA1Skill)
+            repeat = AP / weapon.GetWeaponAP();
 
-        if (weapon.CheckAvailBullet)
+        for (var idx = 0; idx < repeat; ++idx)
         {
-            if (weapon.CheckAvailShot(AP, CharacterState.Attack) || isFullApMove)
+            if (weapon.CheckAvailBullet)
             {
-                var isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(monster.currentTile.accuracy) + characterStats.accuracy;
-
-                if (!isFullApMove)
-                    AP -= weapon.GetWeaponAP();
-
-                if (monster.IsNullTarget)
-                    monster.SetTarget(this);
-
-                if (isHit)
+                if (weapon.CheckAvailShot(AP, CharacterState.Attack) || isFullApMove)
                 {
-                    var isCrit = Random.Range(0, 100) < weapon.CritRate + characterStats.critRate - monster.monsterStats.critResist;
-                    monster.GetDamage(this, isCrit);
-
-                    var buffMgr = characterStats.buffMgr;
-                    var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.Hit);
-                    foreach (var skill in skillList)
+                    var buffValue = 0;
+                    if (weapon.curWeapon.kind == "6")
                     {
-                        skill.Invoke(buffMgr);
+                        var moveSRList = characterStats.buffMgr.GetBuffList(Stat.MoveSRAccuracy);
+                        foreach (var buff in moveSRList)
+                        {
+                            buffValue += (int)buff.GetAmount();
+                        }
                     }
 
-                    var buffList = buffMgr.GetBuffList(Stat.Aggro);
-                    if (buffList.Count > 0)
+                    var isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(monster.currentTile.accuracy) + characterStats.accuracy + buffValue;
+
+                    if (!isFullApMove)
+                        AP -= weapon.GetWeaponAP();
+
+                    if (monster.IsNullTarget)
                         monster.SetTarget(this);
+
+                    if (isHit)
+                    {
+                        var isCrit = Random.Range(0, 100) < weapon.CritRate + characterStats.critRate - monster.monsterStats.critResist;
+                        monster.GetDamage(this, isCrit);
+
+                        var buffMgr = characterStats.buffMgr;
+                        var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.Hit);
+                        foreach (var skill in skillList)
+                        {
+                            skill.Invoke(buffMgr);
+                        }
+
+                        var buffList = buffMgr.GetBuffList(Stat.Aggro);
+                        if (buffList.Count > 0)
+                            monster.SetTarget(this);
+                    }
+                    else
+                    {
+                        var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
+                        window.SetMsgText($"You missed {monster.name}");
+                    }
+
+                    characterStats.buffMgr.RemoveBuff(fullAPMoveList);
+                    monster.currentTile.EnableDisplay(true);
+
+                    if (AP <= 0)
+                        EndPlayer();
+                    else
+                    {
+                        WaitPlayer();
+                        SetNonSelected();
+                    }
                 }
                 else
                 {
                     var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-                    window.SetMsgText($"You missed {monster.name}");
-                }
-
-                characterStats.buffMgr.RemoveBuff(fullAPMoveList);
-                monster.currentTile.EnableDisplay(true);
-
-                if (AP <= 0)
-                    EndPlayer();
-                else
-                {
-                    WaitPlayer();
+                    window.SetMsgText($"Not enough Action Point for Attack");
                     SetNonSelected();
                 }
             }
             else
             {
                 var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-                window.SetMsgText($"Not enough Action Point for Attack");
+                window.SetMsgText($"Not enough Bullet for Attack");
                 SetNonSelected();
             }
         }
-        else
+
+        if (isHMGA1Skill)
         {
-            var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-            window.SetMsgText($"Not enough Bullet for Attack");
-            SetNonSelected();
+            AP = 0;
+            EndPlayer();
+            isHMGA1Skill = false;
         }
-        
     }
 
     public void AlertMode()
@@ -408,6 +439,16 @@ public class PlayerableChar : BattleTile
         BattleMgr.Instance.playerMgr.selectChar = null;
         EventBusMgr.Publish(EventType.EndPlayer);
         CameraController.instance.SetFollowObject(null);
+
+        if (!isMoved)
+        {
+            var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.isMoved);
+            var buffMgr = characterStats.buffMgr;
+            foreach (var skill in skillList)
+            {
+                skill.Invoke(buffMgr);
+            }
+        }
     }
 
     public void WaitPlayer()
@@ -452,7 +493,14 @@ public class PlayerableChar : BattleTile
                     virusType = "T";
                     break;
             }
-            characterStats.virusPenalty[virusType].Calculation(monsterStats.virusLevel, monsterStats.monster.virusGauge);
+            var buffList = characterStats.buffMgr.GetBuffList(Stat.Virus);
+            float result = monsterStats.monster.virusGauge;
+            foreach (var buff in buffList)
+            {
+                result *= buff.GetAmount();
+            }
+
+            characterStats.virusPenalty[virusType].Calculation(monsterStats.virusLevel, result);
         }
 
         var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
@@ -507,6 +555,8 @@ public class PlayerableChar : BattleTile
         window = BattleMgr.Instance.battleWindowMgr.GetWindow(2);
         window.Close();
         isSelected = false;
+        isHMGA1Skill = false;
+        isTankB1Skill = false;
         status = CharacterState.Wait;
         CameraController.instance.SetFollowObject(null);
         ReturnMoveTile();
@@ -570,5 +620,11 @@ public class PlayerableChar : BattleTile
             returnToPool.Return();
         }
         moveList.Clear();
+    }
+
+    public void HMG_A1_Skill()
+    {
+        isHMGA1Skill = true;
+        status = CharacterState.Attack;
     }
 }

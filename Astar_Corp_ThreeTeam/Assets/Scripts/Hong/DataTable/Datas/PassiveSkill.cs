@@ -10,7 +10,8 @@ public enum PassiveCase
     Game,
     Reload,
     Attacked,
-    FullApMove
+    FullApMove,
+    isMoved
 }
 
 public enum Stat

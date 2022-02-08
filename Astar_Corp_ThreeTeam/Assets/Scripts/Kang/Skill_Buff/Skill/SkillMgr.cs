@@ -25,6 +25,14 @@ public class SkillMgr
         passiveSkills = new List<PassiveSkill>();
     }
 
+    public void CheckActiveCoolDown()
+    {
+        foreach (var active in activeSkills)
+        {
+            active.CheckCoolDown();
+        }
+    }
+
     public List<PassiveSkill> GetPassiveSkills(PassiveCase skillCase)
     {
         var skillList = new List<PassiveSkill>();
@@ -53,6 +61,19 @@ public class SkillMgr
                 passiveSkills.Add(skill as PassiveSkill);
                 break;
         }
+    }
+
+    public ActiveSkill GetActiveSkill(string character, string type, int level)
+    {
+        foreach (var active in activeSkills)
+        {
+            if (active.character == character && active.type == type && active.level == level)
+            {
+                return active;
+            }
+        }
+
+        return null;
     }
 
     public void LevelUp()

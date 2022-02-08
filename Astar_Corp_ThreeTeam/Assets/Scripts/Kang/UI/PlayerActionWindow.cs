@@ -13,6 +13,11 @@ public class PlayerActionWindow : GenericWindow
     public PlayerableChar curChar;
     public GameObject directionBtns;
     public bool inited;
+
+    public BattleSkillBtn activeBtn;
+    public GameObject content;
+
+    private List<GameObject> activeList = new List<GameObject>();
     public override void Open()
     {
         base.Open();
@@ -35,11 +40,49 @@ public class PlayerActionWindow : GenericWindow
     public override void Close()
     {
         base.Close();
+
+        var childCount = content.transform.childCount;
+        for (var idx = 0; idx < childCount; ++idx)
+        {
+            Destroy(content.transform.GetChild(idx).gameObject);
+        }
     }
 
     public void CloseTurnEnd(object empty)
     {
         Close();
+    }
+
+    public void AddActiveList()
+    {
+        if (curChar != null)
+        {
+            var activeList = curChar.characterStats.skillMgr.activeSkills;
+
+            foreach (var skill in activeList)
+            {
+                var go = Instantiate(activeBtn.gameObject, content.transform);
+                go.gameObject.name = skill.skillName;
+
+                var active = go.GetComponent<BattleSkillBtn>();
+                active.owner = curChar;
+                active.skill = skill;
+            }
+        }
+    }
+
+    public void AddBuffList()
+    {
+        if (curChar != null)
+        {
+            var buffList = curChar.characterStats.buffMgr.buffList;
+
+            //foreach (var buff in buffList)
+            //{
+            //    var go = Instantiate(buffBtn, content.transform);
+            //    go.name = buff.stat.ToString();
+            //}
+        }
     }
 
     public void OnClickMoveBtn()
@@ -67,7 +110,9 @@ public class PlayerActionWindow : GenericWindow
         BattleMgr.Instance.sightMgr.UpdateFrontSight(curChar);
         Close();
 
-        if (curChar.status == CharacterState.Alert || curChar.AP <= 0)
+        var isFullApMove = curChar.characterStats.buffMgr.GetBuffList(Stat.FullApMove).Count > 0;
+
+        if ((curChar.status == CharacterState.Alert || curChar.AP <= 0) && !isFullApMove)
             curChar.EndPlayer();
         else if (curChar.status == CharacterState.Move)
             curChar.WaitPlayer();

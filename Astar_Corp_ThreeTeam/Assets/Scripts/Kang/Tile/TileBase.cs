@@ -53,10 +53,6 @@ public class TileBase : MonoBehaviour
     {
         if (charObj != null)
         {
-            var charRen = charObj.GetComponent<MeshRenderer>();
-            if (charRen != null)
-                charRen.enabled = isEnabled;
-
             if (charObj.tag == "BattleMonster")
             {
                 var monster = charObj.GetComponent<MonsterChar>();

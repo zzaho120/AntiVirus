@@ -23,10 +23,10 @@ public class BattlePlayerMgr : MonoBehaviour
 
     public void StartTurn(object empty)
     {
-        foreach (var character in playerableChars)
+        for (var idx = 0; idx < playerableChars.Count; idx++)
         {
-            character.StartTurn();
-            CalculateVirusAllChar(character);
+            playerableChars[idx].StartTurn();
+            CalculateVirusAllChar(playerableChars[idx]);
         }
     }
 
@@ -65,10 +65,16 @@ public class BattlePlayerMgr : MonoBehaviour
                     {
                         if (weapon.CheckAvailShot(player.AP, CharacterState.Alert))
                         {
-                            var isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(curMonster.currentTile.accuracy) + player.characterStats.alertAccuracy;
+                            var isHit = false;
+                            if (player.isTankB1Skill)
+                            {
+                                isHit = true;
+                                player.isTankB1Skill = false;
+                            }
+                            else
+                                isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(curMonster.currentTile.accuracy) + player.characterStats.alertAccuracy;
+
                             player.AP -= weapon.GetWeaponAP();
-
-
 
                             if (isHit)
                             {

@@ -37,6 +37,20 @@ public class CharacterStats
     // 2. ¹«°Ô
     public int Weight;
 
+    public int wegiht
+    {
+        get
+        {
+            var buffList = buffMgr.GetBuffList(Stat.Weight);
+            int result = currentHp;
+            foreach (var buff in buffList)
+            {
+                result += (int)buff.GetAmount();
+            }
+            return result;
+        }
+    }
+
     // 3. ¿¹¹ÎÇÔ
     [HideInInspector]
     public int sensivity;
@@ -69,6 +83,9 @@ public class CharacterStats
 
     // 11. ½Ã¾ß ¹üÀ§
     public int sightDistance;
+
+    // 12. move Point
+    public int movePoint;
     // ·¹º§
     [HideInInspector]
     public int level;
@@ -103,7 +120,7 @@ public class CharacterStats
         get
         {
             //Debug.Log(character);
-            var baseHp = Random.Range(character.minHealth, character.maxHealth + 1);
+            var baseHp = Random.Range(character.minHp, character.maxHp + 1);
             var hp = baseHp;
             return hp;
         }
@@ -184,35 +201,19 @@ public class CharacterStats
         currentExp      = 0;
         totalExp        = ScriptableMgr.Instance.GetCharacterExp($"EXP_{level}").totalExp;
         sightDistance = 3;
+        movePoint = 0;
 
-        Weight = character.minHp;
+        Weight = currentHp;
         accuracy = concentration * character.accurRatePerCon;
         critResistRate = willpower * character.critResistRateRise;
-
-        // ¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤
-        // ¦¢       È«¼öÁø_½ºÅÈ¼öÁ¤       ¦¢
-        // ¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡   ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥
-        //          \/
-
-        //           £¯^  \
-        //          / ^w ^ \
-        //¡¡     _ / \ /    ¡¬ _
-        //      / '/ - £Ù -  /  \
-        //     (  (ß²' ìÑ /     |
-        //     |  / ìÑ ¡¬ £þ£þ\ /
-        //      \£ß£ß£ß>. £ß£ß_£¯
-        //¡¡¡¡      £ü(èÝ /  ¡´
-        //          / \' ¦¡_/\
-        //          /  \_£¯¡¡ |
-        //¡¡        £ü¡¡¡¡/ / /
-
-        //alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
         critRate = (willpower / 3) * character.critRateRise;
 
         buffMgr = new BuffMgr();
         skillMgr = new SkillMgr();
 
         VirusPenaltyInit();
+
+        
     }
 
     public void Setting()
@@ -222,24 +223,6 @@ public class CharacterStats
         accuracy = concentration * character.accurRatePerCon;
         critResistRate = willpower * character.critResistRateRise;
 
-        // ¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤
-        // ¦¢       È«¼öÁø_½ºÅÈ¼öÁ¤       ¦¢
-        // ¦¢   °æ°è¸íÁß·ü Áõ°¡·®¾ø¾îÁü    ¦¢
-        // ¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡   ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥
-        //          \/
-
-        //           £¯^  \
-        //          / ^w ^ \
-        //¡¡     _ / \ /    ¡¬ _
-        //      / '/ - £Ù -  /  \
-        //     (  (ß²' ìÑ /     |
-        //     |  / ìÑ ¡¬ £þ£þ\ /
-        //      \£ß£ß£ß>. £ß£ß_£¯
-        //¡¡¡¡      £ü(èÝ /  ¡´
-        //          / \' ¦¡_/\
-        //          /  \_£¯¡¡ |
-        //¡¡        £ü¡¡¡¡/ / /
-        //alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
         critRate = (willpower / 3) * character.critRateRise;
 
         buffMgr = new BuffMgr();
@@ -252,8 +235,13 @@ public class CharacterStats
     {
         // ¹«±â ½ºÅÈ ÃÊ±âÈ­
         weapon.Init();
-        var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
 
+        skillMgr.AddSkill(SkillType.Passive, ScriptableMgr.Instance.passiveSkillList["MED_0002"]);
+        skillMgr.AddSkill(SkillType.Passive, ScriptableMgr.Instance.passiveSkillList["PRO_0001"]);
+        skillMgr.AddSkill(SkillType.Active, ScriptableMgr.Instance.activeSkillList["PRO_0001"]);
+        skillMgr.AddSkill(SkillType.Active, ScriptableMgr.Instance.activeSkillList["HMG_0001"]);
+
+        var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
         foreach (var skill in skillList)
         {
             skill.Invoke(buffMgr);
@@ -281,7 +269,7 @@ public class CharacterStats
 
     private void LevelUp()
     {
-        level++; // ³ªÁß¿¡ ·¹º§¾÷ ½Ã½ºÅÛÀ» ±¸ÃàÇÒ °Í.
+        level++;
         skillMgr.LevelUp();
         currentExp -= totalExp;
         totalExp = ScriptableMgr.Instance.GetCharacterExp($"EXP_{level}").totalExp;
@@ -352,8 +340,11 @@ public class CharacterStats
                 case 2:
                     sensivity += character.senRise;
                     avoidRate = AvoidRate + (sensivity * character.avoidRateRisePerSen);
-                    // 10, 20p ¸¶´Ù ½Ã¾ß 1 Áõ°¡
-                    // 15, 25 ¸¶´Ù mp 1 Áõ°¡
+                    if (sensivity == 10 || sensivity == 20)
+                        sightDistance += 1;
+
+                    if (sensivity == 10 || sensivity == 20)
+                        movePoint += 1;
                     break;
                 case 3:
                     concentration += character.concentrationRise;
@@ -362,25 +353,6 @@ public class CharacterStats
                 case 4:
                     willpower += character.willRise;
                     critResistRate = willpower * character.critResistRateRise;
-                    // ¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤
-                    // ¦¢       È«¼öÁø_½ºÅÈ¼öÁ¤       ¦¢
-                    // ¦¢   °æ°è¸íÁß·ü Áõ°¡·®¾ø¾îÁü    ¦¢
-                    // ¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡   ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥
-                    //          \/
-
-                    //           £¯^  \
-                    //          / ^w ^ \
-                    //¡¡     _ / \ /    ¡¬ _
-                    //      / '/ - £Ù -  /  \
-                    //     (  (ß²' ìÑ /     |
-                    //     |  / ìÑ ¡¬ £þ£þ\ /
-                    //      \£ß£ß£ß>. £ß£ß_£¯
-                    //¡¡¡¡      £ü(èÝ /  ¡´
-                    //          / \' ¦¡_/\
-                    //          /  \_£¯¡¡ |
-                    //¡¡        £ü¡¡¡¡/ / /
-                    //alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
-                    //alertAccuracy = (willpower / 3) * character.alertAccurRateRise;
                     critRate = (willpower / 3) * character.critRateRise;
                     break;
             }

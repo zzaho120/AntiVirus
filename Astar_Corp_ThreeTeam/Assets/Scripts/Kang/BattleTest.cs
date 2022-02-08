@@ -21,7 +21,7 @@ public class BattleTest : MonoBehaviour
     public List<VirusType> monsterVirus;
     public List<int> monsterVirusLevel;
     public List<GameObject> monsterPrefabs;
-
+    public GameObject player;
     public void Init()
     {
         for (var idx = 0; idx < playerPos.Count; ++idx)
@@ -30,6 +30,7 @@ public class BattleTest : MonoBehaviour
             var player = Instantiate(playerPrefab, new Vector3(playerPos[idx].x, .5f, playerPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
             player.transform.SetParent(BattleMgr.Instance.playerMgr.transform);
             player.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            this.player = player;
         }
 
         for (var idx = 0; idx < monsterPos.Count; ++idx)
@@ -65,11 +66,5 @@ public class BattleTest : MonoBehaviour
             monsterChar.monsterStats.virus = ScriptableMgr.Instance.GetVirus(virus);
             monsterChar.monsterStats.virusLevel = monsterVirusLevel[idx];
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

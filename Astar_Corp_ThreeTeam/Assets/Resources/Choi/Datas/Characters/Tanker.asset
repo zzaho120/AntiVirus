@@ -19,12 +19,14 @@ MonoBehaviour:
   name: Tanker
   type: Tanker
   description: Dolguck
+  minHealth: 1
+  maxHealth: 4
+  healthChance: 40
+  helathRise: 2
+  critResistRateRise: 1
   minHp: 100
   maxHp: 120
-  hpChance: 40
   hpRise: 10
-  weight: 70
-  weight_Rise: 20
   mpPenalty1: -1
   mpPenalty2: -2
   mpPenalty3: -3
@@ -44,13 +46,10 @@ MonoBehaviour:
   maxWillpower: 4
   willChance: 40
   willRise: 2
-  alertAccurRateRise: 2
+  firePenaltyDec: 2
   critRateRise: 2
-  critResistRateRise: 1
   minCharCost: 100
   maxCharCost: 300
-  exp: 100
-  resistGauge: 100
   virusDec_Lev0: 10
   virusDec_Lev1: 40
   weapons:

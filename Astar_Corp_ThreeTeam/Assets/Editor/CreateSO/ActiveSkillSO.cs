@@ -34,8 +34,17 @@ public class ActiveSkillSO
                     string[] splitData = line.Split(',');
 
                     ActiveSkill activeSkill = ScriptableObject.CreateInstance<ActiveSkill>();
+                    activeSkill.id = splitData[0];
+                    activeSkill.skillName = splitData[1];
+                    activeSkill.character = splitData[2];
+                    activeSkill.type = splitData[3];
+                    activeSkill.level = int.Parse(splitData[4]);
 
-                    AssetDatabase.CreateAsset(activeSkill, $"Assets//Resources/Choi/Datas/Skills/ActiveSkills/{activeSkill.name}.asset");
+                    activeSkill.AP = int.Parse(splitData[5]);
+                    activeSkill.coolDown = int.Parse(splitData[6]);
+                    activeSkill.value = int.Parse(splitData[7]);
+
+                    AssetDatabase.CreateAsset(activeSkill, $"Assets//Resources/Choi/Datas/Skills/ActiveSkills/{activeSkill.skillName}.asset");
                     activeSkillNum++;
                 }
                 sr.Close();

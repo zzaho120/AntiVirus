@@ -19,12 +19,14 @@ MonoBehaviour:
   name: Bombardier
   type: Bombardier
   description: Junghwagi
+  minHealth: 1
+  maxHealth: 4
+  healthChance: 40
+  helathRise: 2
+  critResistRateRise: 1
   minHp: 90
   maxHp: 110
-  hpChance: 40
   hpRise: 10
-  weight: 100
-  weight_Rise: 20
   mpPenalty1: -1
   mpPenalty2: -2
   mpPenalty3: -3
@@ -44,13 +46,10 @@ MonoBehaviour:
   maxWillpower: 2
   willChance: 10
   willRise: 2
-  alertAccurRateRise: 2
+  firePenaltyDec: 2
   critRateRise: 2
-  critResistRateRise: 1
   minCharCost: 150
   maxCharCost: 300
-  exp: 100
-  resistGauge: 100
   virusDec_Lev0: 10
   virusDec_Lev1: 40
   weapons:
