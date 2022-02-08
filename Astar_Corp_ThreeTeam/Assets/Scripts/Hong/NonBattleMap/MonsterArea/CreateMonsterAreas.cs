@@ -69,7 +69,7 @@ public class CreateMonsterAreas : MonoBehaviour
                 //int virusZone = LayerMask.GetMask("VirusZone");
 
                 // 원 반지름
-                var bigRadius = nonBattleMgr.laboratoryArea.maxVirusZone[labortoryNum].GetComponent<SphereCollider>();
+                var bigRadius = nonBattleMgr.createLabArea.maxVirusZone[labortoryNum].GetComponent<SphereCollider>();
                 var radius = monsterAreaPrefab.GetComponentInChildren<SphereCollider>();
 
                 // 원 중심

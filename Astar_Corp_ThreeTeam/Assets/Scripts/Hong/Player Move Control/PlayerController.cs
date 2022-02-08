@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
     // Time Controller
     [HideInInspector]
     public TimeController timeController;
+    private TextMeshProUGUI timer;
+    public float time;
 
     // Get NavMesh
     private PlayerMove playerMove;
@@ -52,6 +54,7 @@ public class PlayerController : MonoBehaviour
         multiTouch      = GameObject.Find("MultiTouch").GetComponent<MultiTouch>();
         popUpMgr        = nonBattleMgr.GetComponent<PopUpMgr>();
         timeController  = GameObject.Find("TimeController").GetComponent<TimeController>();
+        timer           = timeController.GetComponentInParent<TextMeshProUGUI>();
         playerMove      = GetComponent<PlayerMove>();
         cameraMovement  = Camera.main.GetComponent<CameraDrag>();
         footprintUI     = GameObject.Find("Footprint Info");
@@ -77,9 +80,11 @@ public class PlayerController : MonoBehaviour
             agent.enabled = true;
     }
 
-    //void Update()
     public void PlayerControllerUpdate()
     {
+        time += Time.deltaTime;
+        timer.text = string.Format("{0:N2}", time);
+
         // 조건 정리
         bool terms = !EventSystem.current.IsPointerOverGameObject() && timeController.isPause == false && !cameraMovement.isWorldMapMode;
 
@@ -231,50 +236,56 @@ public class PlayerController : MonoBehaviour
     }
 
     // 몬스터 발자국 정보 출력
-    private void PrintMonsterName(RaycastHit hitInfo)
-    {
-        // Text 정보 가져오기
-        TextMeshProUGUI[] text = GameObject.Find("Footprint Info").GetComponentsInChildren<TextMeshProUGUI>();
-
-        if (hitInfo.collider.name == "Footprint_" + MonsterName.Wolf)
-        {
-            text[1].text = "Wolf";
-        }
-        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Boar)
-        {
-            text[1].text = "Boar";
-        }
-        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Bear)
-        {
-            text[1].text = "Bear";
-        }
-        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Tiger)
-        {
-            text[1].text = "Tiger";
-        }
-        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Jaguar)
-        {
-            text[1].text = "Jaguar";
-        }
-        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Fox)
-        {
-            text[1].text = "Fox";
-        }
-        else if (hitInfo.collider.name == "Footprint_" + MonsterName.Spider)
-        {
-            text[1].text = "Spider";
-        }
-        else
-        {
-            Debug.LogError("뭐지");
-        }
-    }
+    //private void PrintMonsterName(RaycastHit hitInfo)
+    //{
+    //    // Text 정보 가져오기
+    //    TextMeshProUGUI[] text = GameObject.Find("Footprint Info").GetComponentsInChildren<TextMeshProUGUI>();
+    //
+    //    if (hitInfo.collider.name == "Footprint_" + MonsterName.Wolf)
+    //    {
+    //        text[1].text = "Wolf";
+    //    }
+    //    else if (hitInfo.collider.name == "Footprint_" + MonsterName.Boar)
+    //    {
+    //        text[1].text = "Boar";
+    //    }
+    //    else if (hitInfo.collider.name == "Footprint_" + MonsterName.Bear)
+    //    {
+    //        text[1].text = "Bear";
+    //    }
+    //    else if (hitInfo.collider.name == "Footprint_" + MonsterName.Tiger)
+    //    {
+    //        text[1].text = "Tiger";
+    //    }
+    //    else if (hitInfo.collider.name == "Footprint_" + MonsterName.Jaguar)
+    //    {
+    //        text[1].text = "Jaguar";
+    //    }
+    //    else if (hitInfo.collider.name == "Footprint_" + MonsterName.Fox)
+    //    {
+    //        text[1].text = "Fox";
+    //    }
+    //    else if (hitInfo.collider.name == "Footprint_" + MonsterName.Spider)
+    //    {
+    //        text[1].text = "Spider";
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("뭐지");
+    //    }
+    //}
 
     // 전투 씬으로 전환
+
     public void ChangeBattleScene()
     {
         timeController.PauseTime();
         timeController.isPause = false;
         SceneManager.LoadScene("BattleMap");
+    }
+
+    public void TimerReset()
+    {
+        time = 0;
     }
 }

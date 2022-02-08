@@ -13,9 +13,10 @@ public class NonBattleMgr : MonoBehaviour
     public CreateMonsterAreas[] createMonsterArea;
 
     [Header("Public Class")]
-    public CreateLabArea laboratoryArea;
+    public CreateLabArea createLabArea;
     public MonsterPool monsterPool;
     public PlayerController playerController;
+    public GetVirusPenalty getVirusPenalty;
     public WorldMonsterMgr worldMonsterMgr;
 
     private void Awake()
@@ -24,16 +25,21 @@ public class NonBattleMgr : MonoBehaviour
 
         // 클래스 찾기
         var player = GameObject.Find("Player");
-        laboratoryArea = Instance.GetComponent<CreateLabArea>();
+        createLabArea = Instance.GetComponent<CreateLabArea>();
         monsterPool = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
         worldMonsterMgr = GetComponent<WorldMonsterMgr>();
+        getVirusPenalty = player.GetComponentInChildren<GetVirusPenalty>();
         playerController = player.GetComponent<PlayerController>();
     }
 
     private void Start()
     {
         // 클래스들 초기화
-        laboratoryArea.Init();
+        createLabArea.Init();
+        //foreach(var element in createLabArea.laboratoryObjs)
+        //{
+        //    element.GetComponent<LaboratoryInfo>().Init();
+        //}
         for (int i = 0; i < createMonsterArea.Length; i++)
         {
             createMonsterArea[i].Init();
@@ -44,6 +50,11 @@ public class NonBattleMgr : MonoBehaviour
 
     private void Update()
     {
+        //foreach (var element in createLabArea.laboratoryObjs)
+        //{
+        //    element.GetComponent<LaboratoryInfo>().LaboratoryUpdate();
+        //}
+        getVirusPenalty.VirusUpdate();
         playerController.PlayerControllerUpdate();
         worldMonsterMgr.MonsterUpdate();
     }

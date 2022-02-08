@@ -99,8 +99,12 @@ namespace Michsky.UI.ModernUIPack
         {
             normalIcon.sprite = buttonIcon;
             highlightedIcon.sprite = buttonIcon;
-            normalText.text = buttonText;
-            highlightedText.text = buttonText;
+
+            if (normalText != null)
+                normalText.text = buttonText;
+
+            if (highlightedText != null)
+                highlightedText.text = buttonText;
         }
 
         public void CreateRipple(Vector2 pos)

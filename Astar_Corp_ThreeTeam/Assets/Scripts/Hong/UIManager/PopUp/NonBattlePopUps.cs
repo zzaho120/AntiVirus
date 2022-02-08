@@ -4,32 +4,35 @@ using UnityEngine;
 
 public class NonBattlePopUps : GenericWindow
 {
-	public override void Open()
+	// [수정] 시간 남으면.. 버튼 눌렸을 때 맵 정지되도록
+	//TimeController timeController;
+	//
+    //private void Start()
+    //{
+	//	timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
+    //}
+
+    public override void Open()
 	{
 		base.Open();
 	}
 
+	// 맵 Pause 상태 해제
+	//public void StartMapTimer()
+    //{
+	//	timeController.PauseTime();
+	//	timeController.isPause = false;
+	//}
+
 	public void Open(int value)
 	{
 		base.Open();
-
-		//text = GetComponentsInChildren<Text>();
-		//character = GetComponentInParent<InfectedCharTest>();
-		//
-		//PrintCharacterInfo(value);
 	}
 
 	public override void Close()
 	{
 		base.Close();
 	}
-
-	//public void OnNextWindow()
-	//{
-	//	base.OnNextWindow();
-	//}
-
-	//public WindowManager manager;
 
 	public void StartDoubleWindow()
 	{
