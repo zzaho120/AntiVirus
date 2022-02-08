@@ -2,8 +2,7 @@ Shader "Custom/Mask"
 {
     SubShader
     {
-        Tags{"Queue" = "Transparent+1"}
-
+        Tags{"Queue" = "Transparent+21"}
         Pass
         {
             Blend Zero One

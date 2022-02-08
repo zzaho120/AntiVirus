@@ -66,6 +66,11 @@ public class TileBase : MonoBehaviour
         {
             hint.hintObj.GetComponent<MeshRenderer>().enabled = isEnabled;
         }
+
+        if (fogTile != null)
+            fogTile.SetActive(!isEnabled);
+        else
+            Debug.Log(name);
     }
 
     public void SetHighlight()
