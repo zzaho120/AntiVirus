@@ -7,9 +7,11 @@ public class TileMgr : MonoBehaviour
 {
     public GameObject tiles;
     public GameObject walls;
+    public GameObject fogs;
 
     public GameObject tilePrefab;
     public GameObject wallPrefab;
+    public GameObject fogPrefab;
 
     public Dictionary<Vector3, TileBase> tileDics = new Dictionary<Vector3, TileBase>();
     public Dictionary<Vector3, TileBase> wallDics = new Dictionary<Vector3, TileBase>();
@@ -33,7 +35,12 @@ public class TileMgr : MonoBehaviour
                 tileBase.Init(this);
 
                 tileDics.Add(tileBase.tileIdx, tileBase);
+
+                var fog = Instantiate(fogPrefab, fogs.transform);
+                fog.transform.position = tileBase.transform.position + new Vector3(0, 1);
+                tileBase.fogTile = fog.gameObject;
             }
+
         }
 
         parentCount = walls.transform.childCount;

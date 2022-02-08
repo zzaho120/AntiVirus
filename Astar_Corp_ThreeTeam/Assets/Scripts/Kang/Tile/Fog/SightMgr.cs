@@ -40,9 +40,9 @@ public class SightTileBase
 
 public class SightMgr : MonoBehaviour
 {
-    // ÇÕÃÄ³õÀº Å¸ÀÏ
-    // keyÀÇ x´Â vector3ÀÇ x
-    // keyÀÇ y´Â vector3ÀÇ z
+    // í•©ì³ë†“ì€ íƒ€ì¼
+    // keyì˜ xëŠ” vector3ì˜ x
+    // keyì˜ yëŠ” vector3ì˜ z
     public Dictionary<Vector2, List<SightTileBase>> totalSightDics =
         new Dictionary<Vector2, List<SightTileBase>>();
 
@@ -72,6 +72,7 @@ public class SightMgr : MonoBehaviour
         monsters = BattleMgr.Instance.monsterMgr.monsters;
         MAX_X_IDX = TileMgr.MAX_X_IDX;
         MAX_Z_IDX = TileMgr.MAX_Z_IDX;
+
         InitFog();
     }
 

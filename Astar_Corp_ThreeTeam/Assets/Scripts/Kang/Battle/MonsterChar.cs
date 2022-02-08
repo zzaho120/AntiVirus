@@ -18,6 +18,8 @@ public class MonsterChar : BattleTile
     public bool isSelect;
     public List<GameObject> renList;
 
+    public Animator animator;
+
     private int cumulativeDmg;
     private PlayerableChar lastAttacker;
 
@@ -36,6 +38,7 @@ public class MonsterChar : BattleTile
         monsterStats.Init();
         fsm = new BattleMonsterFSM();
         fsm.Init(this);
+        animator = GetComponent<Animator>();
     }
 
     public void StartTurn()
@@ -47,6 +50,7 @@ public class MonsterChar : BattleTile
 
     public void GetDamage(PlayerableChar player, bool isCrit)
     {
+        animator.SetTrigger("Damaged");
         lastAttacker = player;
         var hp = monsterStats.currentHp;
         var dmg = 0;
@@ -173,6 +177,7 @@ public class MonsterChar : BattleTile
 
     public IEnumerator CoMove(int Ap1ByMp, Vector3 destTile)
     {
+        animator.SetBool("Run", true);
         var pathMgr = BattleMgr.Instance.pathMgr;
         var printIdx = 0;
 
@@ -185,7 +190,6 @@ public class MonsterChar : BattleTile
 
         var idx = 1;
         var moveIdx = 0;
-
         var compareIdx = Mathf.Abs(destTile.x) + Mathf.Abs(destTile.z);
         while (Mathf.Abs(tileIdx.x) + Mathf.Abs(tileIdx.z) + monsterStats.AtkRange != compareIdx)
         {
@@ -205,8 +209,8 @@ public class MonsterChar : BattleTile
             else
                 break;
 
-            if (!MoveTile(nextTile.tileBase.tileIdx))
-                break;
+            //if (!MoveTile(nextTile.tileBase.tileIdx))
+            //    break;
 
             if (moveIdx == 0)
                 monsterStats.currentAp--;
@@ -221,10 +225,12 @@ public class MonsterChar : BattleTile
             if (target == null)
                 SetTarget(sightMgr.GetPlayerInMonsterSight(monsterIdx));
 
-            if (isInSight)
-                yield return new WaitForSeconds(0.1f);
-            else
-                yield return null;
+            //if (isInSight)
+            //    yield return new WaitForSeconds(0.1f);
+            //else
+            //    yield return null;
+
+            yield return MoveTile(nextTile.tileBase.tileIdx);
         }
 
         if (moveIdx > 0)
@@ -232,24 +238,39 @@ public class MonsterChar : BattleTile
 
         isMoved = true;
 
+        animator.SetBool("Run", false);
+        animator.SetTrigger("Idle");
+
         if (monsterStats.originMaxHp > monsterStats.currentHp)
             CreateHint(HintType.Bloodprint, currentTile.tileIdx);
     }
 
-    public bool MoveTile(Vector3 nextIdx)
+    public IEnumerator MoveTile(Vector3 nextIdx)
     {
         foreach (var tile in currentTile.adjNodes)
         {
             if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
             {
-                if (tile.charObj != null && tile.charObj.CompareTag("BattlePlayer"))
-                    return false;
+                //if (tile.charObj != null && tile.charObj.CompareTag("BattlePlayer"))
+                //    return false;
+                var dir = (currentTile.tileIdx - nextIdx).normalized;
+
+                var rotY = 0;
+                if (dir.x > 0)
+                    rotY = 270;
+                else if (dir.x < 0)
+                    rotY = 90;
+                else if (dir.z > 0)
+                    rotY = 180;
+                else if (dir.z < 0)
+                    rotY = 0;
+                transform.rotation = Quaternion.Euler(0f, rotY, 0f);
 
                 currentTile.charObj = null;
                 tileIdx = nextIdx;
                 currentTile = tile;
                 currentTile.charObj = gameObject;
-                transform.position = new Vector3(tile.tileIdx.x, tile.tileIdx.y + 0.5f, tile.tileIdx.z);
+                yield return StartCoroutine(CoMoveChar(nextIdx + new Vector3(0f, 0.5f, 0f)));
             }
         }
 
@@ -263,9 +284,19 @@ public class MonsterChar : BattleTile
             }
         }
 
-        return true;
+        //return true;
     }
-
+    private IEnumerator CoMoveChar(Vector3 nextIdx)
+    {
+        var origin = transform.position;
+        var timer = 0f;
+        while (timer < 1)
+        {
+            timer += Time.deltaTime * 5;
+            transform.position = Vector3.Lerp(origin, nextIdx, timer);
+            yield return null;
+        }
+    }
     private void CreateHint(HintType hintType, Vector3 nextIdx)
     {
         var directionIdx = nextIdx - currentTile.tileIdx;
