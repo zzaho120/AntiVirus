@@ -22,6 +22,13 @@ public class AgitMgr : MonoBehaviour
     public GameObject belowUI;
     public GameObject characterListUpperUI;
 
+    [Header("CharacterList Win")]
+    public List<GameObject> chracterListMenus;
+    public GameObject statePrefab;
+    public GameObject equipPrefab;
+    public GameObject abilityPrefab;
+    int characterListMenu;
+
     [Header("Upgrade Win")]
     public Text agitLevelTxt;
     public Text capacityTxt;
@@ -193,6 +200,17 @@ public class AgitMgr : MonoBehaviour
         }
     }
 
+    public void SelectMenu(int index)
+    {
+        if (characterListMenu != -1)
+        {
+            chracterListMenus[characterListMenu].GetComponent<Image>().color = Color.white;
+        }
+
+        characterListMenu = index;
+        chracterListMenus[characterListMenu].GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255);
+    }
+
     public void RefreshCharacterList()
     {
         //이전 정보 삭제.
@@ -212,7 +230,7 @@ public class AgitMgr : MonoBehaviour
         int i = 0;
         foreach (var element in playerDataMgr.currentSquad)
         {
-            var go = Instantiate(characterPrefab, characterListContent.transform);
+            var go = Instantiate(statePrefab, characterListContent.transform);
 
             var child = go.transform.GetChild(0).gameObject;
             child.transform.GetChild(1).gameObject.GetComponent<Text>().text
@@ -223,24 +241,40 @@ public class AgitMgr : MonoBehaviour
                  = element.Value.character.name;
 
             child = go.transform.GetChild(2).gameObject;
-            child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite
-                = (element.Value.weapon.mainWeapon != null) ?
-                element.Value.weapon.mainWeapon.img : null;
-            child.transform.GetChild(1).gameObject.GetComponent<Text>().text
-                 = (element.Value.weapon.mainWeapon != null) ?
-                 element.Value.weapon.mainWeapon.name : "비어있음";
-
-            child = go.transform.GetChild(3).gameObject;
             child.transform.GetChild(0).gameObject.GetComponent<Text>().text
                  = element.Value.character.name;
 
-            child = go.transform.GetChild(4).gameObject;
+            child = go.transform.GetChild(3).gameObject;
             child.transform.GetChild(0).gameObject.GetComponent<Text>().text
                  = $"{element.Value.currentHp}/{element.Value.MaxHp}";
-            child.transform.GetChild(1).gameObject.GetComponent<Slider>().maxValue
-                = element.Value.MaxHp;
-            child.transform.GetChild(1).gameObject.GetComponent<Slider>().value
-                = element.Value.currentHp;
+
+            var slider = child.transform.GetChild(1).gameObject.GetComponent<Slider>();
+            slider.maxValue = element.Value.MaxHp;
+            slider.value = element.Value.currentHp;
+
+            var virusGroup = child.transform.GetChild(2).gameObject;
+            string[] virusName = new string[5];
+            virusName[0] = "E";
+            virusName[1] = "B";
+            virusName[2] = "P";
+            virusName[3] = "I";
+            virusName[4] = "T";
+
+            for (int j = 0; j < virusName.Length; j++)
+            {
+                if (element.Value.virusPenalty[virusName[j]].penaltyLevel >= 1)
+                    virusGroup.transform.GetChild(j).gameObject.SetActive(true);
+                else virusGroup.transform.GetChild(j).gameObject.SetActive(false);
+            }
+
+            child = go.transform.GetChild(4).gameObject;
+            var toleranceGroup = child.transform.GetChild(0).gameObject;
+            for (int j = 0; j < virusName.Length; j++)
+            {
+                child = toleranceGroup.transform.GetChild(j).gameObject;
+                child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                    = $"Lv {element.Value.virusPenalty[virusName[j]].reductionLevel}";
+            }
 
             int num = i;
             var button = go.AddComponent<Button>();
@@ -265,12 +299,14 @@ public class AgitMgr : MonoBehaviour
     {
         if (currentIndex + 1 == playerDataMgr.currentSquad.Count) return;
         ChangeCharacter(currentIndex + 1);
+        OpenCharacterInfo();
     }
 
     public void PreviousCharacter()
     {
         if (currentIndex - 1 < 0) return;
         ChangeCharacter(currentIndex - 1);
+        OpenCharacterInfo();
     }
 
     void ChangeCharacter(int index)
@@ -525,6 +561,7 @@ public class AgitMgr : MonoBehaviour
     {
         mainWin.SetActive(false);
         characterListUpperUI.SetActive(true);
+        characterListMenu = -1;
         charcterListWin.SetActive(true);
     }
 
@@ -602,7 +639,7 @@ public class AgitMgr : MonoBehaviour
         hpText.text = $"{character.currentHp}";
         //나중에 수정해야됨.
         weightTxt.text = $"{character.Weight + playerDataMgr.bagList["BAG_0001"].weight}";
-        mpTxt.text = $"0";
+        mpTxt.text = $"3";
 
         sightTxt.text = $"{character.sightDistance}";
         accuracyTxt.text = $"{character.accuracy}";

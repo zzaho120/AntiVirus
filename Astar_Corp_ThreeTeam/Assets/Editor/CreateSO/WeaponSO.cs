@@ -76,6 +76,8 @@ public class WeaponSO
                     //equippable.img = Resources.Load<Sprite>($"Choi/Sprites/Images/Items/Weapons/{splitData[26]}");
                     equippable.img = Resources.Load($"Choi/Sprites/Images/Items/Weapons/{splitData[26]}", typeof(Sprite)) as Sprite;
                     equippable.bulletType = int.Parse(splitData[27]);
+                    equippable.reloadBullet = int.Parse(splitData[28]);
+                    equippable.continuousShootingPenalty = int.Parse(splitData[29]);
 
                     //// Item 정보 담고 있는 List
                     //List<string> itemInfo = new List<string>();

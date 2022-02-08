@@ -955,8 +955,6 @@ public class StoreMgr : MonoBehaviour
         DisplayStoreItem(currentMode);
 
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
-
-        storeObjs[currentStoreKey].GetComponent<Image>().color = Color.white;
         currentStoreKey = -1;
     }
 

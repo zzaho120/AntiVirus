@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Text;
 
 public enum EquipKind
 { 
@@ -38,6 +39,17 @@ public class EquipmentMgr : MonoBehaviour
     public Image changeWeaponImg;
 
     [Header("Detail Win")]
+    public GameObject weaponImg;
+    public Text damageTxt;
+    public Text criTxt;
+    public Text bulletTypeTxt;
+    public Text loadTxt;
+    public Text clipTxt;
+    public Text shotTxt;
+    public Text accuracyTxt;
+    public Text continuousShotTxt;
+    public Text recoilTxt;
+
     public Text weaponName;
     public Text typeNameTxt;
     public Text accuracyNumTxt;
@@ -71,16 +83,19 @@ public class EquipmentMgr : MonoBehaviour
         if (currentKind == EquipKind.MainWeapon) weaponKind = 1;
         else if (currentKind == EquipKind.SubWeapon) weaponKind = 2;
 
-        //1.Handgun 6 
-        //2.SG 2
-        //3.SMG 3
-        //4.AR 1
-        //5.LMG 4
-        //6.SR 5
-        //7.근접무기 6
-        if (weaponType != -1)
+        //0.All
+        //1.AR 
+        //2.SG
+        //3.SMG
+        //4.LMG
+        //5.SR
+        //6.ETC
+
+        //초기화.
+        foreach(var element in menuObjs)
         {
-            menuObjs[weaponType].GetComponent<Image>().color = Color.white;
+            if(element.GetComponent<Image>().color != Color.white) 
+                element.GetComponent<Image>().color = Color.white;
         }
         weaponType = index;
         menuObjs[weaponType].GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255);
@@ -94,29 +109,76 @@ public class EquipmentMgr : MonoBehaviour
             itemListContents.transform.DetachChildren();
             itemObjs.Clear();
         }
-        
+
+        //0.All
+        //1.AR 
+        //2.SG
+        //3.SMG
+        //4.LMG
+        //5.SR
+        //6.ETC
+        int weaponKindIndex = -1;
+        switch (index)
+        {
+            case 1:
+                weaponKindIndex = 4;
+                break;
+            case 2:
+                weaponKindIndex = 2;
+                break;
+            case 3:
+                weaponKindIndex = 3;
+                break;
+            case 4:
+                weaponKindIndex = 5;
+                break;
+            case 5:
+                weaponKindIndex = 6;
+                break;
+            case 6:
+                weaponKindIndex = 7;
+                break;
+        }
+
         switch (weaponKind)
         {
             case 1:
-                if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
+                var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
+                bool condition = true;
+                //if (index != 0 && index != 6 && weapon != null)
+                //{
+                //    if (int.Parse(weapon.kind) != weaponKindIndex)
+                //    {
+                //        condition = false;                    
+                //    }
+                //}
+                //if (weaponKindIndex == 7 && weapon != null)
+                //{
+                //    if (!(int.Parse(weapon.kind) == 1 || int.Parse(weapon.kind) == 7))
+                //    {
+                //        condition = false;
+                //    }
+                //}
+
+                if (weapon != null && condition)
                 {
-                    var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
                     var go = Instantiate(itemPrefab, itemListContents.transform);
 
-                    var child = go.transform.GetChild(4).gameObject;
+                    var child = go.transform.GetChild(5).gameObject;
                     var button = child.AddComponent<Button>();
-                    button.onClick.AddListener(delegate { SelectItem("mainWeapon"); });
+                    string key = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.id;
+                    button.onClick.AddListener(delegate { SelectItem(key); });
 
                     go.GetComponent<Image>().sprite = weapon.img;
 
                     child = go.transform.GetChild(0).gameObject;
                     var childObj = child.transform.GetChild(1).gameObject;
                     string type = GetTypeStr(weapon.kind);
-                    childObj.transform.GetChild(0).GetComponent<Text>().text = $"{type}";
+                    childObj.GetComponent<Text>().text = $"{type}";
 
                     child = go.transform.GetChild(1).gameObject;
                     childObj = child.transform.GetChild(1).gameObject;
-                    childObj.transform.GetChild(0).GetComponent<Text>().text =
+                    childObj.GetComponent<Text>().text =
                         (weapon.bulletType == 0) ? "-" : $"{GetBulletType(weapon.bulletType)}";
 
                     child = go.transform.GetChild(2).gameObject;
@@ -128,32 +190,51 @@ public class EquipmentMgr : MonoBehaviour
                     child = go.transform.GetChild(4).gameObject;
                     child.GetComponent<Text>().text = $"{weapon.name}";
 
-                    child = go.transform.GetChild(5).gameObject;
+                    child = go.transform.GetChild(6).gameObject;
                     child.SetActive(false);
 
-                    itemObjs.Add("mainWeapon", go);
+                    itemObjs.Add(key, go);
                 }
                 break;
+
             case 2:
-                if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null)
+                weapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
+
+                condition = true;
+                //if (index != 0 && index != 6 && weapon != null)
+                //{
+                //    if (int.Parse(weapon.kind) != weaponKindIndex)
+                //    {
+                //        condition = false;
+                //    }
+                //}
+                //if (weaponKindIndex == 7 && weapon != null)
+                //{
+                //    if (!(int.Parse(weapon.kind) == 1 || int.Parse(weapon.kind) == 7))
+                //    {
+                //        condition = false;
+                //    }
+                //}
+
+                if (weapon != null && condition)
                 {
-                    var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
                     var go = Instantiate(itemPrefab, itemListContents.transform);
 
-                    var child = go.transform.GetChild(4).gameObject;
+                    var child = go.transform.GetChild(5).gameObject;
                     var button = child.AddComponent<Button>();
-                    button.onClick.AddListener(delegate { SelectItem("subWeapon"); });
+                    string key = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.id;
+                    button.onClick.AddListener(delegate { SelectItem(key); });
 
                     go.GetComponent<Image>().sprite = weapon.img;
 
                     child = go.transform.GetChild(0).gameObject;
                     var childObj = child.transform.GetChild(1).gameObject;
                     string type = GetTypeStr(weapon.kind);
-                    childObj.transform.GetChild(0).GetComponent<Text>().text = $"{type}";
+                    childObj.GetComponent<Text>().text = $"{type}";
 
                     child = go.transform.GetChild(1).gameObject;
                     childObj = child.transform.GetChild(1).gameObject;
-                    childObj.transform.GetChild(0).GetComponent<Text>().text =
+                    childObj.GetComponent<Text>().text =
                         (weapon.bulletType == 0) ? "-" : $"{GetBulletType(weapon.bulletType)}";
 
                     child = go.transform.GetChild(2).gameObject;
@@ -165,10 +246,10 @@ public class EquipmentMgr : MonoBehaviour
                     child = go.transform.GetChild(4).gameObject;
                     child.GetComponent<Text>().text = $"{weapon.name}";
 
-                    child = go.transform.GetChild(5).gameObject;
+                    child = go.transform.GetChild(6).gameObject;
                     child.SetActive(false);
 
-                    itemObjs.Add("subWeapon", go);
+                    itemObjs.Add(key, go);
                 }
                 break;
         }
@@ -176,24 +257,33 @@ public class EquipmentMgr : MonoBehaviour
         foreach (var element in playerDataMgr.currentEquippables)
         {
             if (weaponKind != int.Parse(element.Value.type)) continue;
-            if (index != 0 && index != 7 &&  int.Parse(element.Value.kind) != index) continue;
-            if (index == 7 && (int.Parse(element.Value.kind) != 1 || int.Parse(element.Value.kind) != 7)) continue;
+            if (index != 0 && index != 6)
+            {
+                if (int.Parse(element.Value.kind) != weaponKindIndex) continue;
+            }
+            if (weaponKindIndex == 7)
+            {
+                if (!(int.Parse(element.Value.kind) == 1 || int.Parse(element.Value.kind) == 7)) continue;
+            }
+            
             string type = GetTypeStr(element.Value.kind);
 
             var go = Instantiate(itemPrefab, itemListContents.transform);
-            var child = go.transform.GetChild(4).gameObject;
-            var button = child.AddComponent<Button>();
-            button.onClick.AddListener(delegate { SelectItem(element.Key); });
 
+            var child = go.transform.GetChild(5).gameObject;
+            var button = child.AddComponent<Button>();
+            string key = element.Key;
+            button.onClick.AddListener(delegate { SelectItem(key); });
+           
             go.GetComponent<Image>().sprite = element.Value.img;
 
             child = go.transform.GetChild(0).gameObject;
             var childObj = child.transform.GetChild(1).gameObject;
-            childObj.transform.GetChild(0).GetComponent<Text>().text = $"{type}";
+            childObj.GetComponent<Text>().text = $"{type}";
 
             child = go.transform.GetChild(1).gameObject;
             childObj = child.transform.GetChild(1).gameObject;
-            childObj.transform.GetChild(0).GetComponent<Text>().text =
+            childObj.GetComponent<Text>().text =
                 (element.Value.bulletType == 0) ? "-" : $"{GetBulletType(element.Value.bulletType)}";
 
             child = go.transform.GetChild(2).gameObject;
@@ -205,7 +295,7 @@ public class EquipmentMgr : MonoBehaviour
             child = go.transform.GetChild(4).gameObject;
             child.GetComponent<Text>().text = $"{element.Value.name}";
 
-            child = go.transform.GetChild(5).gameObject;
+            child = go.transform.GetChild(6).gameObject;
             child.SetActive(false);
 
             itemObjs.Add(element.Key, go);
@@ -309,30 +399,283 @@ public class EquipmentMgr : MonoBehaviour
 
     public void SelectItem(string key)
     {
-        if (currentKey != null)
+        if (currentKey != null && itemObjs.ContainsKey(currentKey))
         {
-            var child = itemObjs[currentKey].transform.GetChild(6).gameObject;
+            var child = itemObjs[currentKey].transform.GetChild(5).gameObject;
+            child.GetComponent<Button>().enabled = true;
             child.GetComponent<Image>().color = Color.white;
+
+            child = itemObjs[currentKey].transform.GetChild(6).gameObject;
+            child.SetActive(false);
         }
 
         currentKey = key;
-        var childObj = itemObjs[currentKey].transform.GetChild(6).gameObject;
-        childObj.GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255); ;
+        var childObj = itemObjs[currentKey].transform.GetChild(5).gameObject;
+        childObj.GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255);
 
-        OpenWeaponInfo();
+        childObj = itemObjs[currentKey].transform.GetChild(6).gameObject;
+        childObj.SetActive(true);
+        var button = childObj.GetComponent<Button>();
+
+        var weapon = playerDataMgr.equippableList[currentKey];
+        bool isEquip = false;
+        switch (currentKind)
+        {
+            case EquipKind.MainWeapon:
+                if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null
+                    && playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name.Equals(weapon.name))
+                    isEquip = true;
+                break;
+            case EquipKind.SubWeapon:
+                if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null
+                    && playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.name.Equals(weapon.name))
+                    isEquip = true;
+                break;
+        }
+
+        if (isEquip)
+        {
+            childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text = "장착 해제";
+
+            childObj = itemObjs[currentKey].transform.GetChild(5).gameObject;
+            childObj.GetComponent<Button>().enabled = false;
+            button.onClick.AddListener(() => { Disarm(); });
+            OpenWeaponInfo(isEquip);
+        }
+        else
+        {
+            childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text = "장착";
+
+            childObj = itemObjs[currentKey].transform.GetChild(5).gameObject;
+            childObj.GetComponent<Button>().enabled = false;
+            button.onClick.AddListener(() => { Equip(); });
+            OpenWeaponInfo(isEquip);
+        }
     }
 
-    public void OpenWeaponInfo()
+    public void OpenWeaponInfo(bool isEquip)
     {
-        if(!detailWin.activeSelf) detailWin.SetActive(true);
-        if (!SpecCompareWin.activeSelf) SpecCompareWin.SetActive(true);
+        var weapon = playerDataMgr.equippableList[currentKey];
+        Weapon equipedWeapon = null; 
+        switch (currentKind)
+        {
+            case EquipKind.MainWeapon:
+                equipedWeapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
+                break;
+            case EquipKind.SubWeapon:
+                equipedWeapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
+                break;
+        }
 
-        RefreshSpec();
+        //Detail Info.
+        if (equipedWeapon != null && !equipedWeapon.name.Equals(weapon.name))
+        {
+            damageTxt.text = $"{weapon.minDamage}-{weapon.maxDamage}";
+
+            int criDiff =  weapon.critRate - equipedWeapon.critRate;
+            if (criDiff > 0)
+            {
+                criTxt.color = Color.green;
+                criTxt.text = $"{weapon.critRate}%({criDiff}%▲)";
+            }
+            else if (criDiff < 0)
+            {
+                criTxt.color = Color.red;
+                criTxt.text = $"{weapon.critRate}%({criDiff}%▼)";
+            }
+            else
+            {
+                criTxt.color = Color.black;
+                criTxt.text = $"{weapon.critRate}%(-)";
+            }
+
+            bulletTypeTxt.text = (weapon.bulletType == 0) ? "-" : $"{GetBulletType(weapon.bulletType)}";
+
+            int loadDiff =  weapon.reloadBullet- equipedWeapon.reloadBullet;
+            if (loadDiff > 0)
+            {
+                loadTxt.color = Color.red;
+                loadTxt.text = $"{weapon.reloadBullet}({loadDiff}▲)";
+            }
+            else if (loadDiff < 0)
+            {
+                loadTxt.color = Color.green;
+                loadTxt.text = $"{weapon.reloadBullet}({loadDiff}▼)";
+            }
+            else
+            {
+                loadTxt.color = Color.black;
+                loadTxt.text = $"{weapon.reloadBullet}(-)";
+            }
+
+            int clipDiff = weapon.bullet - equipedWeapon.bullet;
+            if (clipDiff > 0)
+            {
+                clipTxt.color = Color.green;
+                clipTxt.text = $"{weapon.bullet}({clipDiff}▲)";
+            }
+            else if (clipDiff < 0)
+            {
+                clipTxt.color = Color.red;
+                clipTxt.text = $"{weapon.bullet}({clipDiff}▼)";
+            }
+            else
+            {
+                clipTxt.color = Color.black;
+                clipTxt.text = $"{weapon.bullet}(-)";
+            }
+
+            int shotDiff =  weapon.firstShotAp - equipedWeapon.firstShotAp;
+            StringBuilder shotGauge = new StringBuilder();
+            for (int i = 0; i < weapon.firstShotAp; i++) shotGauge.Append("■");
+            for (int i = weapon.firstShotAp; i < 5; i++) shotGauge.Append("□");
+
+            if (shotDiff > 0) shotTxt.color = Color.red;
+            else if (shotDiff < 0) shotTxt.color = Color.green;
+            else shotTxt.color = Color.black;
+            shotTxt.text = $"{shotGauge.ToString()}";
+
+            int accuracyDiff =  weapon.accurRateBase - equipedWeapon.accurRateBase;
+            if (accuracyDiff > 0)
+            {
+                accuracyTxt.color = Color.green;
+                accuracyTxt.text = $"{weapon.accurRateBase}%({accuracyDiff}%▲)";
+            }
+            else if (accuracyDiff < 0)
+            {
+                accuracyTxt.color = Color.red;
+                accuracyTxt.text = $"{weapon.accurRateBase}%({accuracyDiff}%▼)";
+            }
+            else
+            {
+                accuracyTxt.color = Color.black;
+                accuracyTxt.text = $"{weapon.accurRateBase}%(-)";
+            }
+
+            int continuousShotDiff =  weapon.otherShotAp - equipedWeapon.otherShotAp;
+            StringBuilder continuousShotGauge = new StringBuilder();
+            for (int i = 0; i < weapon.otherShotAp; i++) continuousShotGauge.Append("■");
+            for (int i = weapon.otherShotAp; i < 5; i++) continuousShotGauge.Append("□");
+
+            if (continuousShotDiff > 0) continuousShotTxt.color = Color.red;
+            else if (continuousShotDiff < 0) continuousShotTxt.color = Color.green;
+            else continuousShotTxt.color = Color.black;
+            continuousShotTxt.text = $"{continuousShotGauge.ToString()}";
+
+            int recoilDiff =  weapon.continuousShootingPenalty - equipedWeapon.continuousShootingPenalty;
+            if (recoilDiff > 0)
+            {
+                recoilTxt.color = Color.red;
+                recoilTxt.text = $"{weapon.continuousShootingPenalty}%({recoilDiff}%▲)";
+            }
+            else if (recoilDiff < 0)
+            {
+                recoilTxt.color = Color.green;
+                recoilTxt.text = $"{weapon.continuousShootingPenalty}%({recoilDiff}%▼)";
+            }
+            else
+            {
+                recoilTxt.color = Color.black;
+                recoilTxt.text = $"{weapon.continuousShootingPenalty}%(-)";
+            }
+        }
+        else
+        {
+            damageTxt.text = $"{weapon.minDamage}-{weapon.maxDamage}";
+
+            criTxt.color = Color.black;
+            criTxt.text = $"{weapon.critRate}%";
+
+            bulletTypeTxt.text = (weapon.bulletType == 0) ? "-" : $"{GetBulletType(weapon.bulletType)}";
+
+            loadTxt.color = Color.black;
+            loadTxt.text = $"{weapon.reloadBullet}";
+
+            clipTxt.color = Color.black;
+            clipTxt.text = $"{weapon.bullet}";
+
+            StringBuilder shotStr = new StringBuilder();
+            for (int i = 0; i < weapon.firstShotAp; i++) shotStr.Append("■");
+            for (int i = weapon.firstShotAp; i < 5; i++) shotStr.Append("□");
+            shotTxt.color = Color.black;
+            shotTxt.text = $"{shotStr.ToString()}";
+
+            accuracyTxt.color = Color.black;
+            accuracyTxt.text = $"{weapon.accurRateBase}%";
+
+            StringBuilder continuousShotStr = new StringBuilder();
+            for (int i = 0; i < weapon.otherShotAp; i++) continuousShotStr.Append("■");
+            for (int i = weapon.otherShotAp; i < 5; i++) continuousShotStr.Append("□");
+            continuousShotTxt.color = Color.black;
+            continuousShotTxt.text = $"{continuousShotStr.ToString()}";
+
+            recoilTxt.color = Color.black;
+            recoilTxt.text = $"{weapon.continuousShootingPenalty}%";
+        }
+
+
+        if (isEquip)
+        {
+            weaponImg.GetComponent<Image>().sprite = weapon.img;
+
+            var child = weaponImg.transform.GetChild(0).gameObject;
+            var childObj = child.transform.GetChild(1).gameObject;
+            string type = GetTypeStr(weapon.kind);
+            childObj.GetComponent<Text>().text = $"{type}";
+
+            child = weaponImg.transform.GetChild(1).gameObject;
+            childObj = child.transform.GetChild(1).gameObject;
+            childObj.GetComponent<Text>().text =
+                (weapon.bulletType == 0) ? "-" : $"{GetBulletType(weapon.bulletType)}";
+
+            child = weaponImg.transform.GetChild(2).gameObject;
+            child.SetActive(true);
+
+            child = weaponImg.transform.GetChild(3).gameObject;
+            child.SetActive(false);
+
+            child = weaponImg.transform.GetChild(4).gameObject;
+            child.GetComponent<Text>().text = $"{weapon.name}";
+
+            child = weaponImg.transform.GetChild(6).gameObject;
+            child.SetActive(false);
+        }
+        else
+        {
+            weaponImg.GetComponent<Image>().sprite = weapon.img;
+
+            var child = weaponImg.transform.GetChild(0).gameObject;
+            var childObj = child.transform.GetChild(1).gameObject;
+            string type = GetTypeStr(weapon.kind);
+            childObj.GetComponent<Text>().text = $"{type}";
+
+            child = weaponImg.transform.GetChild(1).gameObject;
+            childObj = child.transform.GetChild(1).gameObject;
+            childObj.GetComponent<Text>().text =
+                (weapon.bulletType == 0) ? "-" : $"{GetBulletType(weapon.bulletType)}";
+
+            child = weaponImg.transform.GetChild(2).gameObject;
+            child.SetActive(false);
+
+            child = weaponImg.transform.GetChild(3).gameObject;
+            child.GetComponent<Text>().text = $"X {playerDataMgr.currentEquippablesNum[currentKey]}";
+
+            child = weaponImg.transform.GetChild(4).gameObject;
+            child.GetComponent<Text>().text = $"{weapon.name}";
+
+            child = weaponImg.transform.GetChild(6).gameObject;
+            child.SetActive(false);
+        }
+
+        if (!detailWin.activeSelf) detailWin.SetActive(true);
+        //if (!SpecCompareWin.activeSelf) SpecCompareWin.SetActive(true);
+
+        //RefreshSpec();
     }
 
     public void Equip()
     {
-        var weaponType = playerDataMgr.equippableList[currentKey].type;
+        var weaponType = playerDataMgr.equippableList[currentKey].kind;
         if (!playerDataMgr.currentSquad[currentIndex].character.weapons.Contains(weaponType))
             return;
 
@@ -347,10 +690,10 @@ public class EquipmentMgr : MonoBehaviour
             mainWeaponImg.sprite = weapon.img;
             agitMgr.mainWeaponImg.sprite = weapon.img;
 
-            var go = agitMgr.characterObjs[currentIndex];
-            var child = go.transform.GetChild(2).gameObject;
-            child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = mainWeaponImg.sprite;
-            child.transform.GetChild(1).gameObject.GetComponent<Text>().text = weapon.name;
+            //var go = agitMgr.characterObjs[currentIndex];
+            //var child = go.transform.GetChild(2).gameObject;
+            //child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = mainWeaponImg.sprite;
+            //child.transform.GetChild(1).gameObject.GetComponent<Text>().text = weapon.name;
 
             //json.
             var id = currentKey;
@@ -440,10 +783,10 @@ public class EquipmentMgr : MonoBehaviour
                 mainWeaponImg.sprite = null;
                 mainWeaponTxt.text = "비어있음";
 
-                var go = agitMgr.characterObjs[currentIndex];
-                var child = go.transform.GetChild(2).gameObject;
-                child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = null;
-                child.transform.GetChild(1).gameObject.GetComponent<Text>().text = "비어있음";
+                //var go = agitMgr.characterObjs[currentIndex];
+                //var child = go.transform.GetChild(2).gameObject;
+                //child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = null;
+                //child.transform.GetChild(1).gameObject.GetComponent<Text>().text = "비어있음";
                 break;
             case EquipKind.SubWeapon:
                 subWeaponImg.sprite = null;
@@ -462,6 +805,13 @@ public class EquipmentMgr : MonoBehaviour
             var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
             playerDataMgr.saveData.mainWeapon[currentIndex] = null;
             playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon = null;
+            mainWeaponImg.sprite = null;
+            agitMgr.mainWeaponImg.sprite = null;
+
+            //var go = agitMgr.characterObjs[currentIndex];
+            //var child = go.transform.GetChild(2).gameObject;
+            //child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = null;
+            //child.transform.GetChild(1).gameObject.GetComponent<Text>().text = "비어있음";
 
             //json.
             int index = 0;
@@ -489,7 +839,7 @@ public class EquipmentMgr : MonoBehaviour
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] += 1;
             }
-            WeaponList(1);
+            WeaponList(weaponType);
         }
         else if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null && currentKind == EquipKind.SubWeapon)
         {
@@ -497,6 +847,8 @@ public class EquipmentMgr : MonoBehaviour
             var weapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
             playerDataMgr.saveData.subWeapon[currentIndex] = null;
             playerDataMgr.currentSquad[currentIndex].weapon.subWeapon = null;
+            subWeaponImg.sprite = null;
+            agitMgr.subWeaponImg.sprite = null;
 
             //json.
             int index = 0;
@@ -524,12 +876,7 @@ public class EquipmentMgr : MonoBehaviour
                 //플레이어 데이터 매니저 관련.
                 playerDataMgr.currentEquippablesNum[id] += 1;
             }
-            WeaponList(2);
-        }
-        else if (playerDataMgr.currentSquad[currentIndex].bagLevel != 0 && currentKind == EquipKind.Bag)
-        {
-            playerDataMgr.saveData.bagLevel[currentIndex] = 0;
-            playerDataMgr.currentSquad[currentIndex].bagLevel = 0;
+            WeaponList(weaponType);
         }
     }
 
@@ -662,19 +1009,27 @@ public class EquipmentMgr : MonoBehaviour
     {
         weaponType = -1;
 
-
         if (equipmentWin2.activeSelf) equipmentWin2.SetActive(false);
         if (!equipmentWin1.activeSelf) equipmentWin1.SetActive(true);
-        RefreshEquipList();
+        //RefreshEquipList();
     }
 
     public void OpenEquipWin2()
     {
-        equipmentWin1.SetActive(false);
+        if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
+        {
+            var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
+            mainWeaponImg.sprite = weapon.img;
+        }
+        if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null)
+        {
+            var weapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
+            subWeaponImg.sprite = weapon.img;
+        }
         equipmentWin2.SetActive(true);
 
         if (detailWin.activeSelf) detailWin.SetActive(false);
-        if (SpecCompareWin.activeSelf) SpecCompareWin.SetActive(false);
+        //if (SpecCompareWin.activeSelf) SpecCompareWin.SetActive(false);
     }
 
     public void CloseEquipWin2()

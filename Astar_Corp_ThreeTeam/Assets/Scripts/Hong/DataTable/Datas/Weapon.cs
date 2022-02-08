@@ -27,6 +27,8 @@ public class Weapon : ItemBase
     public int firstShotAp;         // 사격 첫발 시 소모 AP
     public int otherShotAp;         // 첫발 이후 소모되는 AP
     public int loadAp;              // 장전 시 소모되는 AP
+    public int continuousShootingPenalty;
+    public int reloadBullet; 
 
     public int minRange;            // 최소 사거리
     public int maxRange;            // 최대 사거리
