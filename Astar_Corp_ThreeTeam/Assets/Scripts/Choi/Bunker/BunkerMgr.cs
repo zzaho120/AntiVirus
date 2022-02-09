@@ -362,7 +362,8 @@ public class BunkerMgr : MonoBehaviour
             playerDataMgr.saveData.bunkerExitNum = 0;
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
-        SceneManager.LoadScene("NonBattleMap");
+        SceneManager.LoadScene("WorldMap_Asset");
+        //SceneManager.LoadScene("NonBattleMap");
     }
     public void Upgrade(string name)
     {
