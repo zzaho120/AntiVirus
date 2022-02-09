@@ -369,10 +369,11 @@ public class PlayerableChar : BattleTile
                     if (monster.IsNullTarget)
                         monster.SetTarget(this);
 
+                    var time = 0f;
                     if (isHit)
                     {
                         var isCrit = Random.Range(0, 100) < weapon.CritRate + characterStats.critRate - monster.monsterStats.critResist;
-                        monster.GetDamage(this, isCrit);
+                        time = monster.GetDamage(this, isCrit);
 
                         var buffMgr = characterStats.buffMgr;
                         var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.Hit);
@@ -394,7 +395,7 @@ public class PlayerableChar : BattleTile
                     characterStats.buffMgr.RemoveBuff(fullAPMoveList);
                     monster.currentTile.EnableDisplay(true);
 
-                    if (AP <= 0)
+                    if (AP <= 0 && time != 0)
                         EndPlayer();
                     else
                     {
@@ -470,7 +471,6 @@ public class PlayerableChar : BattleTile
         hp -= dmg;
         characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
 
-        monsterStats.CalculateAttackAp();
 
         if (monsterStats.virus != null)
         {

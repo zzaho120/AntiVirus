@@ -39,7 +39,7 @@ public class BattleTest : MonoBehaviour
             var monster = Instantiate(monsterPrefab, new Vector3(monsterPos[idx].x, .5f, monsterPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
             monster.transform.SetParent(BattleMgr.Instance.monsterMgr.transform);
 
-            var monsterChar = monster.GetComponent<MonsterChar>();
+            var monsterChar = monster.GetComponentInChildren<MonsterChar>();
 
             string virus = null;
             switch (monsterVirus[idx])
@@ -62,7 +62,7 @@ public class BattleTest : MonoBehaviour
                     virus = "T";
                     break;
             }
-            monsterChar.monsterStats = monster.GetComponent<MonsterStats>();
+            monsterChar.monsterStats = monster.GetComponentInChildren<MonsterStats>();
             monsterChar.monsterStats.virus = ScriptableMgr.Instance.GetVirus(virus);
             monsterChar.monsterStats.virusLevel = monsterVirusLevel[idx];
         }

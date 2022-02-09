@@ -48,9 +48,8 @@ public class MonsterChar : BattleTile
         cumulativeDmg = 0;
     }
 
-    public void GetDamage(PlayerableChar player, bool isCrit)
+    public float GetDamage(PlayerableChar player, bool isCrit)
     {
-        animator.SetTrigger("Damaged");
         lastAttacker = player;
         var hp = monsterStats.currentHp;
         var dmg = 0;
@@ -68,9 +67,33 @@ public class MonsterChar : BattleTile
 
         if (monsterStats.currentHp == 0)
         {
-            player.characterStats.GetExp(monsterStats.monster.exp);
-            EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 1 });
+            animator.SetTrigger("Death");
+            RuntimeAnimatorController ac = animator.runtimeAnimatorController;
+            var time = 0f;
+            for (var idx = 0; idx < ac.animationClips.Length; ++idx)
+            {
+                if (ac.animationClips[idx].name == "Death")
+                    time = ac.animationClips[idx].length;
+            }
+            StartCoroutine(CoDeath(player, time));
+            return time;
         }
+        else
+            animator.SetTrigger("Damaged");
+
+        return 0;
+    }
+
+    private IEnumerator CoDeath(PlayerableChar player, float time)
+    {
+        player.characterStats.GetExp(monsterStats.monster.exp);
+
+        yield return new WaitForSeconds(time);
+
+        EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 1 });
+
+        if (player.AP <= 0)
+            player.EndPlayer();
     }
 
     public void SetTarget(PlayerableChar player)
@@ -200,8 +223,7 @@ public class MonsterChar : BattleTile
                 CreateHint(HintType.Footprint, tileIdx);
             }
 
-            var isInSight = BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile);
-            currentTile.EnableDisplay(isInSight);
+           
 
             AStarTile nextTile = null;
             if (pathMgr.pathList.Count > 0)
@@ -247,12 +269,15 @@ public class MonsterChar : BattleTile
 
     public IEnumerator MoveTile(Vector3 nextIdx)
     {
+        var isInSight = BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile);
+        currentTile.EnableDisplay(isInSight);
+
         foreach (var tile in currentTile.adjNodes)
         {
             if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
             {
-                //if (tile.charObj != null && tile.charObj.CompareTag("BattlePlayer"))
-                //    return false;
+                if (tile.charObj != null && tile.charObj.CompareTag("BattlePlayer"))
+                    yield break;
                 var dir = (currentTile.tileIdx - nextIdx).normalized;
 
                 var rotY = 0;
@@ -496,5 +521,51 @@ public class MonsterChar : BattleTile
             returnToPool.Return();
         }
         virusList.Clear();
+    }
+
+    private bool isCoAttack;
+    public void Attack(PlayerableChar player)
+    {
+        animator.SetTrigger("Attack");
+        if (!isCoAttack)
+            StartCoroutine(CoAttack(player));
+    }
+
+    private IEnumerator CoAttack(PlayerableChar player)
+    {
+        isCoAttack = true;
+        var dir = (currentTile.tileIdx - player.currentTile.tileIdx).normalized;
+
+        var rotY = 0;
+        if (dir.x > 0)
+            rotY = 270;
+        else if (dir.x < 0)
+            rotY = 90;
+        else if (dir.z > 0)
+            rotY = 180;
+        else if (dir.z < 0)
+            rotY = 0;
+        transform.rotation = Quaternion.Euler(0f, rotY, 0f);
+
+        var isHit = Random.Range(0, 100) > player.characterStats.avoidRate;
+        monsterStats.CalculateAttackAp();
+        if (isHit)
+        {
+            var isCrit = Random.Range(0, 100) < monsterStats.Crit_Rate - player.characterStats.critResistRate;
+            if (player.GetDamage(monsterStats, isCrit))
+                SetTarget(null);
+        }
+
+        RuntimeAnimatorController ac = animator.runtimeAnimatorController;
+
+        var time = 0f;
+        for (var idx = 0; idx < ac.animationClips.Length; ++idx)
+        {
+            if (ac.animationClips[idx].name == "Attack")
+                time = ac.animationClips[idx].length;
+        }
+
+        yield return new WaitForSeconds(time);
+        isCoAttack = false;
     }
 }
