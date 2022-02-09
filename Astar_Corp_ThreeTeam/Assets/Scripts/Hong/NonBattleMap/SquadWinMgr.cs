@@ -1,8 +1,5 @@
 using Michsky.UI.ModernUIPack;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,9 +11,12 @@ public class SquadWinMgr : UIManagerWindowManager
     public GameObject statePrefab;
     public GameObject characterListContent;
 
+    // 선택된 캐릭터 개수
     private Text memberNumTxt;
 
+    // 캐릭터 오브젝트 저장용
     private Dictionary<int, GameObject> characterList = new Dictionary<int, GameObject>();
+    // 캐릭터 키 저장용
     private Dictionary<int, int> charKeyList = new Dictionary<int, int>();
 
     public override void Init()
@@ -29,6 +29,7 @@ public class SquadWinMgr : UIManagerWindowManager
         memberNumTxt = GameObject.Find("CharNumTxt").GetComponent<Text>();
 
         // 임시 Sqaud 데이타 넣기
+        //===================================================
         CharacterStats temp1 = new CharacterStats();
         temp1.character = soMgr.GetCharacter("CHAR_0001");
         CharacterStats temp2 = new CharacterStats();
@@ -45,15 +46,19 @@ public class SquadWinMgr : UIManagerWindowManager
         playerDataMgr.currentSquad[2].Init();
         playerDataMgr.currentSquad[2].level = 5;
 
-        playerDataMgr.boardingSquad.Add(0, 1);
-        playerDataMgr.boardingSquad.Add(1, 2);
+        if (!playerDataMgr.boardingSquad.ContainsKey(0))
+            playerDataMgr.boardingSquad.Add(0, 1);
+
+        if (!playerDataMgr.boardingSquad.ContainsKey(1))
+            playerDataMgr.boardingSquad.Add(1, 2);
+        //===================================================
 
         PrintCharacterList();
     }
 
     private void PrintCharacterList()
     {
-        Debug.Log(playerDataMgr.boardingSquad.Count);
+        //Debug.Log(playerDataMgr.boardingSquad.Count);
 
         //이전 정보 삭제.
         if (characterList.Count != 0)
@@ -63,7 +68,6 @@ public class SquadWinMgr : UIManagerWindowManager
                 Destroy(character.Value);
             }
             characterList.Clear();
-        
             //characterListContent.transform.DetachChildren();
         }
         if (charKeyList.Count != 0) charKeyList.Clear();
@@ -125,36 +129,39 @@ public class SquadWinMgr : UIManagerWindowManager
             int num = i;
             var button = character.AddComponent<Button>();
             button.onClick.AddListener(delegate { SelectCharacter(element.Value); });
-            characterList.Add(element.Value, character);
-            
-            charKeyList.Add(num, element.Key);
+
+            characterList.Add(element.Value, character);    // 캐릭터 오브젝트 추가
+            charKeyList.Add(num, element.Key);  // 캐릭터 키 추가
 
             i++;
         }
     }
 
-
+    // 사용할 컬러 값 저장
+    Color orginColor = new Color32(95, 100, 110, 91);
+    Color selectedColor = new Color32(43, 76, 135, 91);
 
     private void SelectCharacter(int num)
     {
-        // Key값 찾기
-        //var key = charKeyList.FirstOrDefault(x => x.Value == num).Key;
+        // 선택된 오브젝트 가져오기
         var selectedObj = characterList[num];
-        var toggle = selectedObj.GetComponentInChildren<Toggle>();
-        var image = selectedObj.transform.GetComponent<Image>();
+        Toggle toggle = selectedObj.GetComponentInChildren<Toggle>();
+        Image image = selectedObj.transform.GetComponent<Image>();
 
-        Color orginColor = new Color32(95, 100, 110, 91);
-        Color selectedColor = new Color32(43, 76, 135, 91);
+
 
         // 중복 선택 시
         if (playerDataMgr.battleSquad.ContainsKey(num))
         {
+            // 삭제
             Debug.Log(playerDataMgr.battleSquad[num].Name + " Removed");
             playerDataMgr.battleSquad.Remove(num);
-            toggle.isOn = false;
 
-            // 색 변경
+            // 토글키 및 색상 값 변경
+            toggle.isOn = false;
             image.color = orginColor;
+
+            // 전투 참여 인원 표시
             memberNumTxt.text = $"전투 참여 {playerDataMgr.battleSquad.Count} / 4";
             return;
         }
@@ -163,13 +170,15 @@ public class SquadWinMgr : UIManagerWindowManager
         if (playerDataMgr.battleSquad.Count >= 4) return;
 
         // Truck Squad -> Battle Squad
+        // 추가
         playerDataMgr.battleSquad.Add(num, playerDataMgr.currentSquad[num]);
         Debug.Log(playerDataMgr.battleSquad[num].Name + " Added");
+
+        // 토글키 및 색상 값 변경
         toggle.isOn = true;
-        //  색 변경
         image.color = selectedColor;
 
-        // 전투 참여 인원
+        // 전투 참여 인원 표시
         memberNumTxt.text = $"전투 참여 {playerDataMgr.battleSquad.Count} / 4";
     }
 
@@ -183,5 +192,10 @@ public class SquadWinMgr : UIManagerWindowManager
     public override void Close()
     {
         base.Close();
+    }
+
+    public void InactiveButton(Button button)
+    {
+        button.interactable = false;
     }
 }

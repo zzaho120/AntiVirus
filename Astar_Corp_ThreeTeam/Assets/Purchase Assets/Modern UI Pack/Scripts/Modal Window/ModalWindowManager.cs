@@ -62,7 +62,7 @@ namespace Michsky.UI.ModernUIPack
             }
         }
 
-        public void OpenWindow()
+        public virtual void OpenWindow()
         {
             if (isOn == false)
             {
@@ -75,7 +75,7 @@ namespace Michsky.UI.ModernUIPack
             }
         }
 
-        public void CloseWindow()
+        public virtual void CloseWindow()
         {
             if (isOn == true)
             {
