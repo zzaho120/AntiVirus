@@ -62,8 +62,7 @@ public class MonsterChar : BattleTile
         cumulativeDmg += dmg;
         monsterStats.currentHp = Mathf.Clamp(hp, 0, hp);
 
-        var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-        window.SetMsgText($"{monsterStats.gameObject.name} is damaged {dmg}Point - HP : {monsterStats.currentHp}");
+        // 몬스터 맞음 메세지
 
         if (monsterStats.currentHp == 0)
         {

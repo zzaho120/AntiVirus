@@ -298,8 +298,6 @@ public class WeaponStats
     public int GetAttackAccuracy(int accuracy)
     {
         var totalAccuracy = CalCulateAccuracy(accuracy, AccurRate_base);
-        fireCount++;
-        WeaponBullet--;
         return totalAccuracy;
     }
 
@@ -355,17 +353,8 @@ public class WeaponStats
         }
         else
         {
-            switch (state)
-            {
-                case CharacterState.Attack:
-                    //if ((AP - AimShotAp) >= 0)
-                        result = true;
-                    break;
-                case CharacterState.Alert:
-                    //if ((AP - AlertShotAp) >= 0)
-                        result = true;
-                    break;
-            }
+            if ((AP - OtherShotAp) >= 0)
+                result = true;
         }
         return result;
     }

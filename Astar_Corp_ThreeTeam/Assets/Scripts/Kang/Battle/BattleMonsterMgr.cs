@@ -82,6 +82,7 @@ public class BattleMonsterMgr : MonoBehaviour
 
     public void RemoveMonster(MonsterChar monster)
     {
+        monster.currentTile.charObj = null;
         var idx = monsters.IndexOf(monster);
         monsters.RemoveAt(idx);
         Destroy(monster.gameObject);

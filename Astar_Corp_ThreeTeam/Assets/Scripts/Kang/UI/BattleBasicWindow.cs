@@ -23,12 +23,13 @@ public class BattleBasicWindow : GenericWindow
     public GameObject btnListPrefab;
     public GameObject secondBtnList;
     public GameObject btnListObj;
+    public GameObject actionPanel;
     public List<BattleActionBtn> actionBtns;
     private List<BattleActionBtn> genActionBtns = new List<BattleActionBtn>(); 
     private List<GameObject> genBtnLists = new List<GameObject>(); 
 
     [Header("Sprites")]
-    public List<Sprite> classSprites;
+    public List<Sprite> monsterSprite;
 
     [Header("Squads")]
     public GameObject memberPrefab;
@@ -40,6 +41,26 @@ public class BattleBasicWindow : GenericWindow
     [Header("Move")]
     public GameObject moveBtn;
     public GameObject cancelBtn;
+    private bool isMove;
+
+    [Header("Fire")]
+    public GameObject monsterPanelPrefab;
+    public GameObject firePanel;
+    public GameObject notMonsterPanel;
+    public GameObject monsterListPanel;
+    public GameObject confirmBtn;
+    private List<BattleMonsterPanel> monsterPanels = new List<BattleMonsterPanel>();
+    public MonsterChar targetMonster;
+
+    [Header("Direction")]
+    public GameObject directionBtns;
+    public GameObject leftDirectionPanel;
+    public GameObject directionCancelBtn;
+
+    public bool isTurn
+    {
+        get => BattleMgr.Instance.turn == BattleTurn.Player;
+    }
 
     public override void Open()
     {
@@ -54,6 +75,13 @@ public class BattleBasicWindow : GenericWindow
     public void Init()
     {
         cancelBtn.SetActive(false);
+        notMonsterPanel.SetActive(false);
+        firePanel.SetActive(false);
+        confirmBtn.SetActive(false);
+        monsterListPanel.SetActive(false);
+        directionBtns.SetActive(false);
+        infoPanel.SetActive(false);
+        leftDirectionPanel.SetActive(false);
         InitSquad();
     }
 
@@ -65,33 +93,13 @@ public class BattleBasicWindow : GenericWindow
 
     public void SetSelectedChar(PlayerableChar player)
     {
-        if (selectedChar != null)
-            selectedChar.isSelected = false;
         selectedChar = player;
-        selectedChar.isSelected = true;
+
         var stats = selectedChar.characterStats;
         hpText.text = $"{stats.currentHp}/{stats.MaxHp}";
         levelText.text = $"{stats.level}";
-        nameText.text = $"{stats.Name}";
-
-        switch (stats.character.type)
-        {
-            case "Tanker":
-                classImage.sprite = classSprites[3];
-                break;
-            case "Healer":
-                classImage.sprite = classSprites[1];
-                break;
-            case "Sniper":
-                classImage.sprite = classSprites[2];
-                break;
-            case "Bombardier":
-                classImage.sprite = classSprites[4];
-                break;
-            case "Scout":
-                classImage.sprite = classSprites[0];
-                break;
-        }
+        nameText.text = $"{stats.characterName}";
+        classImage.sprite = stats.character.icon;
 
         UpdateUI();
     }
@@ -139,8 +147,11 @@ public class BattleBasicWindow : GenericWindow
         // 4 ¾ÆÀÌÅÛ
         var stats = selectedChar.characterStats;
         var weapon = stats.weapon;
+        var isFullApMove = selectedChar.characterStats.buffMgr.GetBuffList(Stat.FullApMove).Count > 0;
 
-        if (weapon.fireCount == 0)
+        if (isFullApMove)
+            actionBtns[0].SetAP(0);
+        else if (weapon.fireCount == 0)
         {
             actionBtns[0].SetAP(weapon.curWeapon.firstShotAp);
             actionBtns[1].SetAP(weapon.curWeapon.firstShotAp);
@@ -204,7 +215,7 @@ public class BattleBasicWindow : GenericWindow
             var go = Instantiate(memberPrefab, squadList.transform);
             var memberPanel = go.GetComponent<BattleMemberPanel>();
 
-            memberPanel.Init(player[idx], classSprites, this);
+            memberPanel.Init(player[idx], this);
         }
     }
 
@@ -215,15 +226,137 @@ public class BattleBasicWindow : GenericWindow
 
     public void OnClickMove()
     {
-        selectedChar.MoveMode();
-        moveBtn.SetActive(false);
-        cancelBtn.SetActive(true);
+        if (selectedChar.AP > 0 && isTurn)
+        {
+            isMove = true;
+            selectedChar.MoveMode();
+            directionBtns.SetActive(false);
+            moveBtn.SetActive(false);
+            cancelBtn.SetActive(true);
+        }
     }
 
     public void OnClickMoveCancel()
     {
+        isMove = false;
         selectedChar.MoveMode();
         moveBtn.SetActive(true);
         cancelBtn.SetActive(false);
+    }
+
+    public void OnClickFire()
+    {
+        var isFullApMove = selectedChar.characterStats.buffMgr.GetBuffList(Stat.FullApMove).Count > 0;
+
+        if ((selectedChar.AP > selectedChar.characterStats.weapon.curWeapon.firstShotAp || isFullApMove) && isTurn)
+        {
+            actionPanel.SetActive(false);
+            firePanel.SetActive(true);
+            moveBtn.SetActive(false);
+            infoPanel.SetActive(false);
+            directionBtns.SetActive(false);
+            selectedChar.status = CharacterState.Attack;
+            selectedChar.ReturnMoveTile();
+
+            for (var idx = 0; idx < monsterPanels.Count; ++idx)
+            {
+                Destroy(monsterPanels[idx].gameObject);
+            }
+            monsterPanels.Clear();
+
+            var monsterList = BattleMgr.Instance.sightMgr.GetMonsterInPlayerSight(selectedChar);
+            if (monsterList.Count == 0)
+            {
+                notMonsterPanel.SetActive(true);
+            }
+            else
+            {
+                confirmBtn.SetActive(true);
+                monsterListPanel.SetActive(true);
+                for (var idx = 0; idx < monsterList.Count; ++idx)
+                {
+                    var go = Instantiate(monsterPanelPrefab, monsterListPanel.transform);
+                    var monsterPanel = go.GetComponent<BattleMonsterPanel>();
+
+                    monsterPanel.Init(selectedChar, monsterList[idx], monsterSprite);
+                    monsterPanels.Add(monsterPanel);
+                }
+                targetMonster = monsterList[0];
+                CameraController.Instance.SetCameraTrs(targetMonster.transform);
+            }
+        }
+    }
+
+    public void OnClickFireCancel()
+    {
+        actionPanel.SetActive(true);
+        firePanel.SetActive(false);
+        monsterListPanel.SetActive(false);
+        moveBtn.SetActive(true);
+        selectedChar.status = CharacterState.Wait;
+
+        confirmBtn.SetActive(false);
+
+        notMonsterPanel.SetActive(false);
+    }
+
+    public void OnClickFireConfirm()
+    {
+        selectedChar.ActionAttack(targetMonster);
+        targetMonster = null;
+        OnClickFireCancel();
+        selectedChar.status = CharacterState.Wait;
+        UpdateUI();
+    }
+
+    public void OnClickDirection()
+    {
+        if ((selectedChar.AP > 1 || isMove) && isTurn)
+        {
+            directionBtns.SetActive(true);
+            leftDirectionPanel.SetActive(true);
+            actionPanel.SetActive(false);
+            moveBtn.SetActive(false);
+            infoPanel.SetActive(false);
+        }
+
+        if (isMove)
+            directionCancelBtn.SetActive(false);
+        else
+            directionCancelBtn.SetActive(true);
+    }
+
+    public void OnClickDirectionCancel()
+    {
+        actionPanel.SetActive(true);
+        directionBtns.SetActive(false);
+        leftDirectionPanel.SetActive(false);
+        moveBtn.SetActive(true);
+    }
+
+    public void OnClickDirectionBtn(int direction)
+    {
+        selectedChar.SetDirection((DirectionType)(1 << direction));
+        BattleMgr.Instance.sightMgr.UpdateFrontSight(selectedChar);
+
+        var isFullApMove = selectedChar.characterStats.buffMgr.GetBuffList(Stat.FullApMove).Count > 0;
+
+        if (isFullApMove)
+            actionBtns[0].SetAP(0);
+
+        if ((selectedChar.status == CharacterState.Alert || selectedChar.AP <= 0) && !isFullApMove)
+            selectedChar.EndPlayer();
+        else if (selectedChar.status == CharacterState.Move)
+            selectedChar.WaitPlayer();
+
+        if (!isMove)
+            selectedChar.AP -= 1;
+        isMove = false;
+        OnClickDirectionCancel();
+    }
+
+    public void OnClickTurnEnd()
+    {
+        BattleMgr.Instance.OnChangeTurn(null);
     }
 }

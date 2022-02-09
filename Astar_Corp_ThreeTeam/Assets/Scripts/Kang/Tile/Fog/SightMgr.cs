@@ -577,6 +577,47 @@ public class SightMgr : MonoBehaviour
         return false;
     }
 
+    public List<MonsterChar> GetMonsterInPlayerSight(PlayerableChar player)
+    {
+        var playerIdx = -1;
+
+        for (var idx = 0; idx < playerableChars.Count; ++idx)
+        {
+            if (playerableChars[idx] == player)
+            {
+                playerIdx = idx;
+                break;
+            }    
+        }
+
+        var monsterList = new List<MonsterChar>();
+
+        foreach (var tile in sightList[playerIdx])
+        {
+            if (tile.tileBase.charObj != null)
+            {
+                var monster = tile.tileBase.charObj.GetComponent<MonsterChar>();
+                if (monster != null)
+                    monsterList.Add(monster);
+            }
+        }
+
+        foreach (var tile in frontSightList[playerIdx])
+        {
+            if (tile.tileBase.charObj != null)
+            {
+                var monster = tile.tileBase.charObj.GetComponent<MonsterChar>();
+                if (monster != null)
+                {
+                    if (monsterList.Exists(check => check != monster))
+                        monsterList.Add(monster);
+                }
+            }
+        }
+
+        return monsterList;
+    }
+
     public PlayerableChar GetPlayerInMonsterSight(int idx)
     {
         var monster = monsters[idx];

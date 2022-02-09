@@ -111,6 +111,7 @@ public class BattlePlayerMgr : MonoBehaviour
 
     public void RemovePlayer(PlayerableChar playerableChar)
     {
+        playerableChar.currentTile.charObj = null;
         var idx = playerableChars.IndexOf(playerableChar);
         playerableChars.RemoveAt(idx);
         Destroy(playerableChar.gameObject);
@@ -228,14 +229,4 @@ public class BattlePlayerMgr : MonoBehaviour
         character.GetDamage(level);
     }
 
-    public bool GetPlayerSelected()
-    {
-        foreach (var player in playerableChars)
-        {
-            if (player.isSelected)
-                return true;
-        }
-
-        return false;
-    }
 }

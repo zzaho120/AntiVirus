@@ -16,7 +16,7 @@ public class PlayerableChar : BattleTile
     [Header("Character")]
     public CharacterStats characterStats;
     public Animator animator;
-    public int playerIdx;
+
     [Header("Value")]
     public int AP;
     public int SightDistance
@@ -35,7 +35,6 @@ public class PlayerableChar : BattleTile
 
     public int audibleDistance = 4;
     public CharacterState status;
-    public bool isSelected;
     public bool isMoved;
     public bool isTankB1Skill;
     public bool isHMGA1Skill;
@@ -93,6 +92,9 @@ public class PlayerableChar : BattleTile
                                         {
                                             ActionMove(tileBase);
                                             ReturnMoveTile();
+                                            var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
+                                            window.cancelBtn.SetActive(false);
+                                            window.moveBtn.SetActive(true);
                                         }
                                     }
                                 }
@@ -116,7 +118,6 @@ public class PlayerableChar : BattleTile
     public void StartTurn()
     {
         status = CharacterState.Wait;
-        isSelected = false;
         isMoved = false;
         isTankB1Skill = false;
         isHMGA1Skill = false;
@@ -159,6 +160,9 @@ public class PlayerableChar : BattleTile
             BattleMgr.Instance.sightMgr.UpdateFog(this);
         }
         AP -= currentTile.moveAP;
+        var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
+        window.UpdateUI();
+        window.OnClickDirection();
         animator.SetBool("Run Stop", false);
         animator.SetBool("Idle", true);
         if (currentTile.moveAP == 6)
@@ -169,9 +173,6 @@ public class PlayerableChar : BattleTile
                 skill.Invoke(characterStats.buffMgr);
             }
         }
-
-        var window = BattleMgr.Instance.battleWindowMgr.Open(1).GetComponent<PlayerActionWindow>();
-        window.OnActiveDirectionBtns(false, true);
     }
 
     private IEnumerator MoveTile(Vector3 nextIdx)
@@ -220,11 +221,16 @@ public class PlayerableChar : BattleTile
     {
         if (status == CharacterState.Wait)
             status = CharacterState.Move;
+        else
+            status = CharacterState.Wait;
 
-        if (status == CharacterState.Move && isSelected)
+
+        if (status == CharacterState.Move)
         {
             FloodFillMove();
         }
+        else
+            ReturnMoveTile();
     }
 
     private void FloodFillMove()
@@ -348,6 +354,9 @@ public class PlayerableChar : BattleTile
                     if (monster.IsNullTarget)
                         monster.SetTarget(this);
 
+                    weapon.fireCount++;
+                    weapon.WeaponBullet--;
+
                     var time = 0f;
                     if (isHit)
                     {
@@ -367,8 +376,7 @@ public class PlayerableChar : BattleTile
                     }
                     else
                     {
-                        var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-                        window.SetMsgText($"You missed {monster.name}");
+                        // 빗맞음
                     }
 
                     characterStats.buffMgr.RemoveBuff(fullAPMoveList);
@@ -415,7 +423,6 @@ public class PlayerableChar : BattleTile
         if (status != CharacterState.Alert)
             status = CharacterState.TurnEnd;
 
-        isSelected = false;
         BattleMgr.Instance.playerMgr.selectChar = null;
         EventBusMgr.Publish(EventType.EndPlayer);
         CameraController.instance.SetFollowObject(null);
@@ -482,8 +489,7 @@ public class PlayerableChar : BattleTile
             characterStats.virusPenalty[virusType].Calculation(monsterStats.virusLevel, result);
         }
 
-        var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-        window.SetMsgText($"Player is damaged {dmg} Point - HP : {characterStats.currentHp}");
+        // 맞음 메세지
 
         if (characterStats.currentHp == 0)
         {
@@ -527,18 +533,9 @@ public class PlayerableChar : BattleTile
     public void SetNonSelected()
     {
         BattleMgr.Instance.playerMgr.selectChar = null;
-        var window = BattleMgr.Instance.battleWindowMgr.GetWindow(1);
-        var playerAction = window.GetComponent<PlayerActionWindow>();
-        playerAction.curChar = null;
-        window.Close();
-        window = BattleMgr.Instance.battleWindowMgr.GetWindow(2);
-        window.Close();
-        isSelected = false;
         isHMGA1Skill = false;
         isTankB1Skill = false;
         status = CharacterState.Wait;
-        CameraController.instance.SetFollowObject(null);
-        ReturnMoveTile();
     }
 
     public void SetDirection(DirectionType direction)

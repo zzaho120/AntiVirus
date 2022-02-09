@@ -97,9 +97,9 @@ public class HintMgr : MonoBehaviour
         else if (audible * 4 > min.Item2)
             level = 1;
 
-        CameraController.Instance.SetFollowObject(playerableChar[min.Item1].transform);
-        var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.RaderWindow - 1) as RaderWindow;
-        window.StartRader(playerableChar[min.Item1].tileIdx, monster, level);
+        //CameraController.Instance.SetFollowObject(playerableChar[min.Item1].transform);
+        //var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.RaderWindow - 1) as RaderWindow;
+        //window.StartRader(playerableChar[min.Item1].tileIdx, monster, level);
         
     }
 }

@@ -133,9 +133,6 @@ public class BattleMgr : MonoBehaviour
                 monsterMgr.UpdateTurn();
                 break;
         }
-
-        if (Input.GetKeyDown(KeyCode.F1))
-            OnChangeTurn(null);
     }
 
     public void OnChangeTurn(object empty)
@@ -145,8 +142,6 @@ public class BattleMgr : MonoBehaviour
 
     private void ChangeTurn()
     {
-        var windowId = (int)BattleWindows.TurnNotice - 1;
-        var window = battleWindowMgr.Open(windowId).GetComponent<TurnNoticeWindow>();
         switch (turn)
         {
             case BattleTurn.Player:
@@ -160,7 +155,6 @@ public class BattleMgr : MonoBehaviour
         }
         if (startTurn == turn)
             turnCount++;
-        window.NoticeTurn(turn);
     }
 
     public void DestroyChar(object[] param)

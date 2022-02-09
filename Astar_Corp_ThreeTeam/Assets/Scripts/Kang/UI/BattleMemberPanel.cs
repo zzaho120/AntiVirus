@@ -12,31 +12,14 @@ public class BattleMemberPanel : MonoBehaviour
     public Slider hpBar;
     public GameObject APObj;
 
-    public void Init(PlayerableChar player, List<Sprite> classSprites, BattleBasicWindow basicWindow)
+    public void Init(PlayerableChar player, BattleBasicWindow basicWindow)
     {
         parent = basicWindow;
         this.player = player;
 
-        // memberImage.sprite
         var stats = player.characterStats;
-        switch (stats.character.type)
-        {
-            case "Tanker":
-                classImage.sprite = classSprites[3];
-            break;
-            case "Healer":
-                classImage.sprite = classSprites[1];
-            break;
-            case "Sniper":
-                classImage.sprite = classSprites[2];
-            break;
-            case "Bombardier":
-                classImage.sprite = classSprites[4];
-            break;
-            case "Scout":
-                classImage.sprite = classSprites[0];
-            break;
-        }
+        memberImage.sprite = stats.character.halfImg;
+        classImage.sprite = stats.character.icon;
 
         hpBar.value = stats.currentHp / (float)stats.MaxHp;
 
@@ -53,8 +36,11 @@ public class BattleMemberPanel : MonoBehaviour
 
     public void OnClickPanel()
     {
-        parent.SetSelectedChar(player);
-        CameraController.Instance.SetCameraTrs(player.transform);
-        Debug.Log(player.transform.position);
+        if (player.status != CharacterState.TurnEnd && player.status != CharacterState.Alert && parent.isTurn)
+        {
+            parent.SetSelectedChar(player);
+            CameraController.Instance.SetCameraTrs(player.transform);
+            Debug.Log(player.transform.position);
+        }
     }
 }
