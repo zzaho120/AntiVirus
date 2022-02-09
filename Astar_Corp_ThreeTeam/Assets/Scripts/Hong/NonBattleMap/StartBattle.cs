@@ -20,7 +20,7 @@ public class StartBattle : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            // 렌더러가 활성화 되어있을때만 유효하게 // 해당조건 잠깐 Off
+            //// 렌더러가 활성화 되어있을때만 유효하게 // 해당조건 잠깐 Off
             //if (other.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
             //{
                  //몬스터 공격 앞뒤 판단
@@ -41,7 +41,7 @@ public class StartBattle : MonoBehaviour
                 PlayerDataMgr.Instance.isMonsterAtk = isMonsterAtk;
 
                 // 전체맵 일시정지
-                timeController.PauseTime();
+                timeController.Pause();
                 timeController.isPause = true;
 
                 // / 전투 팝업창 띄우기

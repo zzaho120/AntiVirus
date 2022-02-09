@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class InPlayerSight : MonoBehaviour
 {
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    Debug.Log(collision.collider.name);
-    //}
-
     public enum PrintType
     {
         Mesh,
@@ -17,7 +12,6 @@ public class InPlayerSight : MonoBehaviour
     
     public PrintType printType;
     
-    //private MeshRenderer meshRenderer;
     private SkinnedMeshRenderer[] meshRenderers;
     private SpriteRenderer spriteRenderer;
     
@@ -26,12 +20,10 @@ public class InPlayerSight : MonoBehaviour
         switch (printType)
         {
             case PrintType.Mesh:
-                //meshRenderer = GetComponentInChildren<MeshRenderer>();
-                //meshRenderer.enabled = false;
                 meshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
                 foreach (var renderer in meshRenderers)
                 {
-                    //renderer.enabled = false;
+                    renderer.enabled = false;
                 }
                 break;
             case PrintType.Sprite:
@@ -48,7 +40,7 @@ public class InPlayerSight : MonoBehaviour
     
         if (other.gameObject.CompareTag("PlayerSight"))
         {
-            //Debug.Log("In Sight");
+            Debug.Log("In Sight");
     
             switch (printType)
             {
@@ -57,7 +49,7 @@ public class InPlayerSight : MonoBehaviour
                     foreach (var renderer in meshRenderers)
                     {
                         renderer.enabled = true;
-                        //Debug.Log("Renderer Enabled");
+                        Debug.Log("Renderer Enabled");
                     }
                     //if (meshRenderer == null) other.GetComponent<MeshRenderer>().enabled = true;
                     //meshRenderer.enabled = true;
@@ -82,10 +74,8 @@ public class InPlayerSight : MonoBehaviour
                     foreach (var renderer in meshRenderers)
                     {
                         renderer.enabled = true;
-                        //Debug.Log("Renderer Enabled");
+                        Debug.Log("Renderer Enabled");
                     }
-                    //if (meshRenderer == null) other.GetComponent<MeshRenderer>().enabled = true;
-                    //meshRenderer.enabled = true;
                     break;
                 case PrintType.Sprite:
                     spriteRenderer.enabled = true;
@@ -105,7 +95,6 @@ public class InPlayerSight : MonoBehaviour
                     {
                         renderer.enabled = false;
                     }
-                    //meshRenderer.enabled = false;
                     break;
                 case PrintType.Sprite:
                     spriteRenderer.enabled = false;

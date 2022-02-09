@@ -36,13 +36,16 @@ public class NonBattleMgr : MonoBehaviour
     {
         // 클래스들 초기화
         createLabArea.Init();
-        //foreach(var element in createLabArea.laboratoryObjs)
+
+        // 랜덤연구소도 초기화 -> 무한루프 됨
+        //foreach (var element in createLabArea.laboratoryObjs)
         //{
-        //    element.GetComponent<LaboratoryInfo>().Init();
+            //element.GetComponentInParent<CreateMonsterAreas>().Init();
+        //
         //}
         for (int i = 0; i < createMonsterArea.Length; i++)
         {
-            createMonsterArea[i].Init();
+            createMonsterArea[i].GetComponent<CreateMonsterAreas>().Init();
         }
         monsterPool.Init();
         playerController.Init(); 

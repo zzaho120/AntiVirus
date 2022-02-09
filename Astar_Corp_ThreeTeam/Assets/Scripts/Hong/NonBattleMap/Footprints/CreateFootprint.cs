@@ -24,8 +24,8 @@ public class CreateFootprint : MonoBehaviour
         // Pool 2. Fox
         // Pool 3. Rabbit
 
-        var randFootprint = Random.Range(0, 4);
-        GetFootprintsFromPool(randFootprint);
+        //var randFootprint = Random.Range(0, 4);
+        GetFootprintsFromPool(0);
         // ¼öÁ¤
         //if (gameObject.name == MonsterName.monster1)
         //{

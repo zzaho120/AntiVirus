@@ -7,6 +7,7 @@ public class SquadWinMgr : UIManagerWindowManager
 {
     private PlayerDataMgr playerDataMgr;
     private ScriptableMgr soMgr;
+    private TimeController timeController;
 
     public GameObject statePrefab;
     public GameObject characterListContent;
@@ -19,7 +20,7 @@ public class SquadWinMgr : UIManagerWindowManager
     // 캐릭터 키 저장용
     private Dictionary<int, int> charKeyList = new Dictionary<int, int>();
 
-    public override void Init()
+    public void Init()
     {
         Debug.Log("Init");
 
@@ -28,6 +29,9 @@ public class SquadWinMgr : UIManagerWindowManager
 
         memberNumTxt = GameObject.Find("CharNumTxt").GetComponent<Text>();
 
+        timeController.isPause = true;
+        timeController.Pause();
+        
         // 임시 Sqaud 데이타 넣기
         //===================================================
         CharacterStats temp1 = new CharacterStats();
@@ -86,11 +90,12 @@ public class SquadWinMgr : UIManagerWindowManager
             
             // 2. Division Contents (분과)
             child = character.transform.GetChild(2).gameObject;
+            child.GetComponentInChildren<Image>().sprite = playerDataMgr.currentSquad[element.Value].character.icon;
             child.GetComponentInChildren<Text>().text = playerDataMgr.currentSquad[element.Value].character.name;
             
             // 3. Name Contents (이름)
             child = character.transform.GetChild(3).gameObject;
-            child.GetComponentInChildren<Text>().text = playerDataMgr.currentSquad[element.Value].Name;
+            child.GetComponentInChildren<Text>().text = playerDataMgr.currentSquad[element.Value].characterName;
 
             // 4. State Contents (상태)
             child = character.transform.GetChild(4).gameObject;
@@ -148,8 +153,6 @@ public class SquadWinMgr : UIManagerWindowManager
         Toggle toggle = selectedObj.GetComponentInChildren<Toggle>();
         Image image = selectedObj.transform.GetComponent<Image>();
 
-
-
         // 중복 선택 시
         if (playerDataMgr.battleSquad.ContainsKey(num))
         {
@@ -185,6 +188,7 @@ public class SquadWinMgr : UIManagerWindowManager
     public override void Open()
     {
         // 창 열기 + 초기화
+        timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
         base.Open();
         Init();
     }
@@ -192,6 +196,8 @@ public class SquadWinMgr : UIManagerWindowManager
     public override void Close()
     {
         base.Close();
+        timeController.Play();
+        timeController.isPause = false;
     }
 
     public void InactiveButton(Button button)

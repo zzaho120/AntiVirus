@@ -6,11 +6,6 @@ namespace Michsky.UI.ModernUIPack
 {
     public class UIManagerWindowManager : MonoBehaviour
     {
-        public virtual void Init()
-        {
-
-        }
-
         public virtual void Open()
         {
             gameObject.SetActive(true);

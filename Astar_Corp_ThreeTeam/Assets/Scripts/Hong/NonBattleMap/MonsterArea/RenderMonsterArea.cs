@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class RenderMonsterArea : MonoBehaviour
 {
-    private MeshRenderer renderer;
+    private new MeshRenderer renderer;
 
     private void Start()
     {
-        renderer = GetComponent<MeshRenderer>();
+        renderer = GetComponentInChildren<MeshRenderer>();
         renderer.enabled = false;
     }
 
@@ -16,7 +16,8 @@ public class RenderMonsterArea : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            renderer.enabled = true;
+            if (renderer != null)
+                renderer.enabled = true;
         }
     }
 }

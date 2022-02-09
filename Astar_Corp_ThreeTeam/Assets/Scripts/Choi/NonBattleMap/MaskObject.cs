@@ -12,6 +12,8 @@ public class MaskObject : MonoBehaviour
         for (int i = 0; i < maskObj.Length; i++)
         {
             maskObj[i].GetComponent<MeshRenderer>().material.renderQueue = 3002;
+
+
         }
     }
 }

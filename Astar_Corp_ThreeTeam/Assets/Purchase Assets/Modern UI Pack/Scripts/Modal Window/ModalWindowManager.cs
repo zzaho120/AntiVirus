@@ -16,6 +16,8 @@ namespace Michsky.UI.ModernUIPack
         public Button cancelButton;
         public Animator mwAnimator;
 
+        private TimeController timeController;
+
         // Content
         public Sprite icon;
         public string titleText = "Title";
@@ -45,6 +47,8 @@ namespace Michsky.UI.ModernUIPack
 
             if (useCustomValues == false)
                 UpdateUI();
+
+            timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
         }
 
         public void UpdateUI()
@@ -73,6 +77,8 @@ namespace Michsky.UI.ModernUIPack
 
                 isOn = true;
             }
+
+            timeController.Pause();
         }
 
         public virtual void CloseWindow()
@@ -89,6 +95,8 @@ namespace Michsky.UI.ModernUIPack
                 if (destroyOnClose == true)
                     StartCoroutine("DestroyModal");
             }
+
+            timeController.Play();
         }
 
         public void AnimateWindow()

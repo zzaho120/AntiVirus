@@ -29,16 +29,16 @@ public class TrunkWinMgr : ModalWindowManager
         Debug.Log("Init");
 
         // 임시 데이터 넣기
-        //Weapon weapon1 = new Weapon();
-        //weapon1 = soMgr.GetEquippable("WEP_0003");
-        //Weapon weapon2 = new Weapon();
-        //weapon2 = soMgr.GetEquippable("WEP_0010");
-        //
-        //if (!playerDataMgr.truckEquippables.ContainsKey("0"))
-        //    playerDataMgr.truckEquippables.Add("0", weapon1);
-        //
-        //if (!playerDataMgr.truckEquippables.ContainsKey("1"))
-        //    playerDataMgr.truckEquippables.Add("1", weapon2);
+        Weapon weapon1 = new Weapon();
+        weapon1 = soMgr.GetEquippable("WEP_0003");
+        Weapon weapon2 = new Weapon();
+        weapon2 = soMgr.GetEquippable("WEP_0010");
+        
+        if (!playerDataMgr.truckEquippables.ContainsKey("0"))
+            playerDataMgr.truckEquippables.Add("0", weapon1);
+        
+        if (!playerDataMgr.truckEquippables.ContainsKey("1"))
+            playerDataMgr.truckEquippables.Add("1", weapon2);
 
         PrintTrunkItems();
     }
@@ -65,6 +65,7 @@ public class TrunkWinMgr : ModalWindowManager
             var button = go.AddComponent<Button>();
             //button.onClick.AddListener(delegate { SelectItem(element.Key, WarehouseKind.Trunk); });
 
+            go.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().sprite = element.Value.img;
             go.GetComponentInChildren<Text>().text = element.Value.name;
             //var child = go.transform.GetChild(0).gameObject;
             //child.GetComponent<Text>().text = element.Value.name;
@@ -82,6 +83,7 @@ public class TrunkWinMgr : ModalWindowManager
             var button = go.AddComponent<Button>();
             //button.onClick.AddListener(delegate { SelectItem(element.Key, WarehouseKind.Trunk); });
 
+            go.transform.GetChild(0).GetComponent<Image>().sprite = element.Value.img;
             go.GetComponentInChildren<Text>().text = element.Value.name;
             //var child = go.transform.GetChild(0).gameObject;
             //child.GetComponent<Text>().text = element.Value.name;
@@ -98,7 +100,7 @@ public class TrunkWinMgr : ModalWindowManager
             var go = Instantiate(truckItemPrefab, truckItemList.transform);
             var button = go.AddComponent<Button>();
             //button.onClick.AddListener(delegate { SelectItem(element.Key, WarehouseKind.Trunk); });
-
+            go.transform.GetChild(0).GetComponent<Image>().sprite = element.Value.img;
             go.GetComponentInChildren<Text>().text = element.Value.name;
             //var child = go.transform.GetChild(0).gameObject;
             //child.GetComponent<Text>().text = element.Value.name;
