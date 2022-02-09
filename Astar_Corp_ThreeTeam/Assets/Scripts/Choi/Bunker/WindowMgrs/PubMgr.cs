@@ -513,8 +513,7 @@ public class PubMgr : MonoBehaviour
         }
 
         if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
-        if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
-
+        
         if (recruitmentWin.activeSelf) recruitmentWin.SetActive(false);
         if (upgradeWin.activeSelf) upgradeWin.SetActive(false);
         if (popupWin.activeSelf) popupWin.SetActive(false);
@@ -528,7 +527,6 @@ public class PubMgr : MonoBehaviour
     public void CloseMainWin()
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
-        if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
     }
 
     public void Menu()
