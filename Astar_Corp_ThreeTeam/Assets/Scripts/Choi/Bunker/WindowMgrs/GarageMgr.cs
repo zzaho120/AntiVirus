@@ -59,7 +59,6 @@ public class GarageMgr : MonoBehaviour
     public void OpenMainWin()
     {
         if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
-        if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
         if (!mainWin.activeSelf) mainWin.SetActive(true);
         if (carBoardingWin.activeSelf) carBoardingWin.SetActive(false);
         if (trunkWin.activeSelf) trunkWin.SetActive(false);
@@ -68,7 +67,6 @@ public class GarageMgr : MonoBehaviour
     public void CloseMainWin()
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
-        if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
     }
 
     public void Menu()

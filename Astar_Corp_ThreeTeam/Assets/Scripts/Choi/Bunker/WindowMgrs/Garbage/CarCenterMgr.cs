@@ -20,7 +20,6 @@ public class CarCenterMgr : MonoBehaviour
     public BunkerMgr bunkerMgr;
     public GameObject mainWin;
     public GameObject buyWin;
-    public GameObject popupWin;
     public GameObject upgradeWin;
 
     public Animator menuAnim;
@@ -37,6 +36,9 @@ public class CarCenterMgr : MonoBehaviour
     private int keyNum;
 
     //지은.
+    public Text ownedMoneyTxt;
+    public GameObject buyPopup;
+    public Text ownedTxt;
     public GameObject carListPopup;
     public GameObject carListContents;
     public GameObject carPrefab;
@@ -44,6 +46,10 @@ public class CarCenterMgr : MonoBehaviour
 
     public List<GameObject> buttonList;
     public List<GameObject> gaugeList;
+    public List<GameObject> costButtons;
+    public GameObject lockImg;
+    public GameObject popup;
+    bool isPopupOpen;
     public Text moneyTxt;
     public Text costTxt;
     public Button buyButton;
@@ -112,11 +118,12 @@ public class CarCenterMgr : MonoBehaviour
         currentStat = TruckStat.None;
         
         currentKey = 0;
-        CarDisplay(carOrder[currentKey].id);
         selectedCar = carOrder[currentKey].id;
+        CarDisplay(selectedCar);
+
         var cost = carOrder[currentKey].price;
         costTxt.text = $"{cost}";
-
+        
         buyButton.interactable = false;
         ButtonInteractable();
 
@@ -188,6 +195,8 @@ public class CarCenterMgr : MonoBehaviour
 
         currentKey--;
         selectedCar = carOrder[currentKey].id;
+        
+        if (popup.activeSelf) popup.SetActive(false);
         CarDisplay(selectedCar);
     }
 
@@ -197,6 +206,8 @@ public class CarCenterMgr : MonoBehaviour
 
         currentKey++;
         selectedCar = carOrder[currentKey].id;
+
+        if (popup.activeSelf) popup.SetActive(false);
         CarDisplay(selectedCar);
     }
 
@@ -231,7 +242,7 @@ public class CarCenterMgr : MonoBehaviour
             //    child.GetComponent<Image>().color = originColor;
             //}
         }
-
+      
         upgradeButton.interactable = true;
         switch (index)
         {
@@ -289,10 +300,21 @@ public class CarCenterMgr : MonoBehaviour
             sightLv = playerDataMgr.saveData.sightLv[index];
 
             if (buyButton.interactable == true) buyButton.interactable = false;
+
+            if(!ownedTxt.gameObject.activeSelf) ownedTxt.gameObject.SetActive(true);
+            if(buyPopup.activeSelf) buyPopup.SetActive(false);
+            if (lockImg.activeSelf) lockImg.SetActive(false);
         }
         else 
         {
             if (buyButton.interactable == false) buyButton.interactable = true;
+
+            if (ownedTxt.gameObject.activeSelf) ownedTxt.gameObject.SetActive(false);
+            var cost = playerDataMgr.truckList[key].price;
+            buyPopup.transform.GetChild(2).gameObject.GetComponent<Text>().text
+                = $"G {cost}";
+            if (!buyPopup.activeSelf) buyPopup.SetActive(true);
+            if (!lockImg.activeSelf) lockImg.SetActive(true);
         }
 
         //초기화.
@@ -344,8 +366,16 @@ public class CarCenterMgr : MonoBehaviour
             sightObj.transform.GetChild(i).gameObject.GetComponent<Image>().color = Color.red;
         }
 
-        var cost = playerDataMgr.truckList[key].price;
-        costTxt.text = $"{cost}";
+        //var cost = playerDataMgr.truckList[key].price;
+        //costTxt.text = $"{cost}";
+
+        costButtons[0].transform.GetChild(1).GetComponent<Text>().text
+            = $"{playerDataMgr.truckList[selectedCar].speedUp_Cost}";
+        costButtons[1].transform.GetChild(1).GetComponent<Text>().text
+           = $"{playerDataMgr.truckList[selectedCar].weightUp_Cost}";
+        costButtons[2].transform.GetChild(1).GetComponent<Text>().text
+           = $"{playerDataMgr.truckList[selectedCar].sightUp_Cost}";
+
         upgradeCostTxt.text = "-";
         upgradeButton.interactable = false;
     }
@@ -355,6 +385,7 @@ public class CarCenterMgr : MonoBehaviour
         if (currentStat == TruckStat.None) return;
         if (!owned.Contains(selectedCar)) return;
         int cost = 0;
+        
         switch (currentStat)
         {
             case TruckStat.Speed:
@@ -368,7 +399,6 @@ public class CarCenterMgr : MonoBehaviour
                 break;
         }
         if (playerDataMgr.saveData.money - cost < 0) return;
-        
         var speedObj = gaugeList[0];
         var trunkObj = gaugeList[1];
         var sightObj = gaugeList[2];
@@ -415,6 +445,7 @@ public class CarCenterMgr : MonoBehaviour
         playerDataMgr.saveData.money -= cost;
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
+        ownedMoneyTxt.text =  $"보유 금액 G {playerDataMgr.saveData.money}";
         //moneyTxt.text = playerDataMgr.saveData.money.ToString();
     }
 
@@ -463,17 +494,16 @@ public class CarCenterMgr : MonoBehaviour
     public void OpenMainWin()
     {
         if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
-        if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
         if (!mainWin.activeSelf) mainWin.SetActive(true);
         if (buyWin.activeSelf) buyWin.SetActive(false);
-        if (popupWin.activeSelf) popupWin.SetActive(false);
+        if (popup.activeSelf) popup.SetActive(false);
+        isPopupOpen = false;
         if (upgradeWin.activeSelf) upgradeWin.SetActive(false);
     }
 
     public void CloseMainWin()
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
-        if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
     }
 
     public void Menu()
@@ -486,7 +516,8 @@ public class CarCenterMgr : MonoBehaviour
     public void OpenBuyWin()
     {
         mainWin.SetActive(false);
-        if (popupWin.activeSelf) popupWin.SetActive(false);
+        if (popup.activeSelf) popup.SetActive(false);
+        ownedMoneyTxt.text = $"보유 금액 G {playerDataMgr.saveData.money}";
         buyWin.SetActive(true);
     }
 
@@ -498,7 +529,14 @@ public class CarCenterMgr : MonoBehaviour
 
     public void OpenPopup()
     {
-        popupWin.SetActive(true);
+        isPopupOpen = true;
+        popup.SetActive(true);
+    }
+
+    public void ClosePopup()
+    {
+        isPopupOpen = false;
+        popup.SetActive(false);
     }
 
     public void OpenUpgradeWin()

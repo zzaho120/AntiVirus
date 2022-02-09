@@ -1216,7 +1216,6 @@ public class StoreMgr : MonoBehaviour
         }
 
         if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
-        if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
         if (!mainWin.activeSelf) mainWin.SetActive(true);
         if (storeWin.activeSelf) storeWin.SetActive(false);
         if (upgradeWin.activeSelf) upgradeWin.SetActive(false);
@@ -1225,8 +1224,7 @@ public class StoreMgr : MonoBehaviour
     public void CloseMainWin()
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
-        if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
-    }
+        }
 
     public void Menu()
     {

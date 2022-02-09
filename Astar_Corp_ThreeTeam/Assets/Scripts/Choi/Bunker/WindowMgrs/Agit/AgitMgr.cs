@@ -532,7 +532,6 @@ public class AgitMgr : MonoBehaviour
         }
 
         if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
-        if (bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(false);
         if (!upperUI.activeSelf) upperUI.SetActive(true);
         if (!belowUI.activeSelf) belowUI.SetActive(true);
 
@@ -545,7 +544,6 @@ public class AgitMgr : MonoBehaviour
     public void CloseMainWin()
     {
         if (!bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(true);
-        if (!bunkerMgr.mapButton.activeSelf) bunkerMgr.mapButton.SetActive(true);
         if (upperUI.activeSelf) upperUI.SetActive(false);
         if (belowUI.activeSelf) belowUI.SetActive(false);
     }
@@ -676,13 +674,18 @@ public class AgitMgr : MonoBehaviour
 
     public void OpenSkillPage()
     {
+        if(equipmentMgr.equipmentWin2.activeSelf)
+            equipmentMgr.equipmentWin2.SetActive(false);
+
         characterInfoWin.SetActive(false);
+        equipmentMgr.equipmentWin.SetActive(true);
         skillWinMgr.OpenSkillPage();
     }
 
     public void CloseSkillPage()
     {
         skillWinMgr.CloseSkillPage();
+        equipmentMgr.equipmentWin.SetActive(false);
         characterInfoWin.SetActive(true);
     }
 
@@ -695,6 +698,9 @@ public class AgitMgr : MonoBehaviour
 
     public void CloseEquipmentWin()
     {
+        if (skillWinMgr.skillPage.activeSelf)
+            skillWinMgr.skillPage.SetActive(false);
+
         equipmentMgr.equipmentWin.SetActive(false);
         characterInfoWin.SetActive(true);
     }

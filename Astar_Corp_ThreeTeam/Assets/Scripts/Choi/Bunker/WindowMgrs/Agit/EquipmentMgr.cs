@@ -1016,6 +1016,9 @@ public class EquipmentMgr : MonoBehaviour
 
     public void OpenEquipWin2()
     {
+        if (agitMgr.skillWinMgr.skillPage.activeSelf)
+            agitMgr.skillWinMgr.skillPage.SetActive(false);
+
         if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null)
         {
             var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;

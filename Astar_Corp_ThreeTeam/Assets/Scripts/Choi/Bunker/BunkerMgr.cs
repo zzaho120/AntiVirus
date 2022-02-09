@@ -50,6 +50,7 @@ public class BunkerMgr : MonoBehaviour
     public GameObject pauseWin;
     public GameObject optionWin;
     public GameObject questWin;
+    public GameObject mapWin;
     public bool isWinOpen;
     public bool isQuestWinOpen;
 
@@ -131,6 +132,7 @@ public class BunkerMgr : MonoBehaviour
         if (pauseWin.activeSelf) pauseWin.SetActive(false);
         if (optionWin.activeSelf) optionWin.SetActive(false);
         if (questWin.activeSelf) questWin.SetActive(false);
+        if (mapWin.activeSelf) mapWin.SetActive(false);
         isWinOpen = false;
         isQuestWinOpen = false;
 
@@ -265,6 +267,7 @@ public class BunkerMgr : MonoBehaviour
     {
         if (currentWinId != -1)
         {
+            if (!mapButton.activeSelf) mapButton.SetActive(true);
             nameTxt.text = "º¡Ä¿";
             isWinOpen = false;
             isBunkerMenuOpen = true;
@@ -640,5 +643,15 @@ public class BunkerMgr : MonoBehaviour
     {
         isQuestWinOpen = !isQuestWinOpen;
         questWin.SetActive(isQuestWinOpen);
+    }
+
+    public void OpenMapWin()
+    {
+        mapWin.SetActive(true);
+    }
+
+    public void CloseMapWin()
+    {
+        mapWin.SetActive(false);
     }
 }
