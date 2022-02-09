@@ -75,10 +75,13 @@ public class BoardingMgr : MonoBehaviour
             var button = go.AddComponent<Button>();
             button.onClick.AddListener(delegate { SelectCharacter(num); });
 
-            var child = go.transform.GetChild(1).gameObject;
+            var child = go.transform.GetChild(0).gameObject;
+            child.GetComponent<Image>().sprite = element.Value.character.halfImg;
+
+            child = go.transform.GetChild(1).gameObject;
             var childObj = child.transform.GetChild(0).gameObject;
             childObj.GetComponent<Text>().text
-                = $"{element.Value.character.name}/성별";
+                = $"{element.Value.characterName}";
 
             childObj = child.transform.GetChild(1).gameObject;
             string mainWeaponTxt = (element.Value.weapon.mainWeapon == null) ?
@@ -316,10 +319,13 @@ public class BoardingMgr : MonoBehaviour
         var button = go.AddComponent<Button>();
         button.onClick.AddListener(delegate { SelectCharacter(index); });
 
+        child = go.transform.GetChild(0).gameObject;
+        child.GetComponent<Image>().sprite = playerDataMgr.currentSquad[currentIndex].character.halfImg;
+
         child = go.transform.GetChild(1).gameObject;
         var childObj = child.transform.GetChild(0).gameObject;
         childObj.GetComponent<Text>().text
-            = $"{playerDataMgr.currentSquad[currentIndex].character.name}/성별";
+            = $"{playerDataMgr.currentSquad[currentIndex].characterName}";
 
         childObj = child.transform.GetChild(1).gameObject;
         string mainWeaponTxt = (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon == null) ?

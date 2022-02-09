@@ -129,6 +129,11 @@ public class HospitalMgr : MonoBehaviour
                 = $"LV{element.Value.level}";
             var toggle = childObj.transform.GetChild(2).gameObject.GetComponent<Toggle>();
             toggle.onValueChanged.AddListener(delegate { CauculateTotal(); });
+            var expSlider = childObj.transform.GetChild(3).gameObject.GetComponent<Slider>();
+            expSlider.maxValue = element.Value.totalExp;
+            expSlider.value = element.Value.currentExp;
+            childObj.transform.GetChild(4).gameObject.GetComponent<Text>().text
+                = $"{element.Value.currentExp}/{element.Value.totalExp}";
 
             childObj = go.transform.GetChild(1).gameObject;
             childObj.transform.GetChild(1).gameObject.GetComponent<Text>().text

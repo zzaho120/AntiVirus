@@ -29,8 +29,13 @@ public class PubMgr : MonoBehaviour
     public Text willPowerTxt;
     Dictionary<int, GameObject> characterObjs = new Dictionary<int, GameObject>();
 
+    public Text moneyTxt;
+    public Text costTxt;
+
     [Header("Detail Win")]
+    public Image characterImg;
     public Text nameTxt;
+    public Image vocationImg;
     public Text levelTxt;
     public List<GameObject> mainWeaponList;
     public Text simpleStat;
@@ -45,6 +50,14 @@ public class PubMgr : MonoBehaviour
     public Text pubLevelTxt;
     public Text capacityTxt;
     public Text materialTxt;
+
+    [Header("Icons")]
+    public Sprite arIcon;
+    public Sprite hgIcon;
+    public Sprite hmgIcon;
+    public Sprite sgIcon;
+    public Sprite smgIcon;
+    public Sprite srIcon;
 
     //아지트 관련.
     int agitLevel;
@@ -175,7 +188,7 @@ public class PubMgr : MonoBehaviour
             {
                 characterNameList.Add(element.Key);
             }
-
+          
             for (int j = 0; j < maxSoldierNum; j++)
             {
                 int randomIndex = Random.Range(0, playerDataMgr.characterList.Count);
@@ -192,8 +205,19 @@ public class PubMgr : MonoBehaviour
                 
                 stat.bagLevel = 1;
 
+                //랜덤 주무기 장착.
+                List<string> mainWeapons = new List<string>();
+                foreach (var mainWeapon in playerDataMgr.equippableList)
+                {
+                    if (mainWeapon.Value.kind.Equals("1") || mainWeapon.Value.kind.Equals("7")) continue;
+                    if (!stat.character.weapons.Contains(mainWeapon.Value.kind)) continue;
+                    mainWeapons.Add(mainWeapon.Key);
+                }
+                randomIndex = Random.Range(0, mainWeapons.Count);
+                var mainWeaponKey = mainWeapons[randomIndex];
+
                 stat.weapon = new WeaponStats();
-                stat.weapon.mainWeapon = null;
+                stat.weapon.mainWeapon = playerDataMgr.equippableList[mainWeaponKey];
 
                 int num = j;
                 soldiers.Add(num, stat);
@@ -208,7 +232,7 @@ public class PubMgr : MonoBehaviour
                 playerDataMgr.saveData.soldierConcentration.Add(stat.concentration);
                 playerDataMgr.saveData.soldierWillPower.Add(stat.willpower);
                 playerDataMgr.saveData.soldierSightDistance.Add(stat.sightDistance);
-                playerDataMgr.saveData.soldierMainWeapon.Add(null);
+                playerDataMgr.saveData.soldierMainWeapon.Add(mainWeaponKey);
                 playerDataMgr.saveData.soldierCost.Add(cost);
             }
             PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
@@ -217,22 +241,38 @@ public class PubMgr : MonoBehaviour
             foreach (var element in soldiers)
             {
                 var go = Instantiate(characterPrefab, characterListContent.transform);
-                var child = go.transform.GetChild(1).gameObject;
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.character.halfImg;
+
+                child = go.transform.GetChild(1).gameObject;
 
                 var childObj = child.transform.GetChild(0).gameObject;
                 childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
                     = $"가격 {costs[i]}";
 
                 childObj = child.transform.GetChild(1).gameObject;
-                childObj.GetComponent<Text>().text = $"{element.Value.characterName}/성별";
+                childObj.GetComponent<Text>().text = $"{element.Value.characterName}";
 
                 childObj = child.transform.GetChild(2).gameObject;
-                childObj.GetComponent<Text>().text = $"{element.Value.character.name}/Lv{element.Value.level}/착용 중인 주무기";
+                childObj.transform.GetChild(0).GetComponent<Image>().sprite = element.Value.character.icon;
+                childObj.transform.GetChild(1).GetComponent<Text>().text = $"LV {element.Value.level}";
 
                 childObj = child.transform.GetChild(3).gameObject;
-                var slider = childObj.GetComponent<Slider>();
-                slider.maxValue = element.Value.MaxHp;
-                slider.value = element.Value.currentHp;
+
+                for (int j=0; j< childObj.transform.childCount; j++)
+                {
+                    childObj.transform.GetChild(j).gameObject.SetActive(false);
+                }
+
+                int k = 0;
+                foreach (var weapon in element.Value.character.weapons)
+                {
+                    if (weapon.Equals("1") || weapon.Equals("7")) continue;
+
+                    childObj.transform.GetChild(k).gameObject.SetActive(true);
+                    childObj.transform.GetChild(k).gameObject.GetComponent<Image>().sprite = GetTypeSprite(weapon);
+                    k++;
+                }
 
                 int num = i;
                 var button = go.AddComponent<Button>();
@@ -266,7 +306,8 @@ public class PubMgr : MonoBehaviour
                 stat.Setting();
 
                 stat.weapon = new WeaponStats();
-                if (playerDataMgr.saveData.soldierMainWeapon[j] == null) stat.weapon.mainWeapon = null;
+                var mainWeaponKey = playerDataMgr.saveData.soldierMainWeapon[j];
+                stat.weapon.mainWeapon = playerDataMgr.equippableList[mainWeaponKey];
 
                 int num = j;
                 soldiers.Add(num, stat);
@@ -278,22 +319,39 @@ public class PubMgr : MonoBehaviour
             foreach (var element in soldiers)
             {
                 var go = Instantiate(characterPrefab, characterListContent.transform);
-                var child = go.transform.GetChild(1).gameObject;
+                
+                var child = go.transform.GetChild(0).gameObject;
+                child.GetComponent<Image>().sprite = element.Value.character.halfImg;
+
+                child = go.transform.GetChild(1).gameObject;
 
                 var childObj = child.transform.GetChild(0).gameObject;
                 childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
                     = $"가격 {costs[i]}";
 
                 childObj = child.transform.GetChild(1).gameObject;
-                childObj.GetComponent<Text>().text = $"{element.Value.characterName}/성별";
+                childObj.GetComponent<Text>().text = $"{element.Value.characterName}";
 
                 childObj = child.transform.GetChild(2).gameObject;
-                childObj.GetComponent<Text>().text = $"{element.Value.character.name}/Lv{element.Value.level}/착용 중인 주무기";
+                childObj.transform.GetChild(0).GetComponent<Image>().sprite = element.Value.character.icon;
+                childObj.transform.GetChild(1).GetComponent<Text>().text = $"LV {element.Value.level}";
 
                 childObj = child.transform.GetChild(3).gameObject;
-                var slider = childObj.GetComponent<Slider>();
-                slider.maxValue = element.Value.MaxHp;
-                slider.value = element.Value.currentHp;
+
+                for (int j = 0; j < childObj.transform.childCount; j++)
+                {
+                    childObj.transform.GetChild(j).gameObject.SetActive(false);
+                }
+
+                int k = 0;
+                foreach (var weapon in element.Value.character.weapons)
+                {
+                    if (weapon.Equals("1") || weapon.Equals("7")) continue;
+
+                    childObj.transform.GetChild(k).gameObject.SetActive(true);
+                    childObj.transform.GetChild(k).gameObject.GetComponent<Image>().sprite = GetTypeSprite(weapon);
+                    k++;
+                }
 
                 int num = i;
                 var button = go.AddComponent<Button>();
@@ -319,8 +377,12 @@ public class PubMgr : MonoBehaviour
     public void OpenDetailInfo()
     {
         if(!DetailInfoWin.activeSelf) DetailInfoWin.SetActive(true);
+        moneyTxt.text = playerDataMgr.saveData.money.ToString();
+        costTxt.text = $"가격 {costs[currentIndex]}";
 
+        characterImg.sprite = soldiers[currentIndex].character.halfImg;
         nameTxt.text = $"{soldiers[currentIndex].character.name}";
+        vocationImg.sprite = soldiers[currentIndex].character.icon;
         levelTxt.text = $"Lv{soldiers[currentIndex].level}";
 
         foreach (var element in mainWeaponList)
@@ -336,6 +398,7 @@ public class PubMgr : MonoBehaviour
             mainWeaponList[i].SetActive(true);
             var child = mainWeaponList[i].transform.GetChild(0).gameObject;
             child.GetComponent<Text>().text = $"{GetTypeStr(element)}";
+            mainWeaponList[i].GetComponent<Image>().sprite = GetTypeSprite(element);
             i++;
         }
 
@@ -365,7 +428,7 @@ public class PubMgr : MonoBehaviour
                 type = "AR";
                 break;
             case "5":
-                type = "LMG";
+                type = "SMG";
                 break;
             case "6":
                 type = "SR";
@@ -375,6 +438,30 @@ public class PubMgr : MonoBehaviour
                 break;
         }
         return type;
+    }
+
+    Sprite GetTypeSprite(string kind)
+    {
+        Sprite img = null;
+        switch (kind)
+        {
+           case "2":
+                img = sgIcon;
+                break;
+            case "3":
+                img = smgIcon;
+                break;
+            case "4":
+                img = arIcon;
+                break;
+            case "5":
+                img = smgIcon;
+                break;
+            case "6":
+                img = srIcon;
+                break;
+        }
+        return img;
     }
 
     public void Hire()
@@ -404,7 +491,8 @@ public class PubMgr : MonoBehaviour
         playerDataMgr.saveData.money -= costs[currentIndex];
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
-       
+        moneyTxt.text = playerDataMgr.saveData.money.ToString();
+
         currentIndex = -1;
         SelectSoldier();
         DetailInfoWin.SetActive(false);
@@ -462,6 +550,7 @@ public class PubMgr : MonoBehaviour
         }
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
+        moneyTxt.text = playerDataMgr.saveData.money.ToString();
         currentIndex = -1;
         SelectSoldier();
         DetailInfoWin.SetActive(false);

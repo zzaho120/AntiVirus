@@ -369,12 +369,13 @@ public class CarCenterMgr : MonoBehaviour
         //var cost = playerDataMgr.truckList[key].price;
         //costTxt.text = $"{cost}";
 
+
         costButtons[0].transform.GetChild(1).GetComponent<Text>().text
-            = $"{playerDataMgr.truckList[selectedCar].speedUp_Cost}";
+            = (speedLv == 5)? "최대치": $"{playerDataMgr.truckList[selectedCar].speedUp_Cost}";
         costButtons[1].transform.GetChild(1).GetComponent<Text>().text
-           = $"{playerDataMgr.truckList[selectedCar].weightUp_Cost}";
+           = (trunkLv == 5) ? "최대치" : $"{playerDataMgr.truckList[selectedCar].weightUp_Cost}";
         costButtons[2].transform.GetChild(1).GetComponent<Text>().text
-           = $"{playerDataMgr.truckList[selectedCar].sightUp_Cost}";
+           = (sightLv == 5) ? "최대치" : $"{playerDataMgr.truckList[selectedCar].sightUp_Cost}";
 
         upgradeCostTxt.text = "-";
         upgradeButton.interactable = false;
@@ -403,11 +404,15 @@ public class CarCenterMgr : MonoBehaviour
         var trunkObj = gaugeList[1];
         var sightObj = gaugeList[2];
         int index = playerDataMgr.saveData.cars.IndexOf(selectedCar);
+        
         if (currentStat == TruckStat.Speed)
         {
             if (playerDataMgr.saveData.speedLv[index] == 5) return;
             if (playerDataMgr.saveData.speedLv[index] == maxCarLevel) return;
             playerDataMgr.saveData.speedLv[index] += 1;
+            if (playerDataMgr.saveData.speedLv[index] == 5)
+                costButtons[0].transform.GetChild(1).GetComponent<Text>().text = "최대치";
+            
             var speedLv = playerDataMgr.saveData.speedLv[index];
 
             for (int i = 0; i < speedLv; i++)
@@ -421,6 +426,9 @@ public class CarCenterMgr : MonoBehaviour
             if (playerDataMgr.saveData.weightLv[index] == 5) return;
             if (playerDataMgr.saveData.weightLv[index] == maxCarLevel) return;
             playerDataMgr.saveData.weightLv[index] += 1;
+            if (playerDataMgr.saveData.weightLv[index] == 5)
+                costButtons[1].transform.GetChild(1).GetComponent<Text>().text = "최대치";
+
             var trunkLv = playerDataMgr.saveData.weightLv[index];
 
             for (int i = 0; i < trunkLv; i++)
@@ -434,6 +442,9 @@ public class CarCenterMgr : MonoBehaviour
             if (playerDataMgr.saveData.sightLv[index] == 5) return;
             if (playerDataMgr.saveData.sightLv[index] == maxCarLevel) return;
             playerDataMgr.saveData.sightLv[index] += 1;
+            if (playerDataMgr.saveData.sightLv[index] == 5)
+                costButtons[2].transform.GetChild(1).GetComponent<Text>().text = "최대치";
+
             var sightLv = playerDataMgr.saveData.sightLv[index];
 
             for (int i = 0; i < sightLv; i++)
@@ -464,6 +475,7 @@ public class CarCenterMgr : MonoBehaviour
         playerDataMgr.saveData.weightLv.Add(1);
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
+        ownedMoneyTxt.text = $"보유 금액 G {playerDataMgr.saveData.money}";
 
         Refresh();
         CarDisplay(selectedCar);

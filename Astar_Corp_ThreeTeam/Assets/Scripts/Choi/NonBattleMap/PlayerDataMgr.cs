@@ -248,6 +248,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     //게임상 관리하기 쉽도록.
                     CharacterStats stat = new CharacterStats();
                     stat.saveId = i;
+                    stat.characterName = saveData.characterName[i];
                     stat.currentHp = saveData.hp[i];
                     stat.MaxHp = saveData.maxHp[i];
                     stat.sensivity = saveData.sensitivity[i];
@@ -336,6 +337,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             //게임상 관리하기 쉽도록.
             CharacterStats stat = new CharacterStats();
             stat.saveId = i;
+            stat.characterName = saveData.characterName[i];
             stat.VirusPenaltyInit();
             stat.currentHp = saveData.hp[i];
             stat.MaxHp = saveData.maxHp[i];

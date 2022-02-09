@@ -36,11 +36,13 @@ public class AgitMgr : MonoBehaviour
 
     [Header("CharacterInfo Win")]
     public Text characterName;
+    public Image characterImg;
     public Image mainWeaponImg;
     public Image subWeaponImg;
     public Text bagNameTxt;
     public GameObject virusObj;
     public Slider hpBar;
+    public Slider expBar;
 
     [Header("Ability Win")]
     public GameObject abilityButton;
@@ -236,17 +238,22 @@ public class AgitMgr : MonoBehaviour
             child.transform.GetChild(1).gameObject.GetComponent<Text>().text
                  = $"LV{element.Value.level}";
 
+            var expSlider = child.transform.GetChild(3).gameObject.GetComponent<Slider>();
+            expSlider.maxValue = element.Value.totalExp;
+            expSlider.value = element.Value.currentExp;
+
+            child.transform.GetChild(4).gameObject.GetComponent<Text>().text
+                = $"{element.Value.currentExp}/{element.Value.totalExp}";
+
             child = go.transform.GetChild(1).gameObject;
-
-
-
-
+            child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite
+                = element.Value.character.icon;
             child.transform.GetChild(1).gameObject.GetComponent<Text>().text
-                 = element.Value.characterName;
+                 = element.Value.character.name;
 
             child = go.transform.GetChild(2).gameObject;
             child.transform.GetChild(0).gameObject.GetComponent<Text>().text
-                 = element.Value.character.name;
+                 = element.Value.characterName;
 
             child = go.transform.GetChild(3).gameObject;
             child.transform.GetChild(0).gameObject.GetComponent<Text>().text
@@ -291,11 +298,6 @@ public class AgitMgr : MonoBehaviour
         }
         int currentMemberNum = playerDataMgr.currentSquad.Count;
         memberNumTxt.text = $"최대 용병 수용량 {currentMemberNum} / {maxMember}";
-    }
-
-    public void GetVocationImg()
-    { 
-        
     }
 
     public void SelectCharacter(int index)
@@ -607,7 +609,8 @@ public class AgitMgr : MonoBehaviour
         isVirusPopupOpen = false;
 
         var character = playerDataMgr.currentSquad[currentIndex];
-        characterName.text = $"{character.character.name}";
+        characterName.text = $"{character.characterName} (LV.{character.level})";
+        characterImg.sprite = character.character.halfImg;
         mainWeaponImg.sprite = (character.weapon.mainWeapon!=null)? 
             character.weapon.mainWeapon.img : null;
         subWeaponImg.sprite = (character.weapon.subWeapon != null) ? 
@@ -616,6 +619,8 @@ public class AgitMgr : MonoBehaviour
 
         hpBar.maxValue = character.MaxHp;
         hpBar.value = character.currentHp;
+        expBar.maxValue = character.totalExp;
+        expBar.value = character.currentExp;
 
         if (character.virusPenalty["E"].penaltyGauge > 0)
             virusObj.transform.GetChild(0).gameObject.SetActive(true);
