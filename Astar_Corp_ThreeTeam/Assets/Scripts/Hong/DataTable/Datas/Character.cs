@@ -82,4 +82,8 @@ public class Character : ScriptableObject
 	public List<string> skillB = new List<string>();
 	public List<string> skillC = new List<string>();
 	public List<string> skillD = new List<string>();
+
+	public Sprite fullImg;
+	public Sprite halfImg;
+	public Sprite icon;
 }

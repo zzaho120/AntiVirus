@@ -33,6 +33,7 @@ public class PlayerSaveData
     //캐릭터 관련.
     public List<string> id { get; set; }
     public List<string> name { get; set; }
+    public List<string> characterName { get; set; }
     public List<int> hp { get; set; }
     public List<int> maxHp { get; set; }
     public List<int> sensitivity { get; set; }
@@ -93,6 +94,7 @@ public class PlayerSaveData
     //용병 관련.
     public bool pubReset { get; set; }
     public List<string> soldierName { get; set; }
+    public List<string> soldierCharacterName { get; set; }
     public List<int> soldierHp { get; set; }
     public List<int> soldierSensitivity { get; set; }
     public List<int> soldierAvoidRate { get; set; }

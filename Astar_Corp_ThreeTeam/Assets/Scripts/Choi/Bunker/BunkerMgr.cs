@@ -82,6 +82,11 @@ public class BunkerMgr : MonoBehaviour
     public GameObject lockedPrefab;
     public List<GameObject> bunkerObjs;
 
+    [Header("Sprites")]
+    public List<Sprite> vocationImgs;
+    public List<Sprite> virusImgs;
+    public List<Sprite> toleranceImgs;
+
     int bunkerCount;
     public int currentBunkerIndex;
 

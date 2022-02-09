@@ -17,6 +17,9 @@ using UnityEngine;
 
 public class CharacterStats
 {
+    //캐릭터 이름
+    public string characterName;
+
     // 기본 스탯
     public Character character;
 

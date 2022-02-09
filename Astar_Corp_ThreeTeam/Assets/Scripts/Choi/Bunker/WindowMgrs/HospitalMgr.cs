@@ -18,6 +18,8 @@ public class HospitalMgr : MonoBehaviour
     public GameObject characterPrefab;
     public GameObject newCharacterPrefab;
 
+    public Text moneyText;
+    public Text selectedCost;
     public Text recoveryCostTxt;
     public GameObject recoveryButton;
 
@@ -48,7 +50,7 @@ public class HospitalMgr : MonoBehaviour
     
     int currentIndex;
     int currentKey;
-    Color originColor;
+    //Color originColor;
 
     //기준 수치.
     Dictionary<int, int> standardHp = new Dictionary<int, int>();
@@ -58,6 +60,8 @@ public class HospitalMgr : MonoBehaviour
     Dictionary<int, int> standardPGauge = new Dictionary<int, int>();
     Dictionary<int, int> standardTGauge = new Dictionary<int, int>();
 
+    Dictionary<int, int> costs = new Dictionary<int, int>();
+
     public void Init()
     {
         if (standardHp.Count != 0) standardHp.Clear();
@@ -66,6 +70,7 @@ public class HospitalMgr : MonoBehaviour
         if (standardIGauge.Count != 0) standardIGauge.Clear();
         if (standardPGauge.Count != 0) standardPGauge.Clear();
         if (standardTGauge.Count != 0) standardTGauge.Clear();
+        if (costs.Count != 0) costs.Clear();
 
         hospitalLevel = playerDataMgr.saveData.hospitalLevel;
         Bunker hospitalLevelInfo = playerDataMgr.bunkerList["BUN_0005"];
@@ -122,6 +127,8 @@ public class HospitalMgr : MonoBehaviour
             var childObj = go.transform.GetChild(0).gameObject;
             childObj.transform.GetChild(1).gameObject.GetComponent<Text>().text 
                 = $"LV{element.Value.level}";
+            var toggle = childObj.transform.GetChild(2).gameObject.GetComponent<Toggle>();
+            toggle.onValueChanged.AddListener(delegate { CauculateTotal(); });
 
             childObj = go.transform.GetChild(1).gameObject;
             childObj.transform.GetChild(1).gameObject.GetComponent<Text>().text
@@ -148,20 +155,18 @@ public class HospitalMgr : MonoBehaviour
 
             for (int j = 0; j < virusName.Length; j++)
             {
-                if (element.Value.virusPenalty[virusName[j]].penaltyLevel >= 1)
+                if (!(element.Value.virusPenalty[virusName[j]].penaltyLevel == 0 &&
+                    element.Value.virusPenalty[virusName[j]].penaltyGauge ==0))
                     virusGroup.transform.GetChild(j).gameObject.SetActive(true);
                 else virusGroup.transform.GetChild(j).gameObject.SetActive(false);
             }
 
             childObj = go.transform.GetChild(4).gameObject;
             childObj = childObj.transform.GetChild(0).gameObject;
-            childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text = $"G 0";
-
-            characterObjs.Add(go);
-
+            var button = childObj.GetComponent<Button>();
+            button.onClick.AddListener(TreatAll);
+            
             int num = i;
-            var button = go.AddComponent<Button>();
-            button.onClick.AddListener(delegate { SelectCharacter(num); });
 
             standardHp.Add(num, element.Value.currentHp);
             standardBGauge.Add(num, element.Value.virusPenalty["B"].penaltyGauge);
@@ -169,6 +174,16 @@ public class HospitalMgr : MonoBehaviour
             standardIGauge.Add(num, element.Value.virusPenalty["I"].penaltyGauge);
             standardPGauge.Add(num, element.Value.virusPenalty["P"].penaltyGauge);
             standardTGauge.Add(num, element.Value.virusPenalty["T"].penaltyGauge);
+
+            //var cost = CalculateCost(num);
+            var cost = Random.Range(0, 1000); 
+            childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text = $"G {cost}";
+            costs.Add(num, cost);
+
+            characterObjs.Add(go);
+
+            button = go.AddComponent<Button>();
+            button.onClick.AddListener(delegate { SelectCharacter(num); });
 
             i++;
         }
@@ -183,7 +198,7 @@ public class HospitalMgr : MonoBehaviour
 
         currentIndex = -1;
         currentKey = -1;
-        originColor = characterPrefab.GetComponent<Image>().color;
+        //originColor = characterPrefab.GetComponent<Image>().color;
         isMenuOpen = true;
         arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
     }
@@ -191,13 +206,13 @@ public class HospitalMgr : MonoBehaviour
     void SelectCharacter(int index)
     {
         if (currentIndex == index) return;
-        if (currentIndex != -1)
-        {
-            characterObjs[currentIndex].GetComponent<Image>().color = originColor;
-        }
+        //if (currentIndex != -1)
+        //{
+        //    characterObjs[currentIndex].GetComponent<Image>().color = Color.black;
+        //}
 
         currentIndex = index;
-        characterObjs[currentIndex].GetComponent<Image>().color = Color.red;
+        //characterObjs[currentIndex].GetComponent<Image>().color = Color.red;
 
         var character = playerDataMgr.currentSquad[currentIndex];
 
@@ -294,7 +309,7 @@ public class HospitalMgr : MonoBehaviour
         sliders[0].value = playerDataMgr.currentSquad[key].currentHp;
     }
 
-    public void CalculateCost(int key)
+    public int CalculateCost(int key)
     {
         int totalCost = 0;
 
@@ -378,6 +393,125 @@ public class HospitalMgr : MonoBehaviour
                 }
             }
         }
+
+        return totalCost;
+    }
+
+    public void TreatAll()
+    {
+        if (currentIndex == -1) return;
+        int totalCost = costs[currentIndex];
+        if (totalCost == 0) return;
+        if (playerDataMgr.saveData.money - totalCost < 0) return;
+
+        int key = currentIndex;
+        playerDataMgr.currentSquad[key].currentHp = playerDataMgr.currentSquad[key].MaxHp;
+        playerDataMgr.saveData.hp[key] = playerDataMgr.currentSquad[key].currentHp;
+        playerDataMgr.saveData.money -= totalCost;
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+        bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
+        moneyText.text = playerDataMgr.saveData.money.ToString();
+
+        var child = characterObjs[key].transform.GetChild(3).gameObject;
+        child.transform.GetChild(0).gameObject.GetComponent<Text>().text
+            = $"{playerDataMgr.currentSquad[key].currentHp}/{playerDataMgr.currentSquad[key].MaxHp}";
+        var slider = child.transform.GetChild(1).gameObject.GetComponent<Slider>();
+        slider.maxValue = playerDataMgr.currentSquad[key].MaxHp;
+        slider.value = playerDataMgr.currentSquad[key].currentHp;
+
+        var virusGroup = child.transform.GetChild(2).gameObject;
+        string[] virusName = new string[5];
+        virusName[0] = "E";
+        virusName[1] = "B";
+        virusName[2] = "P";
+        virusName[3] = "I";
+        virusName[4] = "T";
+
+        for (int j = 0; j < virusName.Length; j++)
+        {
+            virusGroup.transform.GetChild(j).gameObject.SetActive(false);
+        }
+
+        child = characterObjs[key].transform.GetChild(4).gameObject;
+        child = child.transform.GetChild(0).gameObject;
+        child.transform.GetChild(0).gameObject.GetComponent<Text>().text = $"G {0}";
+        costs[currentIndex] = 0;
+
+        for (int j = 0; j < virusName.Length; j++)
+        {
+            playerDataMgr.currentSquad[key].virusPenalty[virusName[j]].penaltyLevel = 0;
+            playerDataMgr.currentSquad[key].virusPenalty[virusName[j]].penaltyGauge = 0;
+
+            switch (j)
+            {
+                case 0:
+                    playerDataMgr.saveData.levelE[key] = 0;
+                    playerDataMgr.saveData.gaugeE[key] = 0;
+                    break;
+                case 1:
+                    playerDataMgr.saveData.levelB[key] = 0;
+                    playerDataMgr.saveData.gaugeB[key] = 0;
+                    break;
+                case 2:
+                    playerDataMgr.saveData.levelP[key] = 0;
+                    playerDataMgr.saveData.gaugeP[key] = 0;
+                    break;
+                case 3:
+                    playerDataMgr.saveData.levelI[key] = 0;
+                    playerDataMgr.saveData.gaugeI[key] = 0;
+                    break;
+                case 4:
+                    playerDataMgr.saveData.levelT[key] = 0;
+                    playerDataMgr.saveData.gaugeT[key] = 0;
+                    break;
+            }
+        }
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+    }
+
+    public void CauculateTotal()
+    {
+        int sum = 0;
+        int i = 0;
+        foreach (var element in characterObjs)
+        { 
+            var child  = element.transform.GetChild(0).gameObject;
+            var toggle = child.transform.GetChild(2).gameObject.GetComponent<Toggle>();
+            if (toggle.isOn) sum += costs[i];
+            i++;
+        }
+
+        selectedCost.text = $"G {sum}";
+    }
+
+    public void SelectTreat()
+    {
+        string[] splits = selectedCost.text.Split(' ');
+        int cost = int.Parse(splits[1]);
+        if (cost == 0) return;
+
+        int i = 0;
+        foreach (var element in characterObjs)
+        {
+            var child = element.transform.GetChild(0).gameObject;
+            var toggle = child.transform.GetChild(2).gameObject.GetComponent<Toggle>();
+            if (toggle.isOn)
+            {
+                currentIndex = i;
+                TreatAll();
+            }
+            i++;
+        }
+
+        foreach (var element in characterObjs)
+        {
+            var child = element.transform.GetChild(0).gameObject;
+            var toggle = child.transform.GetChild(2).gameObject.GetComponent<Toggle>();
+            if (toggle.isOn) toggle.isOn = false;
+        }
+        selectedCost.text = $"G 0";
+
+        currentIndex = -1;
     }
 
     //public void RecoveryVirusGauge()
@@ -504,6 +638,12 @@ public class HospitalMgr : MonoBehaviour
 
     public void OpenHospitalWin()
     {
+        //foreach (var elememt in characterObjs)
+        //{
+        //    if(elememt.GetComponent<Image>().color == Color.red)
+        //        elememt.GetComponent<Image>().color = Color.black;
+        //}
+
         mainWin.SetActive(false);
         hospitalWin.SetActive(true);
     }

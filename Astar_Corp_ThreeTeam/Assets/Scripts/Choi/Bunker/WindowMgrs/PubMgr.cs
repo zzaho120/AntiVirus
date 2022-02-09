@@ -61,7 +61,8 @@ public class PubMgr : MonoBehaviour
     int currentHintIndex;
     Color originColor;
 
-    List<string> characterName = new List<string>();
+    List<string> nameList = new List<string>();
+    List<string> characterNameList = new List<string>();
     Dictionary<int, CharacterStats> soldiers = new Dictionary<int, CharacterStats>();
     Dictionary<int, int> costs = new Dictionary<int, int>();
 
@@ -155,6 +156,7 @@ public class PubMgr : MonoBehaviour
             //랜덤 용병 생성.
             playerDataMgr.saveData.pubReset = false;
             if (playerDataMgr.saveData.soldierName.Count != 0) playerDataMgr.saveData.soldierName.Clear();
+            if (playerDataMgr.saveData.soldierCharacterName.Count != 0) playerDataMgr.saveData.soldierCharacterName.Clear();
             if (playerDataMgr.saveData.soldierHp.Count != 0) playerDataMgr.saveData.soldierHp.Clear();
             if (playerDataMgr.saveData.soldierSensitivity.Count != 0) playerDataMgr.saveData.soldierSensitivity.Clear();
             if (playerDataMgr.saveData.soldierAvoidRate.Count != 0) playerDataMgr.saveData.soldierAvoidRate.Clear();
@@ -166,18 +168,28 @@ public class PubMgr : MonoBehaviour
             //랜덤 용병 생성.
             foreach (var element in playerDataMgr.characterList)
             {
-                characterName.Add(element.Key);
+                nameList.Add(element.Key);
+            }
+            //캐릭터 이름.
+            foreach (var element in playerDataMgr.nameList)
+            {
+                characterNameList.Add(element.Key);
             }
 
             for (int j = 0; j < maxSoldierNum; j++)
             {
                 int randomIndex = Random.Range(0, playerDataMgr.characterList.Count);
-                var key = characterName[randomIndex];
+                var key = nameList[randomIndex];
 
                 CharacterStats stat = new CharacterStats();
                 var character = playerDataMgr.characterList[key];
                 stat.character = character;
                 stat.Init();
+
+                randomIndex = Random.Range(0, playerDataMgr.characterList.Count);
+                var nameKey = characterNameList[randomIndex];
+                stat.characterName = playerDataMgr.nameList[nameKey].name;
+                
                 stat.bagLevel = 1;
 
                 stat.weapon = new WeaponStats();
@@ -189,6 +201,7 @@ public class PubMgr : MonoBehaviour
                 costs.Add(num, cost);
 
                 playerDataMgr.saveData.soldierName.Add(stat.character.name);
+                playerDataMgr.saveData.soldierCharacterName.Add(stat.characterName);
                 playerDataMgr.saveData.soldierHp.Add(stat.currentHp);
                 playerDataMgr.saveData.soldierSensitivity.Add(stat.sensivity);
                 playerDataMgr.saveData.soldierAvoidRate.Add(stat.avoidRate);
@@ -211,7 +224,7 @@ public class PubMgr : MonoBehaviour
                     = $"가격 {costs[i]}";
 
                 childObj = child.transform.GetChild(1).gameObject;
-                childObj.GetComponent<Text>().text = $"{element.Value.character.name}/성별";
+                childObj.GetComponent<Text>().text = $"{element.Value.characterName}/성별";
 
                 childObj = child.transform.GetChild(2).gameObject;
                 childObj.GetComponent<Text>().text = $"{element.Value.character.name}/Lv{element.Value.level}/착용 중인 주무기";
@@ -237,6 +250,7 @@ public class PubMgr : MonoBehaviour
                 var key = playerDataMgr.characterList.FirstOrDefault(x => x.Value.name == playerDataMgr.saveData.soldierName[j]).Key;
                 var character = playerDataMgr.characterList[key];
                 stat.character = character;
+                stat.characterName = playerDataMgr.saveData.soldierCharacterName[j];
                 stat.currentHp = playerDataMgr.saveData.soldierHp[j];
                 stat.MaxHp = playerDataMgr.saveData.soldierHp[j];
                 stat.sensivity = playerDataMgr.saveData.soldierSensitivity[j];
@@ -271,7 +285,7 @@ public class PubMgr : MonoBehaviour
                     = $"가격 {costs[i]}";
 
                 childObj = child.transform.GetChild(1).gameObject;
-                childObj.GetComponent<Text>().text = $"{element.Value.character.name}/성별";
+                childObj.GetComponent<Text>().text = $"{element.Value.characterName}/성별";
 
                 childObj = child.transform.GetChild(2).gameObject;
                 childObj.GetComponent<Text>().text = $"{element.Value.character.name}/Lv{element.Value.level}/착용 중인 주무기";
@@ -372,6 +386,7 @@ public class PubMgr : MonoBehaviour
 
         //json.
         playerDataMgr.saveData.soldierName.RemoveAt(currentIndex);
+        playerDataMgr.saveData.soldierCharacterName.RemoveAt(currentIndex);
         playerDataMgr.saveData.soldierHp.RemoveAt(currentIndex);
         playerDataMgr.saveData.soldierSensitivity.RemoveAt(currentIndex);
         playerDataMgr.saveData.soldierAvoidRate.RemoveAt(currentIndex);
@@ -427,6 +442,7 @@ public class PubMgr : MonoBehaviour
             {
                 //json.
                 playerDataMgr.saveData.soldierName.RemoveAt(i);
+                playerDataMgr.saveData.soldierCharacterName.RemoveAt(i);
                 playerDataMgr.saveData.soldierHp.RemoveAt(i);
                 playerDataMgr.saveData.soldierSensitivity.RemoveAt(i);
                 playerDataMgr.saveData.soldierAvoidRate.RemoveAt(i);

@@ -237,8 +237,12 @@ public class AgitMgr : MonoBehaviour
                  = $"LV{element.Value.level}";
 
             child = go.transform.GetChild(1).gameObject;
+
+
+
+
             child.transform.GetChild(1).gameObject.GetComponent<Text>().text
-                 = element.Value.character.name;
+                 = element.Value.characterName;
 
             child = go.transform.GetChild(2).gameObject;
             child.transform.GetChild(0).gameObject.GetComponent<Text>().text
@@ -287,6 +291,11 @@ public class AgitMgr : MonoBehaviour
         }
         int currentMemberNum = playerDataMgr.currentSquad.Count;
         memberNumTxt.text = $"최대 용병 수용량 {currentMemberNum} / {maxMember}";
+    }
+
+    public void GetVocationImg()
+    { 
+        
     }
 
     public void SelectCharacter(int index)

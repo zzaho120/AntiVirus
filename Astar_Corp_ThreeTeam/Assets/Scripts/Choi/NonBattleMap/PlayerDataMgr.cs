@@ -22,6 +22,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public Dictionary<string, Truck> truckList = new Dictionary<string, Truck>();
     public Dictionary<string, Inventory> bagList = new Dictionary<string, Inventory>();
     public Dictionary<string, Bunker> bunkerList = new Dictionary<string, Bunker>();
+    public Dictionary<string, Name> nameList = new Dictionary<string, Name>();
 
     ScriptableMgr scriptableMgr;
 
@@ -65,6 +66,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         truckList = scriptableMgr.truckList;
         bagList = scriptableMgr.bagList;
         bunkerList = scriptableMgr.bunkerList;
+        nameList = scriptableMgr.nameList;
 
         filePath = @$"{Application.persistentDataPath}\PlayerData.json";
         if (saveData.id == null)
@@ -82,6 +84,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
             saveData.id = new List<string>();
             saveData.name = new List<string>();
+            saveData.characterName = new List<string>();
             saveData.hp = new List<int>();
             saveData.maxHp = new List<int>();
             saveData.sensitivity = new List<int>();
@@ -134,6 +137,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             saveData.levelT = new List<int>();
 
             saveData.soldierName = new List<string>();
+            saveData.soldierCharacterName = new List<string>();
             saveData.soldierHp = new List<int>();
             saveData.soldierSensitivity = new List<int>();
             saveData.soldierAvoidRate = new List<int>();
@@ -414,6 +418,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
            
             saveData.id.Add(stat.character.id);
             saveData.name.Add(stat.character.name);
+            saveData.characterName.Add(stat.characterName);
             saveData.hp.Add(stat.currentHp);
             saveData.maxHp.Add(stat.MaxHp);
             saveData.sensitivity.Add(stat.sensivity);
@@ -488,6 +493,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         saveData.boarding.RemoveAt(i);
         saveData.id.RemoveAt(i);
         saveData.name.RemoveAt(i);
+        saveData.characterName.RemoveAt(i);
         saveData.hp.RemoveAt(i);
         saveData.maxHp.RemoveAt(i);
         saveData.sensitivity.RemoveAt(i);

@@ -86,7 +86,6 @@ public class CharacterSO
                     character.virusDec_Lev0         = int.Parse(splitData[38]);
                     character.virusDec_Lev1         = int.Parse(splitData[39]);
 
-
                     // 무기 리스트
                     string[] weapon = splitData[40].Split('*');
                     for (int i = 0; i < weapon.Length; i++)
@@ -116,6 +115,10 @@ public class CharacterSO
                         character.skillD.Add(skillD[i]);
                     }
 
+                    character.fullImg = Resources.Load($"Choi/Sprites/Images/{splitData[45]}", typeof(Sprite)) as Sprite;
+                    character.halfImg = Resources.Load($"Choi/Sprites/Images/상반신/{splitData[46]}", typeof(Sprite)) as Sprite;
+                    character.icon = Resources.Load($"Choi/Sprites/Icons/공통/{splitData[47]}", typeof(Sprite)) as Sprite;
+                    
                     AssetDatabase.CreateAsset(character, $"Assets//Resources/Choi/Datas/Characters/{character.name}.asset");
                     characterNum++;
                 }

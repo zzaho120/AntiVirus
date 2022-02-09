@@ -37,6 +37,9 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
 
     //가방 관련
     public Dictionary<string, Inventory> bagList = new Dictionary<string, Inventory>();
+
+    //캐릭터 이름 관련
+    public Dictionary<string, Name> nameList = new Dictionary<string, Name>();
     #endregion
 
     public override void Awake()
@@ -156,6 +159,14 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         foreach (var missionExp in missionExpArr)
         {
             missionExpList.Add($"{missionExp.id}", missionExp);
+        }
+
+        // 15. Character Name
+        string characterNameSOPath = "Choi/Datas/Names";
+        Name[] nameArr = Resources.LoadAll<Name>(characterNameSOPath);
+        foreach (var name in nameArr)
+        {
+            nameList.Add($"{name.id}", name);
         }
     }
 
