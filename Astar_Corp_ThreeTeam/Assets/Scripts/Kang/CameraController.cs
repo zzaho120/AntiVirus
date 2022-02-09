@@ -83,17 +83,23 @@ public class CameraController : MonoBehaviour
 
         var value = Mathf.Clamp(destZoomInOut.y, zoomInOut.x, zoomInOut.y);
 
-        destZoomInOut = new Vector3(destZoomInOut.x, value, -value);
+        destZoomInOut = new Vector3(destZoomInOut.x, value, -value + 6);
 
         mainCamera.localPosition = destZoomInOut;
     }
 
-    private void FollowObject()
+    public void FollowObject()
     {
         if (followTransform != null)
         {
             transform.position = followTransform.position;
         }
+    }
+
+    public void SetCameraTrs(Transform trs)
+    {
+        destPosition = trs.position;
+        transform.position = destPosition;
     }
 
     public void SetFollowObject(Transform transform)

@@ -444,31 +444,31 @@ public class MonsterChar : BattleTile
     {
         if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //RaycastHit hit;
+            //var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (!BattleMgr.Instance.playerMgr.GetPlayerSelected())
-            {
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (hit.collider.gameObject == gameObject)
-                    {
-                        isSelect = !isSelect;
-                        var battleInfo = BattleMgr.Instance.battleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
+            //if (!BattleMgr.Instance.playerMgr.GetPlayerSelected())
+            //{
+            //    if (Physics.Raycast(ray, out hit))
+            //    {
+            //        if (hit.collider.gameObject == gameObject)
+            //        {
+            //            isSelect = !isSelect;
+            //            var battleInfo = BattleMgr.Instance.battleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
 
-                        if (isSelect)
-                        {
-                            battleInfo.EnableMonsterInfo(true, this);
-                            FloodFillVirus();
-                        }
-                        else
-                        {
-                            battleInfo.Close();
-                            ReturnVirusTile();
-                        }
-                    }
-                }
-            }
+            //            if (isSelect)
+            //            {
+            //                battleInfo.EnableMonsterInfo(true, this);
+            //                FloodFillVirus();
+            //            }
+            //            else
+            //            {
+            //                battleInfo.Close();
+            //                ReturnVirusTile();
+            //            }
+            //        }
+            //    }
+            //}
         }
     }
 

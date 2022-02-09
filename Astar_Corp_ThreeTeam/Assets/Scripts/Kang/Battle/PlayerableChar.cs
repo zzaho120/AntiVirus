@@ -56,7 +56,7 @@ public class PlayerableChar : BattleTile
         characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
         characterStats.weapon = new WeaponStats();
         characterStats.weapon.mainWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0013"));
-        characterStats.weapon.subWeapon = (Weapon)Instantiate(Resources.Load("Choi/Datas/Weapons/FireAxe_01"));
+        characterStats.weapon.subWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0023"));
         
         characterStats.Init();  // --> characterStats.weapon.Init();
         direction = DirectionType.None;
@@ -71,7 +71,7 @@ public class PlayerableChar : BattleTile
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if(BattleMgr.Instance.playerMgr.selectChar == null || BattleMgr.Instance.playerMgr.selectChar == this)
+                if (BattleMgr.Instance.playerMgr.selectChar == null || BattleMgr.Instance.playerMgr.selectChar == this)
                 {
                     RaycastHit hit;
                     var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -82,27 +82,6 @@ public class PlayerableChar : BattleTile
                         switch (status)
                         {
                             case CharacterState.Wait:
-                                if (hit.collider.gameObject == gameObject)
-                                {
-                                    isSelected = !isSelected;
-                                    BattleMgr.Instance.playerMgr.selectChar = this;
-                                    if (isSelected)
-                                    {
-                                        var battleInfo = BattleMgr.Instance.battleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
-                                        battleInfo.EnablePlayerInfo(true, this);
-
-                                        var playerAction = BattleMgr.Instance.battleWindowMgr.Open(1, false).GetComponent<PlayerActionWindow>();
-                                        playerAction.curChar = this;
-                                        playerAction.AddBuffList();
-                                        playerAction.AddActiveList();
-                                        playerAction.EnableReloadBtn();
-                                    }
-                                    else
-                                    {
-                                        SetNonSelected();
-                                    }
-
-                                }
                                 break;
                             case CharacterState.Move:
                                 if (hit.collider.tag == "MoveTile")

@@ -31,6 +31,21 @@ public class WeaponStats
         }
     }
 
+    public Weapon otherWeapon
+    {
+        get
+        {
+            switch (type)
+            {
+                case WeaponType.Main:
+                    return subWeapon;
+                case WeaponType.Sub:
+                    return mainWeapon;
+            }
+            return null;
+        }
+    }
+
     // »ç°Ý È½¼ö
     [HideInInspector]
     public int fireCount;
@@ -121,6 +136,21 @@ public class WeaponStats
         }
     }
 
+    public int OtherBullet
+    {
+        get
+        {
+            switch (type)
+            {
+                case WeaponType.Main:
+                    return SubWeaponBullet;
+                case WeaponType.Sub:
+                    return MainWeaponBullet;
+            }
+            return 0;
+        }
+    }
+
     public bool CheckAvailBullet
     {
         get => WeaponBullet > 0;
@@ -197,6 +227,7 @@ public class WeaponStats
 
                 // Åº¾Ë
                 MainWeaponBullet = mainWeapon.bullet;
+                SubWeaponBullet = subWeapon.bullet;
 
                 // È«¼öÁø_½ºÅÈ»èÁ¦
                 // ¸íÁß·ü °¨¼Ò
@@ -363,5 +394,13 @@ public class WeaponStats
             return true;
 
         return false;
+    }
+
+    public void ChangeWeapon()
+    {
+        if (type == WeaponType.Main)
+            type = WeaponType.Sub;
+        else if (type == WeaponType.Sub)
+            type = WeaponType.Main;
     }
 }
