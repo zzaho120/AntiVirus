@@ -281,7 +281,8 @@ public class PlayerController : MonoBehaviour
     {
         timeController.Pause();
         //timeController.isPause = false;
-        SceneManager.LoadScene("BattleMap");
+        //SceneManager.LoadScene("BattleMap");
+        SceneManager.LoadScene("BattleMap_Origin");
     }
 
     public void TimerReset()
