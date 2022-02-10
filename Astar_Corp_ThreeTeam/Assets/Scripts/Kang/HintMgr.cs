@@ -10,6 +10,7 @@ public class HintMgr : MonoBehaviour
     [Header("Prefabs")]
     public GameObject footprint;
     public GameObject bloodprint;
+    public GameObject ArrowPrefab;
     public void Init()
     {
         var startTurn = BattleMgr.Instance.startTurn;
@@ -77,7 +78,9 @@ public class HintMgr : MonoBehaviour
             var vector = playerableChar[idx].tileIdx - monster;
             var absSum = (int)(Mathf.Abs(vector.x) + Mathf.Abs(vector.z));
 
-            if (playerableChar[idx].audibleDistance * 4 > absSum)
+            var minAudibleDis = playerableChar[idx].SightDistance;
+            var maxAudibleDis = playerableChar[idx].audibleDistance * 3;
+            if (minAudibleDis + maxAudibleDis > absSum)
             {
                 if (min.Item2 > absSum)
                 {
@@ -91,15 +94,16 @@ public class HintMgr : MonoBehaviour
             return;
 
         var level = 0;
+        var minAudible = playerableChar[min.Item1].SightDistance;
         var audible = playerableChar[min.Item1].audibleDistance;
-        if (audible * 2 > min.Item2)
+        if (minAudible + audible > min.Item2)
             level = 3;
-        else if (audible * 3 > min.Item2)
+        else if (minAudible + audible * 2 > min.Item2)
             level = 2;
-        else if (audible * 4 > min.Item2)
+        else if (minAudible + audible * 3 > min.Item2)
             level = 1;
 
-        //CameraController.Instance.SetFollowObject(playerableChar[min.Item1].transform);
+        CameraController.Instance.SetFollowObject(playerableChar[min.Item1].transform);
         //var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.RaderWindow - 1) as RaderWindow;
         //window.StartRader(playerableChar[min.Item1].tileIdx, monster, level);
         
