@@ -408,29 +408,29 @@ public class AgitMgr : MonoBehaviour
             {
                 case 0:
                     hpButton.GetComponent<Image>().color = Color.white;
-                    hpText.color = Color.black;
+                    hpText.color = Color.white;
                     weightButton.GetComponent<Image>().color = Color.white;
-                    weightTxt.color = Color.black;
+                    weightTxt.color = Color.white;
                     criResistButton.GetComponent<Image>().color = Color.white;
-                    criResistTxt.color = Color.black;
+                    criResistTxt.color = Color.white;
                     break;
                 case 1:
                     accuracyButton.GetComponent<Image>().color = Color.white;
-                    accuracyTxt.color = Color.black;
+                    accuracyTxt.color = Color.white;
                     //¼öÁ¤µÅ¾ßÇÔ.
                     sightButton.GetComponent<Image>().color = Color.white;
-                    sightTxt.color = Color.black;
+                    sightTxt.color = Color.white;
                     break;
                 case 2:
                     avoidButton.GetComponent<Image>().color = Color.white;
-                    avoidTxt.color = Color.black;
+                    avoidTxt.color = Color.white;
                     //¼öÁ¤µÅ¾ßÇÔ.
                     mpButton.GetComponent<Image>().color = Color.white;
-                    mpTxt.color = Color.black;
+                    mpTxt.color = Color.white;
                     break;
                 case 3:
                     criButton.GetComponent<Image>().color = Color.white;
-                    criTxt.color = Color.black;
+                    criTxt.color = Color.white;
                     break;
             }
         }
@@ -767,43 +767,43 @@ public class AgitMgr : MonoBehaviour
             if (hpButton.GetComponent<Image>().color != Color.white)
             {
                 hpButton.GetComponent<Image>().color = Color.white;
-                hpText.color = Color.black;
+                hpText.color = Color.white;
             }
             if (weightButton.GetComponent<Image>().color != Color.white)
             {
                 weightButton.GetComponent<Image>().color = Color.white;
-                weightTxt.color = Color.black;
+                weightTxt.color = Color.white;
             }
             if (mpButton.GetComponent<Image>().color != Color.white)
             {
                 mpButton.GetComponent<Image>().color = Color.white;
-                mpTxt.color = Color.black;
+                mpTxt.color = Color.white;
             }
             if (sightButton.GetComponent<Image>().color != Color.white)
             {
                 sightButton.GetComponent<Image>().color = Color.white;
-                sightTxt.color = Color.black;
+                sightTxt.color = Color.white;
             }
 
             if (accuracyButton.GetComponent<Image>().color != Color.white)
             {
                 accuracyButton.GetComponent<Image>().color = Color.white;
-                accuracyTxt.color = Color.black;
+                accuracyTxt.color = Color.white;
             }
             if (avoidButton.GetComponent<Image>().color != Color.white)
             {
                 avoidButton.GetComponent<Image>().color = Color.white;
-                avoidTxt.color = Color.black;
+                avoidTxt.color = Color.white;
             }
             if (criButton.GetComponent<Image>().color != Color.white)
             {
                 criButton.GetComponent<Image>().color = Color.white;
-                criTxt.color = Color.black;
+                criTxt.color = Color.white;
             }
             if (criResistButton.GetComponent<Image>().color != Color.white)
             {
                 criResistButton.GetComponent<Image>().color = Color.white;
-                criResistTxt.color = Color.black;
+                criResistTxt.color = Color.white;
             }
         }
         statExplanationTxt.text = string.Empty;
