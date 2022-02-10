@@ -242,6 +242,7 @@ public class PubMgr : MonoBehaviour
             {
                 var go = Instantiate(characterPrefab, characterListContent.transform);
                 var child = go.transform.GetChild(0).gameObject;
+                child = child.transform.GetChild(0).gameObject;
                 child.GetComponent<Image>().sprite = element.Value.character.halfImg;
 
                 child = go.transform.GetChild(1).gameObject;
@@ -270,7 +271,8 @@ public class PubMgr : MonoBehaviour
                     if (weapon.Equals("1") || weapon.Equals("7")) continue;
 
                     childObj.transform.GetChild(k).gameObject.SetActive(true);
-                    childObj.transform.GetChild(k).gameObject.GetComponent<Image>().sprite = GetTypeSprite(weapon);
+                    var weaponImg = childObj.transform.GetChild(k).gameObject;
+                    weaponImg.transform.GetChild(1).gameObject.GetComponent<Image>().sprite = GetTypeSprite(weapon);
                     k++;
                 }
 
@@ -349,7 +351,8 @@ public class PubMgr : MonoBehaviour
                     if (weapon.Equals("1") || weapon.Equals("7")) continue;
 
                     childObj.transform.GetChild(k).gameObject.SetActive(true);
-                    childObj.transform.GetChild(k).gameObject.GetComponent<Image>().sprite = GetTypeSprite(weapon);
+                    var weaponImg = childObj.transform.GetChild(k).gameObject;
+                    weaponImg.transform.GetChild(1).gameObject.GetComponent<Image>().sprite = GetTypeSprite(weapon);
                     k++;
                 }
 
@@ -396,9 +399,7 @@ public class PubMgr : MonoBehaviour
             if (element.Equals("1") || element.Equals("7")) continue;
             
             mainWeaponList[i].SetActive(true);
-            var child = mainWeaponList[i].transform.GetChild(0).gameObject;
-            child.GetComponent<Text>().text = $"{GetTypeStr(element)}";
-            mainWeaponList[i].GetComponent<Image>().sprite = GetTypeSprite(element);
+            mainWeaponList[i].transform.GetChild(1).GetComponent<Image>().sprite = GetTypeSprite(element);
             i++;
         }
 
