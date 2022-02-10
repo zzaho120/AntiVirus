@@ -222,16 +222,14 @@ public class MonsterChar : BattleTile
                 CreateHint(HintType.Footprint, tileIdx);
             }
 
-           
+            var isInSight = BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile);
+            currentTile.EnableDisplay(isInSight);
 
             AStarTile nextTile = null;
             if (pathMgr.pathList.Count > 0)
                 nextTile = pathMgr.pathList.Pop();
             else
                 break;
-
-            //if (!MoveTile(nextTile.tileBase.tileIdx))
-            //    break;
 
             if (moveIdx == 0)
                 monsterStats.currentAp--;
@@ -245,11 +243,6 @@ public class MonsterChar : BattleTile
             sightMgr.InitMonsterSight(monsterIdx);
             if (target == null)
                 SetTarget(sightMgr.GetPlayerInMonsterSight(monsterIdx));
-
-            //if (isInSight)
-            //    yield return new WaitForSeconds(0.1f);
-            //else
-            //    yield return null;
 
             yield return MoveTile(nextTile.tileBase.tileIdx);
         }

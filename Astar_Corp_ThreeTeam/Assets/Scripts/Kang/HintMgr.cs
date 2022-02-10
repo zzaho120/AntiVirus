@@ -10,7 +10,9 @@ public class HintMgr : MonoBehaviour
     [Header("Prefabs")]
     public GameObject footprint;
     public GameObject bloodprint;
-    public GameObject ArrowPrefab;
+    public GameObject arrowPrefab;
+
+    public float maxDelayTime = 3f;
     public void Init()
     {
         var startTurn = BattleMgr.Instance.startTurn;
@@ -40,10 +42,11 @@ public class HintMgr : MonoBehaviour
                 prefab = bloodprint;
                 break;
         }
-        var newVector = tileIdx + new Vector3(0, 1f, 0);
+        var newVector = tileIdx + new Vector3(0, .5f, 0);
         var printGo = Instantiate(prefab, newVector, rot);
         var hintBase = printGo.GetComponent<HintBase>();
         hintBase.Init(directionType);
+
 
         printGo.transform.SetParent(gameObject.transform);
 
@@ -94,8 +97,9 @@ public class HintMgr : MonoBehaviour
             return;
 
         var level = 0;
-        var minAudible = playerableChar[min.Item1].SightDistance;
-        var audible = playerableChar[min.Item1].audibleDistance;
+        var player = playerableChar[min.Item1];
+        var minAudible = player.SightDistance;
+        var audible = player.audibleDistance;
         if (minAudible + audible > min.Item2)
             level = 3;
         else if (minAudible + audible * 2 > min.Item2)
@@ -103,9 +107,25 @@ public class HintMgr : MonoBehaviour
         else if (minAudible + audible * 3 > min.Item2)
             level = 1;
 
-        CameraController.Instance.SetFollowObject(playerableChar[min.Item1].transform);
-        //var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.RaderWindow - 1) as RaderWindow;
-        //window.StartRader(playerableChar[min.Item1].tileIdx, monster, level);
-        
+        CameraController.Instance.SetCameraTrs(player.transform);
+        var dir = (monster - player.tileIdx);
+        var newPos = new Vector3(dir.x, 0f, dir.z);
+
+        var arrow = Instantiate(arrowPrefab, player.transform.position, Quaternion.identity);
+        var rot = Quaternion.FromToRotation(arrow.transform.forward, newPos);
+
+        rot.x = 0;
+        rot.z = 0;
+
+        arrow.transform.rotation = rot;
+        arrow.transform.position += newPos.normalized;
+
+
+        if (level < 3)
+            arrow.transform.GetChild(1).gameObject.SetActive(false);
+        if (level < 2)
+            arrow.transform.GetChild(0).gameObject.SetActive(false);
+
+        Destroy(arrow, maxDelayTime);
     }
 }

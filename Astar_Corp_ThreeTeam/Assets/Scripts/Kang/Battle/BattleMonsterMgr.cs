@@ -65,7 +65,7 @@ public class BattleMonsterMgr : MonoBehaviour
         
         curMonster = null;
 
-        Invoke("CheckEndTurn", RaderWindow.maxTime);
+        Invoke("CheckEndTurn", BattleMgr.Instance.hintMgr.maxDelayTime);
     }
 
     private void CheckEndTurn()
