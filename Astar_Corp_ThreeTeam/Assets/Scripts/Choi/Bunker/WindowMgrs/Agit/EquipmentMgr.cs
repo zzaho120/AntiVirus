@@ -25,6 +25,7 @@ public class EquipmentMgr : MonoBehaviour
     //창1 관련.
     public Image mainWeaponImg;
     public Image subWeaponImg;
+    public Image nullWeaponImg;
     public Text mainWeaponTxt;
     public Text subWeaponTxt;
 
@@ -92,10 +93,11 @@ public class EquipmentMgr : MonoBehaviour
         //6.ETC
 
         //초기화.
+        Color originButtonColor = new Color(45f / 255, 65f / 255, 85f / 255);
         foreach(var element in menuObjs)
         {
-            if(element.GetComponent<Image>().color != Color.white) 
-                element.GetComponent<Image>().color = Color.white;
+            if(element.GetComponent<Image>().color != originButtonColor) 
+                element.GetComponent<Image>().color = originButtonColor;
         }
         weaponType = index;
         menuObjs[weaponType].GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255);
@@ -362,14 +364,20 @@ public class EquipmentMgr : MonoBehaviour
         {
             mainWeaponImg.sprite =
                  (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null) ?
-                 playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.img : null;
+                 playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.img : nullWeaponImg.sprite;
+            mainWeaponImg.color =
+                (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null) ?
+               Color.white : nullWeaponImg.color;
             mainWeaponTxt.text =
                 (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null) ?
                 playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name : "비어있음";
             
             subWeaponImg.sprite =
                 (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null) ?
-                playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.img : null;
+                playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.img : nullWeaponImg.sprite;
+            subWeaponImg.color =
+                (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null) ?
+               Color.white : nullWeaponImg.color;
             subWeaponTxt.text =
                 (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null) ?
                 playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.name : "비어있음";
@@ -485,7 +493,7 @@ public class EquipmentMgr : MonoBehaviour
             }
             else
             {
-                criTxt.color = Color.black;
+                criTxt.color = Color.white;
                 criTxt.text = $"{weapon.critRate}%(-)";
             }
 
@@ -504,7 +512,7 @@ public class EquipmentMgr : MonoBehaviour
             }
             else
             {
-                loadTxt.color = Color.black;
+                loadTxt.color = Color.white;
                 loadTxt.text = $"{weapon.reloadBullet}(-)";
             }
 
@@ -521,7 +529,7 @@ public class EquipmentMgr : MonoBehaviour
             }
             else
             {
-                clipTxt.color = Color.black;
+                clipTxt.color = Color.white;
                 clipTxt.text = $"{weapon.bullet}(-)";
             }
 
@@ -532,7 +540,7 @@ public class EquipmentMgr : MonoBehaviour
 
             if (shotDiff > 0) shotTxt.color = Color.red;
             else if (shotDiff < 0) shotTxt.color = Color.green;
-            else shotTxt.color = Color.black;
+            else shotTxt.color = Color.white;
             shotTxt.text = $"{shotGauge.ToString()}";
 
             int accuracyDiff =  weapon.accurRateBase - equipedWeapon.accurRateBase;
@@ -548,7 +556,7 @@ public class EquipmentMgr : MonoBehaviour
             }
             else
             {
-                accuracyTxt.color = Color.black;
+                accuracyTxt.color = Color.white;
                 accuracyTxt.text = $"{weapon.accurRateBase}%(-)";
             }
 
@@ -559,7 +567,7 @@ public class EquipmentMgr : MonoBehaviour
 
             if (continuousShotDiff > 0) continuousShotTxt.color = Color.red;
             else if (continuousShotDiff < 0) continuousShotTxt.color = Color.green;
-            else continuousShotTxt.color = Color.black;
+            else continuousShotTxt.color = Color.white;
             continuousShotTxt.text = $"{continuousShotGauge.ToString()}";
 
             int recoilDiff =  weapon.continuousShootingPenalty - equipedWeapon.continuousShootingPenalty;
@@ -575,7 +583,7 @@ public class EquipmentMgr : MonoBehaviour
             }
             else
             {
-                recoilTxt.color = Color.black;
+                recoilTxt.color = Color.white;
                 recoilTxt.text = $"{weapon.continuousShootingPenalty}%(-)";
             }
         }
@@ -583,33 +591,33 @@ public class EquipmentMgr : MonoBehaviour
         {
             damageTxt.text = $"{weapon.minDamage}-{weapon.maxDamage}";
 
-            criTxt.color = Color.black;
+            criTxt.color = Color.white;
             criTxt.text = $"{weapon.critRate}%";
 
             bulletTypeTxt.text = (weapon.bulletType == 0) ? "-" : $"{GetBulletType(weapon.bulletType)}";
 
-            loadTxt.color = Color.black;
+            loadTxt.color = Color.white;
             loadTxt.text = $"{weapon.reloadBullet}";
 
-            clipTxt.color = Color.black;
+            clipTxt.color = Color.white;
             clipTxt.text = $"{weapon.bullet}";
 
             StringBuilder shotStr = new StringBuilder();
             for (int i = 0; i < weapon.firstShotAp; i++) shotStr.Append("■");
             for (int i = weapon.firstShotAp; i < 5; i++) shotStr.Append("□");
-            shotTxt.color = Color.black;
+            shotTxt.color = Color.white;
             shotTxt.text = $"{shotStr.ToString()}";
 
-            accuracyTxt.color = Color.black;
+            accuracyTxt.color = Color.white;
             accuracyTxt.text = $"{weapon.accurRateBase}%";
 
             StringBuilder continuousShotStr = new StringBuilder();
             for (int i = 0; i < weapon.otherShotAp; i++) continuousShotStr.Append("■");
             for (int i = weapon.otherShotAp; i < 5; i++) continuousShotStr.Append("□");
-            continuousShotTxt.color = Color.black;
+            continuousShotTxt.color = Color.white;
             continuousShotTxt.text = $"{continuousShotStr.ToString()}";
 
-            recoilTxt.color = Color.black;
+            recoilTxt.color = Color.white;
             recoilTxt.text = $"{weapon.continuousShootingPenalty}%";
         }
 
@@ -688,6 +696,7 @@ public class EquipmentMgr : MonoBehaviour
 
             mainWeaponTxt.text = weapon.name;
             mainWeaponImg.sprite = weapon.img;
+            mainWeaponImg.color = Color.white;
             agitMgr.mainWeaponImg.sprite = weapon.img;
 
             //var go = agitMgr.characterObjs[currentIndex];
@@ -780,7 +789,8 @@ public class EquipmentMgr : MonoBehaviour
         switch (currentKind)
         {
             case EquipKind.MainWeapon:
-                mainWeaponImg.sprite = null;
+                mainWeaponImg.sprite = nullWeaponImg.sprite;
+                mainWeaponImg.color = nullWeaponImg.color;
                 mainWeaponTxt.text = "비어있음";
 
                 //var go = agitMgr.characterObjs[currentIndex];
@@ -789,7 +799,8 @@ public class EquipmentMgr : MonoBehaviour
                 //child.transform.GetChild(1).gameObject.GetComponent<Text>().text = "비어있음";
                 break;
             case EquipKind.SubWeapon:
-                subWeaponImg.sprite = null;
+                subWeaponImg.sprite = nullWeaponImg.sprite;
+                subWeaponImg.color = nullWeaponImg.color;
                 subWeaponTxt.text = "비어있음";
                 break;
         }
@@ -805,7 +816,8 @@ public class EquipmentMgr : MonoBehaviour
             var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
             playerDataMgr.saveData.mainWeapon[currentIndex] = null;
             playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon = null;
-            mainWeaponImg.sprite = null;
+            mainWeaponImg.sprite = nullWeaponImg.sprite;
+            mainWeaponImg.color = nullWeaponImg.color;
             agitMgr.mainWeaponImg.sprite = null;
 
             //var go = agitMgr.characterObjs[currentIndex];
@@ -847,7 +859,8 @@ public class EquipmentMgr : MonoBehaviour
             var weapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
             playerDataMgr.saveData.subWeapon[currentIndex] = null;
             playerDataMgr.currentSquad[currentIndex].weapon.subWeapon = null;
-            subWeaponImg.sprite = null;
+            subWeaponImg.sprite = nullWeaponImg.sprite;
+            subWeaponImg.color = nullWeaponImg.color;
             agitMgr.subWeaponImg.sprite = null;
 
             //json.
@@ -1023,11 +1036,13 @@ public class EquipmentMgr : MonoBehaviour
         {
             var weapon = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon;
             mainWeaponImg.sprite = weapon.img;
+            mainWeaponImg.color = Color.white;
         }
         if (playerDataMgr.currentSquad[currentIndex].weapon.subWeapon != null)
         {
             var weapon = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon;
             subWeaponImg.sprite = weapon.img;
+            subWeaponImg.color = Color.white;
         }
         equipmentWin2.SetActive(true);
 

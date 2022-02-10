@@ -39,10 +39,14 @@ public class AgitMgr : MonoBehaviour
     public Image characterImg;
     public Image mainWeaponImg;
     public Image subWeaponImg;
+    public Image nullImg;
     public Text bagNameTxt;
     public GameObject virusObj;
     public Slider hpBar;
     public Slider expBar;
+    public List<Text> virusLevelTxt;
+    public Text hpGaugeTxt;
+    public Text expGaugeTxt;
 
     [Header("Ability Win")]
     public GameObject abilityButton;
@@ -91,6 +95,7 @@ public class AgitMgr : MonoBehaviour
     public Text IVirusGaugeTxt;
     public Text TVirusLevelTxt;
     public Text TVirusGaugeTxt;
+    public List<Slider> virusSliders;
     int selectVirus;
     bool isVirusPopupOpen;
 
@@ -495,23 +500,28 @@ public class AgitMgr : MonoBehaviour
         {
             case 0:
                 virusExplanationTxt.text =
-                    "E바이러스가 활성화 되어 있기 때문에 E바이러스에 대한 설명이 들어가는 자리입니다.";
+                    "공통적으로 바이러스는 2레벨부터 턴당 HP가 1씩 감소합니다." +
+                    "캐릭터 데미지를 감소시키며 레벨에 따라 수치가 누적됩니다.";
                 break;
             case 1:
                 virusExplanationTxt.text =
-                    "B바이러스가 활성화 되어 있기 때문에 B바이러스에 대한 설명이 들어가는 자리입니다.";
+                    "공통적으로 바이러스는 2레벨부터 턴당 HP가 1씩 감소합니다." +
+                    "패널티: 캐릭터 HP를 감소시키며 레벨에 따라 수치가 누적됩니다.";
                 break;
             case 2:
                 virusExplanationTxt.text =
-                    "P바이러스가 활성화 되어 있기 때문에 P바이러스에 대한 설명이 들어가는 자리입니다.";
+                    "공통적으로 바이러스는 2레벨부터 턴당 HP가 1씩 감소합니다." +
+                    "패널티: 캐릭터 보유 전체 MP양을 감소시키며 레벨에 따라 수치가 누적됩니다.";
                 break;
             case 3:
                 virusExplanationTxt.text =
-                    "I바이러스가 활성화 되어 있기 때문에 I바이러스에 대한 설명이 들어가는 자리입니다.";
+                    "공통적으로 바이러스는 2레벨부터 턴당 HP가 1씩 감소합니다." +
+                    "패널티: 캐릭터 명중률을 감소시키며 레벨에 따라 수치가 누적됩니다.";
                 break;
             case 4:
                 virusExplanationTxt.text =
-                    "T바이러스가 활성화 되어 있기 때문에 T바이러스에 대한 설명이 들어가는 자리입니다.";
+                    "공통적으로 바이러스는 2레벨부터 턴당 HP가 1씩 감소합니다." +
+                    "T바이러스는 모든 바이러스의 패널티를 동시에 받으며 레벨에 따라 수치가 누적됩니다.";
                 break;
         }
     }
@@ -612,15 +622,24 @@ public class AgitMgr : MonoBehaviour
         characterName.text = $"{character.characterName} (LV.{character.level})";
         characterImg.sprite = character.character.halfImg;
         mainWeaponImg.sprite = (character.weapon.mainWeapon!=null)? 
-            character.weapon.mainWeapon.img : null;
+            character.weapon.mainWeapon.img : nullImg.sprite;
         subWeaponImg.sprite = (character.weapon.subWeapon != null) ? 
-            character.weapon.subWeapon.img : null;
+            character.weapon.subWeapon.img : nullImg.sprite;
         bagNameTxt.text = $"Lv{character.bagLevel} 가방";
+
+        virusLevelTxt[0].text = $"{character.virusPenalty["E"].penaltyLevel}";
+        virusLevelTxt[1].text = $"{character.virusPenalty["B"].penaltyLevel}";
+        virusLevelTxt[2].text = $"{character.virusPenalty["P"].penaltyLevel}";
+        virusLevelTxt[3].text = $"{character.virusPenalty["I"].penaltyLevel}";
+        virusLevelTxt[4].text = $"{character.virusPenalty["T"].penaltyLevel}";
 
         hpBar.maxValue = character.MaxHp;
         hpBar.value = character.currentHp;
+        hpGaugeTxt.text = $"{character.currentHp}/{character.MaxHp}";
+
         expBar.maxValue = character.totalExp;
         expBar.value = character.currentExp;
+        expGaugeTxt.text = $"{character.currentExp}/{character.totalExp}";
 
         if (character.virusPenalty["E"].penaltyGauge > 0)
             virusObj.transform.GetChild(0).gameObject.SetActive(true);
@@ -660,16 +679,27 @@ public class AgitMgr : MonoBehaviour
         criResistTxt.text = $"{character.critResistRate}";
 
         //Virus Win.
-        EVirusLevelTxt.text = $"Lv{character.virusPenalty["E"].penaltyLevel}";
-        EVirusGaugeTxt.text = $"{character.virusPenalty["E"].penaltyGauge}/{character.virusPenalty["E"].GetMaxGauge()}";
-        BVirusLevelTxt.text = $"Lv{character.virusPenalty["B"].penaltyLevel}";
-        BVirusGaugeTxt.text = $"{character.virusPenalty["B"].penaltyGauge}/{character.virusPenalty["B"].GetMaxGauge()}";
-        PVirusLevelTxt.text = $"Lv{character.virusPenalty["P"].penaltyLevel}";
-        PVirusGaugeTxt.text = $"{character.virusPenalty["P"].penaltyGauge}/{character.virusPenalty["P"].GetMaxGauge()}";
-        IVirusLevelTxt.text = $"Lv{character.virusPenalty["I"].penaltyLevel}";
-        IVirusGaugeTxt.text = $"{character.virusPenalty["I"].penaltyGauge}/{character.virusPenalty["I"].GetMaxGauge()}";
-        TVirusLevelTxt.text = $"Lv{character.virusPenalty["T"].penaltyLevel}";
-        TVirusGaugeTxt.text = $"{character.virusPenalty["T"].penaltyGauge}/{character.virusPenalty["T"].GetMaxGauge()}";
+        EVirusLevelTxt.text = $"Lv{character.virusPenalty["E"].reductionLevel}";
+        EVirusGaugeTxt.text = $"{character.virusPenalty["E"].reductionGauge}/{character.virusPenalty["E"].GetMaxReductionGauge()}";
+        BVirusLevelTxt.text = $"Lv{character.virusPenalty["B"].reductionLevel}";
+        BVirusGaugeTxt.text = $"{character.virusPenalty["B"].reductionGauge}/{character.virusPenalty["B"].GetMaxReductionGauge()}";
+        PVirusLevelTxt.text = $"Lv{character.virusPenalty["P"].reductionLevel}";
+        PVirusGaugeTxt.text = $"{character.virusPenalty["P"].reductionGauge}/{character.virusPenalty["P"].GetMaxReductionGauge()}";
+        IVirusLevelTxt.text = $"Lv{character.virusPenalty["I"].reductionLevel}";
+        IVirusGaugeTxt.text = $"{character.virusPenalty["I"].reductionGauge}/{character.virusPenalty["I"].GetMaxReductionGauge()}";
+        TVirusLevelTxt.text = $"Lv{character.virusPenalty["T"].reductionLevel}";
+        TVirusGaugeTxt.text = $"{character.virusPenalty["T"].reductionGauge}/{character.virusPenalty["T"].GetMaxReductionGauge()}";
+
+        virusSliders[0].maxValue = character.virusPenalty["E"].GetMaxReductionGauge();
+        virusSliders[0].value = character.virusPenalty["E"].reductionGauge;
+        virusSliders[1].maxValue = character.virusPenalty["B"].GetMaxReductionGauge();
+        virusSliders[1].value = character.virusPenalty["B"].reductionGauge;
+        virusSliders[2].maxValue = character.virusPenalty["P"].GetMaxReductionGauge();
+        virusSliders[2].value = character.virusPenalty["P"].reductionGauge;
+        virusSliders[3].maxValue = character.virusPenalty["I"].GetMaxReductionGauge();
+        virusSliders[3].value = character.virusPenalty["I"].reductionGauge;
+        virusSliders[4].maxValue = character.virusPenalty["T"].GetMaxReductionGauge();
+        virusSliders[4].value = character.virusPenalty["T"].reductionGauge;
 
         nameTxt.text = $"{character.character.name}";
         levelTxt.text = $"Level {character.level} / 분과";
