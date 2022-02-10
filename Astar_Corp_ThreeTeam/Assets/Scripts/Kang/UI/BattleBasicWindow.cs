@@ -108,10 +108,21 @@ public class BattleBasicWindow : GenericWindow
     {
         var stats = player.characterStats;
         weaponImages[0].sprite = stats.weapon.curWeapon.img;
-        weaponImages[1].sprite = stats.weapon.otherWeapon.img;
+        if (stats.weapon.otherWeapon != null)
+            weaponImages[1].sprite = stats.weapon.otherWeapon.img;
 
         for (var i = 0; i < 2; ++i)
         {
+            if (i == 1 && stats.weapon.otherWeapon == null)
+            {
+                var childCount = weaponBulletList[i].transform.childCount;
+                for (var j = 0; j < childCount; ++j)
+                {
+                    var obj = weaponBulletList[i].transform.GetChild(j);
+                    obj.gameObject.SetActive(false);
+                }
+            }
+
             var weaponAPCount = weaponBulletList[i].transform.childCount;
             var bullet = 0;
             if ((stats.weapon.type == WeaponStats.WeaponType.Main && i == 0) || (stats.weapon.type == WeaponStats.WeaponType.Sub && i == 1))

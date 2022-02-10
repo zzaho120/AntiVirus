@@ -98,7 +98,7 @@ public class BattleMgr : MonoBehaviour
 
     public void OnChangeTurn(object empty)
     {
-        Invoke("ChangeTurn", 1f);
+        Invoke("ChangeTurn", 0.1f);
     }
 
     private void ChangeTurn()

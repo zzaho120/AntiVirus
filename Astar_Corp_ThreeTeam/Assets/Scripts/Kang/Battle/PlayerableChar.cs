@@ -51,11 +51,11 @@ public class PlayerableChar : BattleTile
     public override void Init()
     {
         base.Init();
-        characterStats = new CharacterStats();
-        characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
-        characterStats.weapon = new WeaponStats();
-        characterStats.weapon.mainWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0013"));
-        characterStats.weapon.subWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0023"));
+        //characterStats = new CharacterStats();
+        //characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
+        //characterStats.weapon = new WeaponStats();
+        //characterStats.weapon.mainWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0013"));
+        //characterStats.weapon.subWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0023"));
         
         characterStats.Init();  // --> characterStats.weapon.Init();
         direction = DirectionType.None;

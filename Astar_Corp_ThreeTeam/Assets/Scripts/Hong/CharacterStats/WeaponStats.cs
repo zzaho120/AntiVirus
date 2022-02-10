@@ -213,11 +213,11 @@ public class WeaponStats
     // 스탯 초기화
     public void Init()
     {
-        if (mainWeapon != null && subWeapon != null)
+        if (mainWeapon != null || subWeapon != null)
         {
             // 무기 잘못 장착 시
-            if (mainWeapon.type != "1") Debug.LogError("주무기 잘못 장착");
-            if (subWeapon.type != "2") Debug.LogError("보조무기 잘못 장착");
+            //if (mainWeapon.type != "1") Debug.LogError("주무기 잘못 장착");
+            //if (subWeapon.type != "2") Debug.LogError("보조무기 잘못 장착");
 
             // 주무기 장착 시
             if (type == WeaponType.Main)
@@ -227,7 +227,6 @@ public class WeaponStats
 
                 // 탄알
                 MainWeaponBullet = mainWeapon.bullet;
-                SubWeaponBullet = subWeapon.bullet;
 
                 // 홍수진_스탯삭제
                 // 명중률 감소
@@ -253,7 +252,7 @@ public class WeaponStats
                 UnderRange_Penalty = mainWeapon.underRange_Penalty;
             }
             // 보조무기 장착 시
-            else if (type == WeaponType.Sub)
+            else if (type == WeaponType.Sub && subWeapon != null)
             {
                 // 명중률
                 AccurRate_base = subWeapon.accurRateBase;
