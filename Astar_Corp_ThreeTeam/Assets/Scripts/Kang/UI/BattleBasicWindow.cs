@@ -239,7 +239,8 @@ public class BattleBasicWindow : GenericWindow
     public void OnClickMoveCancel()
     {
         isMove = false;
-        selectedChar.MoveMode();
+        selectedChar.status = CharacterState.Wait;
+        selectedChar.ReturnMoveTile();
         moveBtn.SetActive(true);
         cancelBtn.SetActive(false);
     }

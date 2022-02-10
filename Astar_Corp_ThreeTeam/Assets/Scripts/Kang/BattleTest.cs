@@ -24,13 +24,37 @@ public class BattleTest : MonoBehaviour
     public GameObject player;
     public void Init()
     {
-        for (var idx = 0; idx < playerPos.Count; ++idx)
+        var playerDataMgrObj = GameObject.FindWithTag("PlayerDataMgr");
+        var isExistDataMgr = playerDataMgrObj != null;
+        PlayerDataMgr playerDataMgr = null;
+        if (isExistDataMgr)
         {
             var playerPrefab = BattleMgr.Instance.playerPrefab;
-            var player = Instantiate(playerPrefab, new Vector3(playerPos[idx].x, .5f, playerPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
-            player.transform.SetParent(BattleMgr.Instance.playerMgr.transform);
-            player.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
-            this.player = player;
+            playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
+
+            for (var idx = 0; idx < playerDataMgr.battleSquad.Count; ++idx)
+            {
+                var player = Instantiate(playerPrefab, new Vector3(playerPos[idx].x, .5f, playerPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
+                player.transform.SetParent(BattleMgr.Instance.playerMgr.transform);
+                var playerableChar = player.GetComponent<PlayerableChar>();
+                playerableChar.characterStats = playerDataMgr.battleSquad[idx];
+            }
+
+            if (playerDataMgr.isMonsterAtk)
+                BattleMgr.Instance.startTurn = BattleTurn.Enemy;
+            else
+                BattleMgr.Instance.startTurn = BattleTurn.Player;
+        }
+        else
+        {
+            for (var idx = 0; idx < playerPos.Count; ++idx)
+            {
+                var playerPrefab = BattleMgr.Instance.playerPrefab;
+                var player = Instantiate(playerPrefab, new Vector3(playerPos[idx].x, .5f, playerPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
+                player.transform.SetParent(BattleMgr.Instance.playerMgr.transform);
+                player.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+                this.player = player;
+            }
         }
 
         for (var idx = 0; idx < monsterPos.Count; ++idx)

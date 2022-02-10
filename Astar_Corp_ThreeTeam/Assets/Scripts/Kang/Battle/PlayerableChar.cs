@@ -221,8 +221,6 @@ public class PlayerableChar : BattleTile
     {
         if (status == CharacterState.Wait)
             status = CharacterState.Move;
-        else
-            status = CharacterState.Wait;
 
 
         if (status == CharacterState.Move)
