@@ -181,6 +181,18 @@ public class BattleBasicWindow : GenericWindow
         var weapon = stats.weapon;
         var isFullApMove = selectedChar.characterStats.buffMgr.GetBuffList(Stat.FullApMove).Count > 0;
 
+
+        if (weapon.CheckAvailBullet)
+        {
+            actionBtns[0].gameObject.SetActive(true);
+            actionBtns[1].gameObject.SetActive(true);
+        }
+        else
+        {
+            actionBtns[0].gameObject.SetActive(false);
+            actionBtns[1].gameObject.SetActive(false);
+        }
+
         if (isFullApMove)
             actionBtns[0].SetAP(0);
         else if (weapon.fireCount == 0)
@@ -194,7 +206,13 @@ public class BattleBasicWindow : GenericWindow
             actionBtns[1].SetAP(weapon.curWeapon.otherShotAp);
         }
 
+
         actionBtns[2].SetAP(1);
+
+        if (weapon.WeaponBullet == weapon.curWeapon.bullet)
+            actionBtns[3].gameObject.SetActive(false);
+        else
+            actionBtns[3].gameObject.SetActive(true);
 
         actionBtns[3].SetAP(weapon.curWeapon.loadAp);
 
@@ -293,13 +311,13 @@ public class BattleBasicWindow : GenericWindow
         if ((selectedChar.AP >= selectedChar.characterStats.weapon.curWeapon.firstShotAp || isFullApMove) && isTurn)
         {
             actionPanel.SetActive(false);
-            firePanel.SetActive(true);
             moveBtn.SetActive(false);
             infoPanel.SetActive(false);
             directionBtns.SetActive(false);
+            firePanel.SetActive(true);
+            firePanel.GetComponent<BattleFirePanel>().SetDmgText(selectedChar);
             selectedChar.status = CharacterState.Attack;
             selectedChar.ReturnMoveTile();
-
             for (var idx = 0; idx < monsterPanels.Count; ++idx)
             {
                 Destroy(monsterPanels[idx].gameObject);
@@ -352,6 +370,7 @@ public class BattleBasicWindow : GenericWindow
             targetMonster = null;
             OnClickFireCancel();
             selectedChar.status = CharacterState.Wait;
+            SetActionBtn();
             UpdateUI();
         }
     }
@@ -397,7 +416,7 @@ public class BattleBasicWindow : GenericWindow
         else if (selectedChar.status == CharacterState.Move)
             selectedChar.WaitPlayer();
 
-        if (state == CharacterState.Move)
+        if (state == CharacterState.Wait)
         {
             selectedChar.AP -= 1;
             UpdateUI();
@@ -457,6 +476,16 @@ public class BattleBasicWindow : GenericWindow
         {
             if (extra.player == player)
                 extra.UpdateExtraInfo();
+        }
+    }
+
+    public void OnClickReload()
+    {
+        if (state == CharacterState.Wait)
+        {
+            selectedChar.ReloadWeapon();
+            SetWeaponUI(selectedChar);
+            SetActionBtn();
         }
     }
 }

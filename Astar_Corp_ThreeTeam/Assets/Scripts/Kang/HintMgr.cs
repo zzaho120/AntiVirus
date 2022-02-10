@@ -28,17 +28,19 @@ public class HintMgr : MonoBehaviour
     public void AddPrint(HintType hintType, DirectionType directionType, Vector3 tileIdx)
     {
         GameObject prefab = null;
+        var rot = Quaternion.identity;
         switch (hintType)
         {
             case HintType.Footprint:
                 prefab = footprint;
+                rot = Quaternion.Euler(90f, 0f, 0f);
                 break;
             case HintType.Bloodprint:
                 prefab = bloodprint;
                 break;
         }
-        var newVector = tileIdx + new Vector3(0, .5f, 0);
-        var printGo = Instantiate(prefab, newVector, Quaternion.identity);
+        var newVector = tileIdx + new Vector3(0, 1f, 0);
+        var printGo = Instantiate(prefab, newVector, rot);
         var hintBase = printGo.GetComponent<HintBase>();
         hintBase.Init(directionType);
 
