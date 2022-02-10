@@ -257,6 +257,9 @@ public class MonsterChar : BattleTile
 
         if (monsterStats.originMaxHp > monsterStats.currentHp)
             CreateHint(HintType.Bloodprint, currentTile.tileIdx);
+
+        var bloodIsInSight = BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile);
+        currentTile.EnableDisplay(bloodIsInSight);
     }
 
     public IEnumerator MoveTile(Vector3 nextIdx)
@@ -300,8 +303,6 @@ public class MonsterChar : BattleTile
                 break;
             }
         }
-
-        //return true;
     }
     private IEnumerator CoMoveChar(Vector3 nextIdx)
     {

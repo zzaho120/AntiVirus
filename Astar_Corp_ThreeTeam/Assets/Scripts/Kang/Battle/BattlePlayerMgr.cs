@@ -121,6 +121,7 @@ public class BattlePlayerMgr : MonoBehaviour
         Destroy(playerableChar.gameObject);
         BattleMgr.Instance.sightMgr.sightList.RemoveAt(idx);
         BattleMgr.Instance.sightMgr.frontSightList.RemoveAt(idx);
+        BattleMgr.Instance.sightMgr.UpdateFog();
     }
 
     private void CalculateVirusAllChar(PlayerableChar character)

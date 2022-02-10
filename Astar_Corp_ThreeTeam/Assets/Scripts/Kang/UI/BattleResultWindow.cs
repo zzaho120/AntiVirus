@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BattleResultWindow : GenericWindow
 {
@@ -22,7 +23,7 @@ public class BattleResultWindow : GenericWindow
 
     public void OnClickLootNextBtn()
     {
-        SceneManager.LoadScene("NonBattleMap");
+        SceneManager.LoadScene("WorldMap_Asset");
     }
 
     public void OnClickLootPrevBtn()

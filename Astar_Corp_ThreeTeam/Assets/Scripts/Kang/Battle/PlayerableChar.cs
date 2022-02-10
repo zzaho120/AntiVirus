@@ -49,6 +49,14 @@ public class PlayerableChar : BattleTile
     [Header("Alert")]
     public List<MonsterChar> alertList;
 
+    [Header("Costume")]
+    public List<GameObject> tankerCos;
+    public List<GameObject> healerCos;
+    public List<GameObject> scoutCos;
+    public List<GameObject> bombardierCos;
+    public List<GameObject> sniperCos;
+
+        
     public override void Init()
     {
         base.Init();
@@ -63,6 +71,30 @@ public class PlayerableChar : BattleTile
         characterStats.StartGame();
 
         animator = GetComponent<Animator>();
+
+        switch (characterStats.character.type)
+        {
+            case "Tanker":
+                foreach (var cos in tankerCos)
+                    cos.SetActive(true);
+                break;
+            case "Healer":
+                foreach (var cos in healerCos)
+                    cos.SetActive(true);
+                break;
+            case "Scout":
+                foreach (var cos in scoutCos)
+                    cos.SetActive(true);
+                break;
+            case "Bombardier":
+                foreach (var cos in bombardierCos)
+                    cos.SetActive(true);
+                break;
+            case "Sniper":
+                foreach (var cos in sniperCos)
+                    cos.SetActive(true);
+                break;
+        }
     }
 
     public void Update()
@@ -101,11 +133,6 @@ public class PlayerableChar : BattleTile
                                 }
                                 break;
                             case CharacterState.Attack:
-                                if (hit.collider.tag == "BattleMonster")
-                                {
-                                    var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.BattleInfo - 1).GetComponent<BattleInfoWindow>();
-                                    window.EnableMonsterInfo(true, hit.collider.GetComponent<MonsterChar>(), characterStats.weapon);
-                                }
                                 break;
                             case CharacterState.Alert:
                                 break;
@@ -192,13 +219,13 @@ public class PlayerableChar : BattleTile
 
                 var rotY = 0;
                 if (dir.x > 0)
-                    rotY = 270;
+                    rotY = 270 + 37;
                 else if (dir.x < 0)
-                    rotY = 90;
+                    rotY = 90 + 37;
                 else if (dir.z > 0)
-                    rotY = 180;
+                    rotY = 180 + 37;
                 else if (dir.z < 0)
-                    rotY = 0;
+                    rotY = 0 + 37;
                 transform.rotation = Quaternion.Euler(0f, rotY, 0f);
 
                 currentTile.charObj = null;
@@ -317,8 +344,6 @@ public class PlayerableChar : BattleTile
         BattleMgr.Instance.pathMgr.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
         MoveMode();
         StartCoroutine(CoMove());
-
-        Debug.Log(characterStats.Weight);
     }
 
     public void AttackMode()
@@ -327,6 +352,7 @@ public class PlayerableChar : BattleTile
     }
 
 
+    private Quaternion originRot;
     public void ActionAttack(MonsterChar monster)
     {
         var weapon = characterStats.weapon;
@@ -363,6 +389,7 @@ public class PlayerableChar : BattleTile
 
                     weapon.fireCount++;
                     weapon.WeaponBullet--;
+                    animator.SetTrigger("Fire");
 
                     var time = 0f;
                     if (isHit)
@@ -465,6 +492,7 @@ public class PlayerableChar : BattleTile
 
         hp -= dmg;
         characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
+        animator.SetTrigger("Damaged");
         var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
         window.UpdateUI();
 
@@ -504,11 +532,27 @@ public class PlayerableChar : BattleTile
 
         if (characterStats.currentHp == 0)
         {
-            EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 0 });
+            animator.SetTrigger("Death");
+            RuntimeAnimatorController ac = animator.runtimeAnimatorController;
+            var time = 0f;
+            for (var idx = 0; idx < ac.animationClips.Length; ++idx)
+            {
+                if (ac.animationClips[idx].name == "Death")
+                    time = ac.animationClips[idx].length;
+            }
+
+            StartCoroutine(CoDeath(time));
             return true;
         }
 
         return false;
+    }
+
+    private IEnumerator CoDeath(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 0 });
     }
 
     public bool GetDamage(int dmg)
@@ -521,7 +565,15 @@ public class PlayerableChar : BattleTile
         window.UpdateExtraInfo(this);
         if (characterStats.currentHp == 0)
         {
-            EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 0 });
+            animator.SetTrigger("Death");
+            RuntimeAnimatorController ac = animator.runtimeAnimatorController;
+            var time = 0f;
+            for (var idx = 0; idx < ac.animationClips.Length; ++idx)
+            {
+                if (ac.animationClips[idx].name == "Death")
+                    time = ac.animationClips[idx].length;
+            }
+            StartCoroutine(CoDeath(time));
             return true;
         }
 
@@ -559,16 +611,16 @@ public class PlayerableChar : BattleTile
             case DirectionType.None:
                 break;
             case DirectionType.Top:
-                nextRot = Quaternion.Euler(0, 0, 0);
+                nextRot = Quaternion.Euler(0, 37, 0);
                 break;
             case DirectionType.Bot:
-                nextRot = Quaternion.Euler(0, 180, 0);
+                nextRot = Quaternion.Euler(0, 217, 0);
                 break;
             case DirectionType.Left:
-                nextRot = Quaternion.Euler(0, 270, 0);
+                nextRot = Quaternion.Euler(0, 307, 0);
                 break;
             case DirectionType.Right:
-                nextRot = Quaternion.Euler(0, 90, 0);
+                nextRot = Quaternion.Euler(0, 127, 0);
                 break;
         }
         StartCoroutine(CoRotateChar(nextRot));

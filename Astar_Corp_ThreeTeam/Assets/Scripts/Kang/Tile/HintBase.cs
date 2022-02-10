@@ -22,7 +22,7 @@ public class HintBase : BattleTile
 
     public void Init(DirectionType direction)
     {
-        base.Init();
+        base.InitHint();
         currentTile.AddHint(this);
 
         gameObject.name = $"Hint ({tileIdx.x}, {tileIdx.y}, {tileIdx.z})";

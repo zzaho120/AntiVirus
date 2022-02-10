@@ -609,7 +609,7 @@ public class SightMgr : MonoBehaviour
                 var monster = tile.tileBase.charObj.GetComponent<MonsterChar>();
                 if (monster != null)
                 {
-                    if (monsterList.Exists(check => check != monster))
+                    if (!monsterList.Exists(check => check == monster))
                         monsterList.Add(monster);
                 }
             }

@@ -23,6 +23,7 @@ public class BattleMgr : MonoBehaviour
     public PathMgr pathMgr;
     public HintMgr hintMgr;
     public BattlePoolMgr battlePoolMgr;
+   // public MultiTouch touchMgr;
     public PlayerDataMgr playerDataMgr;     // 여기 저장하기 위해
 
     [Header("Turn")]
@@ -46,6 +47,7 @@ public class BattleMgr : MonoBehaviour
         battleWindowMgr = GameObject.FindWithTag("BattleWindow").GetComponent<WindowManager>();
         pathMgr = GameObject.FindWithTag("PathMgr").GetComponent<PathMgr>();
         hintMgr = GameObject.FindWithTag("HintMgr").GetComponent<HintMgr>();
+        //touchMgr = GameObject.FindWithTag("TouchMgr").GetComponent<MultiTouch>();
         battlePoolMgr = GameObject.FindWithTag("BattlePoolMgr").GetComponent<BattlePoolMgr>();
     }
 
@@ -64,7 +66,6 @@ public class BattleMgr : MonoBehaviour
         turn = startTurn;
         var window = battleWindowMgr.Open(0) as BattleBasicWindow;
         window.Init();
-        //window.NoticeTurn(turn);
 
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
         EventBusMgr.Subscribe(EventType.DestroyChar, DestroyChar);
@@ -152,7 +153,7 @@ public class BattleMgr : MonoBehaviour
                 player.characterStats.GetExp(exp);
             }
 
-            battleWindowMgr.Open((int)BattleWindows.ResultWindow - 1);
+            battleWindowMgr.Open(1);
         }
     }
 }
