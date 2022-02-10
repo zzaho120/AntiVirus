@@ -19,6 +19,7 @@ public class PlayerableChar : BattleTile
 
     [Header("Value")]
     public int AP;
+    public int attackCount;
     public int SightDistance
     {
         get
@@ -51,11 +52,11 @@ public class PlayerableChar : BattleTile
     public override void Init()
     {
         base.Init();
-        //characterStats = new CharacterStats();
-        //characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
-        //characterStats.weapon = new WeaponStats();
-        //characterStats.weapon.mainWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0013"));
-        //characterStats.weapon.subWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0023"));
+        characterStats = new CharacterStats();
+        characterStats.character = (Character)Instantiate(Resources.Load("Choi/Datas/Characters/Sniper"));
+        characterStats.weapon = new WeaponStats();
+        characterStats.weapon.mainWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0013"));
+        characterStats.weapon.subWeapon = (Weapon)Instantiate(ScriptableMgr.Instance.GetEquippable("WEP_0023"));
         
         characterStats.Init();  // --> characterStats.weapon.Init();
         direction = DirectionType.None;
@@ -121,7 +122,8 @@ public class PlayerableChar : BattleTile
         isMoved = false;
         isTankB1Skill = false;
         isHMGA1Skill = false;
-        AP = 6;
+        AP = 6; 
+        attackCount = 0;
         alertList.Clear();
         characterStats.StartTurn();
     }
@@ -416,6 +418,8 @@ public class PlayerableChar : BattleTile
     public void AlertMode()
     {
         status = CharacterState.Alert;
+        attackCount = AP / characterStats.weapon.curWeapon.firstShotAp;
+        AP = 0;
     }
 
     public void EndPlayer()
@@ -456,6 +460,8 @@ public class PlayerableChar : BattleTile
 
         hp -= dmg;
         characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
+        var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
+        window.UpdateUI();
 
 
         if (monsterStats.virus != null)
@@ -505,7 +511,9 @@ public class PlayerableChar : BattleTile
         var hp = characterStats.currentHp;
         hp -= dmg;
         characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
-
+        var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
+        window.UpdateUI();
+        window.UpdateExtraInfo(this);
         if (characterStats.currentHp == 0)
         {
             EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 0 });

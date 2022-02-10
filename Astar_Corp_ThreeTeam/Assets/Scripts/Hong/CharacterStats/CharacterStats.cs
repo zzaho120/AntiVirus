@@ -238,11 +238,6 @@ public class CharacterStats
         // 무기 스탯 초기화
         weapon.Init();
 
-        skillMgr.AddSkill(SkillType.Passive, ScriptableMgr.Instance.passiveSkillList["MED_0002"]);
-        skillMgr.AddSkill(SkillType.Passive, ScriptableMgr.Instance.passiveSkillList["PRO_0001"]);
-        skillMgr.AddSkill(SkillType.Active, ScriptableMgr.Instance.activeSkillList["PRO_0001"]);
-        skillMgr.AddSkill(SkillType.Active, ScriptableMgr.Instance.activeSkillList["HMG_0001"]);
-
         var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
         foreach (var skill in skillList)
         {

@@ -58,34 +58,38 @@ public class BattlePlayerMgr : MonoBehaviour
                 if (alertList.Exists(checkMonster => checkMonster == curMonster))
                     isCheck = true;
 
+                if (player.attackCount <= 0)
+                    continue;
+
                 if (!isCheck)
                 {
                     var weapon = player.characterStats.weapon;
                     if (weapon.CheckAvailBullet)
                     {
-                        if (weapon.CheckAvailShot(player.AP, CharacterState.Alert))
+                        player.attackCount--;
+                        var window = BattleMgr.Instance.battleWindowMgr.GetWindow(0) as BattleBasicWindow;
+                        window.UpdateExtraInfo(player);
+
+                        var isHit = false;
+                        if (player.isTankB1Skill)
                         {
-                            var isHit = false;
-                            if (player.isTankB1Skill)
-                            {
-                                isHit = true;
-                                player.isTankB1Skill = false;
-                            }
-                            else
-                                isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(curMonster.currentTile.accuracy) + player.characterStats.alertAccuracy;
+                            isHit = true;
+                            player.isTankB1Skill = false;
+                        }
+                        else
+                            isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(curMonster.currentTile.accuracy) + player.characterStats.alertAccuracy;
 
-                            player.AP -= weapon.GetWeaponAP();
+                        player.AP -= weapon.GetWeaponAP();
 
-                            if (isHit)
-                            {
-                                var isCrit = Random.Range(0, 100) < player.characterStats.weapon.CritRate + player.characterStats.critRate - curMonster.monsterStats.critResist;
-                                curMonster.GetDamage(player, isCrit);
-                            }
-                            else
-                            {
-                                var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-                                window.SetMsgText($"You missed {curMonster.name}");
-                            }
+                        if (isHit)
+                        {
+                            var isCrit = Random.Range(0, 100) < player.characterStats.weapon.CritRate + player.characterStats.critRate - curMonster.monsterStats.critResist;
+                            curMonster.GetDamage(player, isCrit);
+                        }
+                        else
+                        {
+                            //ºø¸ÂÀ½
+
                         }
                     }
                     else

@@ -64,7 +64,6 @@ public class BattleMgr : MonoBehaviour
         turn = startTurn;
         var window = battleWindowMgr.Open(0) as BattleBasicWindow;
         window.Init();
-        window.SetSelectedChar(playerMgr.playerableChars[0]);
         //window.NoticeTurn(turn);
 
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
@@ -74,6 +73,7 @@ public class BattleMgr : MonoBehaviour
         switch (turn)
         {
             case BattleTurn.Player:
+                window.SetSelectedChar(playerMgr.playerableChars[0]);
                 EventBusMgr.Publish(EventType.StartPlayer);
                 break;
             case BattleTurn.Enemy:
@@ -111,6 +111,8 @@ public class BattleMgr : MonoBehaviour
                 break;
             case BattleTurn.Enemy:
                 turn = BattleTurn.Player;
+                var window = battleWindowMgr.Open(0) as BattleBasicWindow;
+                window.SetSelectedChar(playerMgr.playerableChars[0]);
                 EventBusMgr.Publish(EventType.StartPlayer);
                 break;
         }
