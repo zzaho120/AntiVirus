@@ -156,7 +156,12 @@ public class PlayerableChar : BattleTile
 
             
             if (aStarTile.tileBase.charObj != null && !aStarTile.tileBase.charObj.CompareTag("BattlePlayer"))
+            {
+                animator.SetBool("Run Stop", true);
+                animator.SetBool("Run", false);
+                yield return null;
                 break;
+            }
 
             yield return MoveTile(aStarTile.tileBase.tileIdx);
             BattleMgr.Instance.sightMgr.UpdateFog(this);
@@ -531,8 +536,7 @@ public class PlayerableChar : BattleTile
         }
         else
         {
-            var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-            window.SetMsgText($"Not Enough Action Point");
+            // Ap∫Œ¡∑
         }
     }
 
