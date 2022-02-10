@@ -183,8 +183,8 @@ public class WeaponStats
         if (mainWeapon != null && subWeapon != null)
         {
             // 무기 잘못 장착 시
-            if (mainWeapon.type != "1") Debug.LogError("주무기 잘못 장착");
-            if (subWeapon.type != "2") Debug.LogError("보조무기 잘못 장착");
+            //if (mainWeapon.type != "1") Debug.LogError("주무기 잘못 장착");
+            //if (subWeapon.type != "2") Debug.LogError("보조무기 잘못 장착");
 
             if (type == WeaponType.Main)
             {

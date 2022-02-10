@@ -21,6 +21,22 @@ public class BattleMemberPanel : MonoBehaviour
         memberImage.sprite = stats.character.halfImg;
         classImage.sprite = stats.character.icon;
 
+        UpdateUI();
+    }
+
+    public void OnClickPanel()
+    {
+        if (player.status != CharacterState.TurnEnd && player.status != CharacterState.Alert && parent.isTurn)
+        {
+            parent.SetSelectedChar(player);
+            CameraController.Instance.SetCameraTrs(player.transform);
+            Debug.Log(player.transform.position);
+        }
+    }
+
+    public void UpdateUI()
+    {
+        var stats = player.characterStats;
         hpBar.value = stats.currentHp / (float)stats.MaxHp;
 
         var childCount = APObj.transform.childCount;
@@ -31,16 +47,6 @@ public class BattleMemberPanel : MonoBehaviour
                 child.SetActive(true);
             else
                 child.SetActive(false);
-        }
-    }
-
-    public void OnClickPanel()
-    {
-        if (player.status != CharacterState.TurnEnd && player.status != CharacterState.Alert && parent.isTurn)
-        {
-            parent.SetSelectedChar(player);
-            CameraController.Instance.SetCameraTrs(player.transform);
-            Debug.Log(player.transform.position);
         }
     }
 }

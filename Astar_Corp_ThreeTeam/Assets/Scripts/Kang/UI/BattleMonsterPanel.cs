@@ -9,8 +9,10 @@ public class BattleMonsterPanel : MonoBehaviour
     public Image monsterImage;
     public TextMeshProUGUI accuracyText;
     public MonsterChar monster;
-    public void Init(PlayerableChar player, MonsterChar monster, List<Sprite> monsterSprite)
+    public BattleBasicWindow parent;
+    public void Init(PlayerableChar player, MonsterChar monster, List<Sprite> monsterSprite, BattleBasicWindow parent)
     {
+        this.parent = parent;
         this.monster = monster;
         
         switch (monster.monsterStats.monster.name)
@@ -46,5 +48,11 @@ public class BattleMonsterPanel : MonoBehaviour
         }
 
         accuracyText.text = $"{weapon.GetAttackAccuracy(monster.currentTile.accuracy) + stats.accuracy + buffValue}%";
+    }
+
+    public void OnClickMonsterPanel()
+    {
+        parent.targetMonster = monster;
+        CameraController.Instance.SetCameraTrs(monster.transform);
     }
 }

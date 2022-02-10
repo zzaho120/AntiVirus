@@ -54,6 +54,7 @@ public class BattleTest : MonoBehaviour
                 player.transform.SetParent(BattleMgr.Instance.playerMgr.transform);
                 player.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
                 this.player = player;
+                BattleMgr.Instance.startTurn = BattleTurn.Player;
             }
         }
 
