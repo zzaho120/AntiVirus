@@ -14,6 +14,8 @@ public class InPlayerSight : MonoBehaviour
     
     private SkinnedMeshRenderer[] meshRenderers;
     private SpriteRenderer spriteRenderer;
+
+    public bool isEnabled;
     
     void OnEnable()
     {
@@ -23,7 +25,7 @@ public class InPlayerSight : MonoBehaviour
                 meshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
                 foreach (var renderer in meshRenderers)
                 {
-                    renderer.enabled = false;
+                    renderer.enabled = isEnabled;
                 }
                 break;
             case PrintType.Sprite:
@@ -74,7 +76,7 @@ public class InPlayerSight : MonoBehaviour
                     foreach (var renderer in meshRenderers)
                     {
                         renderer.enabled = true;
-                        Debug.Log("Renderer Enabled");
+                        //Debug.Log("Renderer Enabled");
                     }
                     break;
                 case PrintType.Sprite:

@@ -90,8 +90,8 @@ public class MonsterPool : PoolManager
         //    ps.GetComponent<WorldMonsterChar>().Init();
 
         // 플레이어 시야 안에서만 보이도록 하는 스크립트 추가
-        var playerSight = ps.AddComponent<InPlayerSight>();
-        playerSight.printType = InPlayerSight.PrintType.Mesh;
+        //var playerSight = ps.AddComponent<InPlayerSight>();
+        //playerSight.printType = InPlayerSight.PrintType.Mesh;
     }
 
     //private void OnGUI()

@@ -207,6 +207,8 @@ public class PlayerableChar : BattleTile
 
     private IEnumerator CoMoveChar(Vector3 nextIdx)
     {
+        var footstep = BattleMgr.Instance.battlePoolMgr;
+
         var origin = transform.position;
         var timer = 0f;
         while (timer < 1)

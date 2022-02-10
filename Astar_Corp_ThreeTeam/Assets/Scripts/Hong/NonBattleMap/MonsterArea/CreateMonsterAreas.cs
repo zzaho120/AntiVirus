@@ -34,6 +34,7 @@ public class CreateMonsterAreas : MonoBehaviour
         nonBattleMgr = NonBattleMgr.Instance;
         monsterAreaList.ToArray();
         labInfo = GetComponentInChildren<LaboratoryInfo>();
+        fog = GameObject.Find("Fog");
 
         //// 몬스터 영역 수 설정
         if (labInfo != null)
@@ -51,8 +52,6 @@ public class CreateMonsterAreas : MonoBehaviour
                 monsterAreaCount = 2;
             }
         }
-
-        fog = GameObject.Find("Fog");
 
         // 처음 생성 시
         if (!PlayerPrefs.HasKey("MonsterAreaX0"))
@@ -136,7 +135,7 @@ public class CreateMonsterAreas : MonoBehaviour
     private Vector3 RandomPosOnFog()
     {
         // Fog Position을 기준으로
-        Vector3 originPosition = new Vector3(fog.transform.position.x, fog.transform.position.y + 5f, fog.transform.position.z);
+        Vector3 originPosition = new Vector3(fog.transform.position.x, fog.transform.position.y + 10f, fog.transform.position.z);   // +5
 
         // 콜라이더의 사이즈를 가져오는 bound.size 사용
         var fogCollider = fog.GetComponent<BoxCollider>();
@@ -144,7 +143,7 @@ public class CreateMonsterAreas : MonoBehaviour
         float range_Z = fogCollider.bounds.size.z;
 
         // 랜덤 포지션 뽑기
-        float tempRange = 30.0f;
+        float tempRange = 5.0f;    // 30
         range_X = Random.Range(((range_X / 2) * -1) + tempRange, (range_X / 2) - tempRange);
         range_Z = Random.Range(((range_Z / 2) * -1) + tempRange, (range_Z / 2) - tempRange);
 
