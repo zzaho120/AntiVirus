@@ -216,7 +216,6 @@ public class CharacterStats
 
         VirusPenaltyInit();
 
-        
     }
 
     public void Setting()
