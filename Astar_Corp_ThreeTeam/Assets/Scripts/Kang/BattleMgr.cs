@@ -47,49 +47,11 @@ public class BattleMgr : MonoBehaviour
         pathMgr = GameObject.FindWithTag("PathMgr").GetComponent<PathMgr>();
         hintMgr = GameObject.FindWithTag("HintMgr").GetComponent<HintMgr>();
         battlePoolMgr = GameObject.FindWithTag("BattlePoolMgr").GetComponent<BattlePoolMgr>();
-
-        // 비전투씬에서 넘어온 플레이어데이터매니저가 있으면
-        // 아래 코드가 동작함
-
-        var vectorList = new List<Vector3>();
-        //vectorList.Add(new Vector3(15, 0.5f, 14));
-        //vectorList.Add(new Vector3(14, 0.5f, 14));
-        //vectorList.Add(new Vector3(14, 0.5f, 15));
-
-        var playerDataMgrObj = GameObject.FindWithTag("PlayerDataMgr");
-        var isExistDataMgr = playerDataMgrObj != null;
-        if (isExistDataMgr)
-        {
-            playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-
-            for (var idx = 0; idx < playerDataMgr.battleSquad.Count; ++idx)
-            {
-                var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.Euler(new Vector3(0, 180, 0)));
-                player.transform.SetParent(playerMgr.transform);
-                var playerableChar = player.GetComponent<PlayerableChar>();
-                playerableChar.characterStats = playerDataMgr.battleSquad[idx];
-            }
-
-            if (playerDataMgr.isMonsterAtk)
-                startTurn = BattleTurn.Enemy;
-            else
-                startTurn = BattleTurn.Player;
-        }
-        else
-        {
-            //for (var idx = 0; idx < vectorList.Count; ++idx)
-            //{
-            //    var player = Instantiate(playerPrefab, vectorList[idx], Quaternion.Euler(new Vector3(0, 180, 0)));
-            //    player.transform.SetParent(playerMgr.transform);
-            //    var playerableChar = player.GetComponent<PlayerableChar>();
-            //}
-
-            startTurn = BattleTurn.Player;
-        }
     }
 
     public void Start()
     {
+        Time.timeScale = 1f;
         var battleTest = GetComponent<BattleTest>();
         battleTest.Init();
         tileMgr.Init();
@@ -104,7 +66,6 @@ public class BattleMgr : MonoBehaviour
         window.Init();
         window.SetSelectedChar(playerMgr.playerableChars[0]);
         //window.NoticeTurn(turn);
-
 
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
         EventBusMgr.Subscribe(EventType.DestroyChar, DestroyChar);
