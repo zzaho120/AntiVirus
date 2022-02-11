@@ -4,26 +4,39 @@ using UnityEngine;
 
 public class SetSightPos : MonoBehaviour
 {
-    private Camera camera;
+    private new Camera camera;
+    private GameObject player;
+    GameObject cube;
+    GameObject playerSights;
 
     // Start is called before the first frame update
     void Start()
     {
         camera = Camera.main;
+        player = GameObject.Find("Player");
+        playerSights = GameObject.Find("PlayerSights");
+
+        cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector2 point = Camera.main.ScreenToViewportPoint(transform.position);
+        //Vector3 point = Camera.main.WorldToScreenPoint(transform.position);
+        //Vector3 point = camera.transform.worldToLocalMatrix.MultiplyPoint();
 
-        Vector3 temp = (camera.transform.position - transform.position).normalized;
-    }
+        int layer = LayerMask.GetMask("Player");
 
-    private Vector3 GetSightPosition()
-    {
-        Vector3 pos = Vector3.zero;
+        RaycastHit hitInfo;
+        if (Physics.Raycast(camera.transform.localPosition, player.transform.position, out hitInfo, layer))
+        {
+            Debug.Log("Hit");
 
-        return pos;
+            //transform.position = hitInfo.transform.position;
+            
+            //cube.transform.localScale = new Vector3(3f, 3f, 3f);
+            //cube.transform.position = hitInfo.transform.position;
+
+        }
     }
 }

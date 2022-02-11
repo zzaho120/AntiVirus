@@ -65,11 +65,22 @@ public class CreateMonsterAreas : MonoBehaviour
                 // 레이어
                 int monsterAreaLayer = LayerMask.GetMask("MonsterArea");
                 int playerLayer = LayerMask.GetMask("Player");
+                int obstacleLayer = LayerMask.GetMask("Obstacle");
                 //int virusZone = LayerMask.GetMask("VirusZone");
 
                 // 원 반지름
                 var bigRadius = nonBattleMgr.createLabArea.maxVirusZone[labortoryNum].GetComponent<SphereCollider>();
                 var radius = monsterAreaPrefab.GetComponentInChildren<SphereCollider>();
+
+                // 장애물
+
+                //var obstacleCenter = 
+                //Collider[] hitColliders = Physics.OverlapBox(
+                //        GetComponent<BoxCollider>().center + transform.parent.position,
+                //        GetComponent<BoxCollider>().size / 2,
+                //        Quaternion.identity,
+                //        obstacleLayer);
+                //
 
                 // 원 중심
                 Vector3 bigCenter = new Vector3(bigRadius.transform.position.x, 0, bigRadius.transform.position.z);
@@ -82,7 +93,7 @@ public class CreateMonsterAreas : MonoBehaviour
                     position = new Vector3(pos.x, posY, pos.z);
                     smallCenter = new Vector3(position.x, 0, position.z);
                 }
-                while ((Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x, monsterAreaLayer).Length != 0) ||
+                while (/*(Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x, monsterAreaLayer).Length != 0) ||*/
                        (Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x, playerLayer).Length != 0) ||
                        Vector3.Distance(bigCenter, smallCenter) > 
                        ((bigRadius.radius * bigRadius.transform.lossyScale.x) - (radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x)));
@@ -143,7 +154,7 @@ public class CreateMonsterAreas : MonoBehaviour
         float range_Z = fogCollider.bounds.size.z;
 
         // 랜덤 포지션 뽑기
-        float tempRange = 5.0f;    // 30
+        float tempRange = 20.0f;    // 30
         range_X = Random.Range(((range_X / 2) * -1) + tempRange, (range_X / 2) - tempRange);
         range_Z = Random.Range(((range_Z / 2) * -1) + tempRange, (range_Z / 2) - tempRange);
 

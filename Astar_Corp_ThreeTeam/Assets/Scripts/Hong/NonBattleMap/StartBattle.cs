@@ -7,6 +7,8 @@ public class StartBattle : MonoBehaviour
     public WindowManager windowManager;
     private TimeController timeController;
 
+    public bool isTestMode;
+
     [HideInInspector]
     public bool isMonsterAtk;
     // True: 몬스터 선공, False: 플레이어 선공
@@ -40,13 +42,16 @@ public class StartBattle : MonoBehaviour
                 }
                 PlayerDataMgr.Instance.isMonsterAtk = isMonsterAtk;
 
-                // 전체맵 일시정지
-                timeController.Pause();
-                timeController.isPause = true;
+                if (isTestMode)
+                {
+                    // 전체맵 일시정지
+                    timeController.Pause();
+                    timeController.isPause = true;
 
-                // / 전투 팝업창 띄우기
-                var windowId = (int)Windows.MonsterWindow - 1;
-                var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                    // / 전투 팝업창 띄우기
+                    var windowId = (int)Windows.MonsterWindow - 1;
+                    var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
+                }
             //}
         }
     }
