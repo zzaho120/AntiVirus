@@ -80,6 +80,8 @@ public class CreateMonsterAreas : MonoBehaviour
                 Vector3 bigCenter = new Vector3(bigRadius.transform.position.x, 0, bigRadius.transform.position.z);
                 Vector3 smallCenter;
 
+                //Debug.Log(Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x, obstacleLayer).Length);
+
                 // 겹치지 않을 때까지 좌표 가져오기
                 do
                 {
