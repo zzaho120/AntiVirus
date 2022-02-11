@@ -4,39 +4,34 @@ using UnityEngine;
 
 public class SetSightPos : MonoBehaviour
 {
-    private new Camera camera;
-    private GameObject player;
-    GameObject cube;
+    GameObject player;
     GameObject playerSights;
 
-    // Start is called before the first frame update
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawLine(Camera.main.transform.localPosition, player.transform.localPosition);
+    //}
+
     void Start()
     {
-        camera = Camera.main;
         player = GameObject.Find("Player");
         playerSights = GameObject.Find("PlayerSights");
-
-        cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
     }
 
-    // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        //Vector3 point = Camera.main.WorldToScreenPoint(transform.position);
-        //Vector3 point = camera.transform.worldToLocalMatrix.MultiplyPoint();
+        int layer = LayerMask.GetMask("Mask");
 
-        int layer = LayerMask.GetMask("Player");
+        // ∏Ò«• ∫§≈Õ - Ω√¿€ ∫§≈Õ
+      //  var dir = (playerSights.transform.localPosition - Camera.main.transform.position);//.normalized;
+        var dir = (player.transform.position - Camera.main.transform.position);//.normalized;
 
         RaycastHit hitInfo;
-        if (Physics.Raycast(camera.transform.localPosition, player.transform.position, out hitInfo, layer))
+        if (Physics.Raycast(Camera.main.transform.position, dir, out hitInfo, 1000f, layer))
         {
-            Debug.Log("Hit");
-
-            //transform.position = hitInfo.transform.position;
-            
-            //cube.transform.localScale = new Vector3(3f, 3f, 3f);
-            //cube.transform.position = hitInfo.transform.position;
-
+            //Debug.Log(hitInfo.collider.name);
+            transform.position = hitInfo.point;
         }
     }
 }

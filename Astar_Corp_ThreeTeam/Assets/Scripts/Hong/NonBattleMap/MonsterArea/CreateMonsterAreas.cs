@@ -73,14 +73,8 @@ public class CreateMonsterAreas : MonoBehaviour
                 var radius = monsterAreaPrefab.GetComponentInChildren<SphereCollider>();
 
                 // 장애물
-
-                //var obstacleCenter = 
-                //Collider[] hitColliders = Physics.OverlapBox(
-                //        GetComponent<BoxCollider>().center + transform.parent.position,
-                //        GetComponent<BoxCollider>().size / 2,
-                //        Quaternion.identity,
-                //        obstacleLayer);
-                //
+                GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacles");
+                //Debug.Log(obstacles.Length);
 
                 // 원 중심
                 Vector3 bigCenter = new Vector3(bigRadius.transform.position.x, 0, bigRadius.transform.position.z);
@@ -93,18 +87,12 @@ public class CreateMonsterAreas : MonoBehaviour
                     position = new Vector3(pos.x, posY, pos.z);
                     smallCenter = new Vector3(position.x, 0, position.z);
                 }
-                while (/*(Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x, monsterAreaLayer).Length != 0) ||*/
+                while ((Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x, obstacleLayer).Length != 0) ||
+                       (Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x, monsterAreaLayer).Length != 0) ||
                        (Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x, playerLayer).Length != 0) ||
                        Vector3.Distance(bigCenter, smallCenter) > 
                        ((bigRadius.radius * bigRadius.transform.lossyScale.x) - (radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x)));
 
-                // 원 생성 위치에 큐브 놔두기
-                //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                //cube.transform.position = bigCenter;
-                //cube.transform.localScale = new Vector3(5f, bigRadius.transform.localScale.y, 5f);
-                //GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                //cube2.transform.position = smallCenter; //radius.transform.position;
-                //cube2.transform.localScale = new Vector3(3f, radius.transform.localScale.y, 3f);
 
                 //// 몬스터 영역 저장
                 //string str = $"MonsterAreaX{j}";

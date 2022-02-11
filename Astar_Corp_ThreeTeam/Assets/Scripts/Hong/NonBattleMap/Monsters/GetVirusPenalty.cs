@@ -76,8 +76,9 @@ public class GetVirusPenalty : MonoBehaviour
         if (isPlayerIn)
         {
             // 플레이어, 바이러스 영역간 거리
-            distance = Vector2.Distance(
-                new Vector2(virusZone.transform.position.x, virusZone.transform.position.z), new Vector2(player.transform.position.x, player.transform.position.z));
+            //distance = Vector2.Distance(
+            //    new Vector2(virusZone.transform.position.x, virusZone.transform.position.z), new Vector2(player.transform.position.x, player.transform.position.z));
+            distance = 5;
 
             // 최대 레벨 3
             if (labInfo.isActiveZone3)
