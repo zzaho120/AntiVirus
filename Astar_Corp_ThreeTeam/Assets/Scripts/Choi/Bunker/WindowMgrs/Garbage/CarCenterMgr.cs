@@ -291,6 +291,7 @@ public class CarCenterMgr : MonoBehaviour
         int speedLv = 1;
         int trunkLv = 1;
         int sightLv = 1;
+        truckImg.sprite = playerDataMgr.truckList[key].img;
         text.text = playerDataMgr.truckList[key].name;
         if (owned.Contains(key))
         {
@@ -404,7 +405,7 @@ public class CarCenterMgr : MonoBehaviour
         var trunkObj = gaugeList[1];
         var sightObj = gaugeList[2];
         int index = playerDataMgr.saveData.cars.IndexOf(selectedCar);
-        
+        maxCarLevel = 5;
         if (currentStat == TruckStat.Speed)
         {
             if (playerDataMgr.saveData.speedLv[index] == 5) return;
@@ -553,6 +554,7 @@ public class CarCenterMgr : MonoBehaviour
 
     public void OpenUpgradeWin()
     {
+        RefreshUpgradeWin();
         mainWin.SetActive(false);
         upgradeWin.SetActive(true);
     }

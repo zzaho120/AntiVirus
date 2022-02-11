@@ -187,7 +187,7 @@ public class TrunkMgr : MonoBehaviour
         foreach (var element in trunkButtons)
         {
             if (element.GetComponent<Image>().color == Color.red)
-                element.GetComponent<Image>().color = Color.white;
+                element.GetComponent<Image>().color = new Color(118f/255, 153f/255, 184f/255);
         }
 
         switch (index)
@@ -373,7 +373,7 @@ public class TrunkMgr : MonoBehaviour
         foreach (var element in storageButtons)
         {
             if (element.GetComponent<Image>().color == Color.red)
-                element.GetComponent<Image>().color = Color.white;
+                element.GetComponent<Image>().color = new Color(118f / 255, 153f / 255, 184f / 255); ;
         }
 
         switch (index)

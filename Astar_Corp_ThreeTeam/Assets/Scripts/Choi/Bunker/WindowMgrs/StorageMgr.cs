@@ -145,7 +145,7 @@ public class StorageMgr : MonoBehaviour
         foreach (var element in buttons)
         {
             if (element.GetComponent<Image>().color == Color.red)
-                element.GetComponent<Image>().color = Color.white;
+                element.GetComponent<Image>().color = new Color(118f/255, 153f/255, 184f/255);
         }
 
         switch (index)

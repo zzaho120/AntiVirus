@@ -384,6 +384,7 @@ public class PubMgr : MonoBehaviour
         costTxt.text = $"АЁАн {costs[currentIndex]}";
 
         characterImg.sprite = soldiers[currentIndex].character.halfImg;
+        characterImg.color = new Color(characterImg.color.r, characterImg.color.g, characterImg.color.b, 1);
         nameTxt.text = $"{soldiers[currentIndex].character.name}";
         vocationImg.sprite = soldiers[currentIndex].character.icon;
         levelTxt.text = $"Lv{soldiers[currentIndex].level}";

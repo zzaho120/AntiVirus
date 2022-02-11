@@ -371,7 +371,7 @@ public class StoreMgr : MonoBehaviour
         foreach (var element in storeButtons)
         {
             if (element.GetComponent<Image>().color == Color.red)
-                element.GetComponent<Image>().color = Color.white;
+                element.GetComponent<Image>().color = new Color(118f / 255, 153f / 255, 184f / 255);
         }
 
         switch (index)
@@ -518,7 +518,7 @@ public class StoreMgr : MonoBehaviour
         foreach (var element in storageButtons)
         {
             if (element.GetComponent<Image>().color == Color.red)
-                element.GetComponent<Image>().color = Color.white;
+                element.GetComponent<Image>().color = new Color(118f / 255, 153f / 255, 184f / 255);
         }
 
         switch (index)
@@ -700,7 +700,7 @@ public class StoreMgr : MonoBehaviour
         if (currentStoreKey != -1 && storeObjs.ContainsKey(currentStoreKey))
         {
             image = storeObjs[currentStoreKey].GetComponent<Image>();
-            image.color = Color.white;
+            image.color = new Color(27f / 255, 40f / 255, 52f / 255);
         }
 
         currentStoreKey = key;
@@ -755,7 +755,7 @@ public class StoreMgr : MonoBehaviour
         if (currentStorageKey != null && storageObjs.ContainsKey(currentStorageKey))
         {
             image = storageObjs[currentStorageKey].GetComponent<Image>();
-            image.color = Color.white;
+            image.color = new Color(27f / 255, 40f / 255, 52f / 255);
         }
 
         currentStorageKey = key;
@@ -1259,12 +1259,12 @@ public class StoreMgr : MonoBehaviour
         if (currentStorageKey != null)
         {
             var image = storageObjs[currentStorageKey].GetComponent<Image>();
-            image.color = Color.white;
+            image.color = new Color(27f / 255, 40f / 255, 52f / 255);
         }
         else if (currentStoreKey != -1)
         {
             var image = storeObjs[currentStoreKey].GetComponent<Image>();
-            image.color = Color.white;
+            image.color = new Color(27f / 255, 40f / 255, 52f / 255);
         }
 
         currentStorageKey = null;
