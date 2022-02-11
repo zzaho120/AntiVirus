@@ -37,7 +37,7 @@ public class TileMgr : MonoBehaviour
                 tileDics.Add(tileBase.tileIdx, tileBase);
 
                 var fog = Instantiate(fogPrefab, fogs.transform);
-                fog.transform.position = tileBase.transform.position + new Vector3(0, 1);
+                fog.transform.position = tileBase.transform.position + new Vector3(0, .5f);
                 tileBase.fogTile = fog.gameObject;
             }
 

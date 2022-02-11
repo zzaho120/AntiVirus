@@ -237,13 +237,14 @@ public class MonsterChar : BattleTile
         var idx = 1;
         var moveIdx = 0;
         var compareIdx = Mathf.Abs(destTile.x) + Mathf.Abs(destTile.z);
+        var prevIdx = tileIdx;
         while (Mathf.Abs(tileIdx.x) + Mathf.Abs(tileIdx.z) + monsterStats.AtkRange != compareIdx)
         {
             idx++;
             if (idx >= printIdx)
             {
                 idx = 0;
-                CreateHint(HintType.Footprint, tileIdx);
+                CreateHint(HintType.Footprint, prevIdx);
             }
 
             var isInSight = BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile);
@@ -268,6 +269,7 @@ public class MonsterChar : BattleTile
             if (target == null)
                 SetTarget(sightMgr.GetPlayerInMonsterSight(monsterIdx));
 
+            prevIdx = tileIdx;
             yield return MoveTile(nextTile.tileBase.tileIdx);
         }
 
@@ -348,10 +350,10 @@ public class MonsterChar : BattleTile
         {
             switch (directionIdx.x)
             {
-                case 1:
+                case -1:
                     directionType = DirectionType.Right;
                     break;
-                case -1:
+                case 1:
                     directionType = DirectionType.Left;
                     break;
             }
@@ -360,10 +362,10 @@ public class MonsterChar : BattleTile
         {
             switch (directionIdx.z)
             {
-                case 1:
+                case -1:
                     directionType = DirectionType.Top;
                     break;
-                case -1:
+                case 1:
                     directionType = DirectionType.Bot;
                     break;
             }

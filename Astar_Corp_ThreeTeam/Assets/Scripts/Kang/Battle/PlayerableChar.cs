@@ -39,7 +39,7 @@ public class PlayerableChar : BattleTile
         }
     }
 
-    public int audibleDistance = 4;
+    public int audibleDistance = 8;
     public CharacterState status;
     public bool isMoved;
     public bool isTankB1Skill;
@@ -252,6 +252,7 @@ public class PlayerableChar : BattleTile
 
             yield return null;
         }
+
         var footStep = poolMgr.CreateFootStep();
         footStep.transform.position = transform.position;
         StartCoroutine(CoReturnParticle(footStep));
@@ -346,7 +347,7 @@ public class PlayerableChar : BattleTile
         if (tile.charObj == null)
         {
             var go = BattleMgr.Instance.battlePoolMgr.CreateMoveTile();
-            go.transform.position = tile.tileIdx + new Vector3(0, 0.5f);
+            go.transform.position = tile.tileIdx + new Vector3(0, 0.55f);
             var moveTile = go.GetComponent<MoveTile>();
             moveTile.parent = tile;
             moveList.Add(moveTile);

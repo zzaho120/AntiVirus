@@ -31,7 +31,7 @@ public class BattleTile : MonoBehaviour
     {
         var dics = BattleMgr.Instance.tileMgr.tileDics;
         var pos = transform.position;
-        tileIdx = new Vector3(pos.x, pos.y - 0.5f, (int)pos.z);
+        tileIdx = new Vector3(pos.x, pos.y - 0.55f, (int)pos.z);
         foreach (var pair in dics)
         {
             var tile = pair.Value;

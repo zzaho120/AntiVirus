@@ -27,6 +27,9 @@ public class HintBase : BattleTile
 
         gameObject.name = $"Hint ({tileIdx.x}, {tileIdx.y}, {tileIdx.z})";
         this.direction = direction;
+
+        
+
         var turn = BattleMgr.Instance.turnCount;
         lifeTime += turn;
     }

@@ -37,19 +37,33 @@ public class HintMgr : MonoBehaviour
             case HintType.Footprint:
                 prefab = footprint;
                 rot = Quaternion.Euler(90f, 0f, 0f);
+                switch (directionType)
+                {
+                    case DirectionType.None:
+                        break;
+                    case DirectionType.Top:
+                        rot = Quaternion.Euler(90f, 0f, 0f);
+                        break;
+                    case DirectionType.Bot:
+                        rot = Quaternion.Euler(90f, 180f, 0f);
+                        break;
+                    case DirectionType.Left:
+                        rot = Quaternion.Euler(90f, 270f, 0f);
+                        break;
+                    case DirectionType.Right:
+                        rot = Quaternion.Euler(90f, 90f, 0f);
+                        break;
+                }
                 break;
             case HintType.Bloodprint:
                 prefab = bloodprint;
                 break;
         }
-        var newVector = tileIdx + new Vector3(0, .5f, 0);
+        var newVector = tileIdx + new Vector3(0, .55f, 0);
         var printGo = Instantiate(prefab, newVector, rot);
         var hintBase = printGo.GetComponent<HintBase>();
         hintBase.Init(directionType);
-
-
         printGo.transform.SetParent(gameObject.transform);
-
         hintList.Add(hintBase);
     }
 
