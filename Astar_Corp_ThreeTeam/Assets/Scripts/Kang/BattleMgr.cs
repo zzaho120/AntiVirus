@@ -99,7 +99,7 @@ public class BattleMgr : MonoBehaviour
 
     public void OnChangeTurn(object empty)
     {
-        Invoke("ChangeTurn", 0.1f);
+        Invoke("ChangeTurn", 0.01f);
     }
 
     private void ChangeTurn()

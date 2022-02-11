@@ -62,7 +62,9 @@ public class MonsterChar : BattleTile
         cumulativeDmg += dmg;
         monsterStats.currentHp = Mathf.Clamp(hp, 0, hp);
 
-        // 몬스터 맞음 메세지
+        var blood = BattleMgr.Instance.battlePoolMgr.CreateBloodSplat();
+        blood.transform.position = transform.position;
+        StartCoroutine(CoReturnParticle(blood));
 
         if (monsterStats.currentHp == 0)
         {
@@ -81,6 +83,23 @@ public class MonsterChar : BattleTile
             animator.SetTrigger("Damaged");
 
         return 0;
+    }
+
+    private IEnumerator CoReturnParticle(GameObject particle)
+    {
+        var particleSys = particle.GetComponent<ParticleSystem>();
+        particleSys.Play();
+
+        while (true)
+        {
+            if (particleSys.isStopped)
+            {
+                var returnToPool = particle.GetComponent<ReturnToPool>();
+                returnToPool.Return();
+                break;
+            }
+            yield return null;
+        }
     }
 
     private IEnumerator CoDeath(PlayerableChar player, float time)
@@ -437,31 +456,25 @@ public class MonsterChar : BattleTile
     {
         if (Input.GetMouseButtonDown(0))
         {
-            //RaycastHit hit;
-            //var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            //if (!BattleMgr.Instance.playerMgr.GetPlayerSelected())
-            //{
-            //    if (Physics.Raycast(ray, out hit))
-            //    {
-            //        if (hit.collider.gameObject == gameObject)
-            //        {
-            //            isSelect = !isSelect;
-            //            var battleInfo = BattleMgr.Instance.battleWindowMgr.Open(2, false).GetComponent<BattleInfoWindow>();
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject == gameObject)
+                {
+                    isSelect = !isSelect;
 
-            //            if (isSelect)
-            //            {
-            //                battleInfo.EnableMonsterInfo(true, this);
-            //                FloodFillVirus();
-            //            }
-            //            else
-            //            {
-            //                battleInfo.Close();
-            //                ReturnVirusTile();
-            //            }
-            //        }
-            //    }
-            //}
+                    if (isSelect)
+                    {
+                        FloodFillVirus();
+                    }
+                    else
+                    {
+                        ReturnVirusTile();
+                    }
+                }
+            }
         }
     }
 

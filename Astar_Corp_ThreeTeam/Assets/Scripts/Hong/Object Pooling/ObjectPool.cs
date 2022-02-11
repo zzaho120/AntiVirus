@@ -17,7 +17,8 @@ public enum BattlePoolName
 {
     MoveTile,
     VirusTile,
-    Particle
+    FootStep,
+    Blood
 }
 
 [System.Serializable]

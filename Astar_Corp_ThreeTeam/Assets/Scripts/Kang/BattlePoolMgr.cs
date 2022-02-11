@@ -27,9 +27,16 @@ public class BattlePoolMgr : PoolManager
         return virusTile;
     }
 
-    public GameObject CreateParticles()
+    public GameObject CreateFootStep()
     {
-        var particle = pools[(int)BattlePoolName.Particle].Pool.Get();
+        var particle = pools[(int)BattlePoolName.FootStep].Pool.Get();
+        particle.transform.SetParent(particlePool);
+        return particle;
+    }
+
+    public GameObject CreateBloodSplat()
+    {
+        var particle = pools[(int)BattlePoolName.Blood].Pool.Get();
         particle.transform.SetParent(particlePool);
         return particle;
     }
