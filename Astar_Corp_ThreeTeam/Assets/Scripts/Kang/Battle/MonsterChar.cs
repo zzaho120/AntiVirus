@@ -116,6 +116,11 @@ public class MonsterChar : BattleTile
 
     public void SetTarget(PlayerableChar player)
     {
+        var particle = BattleMgr.Instance.battlePoolMgr.CreateDetect();
+        particle.transform.position = new Vector3(transform.position.x, 2f, transform.position.z);
+        particle.transform.rotation = Quaternion.Euler(40f, 0f, 0f);
+        var returnToPool = particle.GetComponent<ReturnToPool>();
+        returnToPool.Return(1f);
         target = player;
     }
 

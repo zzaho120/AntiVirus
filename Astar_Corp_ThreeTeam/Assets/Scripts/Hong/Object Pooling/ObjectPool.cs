@@ -18,7 +18,10 @@ public enum BattlePoolName
     MoveTile,
     VirusTile,
     FootStep,
-    Blood
+    Blood,
+    GunOneShot,
+    BulletEjection,
+    Detect
 }
 
 [System.Serializable]

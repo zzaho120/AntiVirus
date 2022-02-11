@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
@@ -22,6 +23,24 @@ public class ReturnToPool : MonoBehaviour
 
         m_pool.Release(gameObject);
         Debug.Log("Returned at " + DateTime.Now.ToString());
+    }
+
+    public void Return(float time)
+    {
+        StartCoroutine(CoReturn(time));
+    }
+
+    private IEnumerator CoReturn(float time)
+    {
+        var timer = 0f;
+        while (timer < time)
+        {
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+
+        m_pool.Release(gameObject);
     }
 
 }

@@ -16,6 +16,11 @@ public class PlayerableChar : BattleTile
     [Header("Character")]
     public CharacterStats characterStats;
     public Animator animator;
+    public Vector3 weaponRot = new Vector3(-20.986f, -281.047f, -89.688f);
+    public Vector3 fireRot = new Vector3(16.112f, 54.533f, -82.484f);
+    public GameObject mainWeapon;
+    public GameObject subWeapon;
+    public GameObject currentWeapon;
 
     [Header("Value")]
     public int AP;
@@ -56,7 +61,9 @@ public class PlayerableChar : BattleTile
     public List<GameObject> bombardierCos;
     public List<GameObject> sniperCos;
 
-        
+    public Transform rightHandTr;
+    private MonsterChar targetMonster;
+
     public override void Init()
     {
         base.Init();
@@ -364,6 +371,12 @@ public class PlayerableChar : BattleTile
         status = CharacterState.Attack;
     }
 
+    public void PlayAttackAnim(MonsterChar monster)
+    {
+        animator.SetTrigger("Fire");
+        currentWeapon.transform.localRotation = Quaternion.Euler(fireRot);
+        targetMonster = monster;
+    }
 
     private Quaternion originRot;
     public void ActionAttack(MonsterChar monster)
@@ -375,6 +388,7 @@ public class PlayerableChar : BattleTile
         var repeat = 1;
         if (isHMGA1Skill)
             repeat = AP / weapon.GetWeaponAP();
+        currentWeapon.transform.localRotation = Quaternion.Euler(weaponRot);
 
         for (var idx = 0; idx < repeat; ++idx)
         {
@@ -402,7 +416,6 @@ public class PlayerableChar : BattleTile
 
                     weapon.fireCount++;
                     weapon.WeaponBullet--;
-                    animator.SetTrigger("Fire");
 
                     var time = 0f;
                     if (isHit)
@@ -684,5 +697,22 @@ public class PlayerableChar : BattleTile
     {
         isHMGA1Skill = true;
         status = CharacterState.Attack;
+    }
+
+    public void FireAnimation()
+    {
+        var poolMgr = BattleMgr.Instance.battlePoolMgr;
+        var gunOneShot = poolMgr.CreateGunOneShot().GetComponent<ParticleSystem>();
+        var bulletEjection = poolMgr.CreateBulletEjection().GetComponent<ParticleSystem>();
+
+
+        gunOneShot.transform.position = currentWeapon.GetComponent<BattleWeapon>().fireTr.position;
+        bulletEjection.transform.position = currentWeapon.GetComponent<BattleWeapon>().fireTr.position;
+        gunOneShot.Play();
+        bulletEjection.Play();
+        
+        StartCoroutine(CoReturnParticle(gunOneShot.gameObject));
+        StartCoroutine(CoReturnParticle(bulletEjection.gameObject));
+        ActionAttack(targetMonster);
     }
 }

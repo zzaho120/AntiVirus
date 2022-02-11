@@ -24,7 +24,7 @@ public enum CharacterClass
 
 public enum WeaponName
 {
-    Revolver_01 = 1,
+    Revolver_01,
     Nailgun_01,
     Pistol_01,
     Bat_Wood_01,
@@ -61,6 +61,7 @@ public class BattleTest : MonoBehaviour
     public List<VirusType> monsterVirus;
     public List<int> monsterVirusLevel;
     public List<GameObject> monsterPrefabs;
+    public List<GameObject> weaponPrefabs;
     public GameObject player;
     public void Init()
     {
@@ -131,6 +132,13 @@ public class BattleTest : MonoBehaviour
                 else
                     zeroStr = "000";
                 playerableChar.characterStats.weapon.subWeapon = ScriptableMgr.Instance.GetEquippable($"WEP_{zeroStr}{(int)subWeaponName[idx]}");
+
+                playerableChar.mainWeapon = weaponPrefabs[(int)mainWeaponName[idx]];
+                playerableChar.subWeapon = weaponPrefabs[(int)subWeaponName[idx]];
+                var weaponGo = Instantiate(playerableChar.mainWeapon, playerableChar.rightHandTr);
+                playerableChar.currentWeapon = weaponGo;
+
+                weaponGo.transform.localRotation = Quaternion.Euler(playerableChar.weaponRot);
             }
         }
 

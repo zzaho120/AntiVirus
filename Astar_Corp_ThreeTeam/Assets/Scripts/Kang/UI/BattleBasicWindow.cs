@@ -366,7 +366,7 @@ public class BattleBasicWindow : GenericWindow
     {
         if (state == CharacterState.Attack)
         {
-            selectedChar.ActionAttack(targetMonster);
+            selectedChar.PlayAttackAnim(targetMonster);
             targetMonster = null;
             OnClickFireCancel();
             selectedChar.status = CharacterState.Wait;

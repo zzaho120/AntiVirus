@@ -40,4 +40,25 @@ public class BattlePoolMgr : PoolManager
         particle.transform.SetParent(particlePool);
         return particle;
     }
+
+    public GameObject CreateGunOneShot()
+    {
+        var particle = pools[(int)BattlePoolName.GunOneShot].Pool.Get();
+        particle.transform.SetParent(particlePool);
+        return particle;
+    }
+
+    public GameObject CreateBulletEjection()
+    {
+        var particle = pools[(int)BattlePoolName.BulletEjection].Pool.Get();
+        particle.transform.SetParent(particlePool);
+        return particle;
+    }
+
+    public GameObject CreateDetect()
+    {
+        var particle = pools[(int)BattlePoolName.Detect].Pool.Get();
+        particle.transform.SetParent(particlePool);
+        return particle;
+    }
 }
