@@ -142,6 +142,7 @@ public class BattleBasicWindow : GenericWindow
                     var obj = weaponBulletList[i].transform.GetChild(j);
                     obj.gameObject.SetActive(false);
                 }
+                break;
             }
 
             var weaponAPCount = weaponBulletList[i].transform.childCount;
@@ -151,10 +152,55 @@ public class BattleBasicWindow : GenericWindow
             else if ((stats.weapon.type == WeaponStats.WeaponType.Sub && i == 0) || (stats.weapon.type == WeaponStats.WeaponType.Main && i == 1))
                 bullet = stats.weapon.SubWeaponBullet;
 
+            var scale = Vector2.zero;
+            if (i == 0)
+            {
+                switch (stats.weapon.curWeapon.bulletType)
+                {
+                    case 1:
+                        scale = new Vector2(15f, 30f);
+                        break;
+                    case 2:
+                        scale = new Vector2(13f, 26f);
+                        break;
+                    case 3:
+                        scale = new Vector2(7f, 14f);
+                        break;
+                    case 4:
+                        scale = new Vector2(9f, 18f);
+                        break;
+                    case 5:
+                        scale = new Vector2(11f, 22f);
+                        break;
+                }
+            }
+            else if (i == 1)
+            {
+                switch (stats.weapon.otherWeapon.bulletType)
+                {
+                    case 1:
+                        scale = new Vector2(15f, 30f);
+                        break;
+                    case 2:
+                        scale = new Vector2(13f, 26f);
+                        break;
+                    case 3:
+                        scale = new Vector2(7f, 14f);
+                        break;
+                    case 4:
+                        scale = new Vector2(9f, 18f);
+                        break;
+                    case 5:
+                        scale = new Vector2(11f, 22f);
+                        break;
+                }
+            }
+
             for (var j = 0; j < weaponAPCount; ++j)
             {
                 var obj = weaponBulletList[i].transform.GetChild(j);
-
+                var rectTr = obj.GetComponent<RectTransform>();
+                rectTr.sizeDelta = scale;
                 if (bullet < j + 1)
                     obj.gameObject.SetActive(false);
                 else

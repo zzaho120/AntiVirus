@@ -101,7 +101,7 @@ public class CameraController : MonoBehaviour
 
         var value = Mathf.Clamp(destZoomInOut.y, zoomInOut.x, zoomInOut.y);
 
-        destZoomInOut = new Vector3(destZoomInOut.x, value, -value + 6);
+        destZoomInOut = new Vector3(destZoomInOut.x, value, -value + 1);
 
         mainCamera.localPosition = destZoomInOut;
     }

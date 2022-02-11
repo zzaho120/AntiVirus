@@ -32,6 +32,15 @@ public class BattleMonsterPanel : MonoBehaviour
             case "Spider":
                 monsterImage.sprite = monsterSprite[3];
                 break;
+
+            case "Jaguar":
+                break;
+
+            case "Tiger":
+                break;
+
+            case "Fox":
+                break;
         }
 
         var stats = player.characterStats;

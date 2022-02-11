@@ -85,14 +85,18 @@ public class HintMgr : MonoBehaviour
         }
     }
 
-    public void CheckRader(Vector3 monster)
+    public void CheckRader(MonsterChar monster)
     {
         var playerableChar = BattleMgr.Instance.playerMgr.playerableChars;
+        var sightMgr = BattleMgr.Instance.sightMgr;
 
         var min = (-1, 10000);
         for (var idx = 0; idx < playerableChar.Count; ++idx)
         {
-            var vector = playerableChar[idx].tileIdx - monster;
+            if (sightMgr.GetMonsterInPlayerSight(monster.gameObject))
+                return;
+
+            var vector = playerableChar[idx].tileIdx - monster.tileIdx;
             var absSum = (int)(Mathf.Abs(vector.x) + Mathf.Abs(vector.z));
 
             var minAudibleDis = playerableChar[idx].SightDistance;
@@ -122,7 +126,7 @@ public class HintMgr : MonoBehaviour
             level = 1;
 
         CameraController.Instance.SetCameraTrs(player.transform);
-        var dir = (monster - player.tileIdx);
+        var dir = (monster.tileIdx - player.tileIdx);
         var newPos = new Vector3(dir.x, 0f, dir.z);
 
         var arrow = Instantiate(arrowPrefab, player.transform.position, Quaternion.identity);

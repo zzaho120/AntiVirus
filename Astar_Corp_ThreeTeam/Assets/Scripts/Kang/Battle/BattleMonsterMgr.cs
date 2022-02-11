@@ -61,7 +61,7 @@ public class BattleMonsterMgr : MonoBehaviour
     {
         monsterIdx++;
         if (!BattleMgr.Instance.sightMgr.GetMonsterInPlayerSight(curMonster.gameObject))
-            BattleMgr.Instance.hintMgr.CheckRader(curMonster.tileIdx);
+            BattleMgr.Instance.hintMgr.CheckRader(curMonster);
         
         curMonster = null;
 

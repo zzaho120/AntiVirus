@@ -35,7 +35,7 @@ public class BattlePlayerMgr : MonoBehaviour
         var turnEndCount = 0;
         foreach (var player in playerableChars)
         {
-            if (player.status == CharacterState.TurnEnd || player.status == CharacterState.Alert)
+            if (player.AP <= 0)
                 turnEndCount++;
         }
 
@@ -113,15 +113,15 @@ public class BattlePlayerMgr : MonoBehaviour
         }
     }
 
-    public void RemovePlayer(PlayerableChar playerableChar)
+    public void RemovePlayer(PlayerableChar player)
     {
-        playerableChar.currentTile.charObj = null;
-        var idx = playerableChars.IndexOf(playerableChar);
+        player.currentTile.charObj = null;
+        var idx = playerableChars.IndexOf(player);
         playerableChars.RemoveAt(idx);
-        Destroy(playerableChar.gameObject);
+        Destroy(player.gameObject);
         BattleMgr.Instance.sightMgr.sightList.RemoveAt(idx);
         BattleMgr.Instance.sightMgr.frontSightList.RemoveAt(idx);
-        BattleMgr.Instance.sightMgr.UpdateFog();
+        BattleMgr.Instance.sightMgr.UpdateFog(player);
     }
 
     private void CalculateVirusAllChar(PlayerableChar character)

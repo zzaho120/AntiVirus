@@ -9,6 +9,7 @@ public class BattleMemberPanel : MonoBehaviour
     private PlayerableChar player;
     public Image memberImage;
     public Image classImage;
+    public Button imageButton;
     public Slider hpBar;
     public GameObject APObj;
 
@@ -45,8 +46,14 @@ public class BattleMemberPanel : MonoBehaviour
             var child = APObj.transform.GetChild(idx).gameObject;
             if (idx < player.AP)
                 child.SetActive(true);
-            else
+            if (idx >= player.AP || stats.currentHp <= 0)
                 child.SetActive(false);
+        }
+
+        if (stats.currentHp <= 0)
+        {
+            memberImage.color = Color.red;
+            imageButton.interactable = false;
         }
     }
 }
