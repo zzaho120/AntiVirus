@@ -111,7 +111,7 @@ public class BattleBasicWindow : GenericWindow
         state = CharacterState.Wait;
         var stats = selectedChar.characterStats;
         hpText.text = $"{stats.currentHp}/{stats.MaxHp}";
-        levelText.text = $"{stats.level}";
+        levelText.text = $"Lv{stats.level}";
         nameText.text = $"{stats.characterName}";
         classImage.sprite = stats.character.icon;
 

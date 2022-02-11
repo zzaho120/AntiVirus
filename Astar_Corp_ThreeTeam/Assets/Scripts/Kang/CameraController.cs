@@ -117,6 +117,7 @@ public class CameraController : MonoBehaviour
     public void SetCameraTrs(Transform trs)
     {
         destPosition = trs.position;
+        StopCoroutine("CoSmoothCameraMove");
         StartCoroutine(CoSmoothCameraMove(destPosition));
     }
 
