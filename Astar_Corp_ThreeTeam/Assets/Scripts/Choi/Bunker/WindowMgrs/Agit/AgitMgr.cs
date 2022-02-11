@@ -449,41 +449,38 @@ public class AgitMgr : MonoBehaviour
         {
             case 0:
                 hpButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
-                hpText.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                hpText.color = new Color(0f / 255, 112f / 255, 192f / 255);
                 weightButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
-                weightTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                weightTxt.color = new Color(0f / 255, 112f / 255, 192f / 255);
                 criResistButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
-                criResistTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                criResistTxt.color = new Color(0f / 255, 112f / 255, 192f / 255);
                 statExplanationTxt.text =
-                    "건강이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
-                    +"활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다.";
+                    "건강 스탯은 캐릭터의 Hp와 크리티컬 저항율에 영향을 줍니다."
+                    + "HP는 전투시 캐릭터가 들수있는 무게에 영향을 줍니다.";
                 break;
             case 1:
                 accuracyButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
-                accuracyTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                accuracyTxt.color = new Color(0f / 255, 112f / 255, 192f / 255);
                 //수정돼야함.
                 sightButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
-                sightTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                sightTxt.color = new Color(0f / 255, 112f / 255, 192f / 255);
                 statExplanationTxt.text =
-                     "집중력이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
-                    + "활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다."; 
+                     "집중력 스탯은 사격 명중률에 영향을 주며 특정 포인트마다 시야범위가 증가합니다."; 
                 break;
             case 2:
                 avoidButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
-                avoidTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                avoidTxt.color = new Color(0f / 255, 112f / 255, 192f / 255);
                 //수정돼야함.
                 mpButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
-                mpTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                mpTxt.color = new Color(0f / 255, 112f / 255, 192f / 255);
                 statExplanationTxt.text =
-                      "예민함이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
-                    + "활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다."; 
+                      "예민함 스탯은 회피율에 영향을 주며 특정 포인트마다 1ap당 제공하는 MP양이 증가합니다."; 
                 break;
             case 3:
                 criButton.GetComponent<Image>().color = new Color(217f / 255, 231f / 255, 253f / 255);
-                criTxt.color = new Color(172f / 255, 201f / 255, 250f / 255);
+                criTxt.color = new Color(0f / 255, 112f / 255, 192f / 255);
                 statExplanationTxt.text =
-                      "정신력이 활성화 되어 있기 때문에 건강에 대한 설명이 들어가는 자리입니다."
-                    + "활성화 되어 있는 스탯의 설명이 이 자리에 표시되게 됩니다.";
+                      "정신력 스탯은 크리티컬 확률과 연속사격 패널티 감소에 영향을 줍니다.";
                 break;
         }
     }

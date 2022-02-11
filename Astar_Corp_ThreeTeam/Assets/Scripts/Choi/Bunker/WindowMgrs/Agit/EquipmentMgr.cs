@@ -171,7 +171,7 @@ public class EquipmentMgr : MonoBehaviour
                     string key = playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.id;
                     button.onClick.AddListener(delegate { SelectItem(key); });
 
-                    go.GetComponent<Image>().sprite = weapon.img;
+                    //go.GetComponent<Image>().sprite = weapon.img;
 
                     child = go.transform.GetChild(0).gameObject;
                     var childObj = child.transform.GetChild(1).gameObject;
@@ -194,6 +194,9 @@ public class EquipmentMgr : MonoBehaviour
 
                     child = go.transform.GetChild(6).gameObject;
                     child.SetActive(false);
+
+                    child = go.transform.GetChild(7).gameObject;
+                    child.GetComponent<Image>().sprite = weapon.img;
 
                     itemObjs.Add(key, go);
                 }
@@ -227,7 +230,7 @@ public class EquipmentMgr : MonoBehaviour
                     string key = playerDataMgr.currentSquad[currentIndex].weapon.subWeapon.id;
                     button.onClick.AddListener(delegate { SelectItem(key); });
 
-                    go.GetComponent<Image>().sprite = weapon.img;
+                    //go.GetComponent<Image>().sprite = weapon.img;
 
                     child = go.transform.GetChild(0).gameObject;
                     var childObj = child.transform.GetChild(1).gameObject;
@@ -250,6 +253,9 @@ public class EquipmentMgr : MonoBehaviour
 
                     child = go.transform.GetChild(6).gameObject;
                     child.SetActive(false);
+
+                    child = go.transform.GetChild(7).gameObject;
+                    child.GetComponent<Image>().sprite = weapon.img;
 
                     itemObjs.Add(key, go);
                 }
@@ -277,7 +283,7 @@ public class EquipmentMgr : MonoBehaviour
             string key = element.Key;
             button.onClick.AddListener(delegate { SelectItem(key); });
            
-            go.GetComponent<Image>().sprite = element.Value.img;
+            //go.GetComponent<Image>().sprite = element.Value.img;
 
             child = go.transform.GetChild(0).gameObject;
             var childObj = child.transform.GetChild(1).gameObject;
@@ -299,6 +305,9 @@ public class EquipmentMgr : MonoBehaviour
 
             child = go.transform.GetChild(6).gameObject;
             child.SetActive(false);
+
+            child = go.transform.GetChild(7).gameObject;
+            child.GetComponent<Image>().sprite = element.Value.img;
 
             itemObjs.Add(element.Key, go);
         }
@@ -624,7 +633,7 @@ public class EquipmentMgr : MonoBehaviour
 
         if (isEquip)
         {
-            weaponImg.GetComponent<Image>().sprite = weapon.img;
+            //weaponImg.GetComponent<Image>().sprite = weapon.img;
 
             var child = weaponImg.transform.GetChild(0).gameObject;
             var childObj = child.transform.GetChild(1).gameObject;
@@ -647,10 +656,13 @@ public class EquipmentMgr : MonoBehaviour
 
             child = weaponImg.transform.GetChild(6).gameObject;
             child.SetActive(false);
+
+            child = weaponImg.transform.GetChild(7).gameObject;
+            child.GetComponent<Image>().sprite = weapon.img;
         }
         else
         {
-            weaponImg.GetComponent<Image>().sprite = weapon.img;
+            //weaponImg.GetComponent<Image>().sprite = weapon.img;
 
             var child = weaponImg.transform.GetChild(0).gameObject;
             var childObj = child.transform.GetChild(1).gameObject;
@@ -673,6 +685,9 @@ public class EquipmentMgr : MonoBehaviour
 
             child = weaponImg.transform.GetChild(6).gameObject;
             child.SetActive(false);
+
+            child = weaponImg.transform.GetChild(7).gameObject;
+            child.GetComponent<Image>().sprite = weapon.img;
         }
 
         if (!detailWin.activeSelf) detailWin.SetActive(true);

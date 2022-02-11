@@ -74,7 +74,7 @@ public class WeaponSO
                     equippable.dropRate             = float.Parse(splitData[24]);
                     equippable.itemQuantity         = int.Parse(splitData[25]);
                     //equippable.img = Resources.Load<Sprite>($"Choi/Sprites/Images/Items/Weapons/{splitData[26]}");
-                    equippable.img = Resources.Load($"Choi/Sprites/Images/Items/Weapons/{splitData[26]}", typeof(Sprite)) as Sprite;
+                    equippable.img = Resources.Load($"Choi/Sprites/Images/Items/Equippables/{splitData[26]}", typeof(Sprite)) as Sprite;
                     equippable.bulletType = int.Parse(splitData[27]);
                     equippable.reloadBullet = int.Parse(splitData[28]);
                     equippable.continuousShootingPenalty = int.Parse(splitData[29]);

@@ -117,7 +117,7 @@ public class CharacterSO
 
                     character.fullImg = Resources.Load($"Choi/Sprites/Images/{splitData[45]}", typeof(Sprite)) as Sprite;
                     character.halfImg = Resources.Load($"Choi/Sprites/Images/상반신/{splitData[46]}", typeof(Sprite)) as Sprite;
-                    character.icon = Resources.Load($"Choi/Sprites/Icons/공통/{splitData[47]}", typeof(Sprite)) as Sprite;
+                    character.icon = Resources.Load($"Choi/Sprites/Icons/분과아이콘/{splitData[47]}", typeof(Sprite)) as Sprite;
                     
                     AssetDatabase.CreateAsset(character, $"Assets//Resources/Choi/Datas/Characters/{character.name}.asset");
                     characterNum++;
