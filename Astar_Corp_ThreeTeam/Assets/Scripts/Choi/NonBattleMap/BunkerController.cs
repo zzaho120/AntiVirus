@@ -8,16 +8,15 @@ public class BunkerController : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("PlayerSight") && !playerController.isBunkerClikable)
+        if (other.gameObject.CompareTag("PlayerSight")) // && !playerController.isBunkerClikable)
         {
             playerController.isBunkerClikable = true;
-
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("PlayerSight") && playerController.isBunkerClikable)
+        if (other.gameObject.CompareTag("PlayerSight")) // && playerController.isBunkerClikable)
         {
             playerController.isBunkerClikable = false;
         }

@@ -24,6 +24,6 @@ public class UIPrint : MonoBehaviour
         squadNum.text = $"{playerDataMgr.boardingSquad.Count} / {playerDataMgr.truckList[playerDataMgr.saveData.currentCar].capacity}";
 
         // 인벤토리 용량
-        invenWeight.text = $"{playerDataMgr.truckList[playerDataMgr.saveData.currentCar].weight} / {soMgr.truckList[playerDataMgr.saveData.currentCar].weight}";
+        //invenWeight.text = $"{playerDataMgr.truckList[playerDataMgr.saveData.currentCar].weight} / {soMgr.truckList[playerDataMgr.saveData.currentCar].weight}";
     }
 }

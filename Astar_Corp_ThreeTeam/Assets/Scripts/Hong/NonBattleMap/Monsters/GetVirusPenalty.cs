@@ -5,7 +5,11 @@ using UnityEngine;
 public class GetVirusPenalty : MonoBehaviour
 {
     private NonBattleMgr nonBattleMgr;
+    private PlayerDataMgr playerDataMgr;
+
     private LaboratoryInfo labInfo;
+    [SerializeField]
+    private SquadStatusMgr squadStatus;
 
     private bool isPlayerIn;
     private bool isPlayerOut;
@@ -28,6 +32,7 @@ public class GetVirusPenalty : MonoBehaviour
     private void Start()
     {
         nonBattleMgr = NonBattleMgr.Instance;
+        playerDataMgr = PlayerDataMgr.Instance;
         player = transform.parent.gameObject;
     }
 
@@ -76,9 +81,9 @@ public class GetVirusPenalty : MonoBehaviour
         if (isPlayerIn)
         {
             // 플레이어, 바이러스 영역간 거리
-            //distance = Vector2.Distance(
-            //    new Vector2(virusZone.transform.position.x, virusZone.transform.position.z), new Vector2(player.transform.position.x, player.transform.position.z));
-            distance = 5;
+            distance = Vector2.Distance(
+                new Vector2(virusZone.transform.position.x, virusZone.transform.position.z), new Vector2(player.transform.position.x, player.transform.position.z));
+            //distance = 5;
 
             // 최대 레벨 3
             if (labInfo.isActiveZone3)
@@ -121,12 +126,10 @@ public class GetVirusPenalty : MonoBehaviour
                     Level1Penalty();
                 }
             }
+
+            //squadStatus.Init();
         }
     }
-
-
-
-
 
     private void PenaltyStart()
     {
@@ -158,12 +161,15 @@ public class GetVirusPenalty : MonoBehaviour
         {
             turnTimer = 0;
 
-            //foreach (var element in playerDataMgr.currentSquad)
-            //{
-            //    if (element.Value.character.name == string.Empty) break;
-            //    var level = element.Value.virusPenalty[virusType].penaltyLevel;
-            //    element.Value.virusPenalty[virusType].Calculation(level + 1);
-            //}
+            foreach (var element in playerDataMgr.boardingSquad)
+            {
+                if (playerDataMgr.currentSquad[element.Value].character.name == string.Empty) break;
+                var level = playerDataMgr.currentSquad[element.Value].virusPenalty[labInfo.virusType].penaltyLevel;
+                playerDataMgr.currentSquad[element.Value].virusPenalty[labInfo.virusType].Calculation(level + 1);
+
+                //var level = element.Value.virusPenalty[labInfo.virusType].penaltyLevel;
+                //element.Value.virusPenalty[labInfo.virusType].Calculation(level + 1);
+            }
         }
 
         if (step != 1)
@@ -192,11 +198,16 @@ public class GetVirusPenalty : MonoBehaviour
             turnTimer = 0;
 
             //foreach (var element in playerDataMgr.currentSquad)
-            //{
-            //    if (element.Value.character.name == string.Empty) break;
-            //    var level = element.Value.virusPenalty[virusType].penaltyLevel;
-            //    element.Value.virusPenalty[virusType].Calculation(level + 1);
-            //}
+            foreach (var element in playerDataMgr.boardingSquad)
+            {
+                if (playerDataMgr.currentSquad[element.Value].character.name == string.Empty) break;
+                var level = playerDataMgr.currentSquad[element.Value].virusPenalty[labInfo.virusType].penaltyLevel;
+                playerDataMgr.currentSquad[element.Value].virusPenalty[labInfo.virusType].Calculation(level + 1);
+
+                //if (element.Value.character.name == string.Empty) break;
+                //var level = element.Value.virusPenalty[labInfo.virusType].penaltyLevel;
+                //element.Value.virusPenalty[labInfo.virusType].Calculation(level + 1);
+            }
         }
 
         if (step != 2)
@@ -225,11 +236,16 @@ public class GetVirusPenalty : MonoBehaviour
             turnTimer = 0;
 
             //foreach (var element in playerDataMgr.currentSquad)
-            //{
-            //    if (element.Value.character.name == string.Empty) break;
-            //    var level = element.Value.virusPenalty[virusType].penaltyLevel;
-            //    element.Value.virusPenalty[virusType].Calculation(level + 1);
-            //}
+            foreach (var element in playerDataMgr.boardingSquad)
+            {
+                if (playerDataMgr.currentSquad[element.Value].character.name == string.Empty) break;
+                var level = playerDataMgr.currentSquad[element.Value].virusPenalty[labInfo.virusType].penaltyLevel;
+                playerDataMgr.currentSquad[element.Value].virusPenalty[labInfo.virusType].Calculation(level + 1);
+
+                //if (element.Value.character.name == string.Empty) break;
+                //var level = element.Value.virusPenalty[labInfo.virusType].penaltyLevel;
+                //element.Value.virusPenalty[labInfo.virusType].Calculation(level + 1);
+            }
         }
 
         if (step != 3)

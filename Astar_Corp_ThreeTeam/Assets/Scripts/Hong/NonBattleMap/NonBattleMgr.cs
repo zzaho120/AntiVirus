@@ -19,12 +19,16 @@ public class NonBattleMgr : MonoBehaviour
     public GetVirusPenalty getVirusPenalty;
     public WorldMonsterMgr worldMonsterMgr;
 
+    [Header("UI")]
+    public SquadWinMgr squadWinMgr;
+
     private void Awake()
     {
         Instance = this;
 
         // 클래스 찾기
         var player = GameObject.Find("Player");
+        squadWinMgr = GameObject.Find("Canvas").GetComponentInChildren<SquadWinMgr>();
         createLabArea = Instance.GetComponent<CreateLabArea>();
         monsterPool = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
         worldMonsterMgr = GetComponent<WorldMonsterMgr>();

@@ -13,12 +13,17 @@ public class SquadWinMgr : UIManagerWindowManager
     public GameObject characterListContent;
 
     // 선택된 캐릭터 개수
-    private Text memberNumTxt;
+    public Text memberNumTxt;
 
     // 캐릭터 오브젝트 저장용
     private Dictionary<int, GameObject> characterList = new Dictionary<int, GameObject>();
     // 캐릭터 키 저장용
     private Dictionary<int, int> charKeyList = new Dictionary<int, int>();
+
+    // 선택 못할 때
+    public bool isSelectPossible;
+    public GameObject[] battleButtons;
+
 
     public void Init()
     {
@@ -27,36 +32,9 @@ public class SquadWinMgr : UIManagerWindowManager
         playerDataMgr = PlayerDataMgr.Instance;
         soMgr = ScriptableMgr.Instance;
 
-        memberNumTxt = GameObject.Find("CharNumTxt").GetComponent<Text>();
-
         timeController.isPause = true;
         timeController.Pause();
         
-        // 임시 Sqaud 데이타 넣기
-        //===================================================
-        CharacterStats temp1 = new CharacterStats();
-        temp1.character = soMgr.GetCharacter("CHAR_0001");
-        CharacterStats temp2 = new CharacterStats();
-        temp2.character = soMgr.GetCharacter("CHAR_0003");
-
-        if (!playerDataMgr.currentSquad.ContainsKey(1))
-            playerDataMgr.currentSquad.Add(1, temp1);
-
-        if (!playerDataMgr.currentSquad.ContainsKey(2))
-            playerDataMgr.currentSquad.Add(2, temp2);
-
-        playerDataMgr.currentSquad[1].Init();
-        playerDataMgr.currentSquad[1].level = 3;
-        playerDataMgr.currentSquad[2].Init();
-        playerDataMgr.currentSquad[2].level = 5;
-
-        if (!playerDataMgr.boardingSquad.ContainsKey(0))
-            playerDataMgr.boardingSquad.Add(0, 1);
-
-        if (!playerDataMgr.boardingSquad.ContainsKey(1))
-            playerDataMgr.boardingSquad.Add(1, 2);
-        //===================================================
-
         PrintCharacterList();
     }
 
@@ -130,14 +108,27 @@ public class SquadWinMgr : UIManagerWindowManager
                 child.transform.GetChild(1).gameObject.GetComponent<Text>().text
                     = $"Lv {playerDataMgr.currentSquad[element.Value].virusPenalty[virusName[j]].reductionLevel}";
             }
-            
-            int num = i;
-            var button = character.AddComponent<Button>();
-            button.onClick.AddListener(delegate { SelectCharacter(element.Value); });
 
+            int num = i;
             characterList.Add(element.Value, character);    // 캐릭터 오브젝트 추가
             charKeyList.Add(num, element.Key);  // 캐릭터 키 추가
 
+            if (isSelectPossible)
+            {
+                var button = character.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectCharacter(element.Value); });
+
+                character.transform.GetChild(0).GetComponentInChildren<Toggle>().interactable = true;
+
+                foreach (var go in battleButtons)
+                    go.SetActive(true);
+            }
+            else
+            {
+                character.transform.GetChild(0).GetComponentInChildren<Toggle>().interactable = false;
+                foreach (var go in battleButtons)
+                    go.SetActive(false);
+            }
             i++;
         }
     }
@@ -150,7 +141,11 @@ public class SquadWinMgr : UIManagerWindowManager
     {
         // 선택된 오브젝트 가져오기
         var selectedObj = characterList[num];
+
+
+        // 토글키 On
         Toggle toggle = selectedObj.GetComponentInChildren<Toggle>();
+        toggle.interactable = true;
         Image image = selectedObj.transform.GetComponent<Image>();
 
         // 중복 선택 시
@@ -203,5 +198,10 @@ public class SquadWinMgr : UIManagerWindowManager
     public void InactiveButton(Button button)
     {
         button.interactable = false;
+    }
+
+    public void SwitchMode(bool value)
+    {
+        isSelectPossible = value;
     }
 }

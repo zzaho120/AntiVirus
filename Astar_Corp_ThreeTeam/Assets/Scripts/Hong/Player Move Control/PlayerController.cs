@@ -5,17 +5,8 @@ using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-// ※ 주의
-// =======================================================
 //  나중에 벙커 isClickable 작동되도록 -> 지금 주석 쳐놓음
-// =======================================================
 
-// 클래스 역할
-// =======================================================
-//  비전투씬 내 플레이어 위치 저장,
-//  벙커, 연구소, 전투 팝업창 띄우기,
-//  전투 씬으로 전환 등
-// =======================================================
 public class PlayerController : MonoBehaviour
 {
     // MultiTouch
@@ -280,8 +271,6 @@ public class PlayerController : MonoBehaviour
     public void ChangeBattleScene()
     {
         timeController.Pause();
-        //timeController.isPause = false;
-        //SceneManager.LoadScene("BattleMap");
         SceneManager.LoadScene("BattleMap_Origin");
     }
 

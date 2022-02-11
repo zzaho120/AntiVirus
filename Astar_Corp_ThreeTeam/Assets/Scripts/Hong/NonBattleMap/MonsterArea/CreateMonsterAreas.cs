@@ -93,7 +93,7 @@ public class CreateMonsterAreas : MonoBehaviour
                        (Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x, monsterAreaLayer).Length != 0) ||
                        (Physics.OverlapSphere(position, radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x, playerLayer).Length != 0) ||
                        Vector3.Distance(bigCenter, smallCenter) > 
-                       ((bigRadius.radius * bigRadius.transform.lossyScale.x) - (radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x)));
+                       ((bigRadius.radius * bigRadius.transform.lossyScale.x) - (radius.radius * monsterAreaPrefab.transform.GetChild(0).lossyScale.x) - 20));
 
 
                 //// 몬스터 영역 저장
