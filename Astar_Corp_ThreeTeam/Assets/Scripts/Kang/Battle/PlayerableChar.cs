@@ -234,7 +234,7 @@ public class PlayerableChar : BattleTile
 
     private IEnumerator CoMoveChar(Vector3 nextIdx)
     {
-        var footstep = BattleMgr.Instance.battlePoolMgr;
+        var poolMgr = BattleMgr.Instance.battlePoolMgr;
 
         var origin = transform.position;
         var timer = 0f;
@@ -242,6 +242,27 @@ public class PlayerableChar : BattleTile
         {
             timer += Time.deltaTime * 5;
             transform.position = Vector3.Lerp(origin, nextIdx, timer);
+
+            yield return null;
+        }
+        var footStep = poolMgr.CreateFootStep();
+        footStep.transform.position = transform.position;
+        StartCoroutine(CoReturnParticle(footStep));
+    }
+
+    private IEnumerator CoReturnParticle(GameObject particle)
+    {
+        var particleSys = particle.GetComponent<ParticleSystem>();
+        particleSys.Play();
+
+        while (true)
+        {
+            if (particleSys.isStopped)
+            {
+                var returnToPool = particle.GetComponent<ReturnToPool>();
+                returnToPool.Return();
+                break;
+            }
             yield return null;
         }
     }
@@ -250,7 +271,6 @@ public class PlayerableChar : BattleTile
     {
         if (status == CharacterState.Wait)
             status = CharacterState.Move;
-
 
         if (status == CharacterState.Move)
         {
@@ -486,6 +506,11 @@ public class PlayerableChar : BattleTile
         hp -= dmg;
         characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
         animator.SetTrigger("Damaged");
+
+        var blood = BattleMgr.Instance.battlePoolMgr.CreateBloodSplat();
+        blood.transform.position = transform.position;
+        StartCoroutine(CoReturnParticle(blood));
+
         var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
         window.UpdateUI();
 
@@ -537,9 +562,9 @@ public class PlayerableChar : BattleTile
             StartCoroutine(CoDeath(time));
             return true;
         }
-
         return false;
     }
+
 
     private IEnumerator CoDeath(float time)
     {

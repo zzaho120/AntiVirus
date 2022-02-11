@@ -69,8 +69,6 @@ public class TileBase : MonoBehaviour
 
         if (fogTile != null)
             fogTile.SetActive(!isEnabled);
-        else
-            Debug.Log(name);
     }
 
     public void SetHighlight()

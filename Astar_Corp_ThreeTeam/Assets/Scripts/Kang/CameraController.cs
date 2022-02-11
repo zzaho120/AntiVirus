@@ -28,6 +28,7 @@ public class CameraController : MonoBehaviour
     public Vector2 zoomInOut;
 
     private MultiTouch touchMgr;
+    private bool isSmoothMove;
     void Start()
     {
         instance = this;
@@ -41,7 +42,7 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (followTransform == null)
+        if (followTransform == null || !isSmoothMove)
         {
             MoveKeyboardInput();
             RotateKeyboardInput();
@@ -116,7 +117,7 @@ public class CameraController : MonoBehaviour
     public void SetCameraTrs(Transform trs)
     {
         destPosition = trs.position;
-        transform.position = destPosition;
+        StartCoroutine(CoSmoothCameraMove(destPosition));
     }
 
     public void SetFollowObject(Transform transform)
@@ -124,5 +125,23 @@ public class CameraController : MonoBehaviour
         if (transform == null && followTransform != null)
             destPosition = followTransform.position;
         followTransform = transform;
+    }
+
+    public IEnumerator CoSmoothCameraMove(Vector3 dest)
+    {
+        var timer = 0f;
+        isSmoothMove = true;
+        transform.position = Vector3.Lerp(transform.position, dest, moveTime * Time.deltaTime);
+
+        while (timer < 1f)
+        {
+            timer += Time.deltaTime;
+
+            transform.position = Vector3.Lerp(transform.position, dest, moveTime * Time.deltaTime);
+
+            yield return null;
+        }
+
+        isSmoothMove = false;
     }
 }
