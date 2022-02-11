@@ -249,8 +249,8 @@ public class BattleBasicWindow : GenericWindow
                 var actionBtn = go.GetComponent<BattleActionBtn>();
                 genActionBtns.Add(actionBtn);
 
-                actionBtn.btnText.buttonText = activeSkill[idx].skillName;
-                Debug.Log($"text : {actionBtn.btnText.buttonText}");
+                actionBtn.btnText.text = activeSkill[idx].skillName;
+                Debug.Log($"text : {actionBtn.btnText.text}");
                 actionBtn.SetAP(activeSkill[idx].AP);
             }
         }

@@ -7,7 +7,7 @@ using Michsky.UI.ModernUIPack;
 public class BattleActionBtn : MonoBehaviour
 {
     public GameObject apObj;
-    public ButtonManagerBasic btnText;
+    public TextMeshProUGUI btnText;
 
     public void SetAP(int ap)
     {
