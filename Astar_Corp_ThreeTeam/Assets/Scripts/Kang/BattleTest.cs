@@ -13,9 +13,49 @@ public enum MonsterType
     Wolf
 }
 
+public enum CharacterClass
+{
+    Tanker,
+    Healer,
+    Scout,
+    Bombardier,
+    Sniper
+}
+
+public enum WeaponName
+{
+    Revolver_01 = 1,
+    Nailgun_01,
+    Pistol_01,
+    Bat_Wood_01,
+    Pipe_01,
+    Crowbar_01,
+    FireAxe_01,
+    Hybrid_03,
+    Shotgun_01,
+    SubMGun_01,
+    SubMGun_02,
+    SubMGun_03,
+    AssaultRifle_01,
+    AssaultRifle_02,
+    AssaultRifle_03,
+    Rifle_01,
+    MachineGun_01,
+    MachineGun_02,
+    Minigun_01,
+    RocketLauncher_01,
+    HuntingRifle_01,
+    HuntingRifle_Clean_01,
+    Rifle_03,
+    Hand,
+
+}
 public class BattleTest : MonoBehaviour
 {
     public List<Vector2> playerPos;
+    public List<CharacterClass> characterClasses;
+    public List<WeaponName> mainWeaponName;
+    public List<WeaponName> subWeaponName;
     public List<Vector2> monsterPos;
     public List<MonsterType> monsters;
     public List<VirusType> monsterVirus;
@@ -55,6 +95,42 @@ public class BattleTest : MonoBehaviour
                 player.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
                 this.player = player;
                 BattleMgr.Instance.startTurn = BattleTurn.Player;
+                var playerableChar = player.GetComponent<PlayerableChar>();
+                playerableChar.characterStats = new CharacterStats();
+                switch (characterClasses[idx])
+                {
+                    case CharacterClass.Tanker:
+                        playerableChar.characterStats.character = ScriptableMgr.Instance.GetCharacter("CHAR_0001");
+                        break;
+                    case CharacterClass.Healer:
+                        playerableChar.characterStats.character = ScriptableMgr.Instance.GetCharacter("CHAR_0002");
+                        break;
+                    case CharacterClass.Scout:
+                        playerableChar.characterStats.character = ScriptableMgr.Instance.GetCharacter("CHAR_0005");
+                        break;
+                    case CharacterClass.Bombardier:
+                        playerableChar.characterStats.character = ScriptableMgr.Instance.GetCharacter("CHAR_0004");
+                        break;
+                    case CharacterClass.Sniper:
+                        playerableChar.characterStats.character = ScriptableMgr.Instance.GetCharacter("CHAR_0003");
+                        break;
+                }
+
+                var zeroStr = string.Empty;
+                if ((int)mainWeaponName[idx] > 9)
+                    zeroStr = "00";
+                else
+                    zeroStr = "000";
+
+
+                playerableChar.characterStats.weapon = new WeaponStats();
+                playerableChar.characterStats.weapon.mainWeapon = ScriptableMgr.Instance.GetEquippable($"WEP_{zeroStr}{(int)mainWeaponName[idx]}");
+
+                if ((int)subWeaponName[idx] > 9)
+                    zeroStr = "00";
+                else
+                    zeroStr = "000";
+                playerableChar.characterStats.weapon.subWeapon = ScriptableMgr.Instance.GetEquippable($"WEP_{zeroStr}{(int)subWeaponName[idx]}");
             }
         }
 

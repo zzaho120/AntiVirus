@@ -12,6 +12,7 @@ public class CameraController : MonoBehaviour
 
     [Header("Value")]
     public float moveSpeed;
+    public float touchSpeed;
     public float moveTime;
 
     public float rotateSpeed;
@@ -25,7 +26,8 @@ public class CameraController : MonoBehaviour
 
     [Header("Min / Max")]
     public Vector2 zoomInOut;
-     
+
+    private MultiTouch touchMgr;
     void Start()
     {
         instance = this;
@@ -33,6 +35,7 @@ public class CameraController : MonoBehaviour
         destPosition = transform.position;
         destRotate = transform.rotation;
         destZoomInOut = mainCamera.localPosition;
+        touchMgr = BattleMgr.Instance.touchMgr;
     }
 
     // Update is called once per frame
@@ -43,6 +46,7 @@ public class CameraController : MonoBehaviour
             MoveKeyboardInput();
             RotateKeyboardInput();
             ZoominOutKeyboardInput();
+            //TouchInput();
         }
         FollowObject();
     }
@@ -54,6 +58,19 @@ public class CameraController : MonoBehaviour
 
         var newX = Mathf.Clamp(destPosition.x + horizontal * moveSpeed, 0, TileMgr.MAX_X_IDX);
         var newZ = Mathf.Clamp(destPosition.z + vertical * moveSpeed, 0, TileMgr.MAX_Z_IDX);
+        destPosition = new Vector3(newX, 0, newZ);
+
+        transform.position = Vector3.Lerp(transform.position, destPosition, moveTime * Time.deltaTime);
+    }
+
+    private void TouchInput()
+    {
+        var touch = -touchMgr.SwipeDirection;
+        var horizontal = Input.GetAxisRaw("Horizontal");
+        var vertical = Input.GetAxisRaw("Vertical");
+
+        var newX = Mathf.Clamp(destPosition.x + touch.x * touchSpeed, 0, TileMgr.MAX_X_IDX);
+        var newZ = Mathf.Clamp(destPosition.z + touch.y * touchSpeed, 0, TileMgr.MAX_Z_IDX);
         destPosition = new Vector3(newX, 0, newZ);
 
         transform.position = Vector3.Lerp(transform.position, destPosition, moveTime * Time.deltaTime);

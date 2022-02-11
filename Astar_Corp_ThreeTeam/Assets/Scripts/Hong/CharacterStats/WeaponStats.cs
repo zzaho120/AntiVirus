@@ -228,6 +228,9 @@ public class WeaponStats
                 // Åº¾Ë
                 MainWeaponBullet = mainWeapon.bullet;
 
+                if (subWeapon != null)
+                    SubWeaponBullet = subWeapon.bullet;
+
                 // È«¼öÁø_½ºÅÈ»èÁ¦
                 // ¸íÁß·ü °¨¼Ò
                 //AccurRate_dec = mainWeapon.accur_Rate_Dec;

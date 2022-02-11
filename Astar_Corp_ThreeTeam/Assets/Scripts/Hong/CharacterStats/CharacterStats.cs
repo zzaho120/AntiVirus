@@ -238,7 +238,6 @@ public class CharacterStats
         // 무기 스탯 초기화
         weapon.Init();
 
-        
 
         var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
         foreach (var skill in skillList)
