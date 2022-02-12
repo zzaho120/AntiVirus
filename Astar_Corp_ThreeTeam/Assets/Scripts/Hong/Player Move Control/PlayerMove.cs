@@ -9,8 +9,8 @@ public class PlayerMove : MonoBehaviour
     public NavMeshAgent navMeshAgent;
 
     // to save and control player speed
-    private float speed = 8f;
-    private float speedUp = 16f;
+    public float speed = 5f;
+    public float speedUp = 10f;
 
     // to get CharacterController from the unity
     private CharacterController characterController;

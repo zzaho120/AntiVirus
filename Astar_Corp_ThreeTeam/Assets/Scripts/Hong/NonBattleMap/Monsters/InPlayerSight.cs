@@ -42,7 +42,7 @@ public class InPlayerSight : MonoBehaviour
     
         if (other.gameObject.CompareTag("PlayerSight"))
         {
-            Debug.Log("In Sight");
+            //Debug.Log("In Sight");
     
             switch (printType)
             {
@@ -51,7 +51,7 @@ public class InPlayerSight : MonoBehaviour
                     foreach (var renderer in meshRenderers)
                     {
                         renderer.enabled = true;
-                        Debug.Log("Renderer Enabled");
+                        //Debug.Log("Renderer Enabled");
                     }
                     //if (meshRenderer == null) other.GetComponent<MeshRenderer>().enabled = true;
                     //meshRenderer.enabled = true;

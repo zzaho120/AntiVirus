@@ -7,14 +7,24 @@ using UnityEngine.UI;
 
 public class TrunkWinMgr : ModalWindowManager
 {
+    // Managers
     private PlayerDataMgr playerDataMgr;
     private ScriptableMgr soMgr;
 
+    // Truck Items
     public GameObject truckItemPrefab;
     public GameObject truckItemList;
 
+    // Truck Members
+    public GameObject truckMemberPrefab;
+    public GameObject truckMemberList;
+
+    // Weight
     public TextMeshProUGUI totalWeight;
-    int trunkCurrentWeight;
+    private int trunkCurrentWeight;
+
+    private bool isInit;
+    public bool isBattlePopup;
 
     public Dictionary<string, GameObject> TruckUnitGOs = new Dictionary<string, GameObject>();
 
@@ -45,8 +55,6 @@ public class TrunkWinMgr : ModalWindowManager
         playerDataMgr = PlayerDataMgr.Instance;
         soMgr = ScriptableMgr.Instance;
 
-        Debug.Log("Init");
-
         //// 임시 데이터 넣기
         //Weapon weapon1 = new Weapon();
         //weapon1 = soMgr.GetEquippable("WEP_0003");
@@ -58,9 +66,38 @@ public class TrunkWinMgr : ModalWindowManager
         //
         //if (!playerDataMgr.truckEquippables.ContainsKey("1"))
         //   playerDataMgr.truckEquippables.Add("1", weapon2);
-        //
+
+        if (!isInit)
+        {
+            foreach (var element in playerDataMgr.truckEquippables)
+            {
+                truckWeaponInfo.Add(element.Key, element.Value);
+                truckWeaponNumInfo.Add(element.Key, playerDataMgr.truckEquippablesNum[element.Key]);
+            }
+
+            foreach (var element in playerDataMgr.truckConsumables)
+            {
+                truckConsumableInfo.Add(element.Key, element.Value);
+                truckConsumableNumInfo.Add(element.Key, playerDataMgr.truckConsumablesNum[element.Key]);
+            }
+
+            foreach (var element in playerDataMgr.truckOtherItems)
+            {
+                truckOtherItemInfo.Add(element.Key, element.Value);
+                truckOtherItemNumInfo.Add(element.Key, playerDataMgr.truckOtherItemsNum[element.Key]);
+            }
+
+            isInit = true;
+        }
+
+        if (isBattlePopup)
+        {
+
+        }
+
         PrintTrunkItems();
     }
+
 
     public void PrintTrunkItems()
     {
@@ -74,32 +111,12 @@ public class TrunkWinMgr : ModalWindowManager
             TruckUnitGOs.Clear();
         }
 
-        foreach (var element in playerDataMgr.truckEquippables)
-        {
-            truckWeaponInfo.Add(element.Key, element.Value);
-            truckWeaponNumInfo.Add(element.Key, playerDataMgr.truckEquippablesNum[element.Key]);
-        }
-
-        foreach (var element in playerDataMgr.truckConsumables)
-        {
-            truckConsumableInfo.Add(element.Key, element.Value);
-            truckConsumableNumInfo.Add(element.Key, playerDataMgr.truckConsumablesNum[element.Key]);
-        }
-
-        foreach (var element in playerDataMgr.truckOtherItems)
-        {
-            truckOtherItemInfo.Add(element.Key, element.Value);
-            truckOtherItemNumInfo.Add(element.Key, playerDataMgr.truckOtherItemsNum[element.Key]);
-        }
-
-
         // 생성
         // 1. 무기
         foreach (var element in playerDataMgr.truckEquippables)
         {
             var go = Instantiate(truckItemPrefab, truckItemList.transform);
             var button = go.AddComponent<Button>();
-            //button.onClick.AddListener(delegate { SelectItem(element.Key, WarehouseKind.Trunk); });
 
             // 이미지 0
             go.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().sprite = element.Value.img;
@@ -118,31 +135,15 @@ public class TrunkWinMgr : ModalWindowManager
         // 소모품
         foreach (var element in playerDataMgr.truckConsumables)
         {
-            //  //truckWeaponInfo.Add(element.Key, element.Value);
-            //  //truckWeaponNumInfo.Add(element.Key, playerDataMgr.truckEquippablesNum[element.Key]);
-            //
-            //  var go = Instantiate(truckItemPrefab, truckItemList.transform);
-            //  var button = go.AddComponent<Button>();
-            //  //button.onClick.AddListener(delegate { SelectItem(element.Key, WarehouseKind.Trunk); });
-            //
-            //  go.transform.GetChild(0).GetComponent<Image>().sprite = element.Value.img;
-            //  go.GetComponentInChildren<Text>().text = element.Value.name;
-            //  //var child = go.transform.GetChild(0).gameObject;
-            //  //child.GetComponent<Text>().text = element.Value.name;
-            //  //child = go.transform.GetChild(1).gameObject;
-            //  //child.GetComponent<Text>().text = $"{playerDataMgr.truckEquippablesNum[element.Key]}개";
-            //
-            //  TruckUnitGOs.Add(element.Key, go);
             var go = Instantiate(truckItemPrefab, truckItemList.transform);
             var button = go.AddComponent<Button>();
-            //button.onClick.AddListener(delegate { SelectItem(element.Key, WarehouseKind.Trunk); });
 
             // 이미지 0
             go.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().sprite = element.Value.img;
             // 이름 1
             go.GetComponentInChildren<Text>().text = element.Value.name;
             // 수량 2 
-            go.transform.GetChild(2).GetComponent<Text>().text = $"{playerDataMgr.truckEquippablesNum[element.Key]}개";
+            go.transform.GetChild(2).GetComponent<Text>().text = $"{playerDataMgr.truckConsumablesNum[element.Key]}개";
             // 무게 3
             go.transform.GetChild(3).GetComponent<Text>().text = element.Value.weight.ToString();
             // 가격 4
@@ -154,30 +155,15 @@ public class TrunkWinMgr : ModalWindowManager
         // 3. 기타템
         foreach (var element in playerDataMgr.truckOtherItems)
         {
-            // //truckWeaponInfo.Add(element.Key, element.Value);
-            // //truckWeaponNumInfo.Add(element.Key, playerDataMgr.truckEquippablesNum[element.Key]);
-            //
-            // var go = Instantiate(truckItemPrefab, truckItemList.transform);
-            // var button = go.AddComponent<Button>();
-            // //button.onClick.AddListener(delegate { SelectItem(element.Key, WarehouseKind.Trunk); });
-            // go.transform.GetChild(0).GetComponent<Image>().sprite = element.Value.img;
-            // go.GetComponentInChildren<Text>().text = element.Value.name;
-            // //var child = go.transform.GetChild(0).gameObject;
-            // //child.GetComponent<Text>().text = element.Value.name;
-            // //child = go.transform.GetChild(1).gameObject;
-            // //child.GetComponent<Text>().text = $"{playerDataMgr.truckEquippablesNum[element.Key]}개";
-            //
-            // TruckUnitGOs.Add(element.Key, go);
             var go = Instantiate(truckItemPrefab, truckItemList.transform);
             var button = go.AddComponent<Button>();
-            //button.onClick.AddListener(delegate { SelectItem(element.Key, WarehouseKind.Trunk); });
 
             // 이미지 0
             go.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().sprite = element.Value.img;
             // 이름 1
             go.GetComponentInChildren<Text>().text = element.Value.name;
             // 수량 2 
-            go.transform.GetChild(2).GetComponent<Text>().text = $"{playerDataMgr.truckEquippablesNum[element.Key]}개";
+            go.transform.GetChild(2).GetComponent<Text>().text = $"{playerDataMgr.truckOtherItemsNum[element.Key]}개";
             // 무게 3
             go.transform.GetChild(3).GetComponent<Text>().text = element.Value.weight.ToString();
             // 가격 4
