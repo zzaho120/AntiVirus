@@ -54,7 +54,7 @@ public class BattleMgr : MonoBehaviour
     public void Start()
     {
         Time.timeScale = 1f;
-        var battleTest = GetComponent<BattleTest>();
+        var battleTest = GetComponent<BattleSetting>();
         battleTest.Init();
         tileMgr.Init();
         playerMgr.Init();

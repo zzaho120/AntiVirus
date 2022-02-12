@@ -202,6 +202,7 @@ Transform:
   - {fileID: 4616121916555520}
   - {fileID: 4508749314300852}
   - {fileID: 4149551848069622}
+  - {fileID: 5160859721933734254}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -281,9 +282,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22640c46d9fdaad4f99bed4ab70f1687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 0
-  WeaponType: 0
-  fireTr: {fileID: 0}
+  weaponName: 11
+  WeaponType: 2
+  fireTr: {fileID: 5160859721933734254}
 --- !u!1 &1402058261829292
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,3 +451,34 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7054747764779973142
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5160859721933734254}
+  m_Layer: 0
+  m_Name: FireTr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5160859721933734254
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7054747764779973142}
+  m_LocalRotation: {x: -0, y: 0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.04, z: 0.601}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4878301781655884}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

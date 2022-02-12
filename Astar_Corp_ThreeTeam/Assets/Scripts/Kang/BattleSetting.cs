@@ -50,7 +50,7 @@ public enum WeaponName
     Hand,
 
 }
-public class BattleTest : MonoBehaviour
+public class BattleSetting : MonoBehaviour
 {
     public List<Vector2> playerPos;
     public List<CharacterClass> characterClasses;
@@ -79,12 +79,22 @@ public class BattleTest : MonoBehaviour
                 player.transform.SetParent(BattleMgr.Instance.playerMgr.transform);
                 var playerableChar = player.GetComponent<PlayerableChar>();
                 playerableChar.characterStats = playerDataMgr.battleSquad[idx];
+
+                var weapon = playerableChar.characterStats.weapon;
+                playerableChar.mainWeapon = weaponPrefabs[weapon.mainWeapon.battleID];
+                if (playerableChar.subWeapon != null)
+                    playerableChar.subWeapon = weaponPrefabs[weapon.subWeapon.battleID];
+                var weaponGo = Instantiate(playerableChar.mainWeapon, playerableChar.rightHandTr);
+                playerableChar.currentWeapon = weaponGo;
+                weaponGo.transform.localRotation = Quaternion.Euler(playerableChar.weaponRot);
             }
 
             if (playerDataMgr.isMonsterAtk)
                 BattleMgr.Instance.startTurn = BattleTurn.Enemy;
             else
                 BattleMgr.Instance.startTurn = BattleTurn.Player;
+
+
         }
         else
         {
@@ -125,13 +135,13 @@ public class BattleTest : MonoBehaviour
 
 
                 playerableChar.characterStats.weapon = new WeaponStats();
-                playerableChar.characterStats.weapon.mainWeapon = ScriptableMgr.Instance.GetEquippable($"WEP_{zeroStr}{(int)mainWeaponName[idx]}");
+                playerableChar.characterStats.weapon.mainWeapon = ScriptableMgr.Instance.GetEquippable($"WEP_{zeroStr}{(int)mainWeaponName[idx] + 1}");
 
                 if ((int)subWeaponName[idx] > 9)
                     zeroStr = "00";
                 else
                     zeroStr = "000";
-                playerableChar.characterStats.weapon.subWeapon = ScriptableMgr.Instance.GetEquippable($"WEP_{zeroStr}{(int)subWeaponName[idx]}");
+                playerableChar.characterStats.weapon.subWeapon = ScriptableMgr.Instance.GetEquippable($"WEP_{zeroStr}{(int)subWeaponName[idx] + 1}");
 
                 playerableChar.mainWeapon = weaponPrefabs[(int)mainWeaponName[idx]];
                 playerableChar.subWeapon = weaponPrefabs[(int)subWeaponName[idx]];
