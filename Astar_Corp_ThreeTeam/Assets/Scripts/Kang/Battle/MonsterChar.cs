@@ -95,6 +95,11 @@ public class MonsterChar : BattleTile
         cumulativeDmg += dmg;
         monsterStats.currentHp = Mathf.Clamp(hp, 0, hp);
 
+        var go = BattleMgr.Instance.battlePoolMgr.CreateScrollingText();
+        var scrollingText = go.GetComponent<ScrollingText>();
+        go.transform.position = transform.position;
+        scrollingText.SetDamage(dmg, false);
+
         var blood = BattleMgr.Instance.battlePoolMgr.CreateBloodSplat();
         blood.transform.position = transform.position;
         StartCoroutine(CoReturnParticle(blood));
@@ -598,6 +603,13 @@ public class MonsterChar : BattleTile
             var isCrit = Random.Range(0, 100) < monsterStats.Crit_Rate - player.characterStats.critResistRate;
             if (player.GetDamage(monsterStats, isCrit))
                 SetTarget(null);
+        }
+        else
+        {
+            var go = BattleMgr.Instance.battlePoolMgr.CreateScrollingText();
+            var scrollingText = go.GetComponent<ScrollingText>();
+            go.transform.position = player.transform.position;
+            scrollingText.SetMiss();
         }
 
         RuntimeAnimatorController ac = animator.runtimeAnimatorController;

@@ -24,6 +24,7 @@ public enum BattlePoolName
     Detect,
     SightTile,
     MonsterSightTile,
+    ScrollingText
 }
 
 [System.Serializable]

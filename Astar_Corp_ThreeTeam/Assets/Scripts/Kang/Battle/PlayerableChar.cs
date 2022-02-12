@@ -444,7 +444,10 @@ public class PlayerableChar : BattleTile
                     }
                     else
                     {
-                        // ºø¸ÂÀ½
+                        var go = BattleMgr.Instance.battlePoolMgr.CreateScrollingText();
+                        var scrollingText = go.GetComponent<ScrollingText>();
+                        go.transform.position = monster.transform.position;
+                        scrollingText.SetMiss();
                     }
 
                     characterStats.buffMgr.RemoveBuff(fullAPMoveList);
@@ -526,7 +529,12 @@ public class PlayerableChar : BattleTile
 
         hp -= dmg;
         characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
-        animator.SetTrigger("Damaged");
+
+        animator.SetTrigger("Damaged"); 
+        var go = BattleMgr.Instance.battlePoolMgr.CreateScrollingText();
+        var scrollingText = go.GetComponent<ScrollingText>();
+        go.transform.position = transform.position;
+        scrollingText.SetDamage(dmg, false);
 
         var blood = BattleMgr.Instance.battlePoolMgr.CreateBloodSplat();
         blood.transform.position = transform.position;
@@ -598,6 +606,12 @@ public class PlayerableChar : BattleTile
     {
         var hp = characterStats.currentHp;
         hp -= dmg;
+
+        var go = BattleMgr.Instance.battlePoolMgr.CreateScrollingText();
+        var scrollingText = go.GetComponent<ScrollingText>();
+        go.transform.position = transform.position;
+        scrollingText.SetDamage(dmg, false);
+
         characterStats.currentHp = Mathf.Clamp(hp, 0, hp);
         var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
         window.UpdateUI();

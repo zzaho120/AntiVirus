@@ -8,6 +8,7 @@ public class BattlePoolMgr : PoolManager
     public Transform virusTilePool;
     public Transform particlePool;
     public Transform sightPool;
+    public Transform scrollingTextPool;
 
     public override void CreatePoolsTr()
     {
@@ -73,6 +74,13 @@ public class BattlePoolMgr : PoolManager
     {
         var particle = pools[(int)BattlePoolName.MonsterSightTile].Pool.Get();
         particle.transform.SetParent(sightPool);
+        return particle;
+    }
+
+    public GameObject CreateScrollingText()
+    {
+        var particle = pools[(int)BattlePoolName.ScrollingText].Pool.Get();
+        particle.transform.SetParent(scrollingTextPool);
         return particle;
     }
 }
