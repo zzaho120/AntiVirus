@@ -465,11 +465,12 @@ public class BunkerMgr : MonoBehaviour
 
                 playerDataMgr.saveData.pubLevel++;
                 playerDataMgr.saveData.money -= upgradeCost;
-                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
                 moneyTxt.text = playerDataMgr.saveData.money.ToString();
 
                 child = bunkerObjs[2].transform.GetChild(0).gameObject;
                 child.GetComponent<TextMeshPro>().text = $"Lv.{playerDataMgr.saveData.pubLevel}";
+                playerDataMgr.saveData.pubReset = true;
+                PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
                 pubMgr.Init();
                 pubMgr.RefreshUpgradeWin();

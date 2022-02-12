@@ -36,6 +36,7 @@ public class Weapon : ItemBase
     public int underRange_Penalty;  // 사거리 -n타일에 따른 명중률 감소
 
     public int battleID; // 전투씬 오브젝트 불러오기 ID
+    public string storeName; // 상점에 보여질 이름.
 
     //public List<string> testList = new List<string>();
 

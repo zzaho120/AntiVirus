@@ -405,7 +405,7 @@ public class CarCenterMgr : MonoBehaviour
         var trunkObj = gaugeList[1];
         var sightObj = gaugeList[2];
         int index = playerDataMgr.saveData.cars.IndexOf(selectedCar);
-        maxCarLevel = 5;
+        
         if (currentStat == TruckStat.Speed)
         {
             if (playerDataMgr.saveData.speedLv[index] == 5) return;
