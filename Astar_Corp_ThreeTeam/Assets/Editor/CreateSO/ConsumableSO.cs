@@ -54,6 +54,7 @@ public class ConsumableSO
                     consumable.dropRate      = float.Parse(splitData[13]);
                     consumable.itemQuantity  = int.Parse(splitData[14]);
                     consumable.img = Resources.Load($"Choi/Sprites/Images/Items/Consumables/{splitData[15]}", typeof(Sprite)) as Sprite;
+                    consumable.storeName = splitData[16];
 
                     AssetDatabase.CreateAsset(consumable, $"Assets//Resources/Choi/Datas/Consumables/{consumable.name}.asset");
                     itemNum++;

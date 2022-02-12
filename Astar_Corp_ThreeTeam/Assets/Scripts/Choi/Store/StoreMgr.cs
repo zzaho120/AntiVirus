@@ -408,7 +408,7 @@ public class StoreMgr : MonoBehaviour
                 var go = Instantiate(storePrefab, storeContents.transform);
                 string key = element.Value;
 
-                var name = playerDataMgr.equippableList[key].name;
+                var name = playerDataMgr.equippableList[key].storeName;
                 var child = go.transform.GetChild(0).gameObject;
                 child.GetComponent<Text>().text = $"{name}";
 
@@ -443,7 +443,7 @@ public class StoreMgr : MonoBehaviour
                 var go = Instantiate(storePrefab, storeContents.transform);
                 string key = element.Value;
 
-                var name = playerDataMgr.consumableList[key].name;
+                var name = playerDataMgr.consumableList[key].storeName;
                 var child = go.transform.GetChild(0).gameObject;
                 child.GetComponent<Text>().text = $"{name}";
 
@@ -478,7 +478,7 @@ public class StoreMgr : MonoBehaviour
                 var go = Instantiate(storePrefab, storeContents.transform);
                 string key = element.Value;
 
-                var name = playerDataMgr.otherItemList[key].name;
+                var name = playerDataMgr.otherItemList[key].storeName;
                 var child = go.transform.GetChild(0).gameObject;
                 child.GetComponent<Text>().text = $"{name}";
 
@@ -562,7 +562,7 @@ public class StoreMgr : MonoBehaviour
                 var go = Instantiate(storagePrefab, storageContents.transform);
                 string key = element.Key;
 
-                var name = playerDataMgr.equippableList[key].name;
+                var name = playerDataMgr.equippableList[key].storeName;
                 var child = go.transform.GetChild(0).gameObject;
                 child.GetComponent<Text>().text = $"{name}";
 
@@ -597,7 +597,7 @@ public class StoreMgr : MonoBehaviour
                 var go = Instantiate(storagePrefab, storageContents.transform);
                 string key = element.Key;
 
-                var name = playerDataMgr.consumableList[key].name;
+                var name = playerDataMgr.consumableList[key].storeName;
                 var child = go.transform.GetChild(0).gameObject;
                 child.GetComponent<Text>().text = $"{name}";
 
@@ -632,7 +632,7 @@ public class StoreMgr : MonoBehaviour
                 var go = Instantiate(storagePrefab, storageContents.transform);
                 string key = element.Key;
 
-                var name = playerDataMgr.otherItemList[key].name;
+                var name = playerDataMgr.otherItemList[key].storeName;
                 var child = go.transform.GetChild(0).gameObject;
                 child.GetComponent<Text>().text = $"{name}";
 
@@ -711,7 +711,7 @@ public class StoreMgr : MonoBehaviour
         if (storeWeaponInfo.ContainsKey(currentStoreKey))
         {
             var id = storeWeaponInfo[currentStoreKey];
-            var name = playerDataMgr.equippableList[id].name;
+            var name = playerDataMgr.equippableList[id].storeName;
             itemNameTxt.text = name;
             itemImg.sprite = playerDataMgr.equippableList[id].img;
             itemTypeTxt.text = "전투";
@@ -720,7 +720,7 @@ public class StoreMgr : MonoBehaviour
         else if (storeConsumableInfo.ContainsKey(currentStoreKey))
         {
             var id = storeConsumableInfo[currentStoreKey];
-            var name = playerDataMgr.consumableList[id].name;
+            var name = playerDataMgr.consumableList[id].storeName;
             itemNameTxt.text = name;
             itemImg.sprite = playerDataMgr.consumableList[id].img;
             itemTypeTxt.text = "소모";
@@ -729,7 +729,7 @@ public class StoreMgr : MonoBehaviour
         else if (storeOtherItemInfo.ContainsKey(currentStoreKey))
         {
             var id = storeOtherItemInfo[currentStoreKey];
-            var name = playerDataMgr.otherItemList[id].name;
+            var name = playerDataMgr.otherItemList[id].storeName;
             itemNameTxt.text = name;
             itemImg.sprite = (playerDataMgr.otherItemList[id].img!=null)?
                 playerDataMgr.otherItemList[id].img : null;
@@ -765,17 +765,17 @@ public class StoreMgr : MonoBehaviour
 
         if (storageWeaponInfo.ContainsKey(currentStorageKey))
         {
-            itemNameTxt.text = storageWeaponInfo[currentStorageKey].name;
+            itemNameTxt.text = storageWeaponInfo[currentStorageKey].storeName;
             slider.maxValue = storageWeaponNumInfo[currentStorageKey];
         }
         else if (storageConsumableInfo.ContainsKey(currentStorageKey))
         {
-            itemNameTxt.text = storageConsumableInfo[currentStorageKey].name;
+            itemNameTxt.text = storageConsumableInfo[currentStorageKey].storeName;
             slider.maxValue = storageConsumableNumInfo[currentStorageKey];
         }
         else if (storageOtherItemInfo.ContainsKey(currentStorageKey))
         {
-            itemNameTxt.text = storageOtherItemInfo[currentStorageKey].name;
+            itemNameTxt.text = storageOtherItemInfo[currentStorageKey].storeName;
             slider.maxValue = storageOtherItemNumInfo[currentStorageKey];
         }
 

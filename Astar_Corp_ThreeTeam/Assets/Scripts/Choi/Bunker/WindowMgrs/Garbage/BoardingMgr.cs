@@ -9,7 +9,8 @@ public class BoardingMgr : MonoBehaviour
     public Button left;
     public Button right;
     public Text carNameTxt;
-    
+    public Image carImg;
+
     public GameObject ListContent;
     public GameObject characterPrefab;
     public Dictionary<int, GameObject> characters = new Dictionary<int, GameObject>();
@@ -20,13 +21,14 @@ public class BoardingMgr : MonoBehaviour
     public GameObject carPrefab;
     public Dictionary<string, GameObject> carObjs = new Dictionary<string, GameObject>();
     public Dictionary<int, Truck> carOrder = new Dictionary<int, Truck>();
-    
+
     List<string> owned = new List<string>();
-  
+
     int currentIndex;
     int currentSeatNum;
     int currentKey;
     string selectedCar;
+    Sprite nullImg;
 
     public PlayerDataMgr playerDataMgr;
     Color originColor;
@@ -34,6 +36,8 @@ public class BoardingMgr : MonoBehaviour
     public void Init()
     {
         if (carListPopup.activeSelf) carListPopup.SetActive(false);
+        var child = seats[0].transform.GetChild(1).gameObject;
+        nullImg = child.GetComponent<Image>().sprite;
 
         //삭제.
         if (characters.Count != 0)
@@ -46,7 +50,7 @@ public class BoardingMgr : MonoBehaviour
 
             ListContent.transform.DetachChildren();
         }
-        
+
         if (carObjs.Count != 0)
         {
             foreach (var element in carObjs)
@@ -68,14 +72,14 @@ public class BoardingMgr : MonoBehaviour
                 i++;
                 continue;
             }
-            
+
             int num = i;
 
             var go = Instantiate(characterPrefab, ListContent.transform);
             var button = go.AddComponent<Button>();
             button.onClick.AddListener(delegate { SelectCharacter(num); });
 
-            var child = go.transform.GetChild(0).gameObject;
+            child = go.transform.GetChild(0).gameObject;
             child.GetComponent<Image>().sprite = element.Value.character.halfImg;
 
             child = go.transform.GetChild(1).gameObject;
@@ -85,7 +89,7 @@ public class BoardingMgr : MonoBehaviour
 
             childObj = child.transform.GetChild(1).gameObject;
             string mainWeaponTxt = (element.Value.weapon.mainWeapon == null) ?
-                "비어있음" : element.Value.weapon.mainWeapon.name; 
+                "비어있음" : element.Value.weapon.mainWeapon.storeName;
 
             childObj.GetComponent<Text>().text
                 = $"{element.Value.character.name}/LV{element.Value.level}/{mainWeaponTxt}";
@@ -104,8 +108,18 @@ public class BoardingMgr : MonoBehaviour
             currentSeatNum = element.Key;
             currentIndex = element.Value;
 
-            var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
-            child.GetComponent<Text>().text = playerDataMgr.currentSquad[currentIndex].character.name.Substring(0, 3);
+            //child = seats[currentSeatNum].transform.GetChild(0).gameObject;
+            //child.GetComponent<Text>().text = playerDataMgr.currentSquad[currentIndex].character.name.Substring(0, 3);
+            child = seats[currentSeatNum].transform.GetChild(1).gameObject;
+            var color = child.GetComponent<Image>().color;
+            child.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 1);
+            child.GetComponent<Image>().sprite = playerDataMgr.currentSquad[currentIndex].character.halfImg;
+            child = seats[currentSeatNum].transform.GetChild(2).gameObject;
+            child.SetActive(true);
+            child = seats[currentSeatNum].transform.GetChild(3).gameObject;
+            var name = playerDataMgr.currentSquad[currentIndex].characterName.Split(' ');
+            child.SetActive(true);
+            child.GetComponent<Text>().text = $"{name[0]}";
         }
 
         //소유차량.
@@ -128,7 +142,7 @@ public class BoardingMgr : MonoBehaviour
         foreach (var element in carOrder)
         {
             var go = Instantiate(carPrefab, carListContents.transform);
-            var child = go.transform.GetChild(0).gameObject;
+            child = go.transform.GetChild(0).gameObject;
             child.GetComponent<Text>().text = element.Value.name;
             if (!owned.Contains(element.Value.id)) go.GetComponent<Image>().color = Color.gray;
 
@@ -210,6 +224,7 @@ public class BoardingMgr : MonoBehaviour
 
         var truck = carOrder[currentKey];
         carNameTxt.text = truck.name;
+        carImg.sprite = truck.img;
 
         var capacity = truck.capacity;
         for (int i = 0; i < capacity; i++)
@@ -234,8 +249,8 @@ public class BoardingMgr : MonoBehaviour
     {
         if (currentSeatNum == -1) return;
 
-        if(currentIndex!=-1 && characters.ContainsKey(currentIndex))
-        characters[currentIndex].GetComponent<Image>().color = originColor;
+        if (currentIndex != -1 && characters.ContainsKey(currentIndex))
+            characters[currentIndex].GetComponent<Image>().color = originColor;
 
         currentIndex = i;
         characters[currentIndex].GetComponent<Image>().color = Color.red;
@@ -243,7 +258,10 @@ public class BoardingMgr : MonoBehaviour
 
     public void SelectSeat(int i)
     {
-        if (currentSeatNum != -1) seats[currentSeatNum].GetComponent<Image>().color = Color.white;
+        if (currentSeatNum != -1)
+        {
+            seats[currentSeatNum].GetComponent<Image>().color = Color.white;
+        }
 
         currentSeatNum = i;
         seats[currentSeatNum].GetComponent<Image>().color = Color.red;
@@ -265,6 +283,7 @@ public class BoardingMgr : MonoBehaviour
     public void GetInTheCar()
     {
         if (currentIndex == -1 || currentSeatNum == -1) return;
+        if (playerDataMgr.saveData.boarding[currentIndex] == currentSeatNum) return;
 
         //다른 사람이 탑승하고 있으면 스왑.
         if (playerDataMgr.boardingSquad.ContainsKey(currentSeatNum))
@@ -286,8 +305,18 @@ public class BoardingMgr : MonoBehaviour
 
         //현재 데이터.
         var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
-        child.GetComponent<Text>().text = playerDataMgr.currentSquad[currentIndex].character.name.Substring(0,3);
-        
+        child.GetComponent<Text>().text = playerDataMgr.currentSquad[currentIndex].character.name.Substring(0, 3);
+        child = seats[currentSeatNum].transform.GetChild(1).gameObject;
+        var color = child.GetComponent<Image>().color;
+        child.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 1);
+        child.GetComponent<Image>().sprite = playerDataMgr.currentSquad[currentIndex].character.halfImg;
+        child = seats[currentSeatNum].transform.GetChild(2).gameObject;
+        child.SetActive(true);
+        child = seats[currentSeatNum].transform.GetChild(3).gameObject;
+        var name = playerDataMgr.currentSquad[currentIndex].characterName.Split(' ');
+        child.SetActive(true);
+        child.GetComponent<Text>().text = $"{name[0]}";
+
         Destroy(characters[currentIndex]);
         characters.Remove(currentIndex);
 
@@ -299,6 +328,7 @@ public class BoardingMgr : MonoBehaviour
     public void GetOffTheCar()
     {
         if (currentIndex == -1 || currentSeatNum == -1) return;
+        if (playerDataMgr.saveData.boarding[currentIndex] != currentSeatNum) return;
 
         //json.
         playerDataMgr.saveData.boarding[currentIndex] = -1;
@@ -311,10 +341,18 @@ public class BoardingMgr : MonoBehaviour
 
         //현재데이터.
         var child = seats[currentSeatNum].transform.GetChild(0).gameObject;
-        child.GetComponent<Text>().text = $"자리{currentSeatNum+1}";
-        
+        child.GetComponent<Text>().text = $"{currentSeatNum + 1}";
+        child = seats[currentSeatNum].transform.GetChild(1).gameObject;
+        var color = child.GetComponent<Image>().color;
+        child.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 0);
+        child.GetComponent<Image>().sprite = nullImg;
+        child = seats[currentSeatNum].transform.GetChild(2).gameObject;
+        child.SetActive(false);
+        child = seats[currentSeatNum].transform.GetChild(3).gameObject;
+        child.SetActive(false);
+
         int index = currentIndex;
-       
+
         var go = Instantiate(characterPrefab, ListContent.transform);
         var button = go.AddComponent<Button>();
         button.onClick.AddListener(delegate { SelectCharacter(index); });
@@ -329,7 +367,7 @@ public class BoardingMgr : MonoBehaviour
 
         childObj = child.transform.GetChild(1).gameObject;
         string mainWeaponTxt = (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon == null) ?
-            "비어있음" : playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.name;
+            "비어있음" : playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.storeName;
 
         childObj.GetComponent<Text>().text
             = $"{playerDataMgr.currentSquad[currentIndex].character.name}/LV{playerDataMgr.currentSquad[currentIndex].level}/{mainWeaponTxt}";

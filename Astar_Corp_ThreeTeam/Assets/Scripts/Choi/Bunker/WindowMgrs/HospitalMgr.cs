@@ -180,8 +180,7 @@ public class HospitalMgr : MonoBehaviour
             standardPGauge.Add(num, element.Value.virusPenalty["P"].penaltyGauge);
             standardTGauge.Add(num, element.Value.virusPenalty["T"].penaltyGauge);
 
-            //var cost = CalculateCost(num);
-            var cost = Random.Range(0, 1000); 
+            var cost = CalculateCost(num);
             childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text = $"G {cost}";
             costs.Add(num, cost);
 
@@ -415,7 +414,7 @@ public class HospitalMgr : MonoBehaviour
         playerDataMgr.saveData.money -= totalCost;
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
-        moneyText.text = playerDataMgr.saveData.money.ToString();
+        moneyText.text = $"보유 금액 G {playerDataMgr.saveData.money}";
 
         var child = characterObjs[key].transform.GetChild(3).gameObject;
         child.transform.GetChild(0).gameObject.GetComponent<Text>().text
@@ -487,6 +486,8 @@ public class HospitalMgr : MonoBehaviour
         }
 
         selectedCost.text = $"G {sum}";
+        var button = recoveryButton.GetComponent<Button>();
+        button.enabled = (sum==0)?false : true;
     }
 
     public void SelectTreat()
@@ -627,6 +628,9 @@ public class HospitalMgr : MonoBehaviour
         if (!mainWin.activeSelf) mainWin.SetActive(true);
         if (hospitalWin.activeSelf) hospitalWin.SetActive(false);
         if (upgradeWin.activeSelf) upgradeWin.SetActive(false);
+
+       var button = recoveryButton.GetComponent<Button>();
+        button.enabled = false;
     }
 
     public void CloseMainWin()

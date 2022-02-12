@@ -16,4 +16,5 @@ public class Consumable : ItemBase
     public int ap;
     public int hpRecovery;
     public int virusGaugeDec;
+    public string storeName;
 }

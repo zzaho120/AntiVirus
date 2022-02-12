@@ -321,8 +321,8 @@ public class PubMgr : MonoBehaviour
             foreach (var element in soldiers)
             {
                 var go = Instantiate(characterPrefab, characterListContent.transform);
-                
                 var child = go.transform.GetChild(0).gameObject;
+                child = child.transform.GetChild(0).gameObject;
                 child.GetComponent<Image>().sprite = element.Value.character.halfImg;
 
                 child = go.transform.GetChild(1).gameObject;
