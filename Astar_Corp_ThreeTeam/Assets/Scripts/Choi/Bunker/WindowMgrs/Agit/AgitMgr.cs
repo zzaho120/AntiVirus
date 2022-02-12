@@ -289,7 +289,7 @@ public class AgitMgr : MonoBehaviour
             {
                 child = toleranceGroup.transform.GetChild(j).gameObject;
                 child.transform.GetChild(1).gameObject.GetComponent<Text>().text
-                    = $"Lv {element.Value.virusPenalty[virusName[j]].reductionLevel}";
+                    = $"Lv {element.Value.virusPenalty[virusName[j]].resistLevel}";
             }
 
             int num = i;
@@ -676,27 +676,27 @@ public class AgitMgr : MonoBehaviour
         criResistTxt.text = $"{character.critResistRate}";
 
         //Virus Win.
-        EVirusLevelTxt.text = $"Lv{character.virusPenalty["E"].reductionLevel}";
-        EVirusGaugeTxt.text = $"{character.virusPenalty["E"].reductionGauge}/{character.virusPenalty["E"].GetMaxReductionGauge()}";
-        BVirusLevelTxt.text = $"Lv{character.virusPenalty["B"].reductionLevel}";
-        BVirusGaugeTxt.text = $"{character.virusPenalty["B"].reductionGauge}/{character.virusPenalty["B"].GetMaxReductionGauge()}";
-        PVirusLevelTxt.text = $"Lv{character.virusPenalty["P"].reductionLevel}";
-        PVirusGaugeTxt.text = $"{character.virusPenalty["P"].reductionGauge}/{character.virusPenalty["P"].GetMaxReductionGauge()}";
-        IVirusLevelTxt.text = $"Lv{character.virusPenalty["I"].reductionLevel}";
-        IVirusGaugeTxt.text = $"{character.virusPenalty["I"].reductionGauge}/{character.virusPenalty["I"].GetMaxReductionGauge()}";
-        TVirusLevelTxt.text = $"Lv{character.virusPenalty["T"].reductionLevel}";
-        TVirusGaugeTxt.text = $"{character.virusPenalty["T"].reductionGauge}/{character.virusPenalty["T"].GetMaxReductionGauge()}";
+        EVirusLevelTxt.text = $"Lv{character.virusPenalty["E"].resistLevel}";
+        EVirusGaugeTxt.text = $"{character.virusPenalty["E"].resistGauge}/{character.virusPenalty["E"].GetMaxReductionGauge()}";
+        BVirusLevelTxt.text = $"Lv{character.virusPenalty["B"].resistLevel}";
+        BVirusGaugeTxt.text = $"{character.virusPenalty["B"].resistGauge}/{character.virusPenalty["B"].GetMaxReductionGauge()}";
+        PVirusLevelTxt.text = $"Lv{character.virusPenalty["P"].resistLevel}";
+        PVirusGaugeTxt.text = $"{character.virusPenalty["P"].resistGauge}/{character.virusPenalty["P"].GetMaxReductionGauge()}";
+        IVirusLevelTxt.text = $"Lv{character.virusPenalty["I"].resistLevel}";
+        IVirusGaugeTxt.text = $"{character.virusPenalty["I"].resistGauge}/{character.virusPenalty["I"].GetMaxReductionGauge()}";
+        TVirusLevelTxt.text = $"Lv{character.virusPenalty["T"].resistLevel}";
+        TVirusGaugeTxt.text = $"{character.virusPenalty["T"].resistGauge}/{character.virusPenalty["T"].GetMaxReductionGauge()}";
 
         virusSliders[0].maxValue = character.virusPenalty["E"].GetMaxReductionGauge();
-        virusSliders[0].value = character.virusPenalty["E"].reductionGauge;
+        virusSliders[0].value = character.virusPenalty["E"].resistGauge;
         virusSliders[1].maxValue = character.virusPenalty["B"].GetMaxReductionGauge();
-        virusSliders[1].value = character.virusPenalty["B"].reductionGauge;
+        virusSliders[1].value = character.virusPenalty["B"].resistGauge;
         virusSliders[2].maxValue = character.virusPenalty["P"].GetMaxReductionGauge();
-        virusSliders[2].value = character.virusPenalty["P"].reductionGauge;
+        virusSliders[2].value = character.virusPenalty["P"].resistGauge;
         virusSliders[3].maxValue = character.virusPenalty["I"].GetMaxReductionGauge();
-        virusSliders[3].value = character.virusPenalty["I"].reductionGauge;
+        virusSliders[3].value = character.virusPenalty["I"].resistGauge;
         virusSliders[4].maxValue = character.virusPenalty["T"].GetMaxReductionGauge();
-        virusSliders[4].value = character.virusPenalty["T"].reductionGauge;
+        virusSliders[4].value = character.virusPenalty["T"].resistGauge;
 
         nameTxt.text = $"{character.character.name}";
         levelTxt.text = $"Level {character.level} / ºÐ°ú";

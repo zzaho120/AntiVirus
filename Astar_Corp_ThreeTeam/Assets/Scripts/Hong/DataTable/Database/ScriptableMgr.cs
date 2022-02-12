@@ -40,6 +40,9 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
 
     //캐릭터 이름 관련
     public Dictionary<string, Name> nameList = new Dictionary<string, Name>();
+
+    // 내성 최대 경험치 관련
+    public Dictionary<string, ResistExp> resistExpList = new Dictionary<string, ResistExp>();
     #endregion
 
     public override void Awake()
@@ -168,6 +171,14 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
         {
             nameList.Add($"{name.id}", name);
         }
+
+        // 16. resist Exp
+        string resistExpSOPath = "Choi/Datas/ResistExp";
+        ResistExp[] resistExpArr = Resources.LoadAll<ResistExp>(resistExpSOPath);
+        foreach (var resistExp in resistExpArr)
+        {
+            resistExpList.Add($"{resistExp.id}", resistExp);
+        }
     }
 
     /// <summary>
@@ -258,5 +269,13 @@ public class ScriptableMgr : Singleton<ScriptableMgr>
     public MissionExp GetMissionExp(string id)
     {
         return Instantiate(missionExpList[id]);
+    }
+
+    /// <summary>
+    /// 매개변수 입력 팁; RES_0
+    /// </summary>
+    public ResistExp GetResistExp(string id)
+    {
+        return Instantiate(resistExpList[id]);
     }
 }

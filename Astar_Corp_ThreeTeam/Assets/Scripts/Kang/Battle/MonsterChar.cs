@@ -24,6 +24,7 @@ public class MonsterChar : BattleTile
     private PlayerableChar lastAttacker;
 
     private List<MoveTile> virusList = new List<MoveTile>();
+    private List<GameObject> sightTileList = new List<GameObject>();
     public bool IsfatalDmg
     {
         get
@@ -494,6 +495,23 @@ public class MonsterChar : BattleTile
         {
             CheckVirusArea(adjTile, currentTile, monsterStats.virusLevel, cnt);
         }
+    }
+
+    public void DisplaySightTile()
+    {
+        var frontSightList = BattleMgr.Instance.sightMgr.GetMonsterSight(this);
+        var poolMgr = BattleMgr.Instance.battlePoolMgr;
+        foreach (var sight in frontSightList)
+        {
+            var sightTile = poolMgr.CreateMonsterSightTile();
+            sightTile.transform.position = sight.tileBase.tileIdx + new Vector3(0f, 0.55f);
+            sightTileList.Add(sightTile);
+        }
+    }
+
+    public void ReturnSightTile()
+    {
+
     }
 
     private void CheckVirusArea(TileBase tile, TileBase origin, int virusLevel, int cnt)

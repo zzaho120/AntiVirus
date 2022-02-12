@@ -545,9 +545,46 @@ public class SightMgr : MonoBehaviour
 
         if (frontSightList[playerIdx].Count > 0)
         {
-            foreach (var sightTile in frontSightList[playerIdx])
+            var checkSightList = frontSightList[playerIdx];
+
+            foreach (var check in checkSightList)
             {
-                sightTile.Init();
+                var findSight = false;
+                foreach (var sights in sightList)
+                {
+                    foreach (var sight in sights)
+                    {
+                        if (check.tileBase.tileIdx == sight.tileBase.tileIdx)
+                        {
+                            findSight = true;
+                            break;
+                        }
+                    }
+
+                    if (findSight)
+                        break;
+                }
+
+                foreach (var frontSight in frontSightList)
+                {
+                    if (frontSight == checkSightList)
+                        continue;
+
+                    foreach (var sight in frontSight)
+                    {
+                        if (check.tileBase.tileIdx == sight.tileBase.tileIdx)
+                        {
+                            findSight = true;
+                            break;
+                        }
+                    }
+
+                    if (findSight)
+                        break;
+                }
+
+                if (!findSight)
+                    check.Init();
             }
         }
 
@@ -693,5 +730,21 @@ public class SightMgr : MonoBehaviour
         }
         else
             return false;
+    }
+
+    public List<SightTileBase> GetMonsterSight(MonsterChar monster)
+    {
+        var monsterIdx = -1;
+
+        for (var idx = 0; idx < monsters.Count; ++idx)
+        {
+            if (monsters[idx] == monster)
+            {
+                monsterIdx = idx;
+                break;
+            }
+        }
+
+        return monsterSightList[monsterIdx];
     }
 }

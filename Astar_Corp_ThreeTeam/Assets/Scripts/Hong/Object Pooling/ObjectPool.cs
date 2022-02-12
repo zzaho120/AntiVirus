@@ -23,6 +23,7 @@ public enum BattlePoolName
     BulletEjection,
     Detect,
     SightTile,
+    MonsterSightTile,
 }
 
 [System.Serializable]
