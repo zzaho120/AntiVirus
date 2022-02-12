@@ -25,7 +25,7 @@ public class BattleInfoPanel : MonoBehaviour
         foreach (var elem in stats.virusPenalty)
         {
             sb.Append($"Virus {elem.Key} : Lv.{elem.Value.penaltyLevel} / {elem.Value.penaltyGauge}\n");
-            sb.Append($"Reduction {elem.Key} : Lv.{elem.Value.reductionLevel} / {elem.Value.reductionGauge}\n\n");
+            sb.Append($"Reduction {elem.Key} : Lv.{elem.Value.resistLevel} / {elem.Value.resistGauge}\n\n");
 
             if (elem.Key.Equals("B"))
                 break;

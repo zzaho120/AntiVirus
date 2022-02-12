@@ -106,7 +106,7 @@ public class SquadWinMgr : UIManagerWindowManager
             {
                 child = toleranceGroup.transform.GetChild(j).gameObject;
                 child.transform.GetChild(1).gameObject.GetComponent<Text>().text
-                    = $"Lv {playerDataMgr.currentSquad[element.Value].virusPenalty[virusName[j]].reductionLevel}";
+                    = $"Lv {playerDataMgr.currentSquad[element.Value].virusPenalty[virusName[j]].resistLevel}";
             }
 
             int num = i;

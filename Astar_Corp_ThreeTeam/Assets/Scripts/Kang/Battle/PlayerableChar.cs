@@ -64,7 +64,7 @@ public class PlayerableChar : BattleTile
     public Transform rightHandTr;
     private MonsterChar targetMonster;
 
-    public List<GameObject> SightTileList;
+    public List<GameObject> sightTileList;
 
     public override void Init()
     {
@@ -100,6 +100,7 @@ public class PlayerableChar : BattleTile
         }
     }
 
+
     public void Update()
     {
         if (status != CharacterState.TurnEnd)
@@ -127,6 +128,7 @@ public class PlayerableChar : BattleTile
                                         {
                                             ActionMove(tileBase);
                                             ReturnMoveTile();
+                                            ReturnSightTile();
                                             var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
                                             window.cancelBtn.SetActive(false);
                                             window.moveBtn.SetActive(true);
@@ -294,6 +296,7 @@ public class PlayerableChar : BattleTile
     {
         moveDics.Clear();
         moveDics.Add(currentTile, 0);
+        ReturnSightTile();
 
         var cnt = 0; 
         var mpPerAp = characterStats.weapon.MpPerAp - characterStats.movePoint;
@@ -709,14 +712,19 @@ public class PlayerableChar : BattleTile
         foreach (var sight in frontSightList)
         {
             var sightTile = poolMgr.CreateSightTile();
-            sightTile.transform.position = sight.tileBase.tileIdx + new Vector3(0f, 0.5f);
-            SightTileList.Add(sightTile);
+            sightTile.transform.position = sight.tileBase.tileIdx + new Vector3(0f, 0.55f);
+            sightTileList.Add(sightTile);
         }
     }
 
     public void ReturnSightTile()
     {
-
+        foreach (var sight in sightTileList)
+        {
+            var returnToPool = sight.GetComponent<ReturnToPool>();
+            returnToPool.Return();
+        }
+        sightTileList.Clear();
     }
 
     public void FireAnimation()
@@ -734,5 +742,22 @@ public class PlayerableChar : BattleTile
         StartCoroutine(CoReturnParticle(gunOneShot.gameObject));
         StartCoroutine(CoReturnParticle(bulletEjection.gameObject));
         ActionAttack(targetMonster);
+    }
+
+    public void ChangeWeaponObject()
+    {
+        Destroy(currentWeapon);
+
+        switch (characterStats.weapon.type)
+        {
+            case WeaponStats.WeaponType.Main:
+                currentWeapon = Instantiate(mainWeapon, rightHandTr);
+                break;
+            case WeaponStats.WeaponType.Sub:
+                currentWeapon = Instantiate(subWeapon, rightHandTr);
+                break;
+        }
+
+        currentWeapon.transform.rotation = Quaternion.Euler(fireRot);
     }
 }

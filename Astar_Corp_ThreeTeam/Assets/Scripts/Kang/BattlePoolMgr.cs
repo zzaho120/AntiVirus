@@ -69,4 +69,10 @@ public class BattlePoolMgr : PoolManager
         particle.transform.SetParent(sightPool);
         return particle;
     }
+    public GameObject CreateMonsterSightTile()
+    {
+        var particle = pools[(int)BattlePoolName.MonsterSightTile].Pool.Get();
+        particle.transform.SetParent(sightPool);
+        return particle;
+    }
 }

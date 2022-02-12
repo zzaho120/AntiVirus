@@ -28,20 +28,28 @@ public class VirusPenalty
     public Character character;
     public int penaltyGauge; // Æä³ÎÆ¼¹Ù
     public int penaltyLevel;
-    public int reductionGauge; // ³»¼º °æÇèÄ¡¹Ù
-    public int reductionLevel;
+    public int resistGauge; // ³»¼º ÇöÀç °æÇèÄ¡ ¹Ù
+    public int resistLevel;
 
     private readonly int expGauge = 100; 
     private readonly int maxLevel = 5;
 
+    private int MaxResistGauge
+    {
+        get
+        {
+            var resistExp = ScriptableMgr.Instance.GetResistExp($"RES_{resistLevel + 1}");
+            return resistExp.exp;
+        }
+    }
     public int CurrentReduction
     {
         get
         {
-            if (reductionLevel == 0)
+            if (resistLevel == 0)
                 return character.virusDec_Lev0;
             else
-                return character.virusDec_Lev1 * reductionLevel;
+                return character.virusDec_Lev1 * resistLevel;
         }
     }
 
@@ -56,7 +64,7 @@ public class VirusPenalty
         this.character = character;
         penaltyGauge = 0;
         penaltyLevel = 0;
-        reductionLevel = 0;
+        resistLevel = 0;
     }
 
     public void Calculation(int virusLevel, float virusBuff = 1f, float reductionBuff = 1f)
@@ -141,14 +149,14 @@ public class VirusPenalty
         }
     }
 
-    // ³»¼º °ÔÀÌÁö¿¡ °Á ¾Æ¹«°Å³ª ³Ö¾îµÒ
-    int resistGauge = 1;
+   
+
 
     public void GetReductionExp(int reduceGauge)
     {
         if (reduceGauge < 0)
         {
-            reductionGauge += (-reduceGauge);
+            resistGauge += (-reduceGauge);
             // ¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤
             // ¦¢       È«¼öÁø_½ºÅÈ¼öÁ¤       ¦¢
             // ¦¢      ³»¼º°ÔÀÌÁö DB »ý±è     ¦¢
@@ -167,15 +175,15 @@ public class VirusPenalty
             //          /  \_£¯¡¡ |
             //¡¡        £ü¡¡¡¡/ / /
             //var maxGauge = character.resistGauge * (reductionLevel + 1);
-            var maxGauge = resistGauge * (reductionLevel + 1);
-            if (reductionGauge >= maxGauge)
+            var maxGauge = resistGauge * (resistLevel + 1);
+            if (resistGauge >= maxGauge)
             {
-                if (reductionLevel != maxLevel)
+                if (resistLevel != maxLevel)
                 {
-                    reductionGauge -= maxGauge;
-                    reductionLevel++;
+                    resistGauge -= maxGauge;
+                    resistLevel++;
                 }
-                else if (reductionLevel == maxLevel)
+                else if (resistLevel == maxLevel)
                     penaltyGauge = maxGauge;
             }
         }
@@ -188,24 +196,6 @@ public class VirusPenalty
 
     public int GetMaxReductionGauge()
     {
-        // ¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤
-        // ¦¢       È«¼öÁø_½ºÅÈ¼öÁ¤       ¦¢
-        // ¦¢      ³»¼º°ÔÀÌÁö DB »ý±è     ¦¢
-        // ¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡   ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥
-        //          \/
-
-        //           £¯^  \
-        //          / ^w ^ \
-        //¡¡     _ / \ /    ¡¬ _
-        //      / '/ - £Ù -  /  \
-        //     (  (ß²' ìÑ /     |
-        //     |  / ìÑ ¡¬ £þ£þ\ /
-        //      \£ß£ß£ß>. £ß£ß_£¯
-        //¡¡¡¡      £ü(èÝ /  ¡´
-        //          / \' ¦¡_/\
-        //          /  \_£¯¡¡ |
-        //¡¡        £ü¡¡¡¡/ / /
-        //return character.resistGauge * (reductionLevel + 1);
-        return resistGauge * (reductionLevel + 1);
+        return MaxResistGauge;
     }
 }

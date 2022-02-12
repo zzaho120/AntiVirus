@@ -87,9 +87,9 @@ public class ToleranceMgr : MonoBehaviour
             $"LV{stat.virusPenalty["E"].penaltyLevel} ({stat.virusPenalty["E"].penaltyGauge}/{stat.virusPenalty["E"].GetMaxGauge()})";
 
         eResistanceBar.maxValue = stat.virusPenalty["E"].GetMaxReductionGauge();
-        eResistanceBar.value = stat.virusPenalty["E"].reductionGauge;
+        eResistanceBar.value = stat.virusPenalty["E"].resistGauge;
         eResistanceTxt.text =
-            $"LV{stat.virusPenalty["E"].reductionLevel} ({stat.virusPenalty["E"].reductionGauge}/{stat.virusPenalty["E"].GetMaxReductionGauge()})";
+            $"LV{stat.virusPenalty["E"].resistLevel} ({stat.virusPenalty["E"].resistGauge}/{stat.virusPenalty["E"].GetMaxReductionGauge()})";
 
         bVirusBar.maxValue = stat.virusPenalty["B"].GetMaxGauge();
         bVirusBar.value = stat.virusPenalty["B"].penaltyGauge; 
@@ -97,9 +97,9 @@ public class ToleranceMgr : MonoBehaviour
             $"LV{stat.virusPenalty["B"].penaltyLevel} ({stat.virusPenalty["B"].penaltyGauge}/{stat.virusPenalty["B"].GetMaxGauge()})";
 
         bResistanceBar.maxValue = stat.virusPenalty["B"].GetMaxReductionGauge();
-        bResistanceBar.value = stat.virusPenalty["B"].reductionGauge;
+        bResistanceBar.value = stat.virusPenalty["B"].resistGauge;
         bResistanceTxt.text =
-           $"LV{stat.virusPenalty["B"].reductionLevel} ({stat.virusPenalty["B"].reductionGauge}/{stat.virusPenalty["B"].GetMaxReductionGauge()})";
+           $"LV{stat.virusPenalty["B"].resistLevel} ({stat.virusPenalty["B"].resistGauge}/{stat.virusPenalty["B"].GetMaxReductionGauge()})";
 
         pVirusBar.maxValue = stat.virusPenalty["P"].GetMaxGauge();
         pVirusBar.value = stat.virusPenalty["P"].penaltyGauge;
@@ -107,9 +107,9 @@ public class ToleranceMgr : MonoBehaviour
            $"LV{stat.virusPenalty["P"].penaltyLevel} ({stat.virusPenalty["P"].penaltyGauge}/{stat.virusPenalty["P"].GetMaxGauge()})";
 
         pResistanceBar.maxValue = stat.virusPenalty["P"].GetMaxReductionGauge();
-        pResistanceBar.value = stat.virusPenalty["P"].reductionGauge;
+        pResistanceBar.value = stat.virusPenalty["P"].resistGauge;
         pResistanceTxt.text =
-           $"LV{stat.virusPenalty["P"].reductionLevel} ({stat.virusPenalty["P"].reductionGauge}/{stat.virusPenalty["P"].GetMaxReductionGauge()})";
+           $"LV{stat.virusPenalty["P"].resistLevel} ({stat.virusPenalty["P"].resistGauge}/{stat.virusPenalty["P"].GetMaxReductionGauge()})";
 
         iVirusBar.maxValue = stat.virusPenalty["I"].GetMaxGauge();
         iVirusBar.value = stat.virusPenalty["I"].penaltyGauge;
@@ -117,9 +117,9 @@ public class ToleranceMgr : MonoBehaviour
           $"LV{stat.virusPenalty["I"].penaltyLevel} ({stat.virusPenalty["I"].penaltyGauge}/{stat.virusPenalty["I"].GetMaxGauge()})";
 
         iResistanceBar.maxValue = stat.virusPenalty["I"].GetMaxReductionGauge();
-        iResistanceBar.value = stat.virusPenalty["I"].reductionGauge;
+        iResistanceBar.value = stat.virusPenalty["I"].resistGauge;
         iResistanceTxt.text =
-          $"LV{stat.virusPenalty["I"].reductionLevel} ({stat.virusPenalty["I"].reductionGauge}/{stat.virusPenalty["I"].GetMaxReductionGauge()})";
+          $"LV{stat.virusPenalty["I"].resistLevel} ({stat.virusPenalty["I"].resistGauge}/{stat.virusPenalty["I"].GetMaxReductionGauge()})";
 
         tVirusBar.maxValue = stat.virusPenalty["T"].GetMaxGauge();
         tVirusBar.value = stat.virusPenalty["T"].penaltyGauge;
@@ -127,8 +127,8 @@ public class ToleranceMgr : MonoBehaviour
          $"LV{stat.virusPenalty["T"].penaltyLevel} ({stat.virusPenalty["T"].penaltyGauge}/{stat.virusPenalty["T"].GetMaxGauge()})";
 
         tResistanceBar.maxValue = stat.virusPenalty["T"].GetMaxReductionGauge();
-        tResistanceBar.value = stat.virusPenalty["T"].reductionGauge;
+        tResistanceBar.value = stat.virusPenalty["T"].resistGauge;
         tResistanceTxt.text =
-          $"LV{stat.virusPenalty["T"].reductionLevel} ({stat.virusPenalty["T"].reductionGauge}/{stat.virusPenalty["T"].GetMaxReductionGauge()})";
+          $"LV{stat.virusPenalty["T"].resistLevel} ({stat.virusPenalty["T"].resistGauge}/{stat.virusPenalty["T"].GetMaxReductionGauge()})";
     }
 }

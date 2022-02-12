@@ -134,9 +134,9 @@ public class CameraController : MonoBehaviour
         isSmoothMove = true;
         transform.position = Vector3.Lerp(transform.position, dest, moveTime * Time.deltaTime);
 
-        while (timer < 1f)
+        while (timer < 2f)
         {
-            timer += Time.deltaTime;
+            timer += Time.deltaTime * 5;
 
             transform.position = Vector3.Lerp(transform.position, dest, moveTime * Time.deltaTime);
 

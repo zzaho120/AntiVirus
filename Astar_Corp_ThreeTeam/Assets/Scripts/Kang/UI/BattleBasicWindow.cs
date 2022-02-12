@@ -223,8 +223,12 @@ public class BattleBasicWindow : GenericWindow
         var stats = selectedChar.characterStats;
         stats.weapon.ChangeWeapon();
         SetWeaponUI(selectedChar);
-    }
 
+        if (alertPanel.activeSelf)
+            OnClickAlert();
+
+        selectedChar.ChangeWeaponObject();
+    }
     private void SetActionBtn()
     {
         // 0 ¡∂¡ÿ
@@ -333,9 +337,18 @@ public class BattleBasicWindow : GenericWindow
     public void OnClickInfo()
     {
         if (state == CharacterState.Wait)
-            infoPanel.SetActive(!infoPanel.activeSelf);
+            SetInfoPanel(!infoPanel.activeSelf);
     }
 
+    public void SetInfoPanel(bool enabled)
+    {
+        infoPanel.SetActive(enabled);
+
+        if (enabled)
+            selectedChar.DisplaySightTile();
+        else
+            selectedChar.ReturnSightTile();
+    }
     public void OnClickMove()
     {
         
@@ -356,6 +369,7 @@ public class BattleBasicWindow : GenericWindow
         selectedChar.ReturnMoveTile();
         moveBtn.SetActive(true);
         cancelBtn.SetActive(false);
+        selectedChar.DisplaySightTile();
     }
 
     public void OnClickFire()
@@ -375,7 +389,7 @@ public class BattleBasicWindow : GenericWindow
         {
             actionPanel.SetActive(false);
             moveBtn.SetActive(false);
-            infoPanel.SetActive(false);
+            SetInfoPanel(false);
             directionBtns.SetActive(false);
             firePanel.SetActive(true);
             firePanel.GetComponent<BattleFirePanel>().SetDmgText(selectedChar);
@@ -446,8 +460,8 @@ public class BattleBasicWindow : GenericWindow
             directionBtns.SetActive(true);
             leftDirectionPanel.SetActive(true);
             actionPanel.SetActive(false);
-            moveBtn.SetActive(false);
-            infoPanel.SetActive(false);
+            moveBtn.SetActive(false);            
+            SetInfoPanel(false);
         }
 
         if (state == CharacterState.Move)
@@ -486,6 +500,7 @@ public class BattleBasicWindow : GenericWindow
         }
         state = CharacterState.Wait;
         OnClickDirectionCancel();
+        selectedChar.DisplaySightTile();
     }
 
     public void OnClickTurnEnd()
@@ -505,6 +520,7 @@ public class BattleBasicWindow : GenericWindow
         actionPanel.SetActive(false);
         alertPanel.SetActive(true);
         alertConfirmBtn.SetActive(true);
+
         var childCount = attackTimeObj.transform.childCount;
         var attackCount = selectedChar.AP / selectedChar.characterStats.weapon.curWeapon.firstShotAp;
         for (var idx = 0; idx < childCount; ++idx)
@@ -536,6 +552,7 @@ public class BattleBasicWindow : GenericWindow
             OnClickAlertCancel();
             UpdateUI();
             UpdateExtraInfo(selectedChar);
+            selectedChar.ReturnSightTile();
         }
     }
 
