@@ -354,7 +354,15 @@ public class BattleBasicWindow : GenericWindow
         state = CharacterState.Attack;
         var isFullApMove = selectedChar.characterStats.buffMgr.GetBuffList(Stat.FullApMove).Count > 0;
 
-        if ((selectedChar.AP >= selectedChar.characterStats.weapon.curWeapon.firstShotAp || isFullApMove) && isTurn)
+        var weapon = selectedChar.characterStats.weapon;
+
+        var shotAp = 0;
+        if (weapon.fireCount > 0)
+            shotAp = weapon.curWeapon.otherShotAp;
+        else
+            shotAp = weapon.curWeapon.firstShotAp;
+
+        if ((selectedChar.AP >= shotAp || isFullApMove) && isTurn)
         {
             actionPanel.SetActive(false);
             moveBtn.SetActive(false);
