@@ -54,7 +54,7 @@ public class BattleBasicWindow : GenericWindow
     public GameObject firePanel;
     public GameObject notMonsterPanel;
     public GameObject monsterListPanel;
-    public GameObject fireAttackBtn;
+    public GameObject fireConfirmBtn;
     private List<BattleMonsterPanel> monsterPanels = new List<BattleMonsterPanel>();
     public MonsterChar targetMonster;
 
@@ -88,7 +88,7 @@ public class BattleBasicWindow : GenericWindow
         cancelBtn.SetActive(false);
         notMonsterPanel.SetActive(false);
         firePanel.SetActive(false);
-        fireAttackBtn.SetActive(false);
+        fireConfirmBtn.SetActive(false);
         monsterListPanel.SetActive(false);
         directionBtns.SetActive(false);
         infoPanel.SetActive(false);
@@ -385,7 +385,7 @@ public class BattleBasicWindow : GenericWindow
             }
             else
             {
-                fireAttackBtn.SetActive(true);
+                fireConfirmBtn.SetActive(true);
                 monsterListPanel.SetActive(true);
                 for (var idx = 0; idx < monsterList.Count; ++idx)
                 {
@@ -411,7 +411,7 @@ public class BattleBasicWindow : GenericWindow
         moveBtn.SetActive(true);
         selectedChar.status = CharacterState.Wait;
 
-        fireAttackBtn.SetActive(false);
+        fireConfirmBtn.SetActive(false);
 
         notMonsterPanel.SetActive(false);
     }
