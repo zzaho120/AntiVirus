@@ -7,6 +7,7 @@ public class BattlePoolMgr : PoolManager
     public Transform moveTilePool;
     public Transform virusTilePool;
     public Transform particlePool;
+    public Transform sightPool;
 
     public override void CreatePoolsTr()
     {
@@ -59,6 +60,13 @@ public class BattlePoolMgr : PoolManager
     {
         var particle = pools[(int)BattlePoolName.Detect].Pool.Get();
         particle.transform.SetParent(particlePool);
+        return particle;
+    }
+
+    public GameObject CreateSightTile()
+    {
+        var particle = pools[(int)BattlePoolName.SightTile].Pool.Get();
+        particle.transform.SetParent(sightPool);
         return particle;
     }
 }

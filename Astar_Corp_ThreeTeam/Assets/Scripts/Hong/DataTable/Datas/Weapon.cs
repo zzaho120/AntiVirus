@@ -35,6 +35,8 @@ public class Weapon : ItemBase
     public int overRange_Penalty;   // 사거리 +n타일에 따른 명중률 감소
     public int underRange_Penalty;  // 사거리 -n타일에 따른 명중률 감소
 
+    public int battleID; // 전투씬 오브젝트 불러오기 ID
+
     //public List<string> testList = new List<string>();
 
     //private Sprite iconSprite;

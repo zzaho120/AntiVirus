@@ -21,7 +21,8 @@ public enum BattlePoolName
     Blood,
     GunOneShot,
     BulletEjection,
-    Detect
+    Detect,
+    SightTile,
 }
 
 [System.Serializable]

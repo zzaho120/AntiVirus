@@ -78,6 +78,7 @@ public class WeaponSO
                     equippable.bulletType = int.Parse(splitData[27]);
                     equippable.reloadBullet = int.Parse(splitData[28]);
                     equippable.continuousShootingPenalty = int.Parse(splitData[29]);
+                    equippable.battleID = int.Parse(splitData[30]);
 
                     //// Item 정보 담고 있는 List
                     //List<string> itemInfo = new List<string>();
