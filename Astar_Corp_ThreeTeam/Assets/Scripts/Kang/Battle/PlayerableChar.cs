@@ -64,6 +64,8 @@ public class PlayerableChar : BattleTile
     public Transform rightHandTr;
     private MonsterChar targetMonster;
 
+    public List<GameObject> SightTileList;
+
     public override void Init()
     {
         base.Init();
@@ -698,6 +700,23 @@ public class PlayerableChar : BattleTile
     {
         isHMGA1Skill = true;
         status = CharacterState.Attack;
+    }
+
+    public void DisplaySightTile()
+    {
+        var frontSightList = BattleMgr.Instance.sightMgr.GetFrontSight(this);
+        var poolMgr = BattleMgr.Instance.battlePoolMgr;
+        foreach (var sight in frontSightList)
+        {
+            var sightTile = poolMgr.CreateSightTile();
+            sightTile.transform.position = sight.tileBase.tileIdx + new Vector3(0f, 0.5f);
+            SightTileList.Add(sightTile);
+        }
+    }
+
+    public void ReturnSightTile()
+    {
+
     }
 
     public void FireAnimation()

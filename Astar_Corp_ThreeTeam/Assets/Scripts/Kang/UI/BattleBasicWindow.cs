@@ -67,6 +67,10 @@ public class BattleBasicWindow : GenericWindow
     public GameObject alertPanel;
     public GameObject attackTimeObj;
     public GameObject alertConfirmBtn;
+
+    [Header("Turn End")]
+    public GameObject turnEndBtn;
+
     public bool isTurn
     {
         get => BattleMgr.Instance.turn == BattleTurn.Player;
@@ -96,6 +100,8 @@ public class BattleBasicWindow : GenericWindow
         alertPanel.SetActive(false);
         alertConfirmBtn.SetActive(false);
         InitSquad();
+
+        EventBusMgr.Subscribe(EventType.StartPlayer, StartTurn);
     }
 
     public void UpdateUI()
@@ -107,6 +113,9 @@ public class BattleBasicWindow : GenericWindow
 
     public void SetSelectedChar(PlayerableChar player)
     {
+        if (selectedChar != null)
+            selectedChar.ReturnSightTile();
+
         selectedChar = player;
         state = CharacterState.Wait;
         var stats = selectedChar.characterStats;
@@ -114,7 +123,7 @@ public class BattleBasicWindow : GenericWindow
         levelText.text = $"Lv{stats.level}";
         nameText.text = $"{stats.characterName}";
         classImage.sprite = stats.character.icon;
-
+        selectedChar.DisplaySightTile();
         UpdateUI();
     }
 
@@ -481,7 +490,13 @@ public class BattleBasicWindow : GenericWindow
 
     public void OnClickTurnEnd()
     {
+        turnEndBtn.SetActive(false);
         BattleMgr.Instance.OnChangeTurn(null);
+    }
+
+    public void StartTurn(object[] empty)
+    {
+        turnEndBtn.SetActive(true);
     }
 
     public void OnClickAlert()
