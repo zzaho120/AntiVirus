@@ -3,66 +3,72 @@ using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleInfoPanel : MonoBehaviour
 {
-    public TextMeshProUGUI nameText;
-    public TextMeshProUGUI infoText;
-    public void SetInfoPlayer(PlayerableChar player)
+    public Image infoImage;
+    public TextMeshProUGUI infoImageTitle;
+    public TextMeshProUGUI explainText;
+
+    public void SetMonsterInfo(MonsterChar monster, Sprite monsterSprite)
     {
-        var stats = player.characterStats;
-
-        nameText.text = stats.Name;
-
+        infoImage.gameObject.SetActive(true);
+        var stats = monster.monsterStats;
+        infoImage.sprite = monsterSprite;
+        infoImageTitle.text = $"Lv{stats.virusLevel} {monster.ownerName}";
         var sb = new StringBuilder();
+        sb.Append($"체력 : {stats.currentHp} / {stats.originMaxHp}\n");
+        sb.Append($"공격력 : {stats.monster.minDmg} ~ {stats.monster.maxDmg}\n");
+        sb.Append($"AP : {stats.monster.ap}");
+        explainText.text = sb.ToString();
+    }
 
-        sb.Append($"Level : {stats.level}\n");
-        sb.Append($"HP : {stats.currentHp}\n");
-        sb.Append($"AP : {player.AP}\n");
-        sb.Append($"Wp : {player.characterStats.weapon.curWeapon.name}\n");
-        sb.Append($"Bullet : {stats.weapon.MainWeaponBullet}\n\n");
-
-        foreach (var elem in stats.virusPenalty)
+    public void SetHintInfo(HintBase hint)
+    {
+        infoImage.gameObject.SetActive(true);
+        switch (hint.type)
         {
-            sb.Append($"Virus {elem.Key} : Lv.{elem.Value.penaltyLevel} / {elem.Value.penaltyGauge}\n");
-            sb.Append($"Reduction {elem.Key} : Lv.{elem.Value.resistLevel} / {elem.Value.resistGauge}\n\n");
-
-            if (elem.Key.Equals("B"))
+            case HintType.Footprint:
+                infoImage.sprite = BattleMgr.Instance.hintMgr.footprintSprite;
+                infoImageTitle.text = "발자국";
+                break;
+            case HintType.Bloodprint:
+                infoImage.sprite = BattleMgr.Instance.hintMgr.bloodSprite;
+                infoImageTitle.text = "혈흔";
                 break;
         }
 
-        sb.Append($"level : {stats.level}\n");
-        sb.Append($"Exp : {stats.currentExp} / {stats.totalExp}");
-
-        infoText.text = sb.ToString();
+        var sb = new StringBuilder();
+        sb.Append($"몬스터 이름 : {hint.ownerName}\n");
+        sb.Append($"남은 턴수 : {hint.lifeTime - BattleMgr.Instance.turnCount + 1}");
+        switch (hint.type)
+        {
+            case HintType.Footprint:
+                sb.Append($"\n방향 정보 : {hint.direction}");
+                break;
+            case HintType.Bloodprint:
+                break;
+        }
+        explainText.text = sb.ToString();
+    }
+    public void SetVirusInfo(VirusBase virus, Sprite sprite)
+    {
+        infoImage.gameObject.SetActive(true);
+        infoImage.sprite = sprite;
+        infoImageTitle.text = string.Empty;
+        var sb = new StringBuilder();
+        sb.Append($"바이러스 이름 : {virus.virusName}\n");
+        sb.Append($"바이러스 레벨 : {virus.virusLevel}\n");
+        sb.Append($"틱당 게이지 상승량 : {virus.increasePerTic}");
+        explainText.text = sb.ToString();
     }
 
-    public void SetInfoMonster(MonsterChar monster, WeaponStats weapon)
+    public void Init()
     {
-        var stats = monster.monsterStats;
-        nameText.text = stats.name;
-
-        var sb = new StringBuilder();
-
-        sb.Append($"HP : {stats.currentHp}\n");
-        sb.Append($"Virus {stats.virus.name} : Lv.{stats.virusLevel} / {stats.virus}\n");
-        sb.Append($"Accuracy : {weapon.CalCulateAccuracy(monster.currentTile.accuracy, weapon.AccurRate_base)}%");
-
-
-        infoText.text = sb.ToString();
-    }
-
-    public void SetInfoMonster(MonsterChar monster)
-    {
-        var stats = monster.monsterStats;
-        nameText.text = stats.name;
-
-        var sb = new StringBuilder();
-
-        sb.Append($"HP : {stats.currentHp}\n");
-        sb.Append($"Virus {stats.virus.name} : Lv.{stats.virusLevel} / {stats.virus}\n");
-        sb.Append($"MinDmg~MaxDmg {stats.virus.name} : {stats.monster.minDmg} / {stats.monster.maxDmg}\n");
-
-        infoText.text = sb.ToString();
+        infoImage.sprite = null;
+        infoImage.gameObject.SetActive(false);
+        infoImageTitle.text = string.Empty;
+        explainText.text = string.Empty;
     }
 }

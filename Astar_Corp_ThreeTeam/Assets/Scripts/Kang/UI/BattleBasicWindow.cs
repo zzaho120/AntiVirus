@@ -4,6 +4,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+public enum Info
+{
+    Monster,
+    Hint,
+    Virus
+}
+
 public class BattleBasicWindow : GenericWindow
 {
     public PlayerableChar selectedChar;
@@ -31,6 +39,7 @@ public class BattleBasicWindow : GenericWindow
 
     [Header("Sprites")]
     public List<Sprite> monsterSprite;
+    public List<Sprite> virusSprite;
 
     [Header("Squads")]
     public GameObject memberPrefab;
@@ -44,6 +53,7 @@ public class BattleBasicWindow : GenericWindow
 
     [Header("Info Panel")]
     public GameObject infoPanel;
+    public BattleInfoPanel battleinfoPanel;
 
     [Header("Move")]
     public GameObject moveBtn;
@@ -337,7 +347,10 @@ public class BattleBasicWindow : GenericWindow
     public void OnClickInfo()
     {
         if (state == CharacterState.Wait)
+        {
             SetInfoPanel(!infoPanel.activeSelf);
+            BattleMgr.Instance.ChangeUIMode(infoPanel.activeSelf);
+        }
     }
 
     public void SetInfoPanel(bool enabled)
@@ -345,9 +358,17 @@ public class BattleBasicWindow : GenericWindow
         infoPanel.SetActive(enabled);
 
         if (enabled)
-            selectedChar.DisplaySightTile();
-        else
-            selectedChar.ReturnSightTile();
+        {
+            battleinfoPanel.Init();
+        }
+
+        if (selectedChar != null)
+        {
+            if (enabled)
+                selectedChar.ReturnSightTile();
+            else
+                selectedChar.DisplaySightTile();
+        }
     }
     public void OnClickMove()
     {
@@ -358,6 +379,7 @@ public class BattleBasicWindow : GenericWindow
             selectedChar.MoveMode();
             directionBtns.SetActive(false);
             moveBtn.SetActive(false);
+            actionPanel.SetActive(false);
             cancelBtn.SetActive(true);
         }
     }
@@ -368,6 +390,7 @@ public class BattleBasicWindow : GenericWindow
         selectedChar.status = CharacterState.Wait;
         selectedChar.ReturnMoveTile();
         moveBtn.SetActive(true);
+        actionPanel.SetActive(true);
         cancelBtn.SetActive(false);
         selectedChar.DisplaySightTile();
     }
@@ -480,6 +503,7 @@ public class BattleBasicWindow : GenericWindow
 
     public void OnClickDirectionBtn(int direction)
     {
+        selectedChar.ReturnSightTile();
         selectedChar.SetDirection((DirectionType)(1 << direction));
         BattleMgr.Instance.sightMgr.UpdateFrontSight(selectedChar);
 
@@ -505,6 +529,7 @@ public class BattleBasicWindow : GenericWindow
 
     public void OnClickTurnEnd()
     {
+        SetInfoPanel(false);
         turnEndBtn.SetActive(false);
         BattleMgr.Instance.OnChangeTurn(null);
     }
@@ -572,6 +597,73 @@ public class BattleBasicWindow : GenericWindow
             selectedChar.ReloadWeapon();
             SetWeaponUI(selectedChar);
             SetActionBtn();
+        }
+    }
+
+    public void SetInfoText(Info info, GameObject gameObject)
+    {
+        Sprite sprite = null;
+        switch (info)
+        {
+            case Info.Monster:
+                var monster = gameObject.GetComponentInChildren<MonsterChar>();
+                switch (monster.monsterStats.monster.name)
+                {
+                    case "Bear":
+                        sprite = monsterSprite[0];
+                        break;
+
+                    case "Boar":
+                        sprite = monsterSprite[1];
+                        break;
+
+                    case "Wolf":
+                        sprite = monsterSprite[2];
+                        break;
+
+                    case "Spider":
+                        sprite = monsterSprite[3];
+                        break;
+
+                    case "Jaguar":
+                        sprite = monsterSprite[4];
+                        break;
+
+                    case "Tiger":
+                        sprite = monsterSprite[5];
+                        break;
+
+                    case "Fox":
+                        sprite = monsterSprite[6];
+                        break;
+                }
+                battleinfoPanel.SetMonsterInfo(monster, sprite);
+                break;
+            case Info.Hint:
+                battleinfoPanel.SetHintInfo(gameObject.GetComponent<HintBase>());
+                break;
+            case Info.Virus:
+                var virusTile = gameObject.GetComponent<VirusBase>();
+                switch (virusTile.virusName)
+                {
+                    case "E":
+                        sprite = virusSprite[0];
+                        break;
+                    case "B":
+                        sprite = virusSprite[1];
+                        break;
+                    case "P":
+                        sprite = virusSprite[2];
+                        break;
+                    case "I":
+                        sprite = virusSprite[3];
+                        break;
+                    case "T":
+                        sprite = virusSprite[4];
+                        break;
+                }
+                battleinfoPanel.SetVirusInfo(gameObject.GetComponent<VirusBase>(), sprite);
+                break;
         }
     }
 }

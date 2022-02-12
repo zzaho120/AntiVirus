@@ -6163,6 +6163,7 @@ MonoBehaviour:
   monsters: []
   monsterIdx: 0
   curMonster: {fileID: 0}
+  selectedMonster: {fileID: 0}
 --- !u!1001 &141430353
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13696,7 +13697,7 @@ MonoBehaviour:
     maxPoolSize: 100
   - quantity: 50
     poolName: -1
-    battlePoolName: 7
+    battlePoolName: 8
     prefab: {fileID: 7076986438931249863, guid: a46e58bd338d3f04c858aa9ac0298057, type: 3}
     poolTr: {fileID: 0}
     collectionChecks: 0
@@ -22916,7 +22917,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 380, y: -120}
-  m_SizeDelta: {x: 400, y: 50}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &481571118
 CanvasRenderer:
@@ -30092,7 +30093,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 36.275, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &611000569
@@ -33203,7 +33204,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 116.27501, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &664429579
@@ -48034,6 +48035,7 @@ MonoBehaviour:
   turnCount: 0
   fieldVirusLevel: 2
   playerPrefab: {fileID: 1274019000965958, guid: 191b5d62c3c2edb4b91049dda0d9e331, type: 3}
+  uiInfoMode: 0
 --- !u!114 &1031783267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48053,10 +48055,10 @@ MonoBehaviour:
   mainWeaponName: 000000000c0000000c0000000a000000
   subWeaponName: 01000000020000000300000004000000
   monsterPos:
-  - {x: 15, y: 14}
+  - {x: 31, y: 31}
   monsters: 00000000
   monsterVirus: 00000000
-  monsterVirusLevel: 01000000
+  monsterVirusLevel: 02000000
   monsterPrefabs:
   - {fileID: 8566930021925752460, guid: f7b2d07de061fe34699b4c8d3170eb4a, type: 3}
   - {fileID: 3979695882254209260, guid: 98c0ad91775fbd844ad201f74a256612, type: 3}
@@ -56195,11 +56197,18 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6cbe0ff417ca375419775c90bb5d7791, type: 3}
   - {fileID: 21300000, guid: 6e0e51a117a146045aba7f406e892a94, type: 3}
   - {fileID: 21300000, guid: d529656574130a044b05d90b644a1c84, type: 3}
+  virusSprite:
+  - {fileID: 21300000, guid: 1e77825c4e194344caab440041a34235, type: 3}
+  - {fileID: 21300000, guid: 77bf90e2f7aa381428248fb220647dfc, type: 3}
+  - {fileID: 21300000, guid: 308ba9abb19587346a6d0b6cf1b2441d, type: 3}
+  - {fileID: 21300000, guid: 8e1507c0b71d10841b768d4b3e4d542e, type: 3}
+  - {fileID: 21300000, guid: 436183e37a16adb418c867c60d42ac76, type: 3}
   memberPrefab: {fileID: 4358638844235536952, guid: a1cf2ab7642cf704e9c83ab1f4f1c6d7, type: 3}
   squadList: {fileID: 2018879786}
   extraInfoPrefab: {fileID: 3189234086520631948, guid: bdba75cf46853ac4685cedbfc653fff8, type: 3}
   extraInfoPanel: {fileID: 481571115}
   infoPanel: {fileID: 1816391866}
+  battleinfoPanel: {fileID: 1816391870}
   moveBtn: {fileID: 1454820008}
   cancelBtn: {fileID: 581113692}
   monsterPanelPrefab: {fileID: 1279868514708342776, guid: 2697ea43779f1704c817a79235ee9460, type: 3}
@@ -64329,7 +64338,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 5.025, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1346844420
@@ -66781,7 +66790,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 122.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 93.8943, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1402151449
@@ -68225,7 +68234,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 16.565, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1425624031
@@ -86850,6 +86859,7 @@ GameObject:
   - component: {fileID: 1816391867}
   - component: {fileID: 1816391869}
   - component: {fileID: 1816391868}
+  - component: {fileID: 1816391870}
   m_Layer: 5
   m_Name: Info Panel
   m_TagString: Untagged
@@ -86917,6 +86927,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1816391866}
   m_CullTransparentMesh: 1
+--- !u!114 &1816391870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816391866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 619efea98d6aa684e861a7d9fb1cd787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoImage: {fileID: 962729386}
+  infoImageTitle: {fileID: 217085007}
+  explainText: {fileID: 1542174033}
 --- !u!1001 &1817163802
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -89539,6 +89564,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hintList: []
+  footprintSprite: {fileID: 21300000, guid: a64d58933cd467849b97614ffbb54faf, type: 3}
+  bloodSprite: {fileID: 21300000, guid: 9dd90c6a214f3124889601c2a1313075, type: 3}
   footprint: {fileID: 5975029672823305885, guid: 9d60369eb7369e542b2d580f7b2b15be, type: 3}
   bloodprint: {fileID: 1560305908663812, guid: e13abebc21b089e4ab240c1be5e0e69d, type: 3}
   arrowPrefab: {fileID: 1048394385358214, guid: dece47950fe08e94691d8788f9d599b5, type: 3}
@@ -95984,7 +96011,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 120}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2018879789
 CanvasRenderer:

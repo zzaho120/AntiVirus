@@ -7,10 +7,15 @@ public class HintMgr : MonoBehaviour
     [Header("List")]
     public List<HintBase> hintList = new List<HintBase>();
 
+    [Header("Spirtes")]
+    public Sprite footprintSprite;
+    public Sprite bloodSprite;
+
     [Header("Prefabs")]
     public GameObject footprint;
     public GameObject bloodprint;
     public GameObject arrowPrefab;
+
 
     public float maxDelayTime = 3f;
     public void Init()
@@ -28,7 +33,7 @@ public class HintMgr : MonoBehaviour
         }
     }
 
-    public void AddPrint(HintType hintType, DirectionType directionType, Vector3 tileIdx)
+    public void AddPrint(HintType hintType, DirectionType directionType, Vector3 tileIdx, MonsterChar monster)
     {
         GameObject prefab = null;
         var rot = Quaternion.identity;
@@ -62,7 +67,7 @@ public class HintMgr : MonoBehaviour
         var newVector = tileIdx + new Vector3(0, .55f, 0);
         var printGo = Instantiate(prefab, newVector, rot);
         var hintBase = printGo.GetComponent<HintBase>();
-        hintBase.Init(directionType);
+        hintBase.Init(directionType, monster);
         printGo.transform.SetParent(gameObject.transform);
         hintList.Add(hintBase);
     }
@@ -145,5 +150,17 @@ public class HintMgr : MonoBehaviour
             arrow.transform.GetChild(0).gameObject.SetActive(false);
 
         Destroy(arrow, maxDelayTime);
+    }
+
+    public void UpdateInfo(GameObject hitObject)
+    {
+        foreach (var hint in hintList)
+        {
+            if (hitObject == hint.gameObject)
+            {
+                var window = BattleMgr.Instance.battleWindowMgr.GetWindow(0) as BattleBasicWindow;
+                window.SetInfoText(Info.Hint, hint.gameObject);
+            }
+        }
     }
 }

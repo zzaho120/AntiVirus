@@ -8,11 +8,11 @@ public class BattleMonsterMgr : MonoBehaviour
     public int monsterIdx;
     private List<PlayerableChar> playerableChars;
     public MonsterChar curMonster;
+    public MonsterChar selectedMonster;
     public void Init()
     {
         monsters.Clear();
         var monsterArr = transform.GetComponentsInChildren<MonsterChar>();
-        Debug.Log(monsterArr.Length);
         for (var idx = 0; idx < monsterArr.Length; ++idx)
         {
             monsterArr[idx].Init();
@@ -41,7 +41,6 @@ public class BattleMonsterMgr : MonoBehaviour
                 monster.fsm.ChangeState((int)BattleMonState.Idle);
             
             monster.StartTurn();
-            sightMgr.InitMonsterSight(idx);
             if (monster.target == null)
                 monster.SetTarget(sightMgr.GetPlayerInMonsterSight(idx));
             
@@ -89,5 +88,50 @@ public class BattleMonsterMgr : MonoBehaviour
 
         if (BattleMgr.Instance.turn == BattleTurn.Enemy)
             EventBusMgr.Publish(EventType.EndEnemy);
+    }
+
+    public void UpdateInfo(GameObject hitObject)
+    {
+        foreach (var monster in monsters)
+        {
+            if (hitObject == monster.gameObject)
+            {
+                var window = BattleMgr.Instance.battleWindowMgr.GetWindow(0) as BattleBasicWindow;
+                window.SetInfoText(Info.Monster, monster.gameObject);
+
+                if (selectedMonster == monster)
+                {
+                    NonSelectedMonster();
+                }
+                else if (selectedMonster == null)
+                {
+                    selectedMonster = monster;
+                    selectedMonster.FloodFillVirus();
+                    selectedMonster.DisplaySightTile();
+                }
+
+                
+            }
+            foreach (var virusTile in monster.virusList)
+            {
+                if (hitObject == virusTile.gameObject)
+                {
+                    var window = BattleMgr.Instance.battleWindowMgr.GetWindow(0) as BattleBasicWindow;
+                    window.SetInfoText(Info.Virus, virusTile.gameObject);
+                }
+            }
+        }
+        
+        
+    }
+
+    public void NonSelectedMonster()
+    {
+        if (selectedMonster != null)
+        {
+            selectedMonster.ReturnVirusTile();
+            selectedMonster.ReturnSightTile();
+            selectedMonster = null;
+        }
     }
 }

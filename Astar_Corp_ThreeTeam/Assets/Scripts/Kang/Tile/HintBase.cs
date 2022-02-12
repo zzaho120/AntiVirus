@@ -19,27 +19,24 @@ public class HintBase : BattleTile
     [Header("Run Time")]
     public MonsterChar monster;
     public DirectionType direction;
+    public string ownerName;
 
-    public void Init(DirectionType direction)
+    public void Init(DirectionType direction, MonsterChar monster)
     {
-        base.InitHint();
+        InitHint();
         currentTile.AddHint(this);
 
         gameObject.name = $"Hint ({tileIdx.x}, {tileIdx.y}, {tileIdx.z})";
         this.direction = direction;
-
-        
+        this.monster = monster;
+        ownerName = monster.ownerName;
 
         var turn = BattleMgr.Instance.turnCount;
-        lifeTime += turn;
+        lifeTime += (turn + 1);
     }
 
     public bool CheckLifeTime(int turnCount)
     {
-        if (turnCount > lifeTime)
-        {
-            return true;
-        }
-        return false;
+        return turnCount > lifeTime;
     }
 }

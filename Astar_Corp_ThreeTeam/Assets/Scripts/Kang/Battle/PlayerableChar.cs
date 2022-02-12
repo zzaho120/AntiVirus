@@ -66,6 +66,8 @@ public class PlayerableChar : BattleTile
 
     public List<GameObject> sightTileList;
 
+    private bool isOnSightTile;
+
     public override void Init()
     {
         base.Init();
@@ -708,24 +710,33 @@ public class PlayerableChar : BattleTile
     public void DisplaySightTile()
     {
         var frontSightList = BattleMgr.Instance.sightMgr.GetFrontSight(this);
-        var poolMgr = BattleMgr.Instance.battlePoolMgr;
-        foreach (var sight in frontSightList)
+        if (!isOnSightTile && frontSightList.Count > 0)
         {
-            var sightTile = poolMgr.CreateSightTile();
-            sightTile.transform.position = sight.tileBase.tileIdx + new Vector3(0f, 0.55f);
-            sightTileList.Add(sightTile);
+            var poolMgr = BattleMgr.Instance.battlePoolMgr;
+            foreach (var sight in frontSightList)
+            {
+                var sightTile = poolMgr.CreateSightTile();
+                sightTile.transform.position = sight.tileBase.tileIdx + new Vector3(0f, 0.55f);
+                sightTileList.Add(sightTile);
+            }
+            isOnSightTile = true;
         }
     }
 
     public void ReturnSightTile()
     {
-        foreach (var sight in sightTileList)
+        if (isOnSightTile && sightTileList.Count > 0)
         {
-            var returnToPool = sight.GetComponent<ReturnToPool>();
-            returnToPool.Return();
+            foreach (var sight in sightTileList)
+            {
+                var returnToPool = sight.GetComponent<ReturnToPool>();
+                returnToPool.Return();
+            }
+            sightTileList.Clear();
+            isOnSightTile = false;
         }
-        sightTileList.Clear();
     }
+
 
     public void FireAnimation()
     {

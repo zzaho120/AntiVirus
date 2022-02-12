@@ -115,6 +115,7 @@ public class BattlePlayerMgr : MonoBehaviour
 
     public void RemovePlayer(PlayerableChar player)
     {
+        player.ReturnSightTile();
         player.currentTile.charObj = null;
         var idx = playerableChars.IndexOf(player);
         playerableChars.RemoveAt(idx);
@@ -231,7 +232,8 @@ public class BattlePlayerMgr : MonoBehaviour
             }
         }
 
-        character.GetDamage(level);
+        if (level > 2)
+            character.GetDamage(level);
     }
 
 }

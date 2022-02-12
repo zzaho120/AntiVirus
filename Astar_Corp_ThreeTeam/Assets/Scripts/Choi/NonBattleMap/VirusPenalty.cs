@@ -175,7 +175,7 @@ public class VirusPenalty
             //          /  \_£¯¡¡ |
             //¡¡        £ü¡¡¡¡/ / /
             //var maxGauge = character.resistGauge * (reductionLevel + 1);
-            var maxGauge = resistGauge * (resistLevel + 1);
+            var maxGauge = MaxResistGauge;
             if (resistGauge >= maxGauge)
             {
                 if (resistLevel != maxLevel)

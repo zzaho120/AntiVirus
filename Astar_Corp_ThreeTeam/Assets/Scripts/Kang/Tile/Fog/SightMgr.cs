@@ -74,6 +74,11 @@ public class SightMgr : MonoBehaviour
         MAX_Z_IDX = TileMgr.MAX_Z_IDX;
 
         InitFog();
+
+        for (var idx = 0; idx < monsters.Count; ++idx)
+        {
+            InitMonsterSight(idx);
+        }
     }
 
     private void InitFog()

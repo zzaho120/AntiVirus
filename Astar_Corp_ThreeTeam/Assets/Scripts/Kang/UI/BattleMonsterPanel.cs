@@ -34,12 +34,15 @@ public class BattleMonsterPanel : MonoBehaviour
                 break;
 
             case "Jaguar":
+                monsterImage.sprite = monsterSprite[4];
                 break;
 
             case "Tiger":
+                monsterImage.sprite = monsterSprite[5];
                 break;
 
             case "Fox":
+                monsterImage.sprite = monsterSprite[6];
                 break;
         }
 

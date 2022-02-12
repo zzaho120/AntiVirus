@@ -35,6 +35,8 @@ public class BattleMgr : MonoBehaviour
     [Header("Prefabs")]
     public GameObject playerPrefab;
 
+    [Header("UI Info Mode")]
+    public bool uiInfoMode;
     public void Awake()
     {
         Instance = this;
@@ -90,6 +92,21 @@ public class BattleMgr : MonoBehaviour
         switch (turn)
         {
             case BattleTurn.Player:
+                if (uiInfoMode)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        RaycastHit hit;
+                        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                        if (Physics.Raycast(ray, out hit))
+                        {
+                            var obj = hit.collider.gameObject;
+                            monsterMgr.UpdateInfo(obj);
+                            hintMgr.UpdateInfo(obj);
+                        }
+                    }
+                }
                 break;
             case BattleTurn.Enemy:
                 monsterMgr.UpdateTurn();
@@ -155,5 +172,19 @@ public class BattleMgr : MonoBehaviour
 
             battleWindowMgr.Open(1);
         }
+    }
+
+    public void ChangeUIMode(bool enabled)
+    {
+        uiInfoMode = enabled;
+        if (uiInfoMode)
+        {
+
+        }
+        else
+        {
+            monsterMgr.NonSelectedMonster();
+        }
+
     }
 }

@@ -23,8 +23,10 @@ public class MonsterChar : BattleTile
     private int cumulativeDmg;
     private PlayerableChar lastAttacker;
 
-    private List<MoveTile> virusList = new List<MoveTile>();
+    public List<VirusBase> virusList = new List<VirusBase>();
     private List<GameObject> sightTileList = new List<GameObject>();
+
+    public string ownerName;
     public bool IsfatalDmg
     {
         get
@@ -40,8 +42,38 @@ public class MonsterChar : BattleTile
         fsm = new BattleMonsterFSM();
         fsm.Init(this);
         animator = GetComponent<Animator>();
+        SetOwnerName();
     }
 
+    public void SetOwnerName()
+    {
+        switch (monsterStats.monster.name)
+        {
+            case "Bear":
+                ownerName = "°õ";
+                break;
+            case "Boar":
+                ownerName = "¸äµÅÁö";
+                break;
+
+            case "Fox":
+                ownerName = "¿©¿ì";
+                break;
+            case "Wolf":
+                ownerName = "´Á´ë";
+                break;
+
+            case "Jaguar":
+                ownerName = "Àç±Ô¾î";
+                break;
+            case "Spider":
+                ownerName = "°Å¹Ì";
+                break;
+            case "Tiger":
+                ownerName = "È£¶ûÀÌ";
+                break;
+        }
+    }
     public void StartTurn()
     {
         monsterStats.StartTurn();
@@ -371,7 +403,7 @@ public class MonsterChar : BattleTile
                     break;
             }
         }
-        hintMgr.AddPrint(hintType, directionType, currentTile.tileIdx);
+        hintMgr.AddPrint(hintType, directionType, currentTile.tileIdx, this);
     }
 
     public bool[] CheckFrontSight()
@@ -460,32 +492,6 @@ public class MonsterChar : BattleTile
             return null;
     }
 
-    public void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.collider.gameObject == gameObject)
-                {
-                    isSelect = !isSelect;
-
-                    if (isSelect)
-                    {
-                        FloodFillVirus();
-                    }
-                    else
-                    {
-                        ReturnVirusTile();
-                    }
-                }
-            }
-        }
-    }
-
     public void FloodFillVirus()
     {
         var cnt = 0;
@@ -511,7 +517,12 @@ public class MonsterChar : BattleTile
 
     public void ReturnSightTile()
     {
-
+        foreach (var sight in sightTileList)
+        {
+            var returnToPool = sight.GetComponent<ReturnToPool>();
+            returnToPool.Return();
+        }
+        sightTileList.Clear();
     }
 
     private void CheckVirusArea(TileBase tile, TileBase origin, int virusLevel, int cnt)
@@ -532,9 +543,11 @@ public class MonsterChar : BattleTile
         var alpha = 1f - (float)level / virusLevel - 0.3f;
 
         var go = BattleMgr.Instance.battlePoolMgr.CreateVirusTile();
-        go.transform.position = tile.tileIdx + new Vector3(0, 0.5f);
-        var virusTile = go.GetComponent<MoveTile>();
-        virusTile.parent = tile;
+        go.transform.position = tile.tileIdx + new Vector3(0, 0.55f);
+        var virusTile = go.GetComponent<VirusBase>();
+
+        var virus = monsterStats.virus;
+        virusTile.Init(tile, virus.name, level, virus.virusGauge);
         virusList.Add(virusTile);
 
         var adjTiles = tile.adjNodes;

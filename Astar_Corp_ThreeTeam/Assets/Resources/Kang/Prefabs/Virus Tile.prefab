@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 3032231682250064877}
   - component: {fileID: 8743168846987021829}
   - component: {fileID: 9179506905752827460}
-  - component: {fileID: 4548280709786545955}
   - component: {fileID: 619081361350231626}
+  - component: {fileID: 4121553519270119197}
   m_Layer: 0
   m_Name: Virus Tile
   m_TagString: MoveTile
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 7076986438931249863}
   m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.3, z: 0.8}
+  m_LocalScale: {x: 0.8, y: 0.05, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -85,19 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4548280709786545955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7076986438931249863}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29dd734e588f3f44db5ce4500a934f43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parent: {fileID: 0}
 --- !u!65 &619081361350231626
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -111,3 +98,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4121553519270119197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076986438931249863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2165c888b6f13f4194f585180bf2625, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parent: {fileID: 0}
+  virusName: 
+  virusLevel: 0
+  increasePerTic: 0
