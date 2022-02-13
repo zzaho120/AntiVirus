@@ -81,6 +81,12 @@ public class BattleBasicWindow : GenericWindow
     [Header("Turn End")]
     public GameObject turnEndBtn;
 
+    [Header("Floating Info")]
+    public BattleFloatingInfo battleFloatingInfoPrefab;
+    public GameObject CharacterUI;
+    private List<BattleFloatingInfo> battleFloatingInfoList = new List<BattleFloatingInfo>();
+
+
     public bool isTurn
     {
         get => BattleMgr.Instance.turn == BattleTurn.Player;
@@ -110,6 +116,7 @@ public class BattleBasicWindow : GenericWindow
         alertPanel.SetActive(false);
         alertConfirmBtn.SetActive(false);
         InitSquad();
+        InitFloatingInfo();
 
         EventBusMgr.Subscribe(EventType.StartPlayer, StartTurn);
     }
@@ -123,10 +130,20 @@ public class BattleBasicWindow : GenericWindow
 
     public void SetSelectedChar(PlayerableChar player)
     {
+        BattleFloatingInfo info = null;
         if (selectedChar != null)
+        {
             selectedChar.ReturnSightTile();
+            info = GetFlotingInfo(selectedChar);
+            if (info != null)
+                info.isSelected = false;
+        }
 
         selectedChar = player;
+        info = GetFlotingInfo(selectedChar);
+        if (info != null)
+            info.isSelected = true;
+
         state = CharacterState.Wait;
         var stats = selectedChar.characterStats;
         hpText.text = $"{stats.currentHp}/{stats.MaxHp}";
@@ -135,6 +152,7 @@ public class BattleBasicWindow : GenericWindow
         classImage.sprite = stats.character.icon;
         selectedChar.DisplaySightTile();
         UpdateUI();
+        
     }
 
     public void UpdateMemberUI()
@@ -344,6 +362,34 @@ public class BattleBasicWindow : GenericWindow
         }
     }
 
+    public void InitFloatingInfo()
+    {
+        var battleMgr = BattleMgr.Instance;
+        var players = battleMgr.playerMgr.playerableChars;
+        var monsters = battleMgr.monsterMgr.monsters;
+
+        foreach (var player in players)
+        {
+            var go = Instantiate(battleFloatingInfoPrefab, CharacterUI.transform);
+            var info = go.GetComponent<BattleFloatingInfo>();
+            info.Init(player);
+
+            battleFloatingInfoList.Add(info);
+        }
+        foreach (var monster in monsters)
+        {
+            var go = Instantiate(battleFloatingInfoPrefab, CharacterUI.transform);
+            var info = go.GetComponent<BattleFloatingInfo>();
+            info.Init(monster);
+
+            battleFloatingInfoList.Add(info);
+        }
+    }
+
+    public BattleFloatingInfo GetFlotingInfo(PlayerableChar player)
+    {
+        return battleFloatingInfoList.Find(info => info.player == player);
+    }
     public void OnClickInfo()
     {
         if (state == CharacterState.Wait)
