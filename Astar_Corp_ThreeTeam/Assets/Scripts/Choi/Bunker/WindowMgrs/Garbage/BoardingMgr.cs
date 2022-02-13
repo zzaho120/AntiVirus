@@ -26,11 +26,12 @@ public class BoardingMgr : MonoBehaviour
 
     int currentIndex;
     int currentSeatNum;
-    int currentKey;
-    string selectedCar;
+    public int currentKey;
+    public string selectedCar;
     Sprite nullImg;
 
     public PlayerDataMgr playerDataMgr;
+    public GarageMgr garageMgr;
     Color originColor;
 
     public void Init()
@@ -177,6 +178,8 @@ public class BoardingMgr : MonoBehaviour
 
         currentKey--;
         selectedCar = carOrder[currentKey].id;
+        playerDataMgr.saveData.currentCar = selectedCar;
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
         CarReset();
         CarDisplay(selectedCar);
@@ -188,6 +191,8 @@ public class BoardingMgr : MonoBehaviour
 
         currentKey++;
         selectedCar = carOrder[currentKey].id;
+        playerDataMgr.saveData.currentCar = selectedCar;
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
         CarReset();
         CarDisplay(selectedCar);
@@ -237,6 +242,8 @@ public class BoardingMgr : MonoBehaviour
             if (seats[i].activeSelf)
                 seats[i].SetActive(false);
         }
+
+        garageMgr.Display();
     }
 
     private void ButtonInteractable()
@@ -323,6 +330,8 @@ public class BoardingMgr : MonoBehaviour
         seats[currentSeatNum].GetComponent<Image>().color = Color.white;
         currentSeatNum = -1;
         currentIndex = -1;
+
+        garageMgr.Display();
     }
 
     public void GetOffTheCar()
@@ -382,6 +391,8 @@ public class BoardingMgr : MonoBehaviour
         seats[currentSeatNum].GetComponent<Image>().color = Color.white;
         currentSeatNum = -1;
         currentIndex = -1;
+
+        garageMgr.Display();
     }
 
     public void OpenCarListPopup()

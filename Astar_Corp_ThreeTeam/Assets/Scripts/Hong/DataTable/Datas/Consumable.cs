@@ -17,4 +17,5 @@ public class Consumable : ItemBase
     public int hpRecovery;
     public int virusGaugeDec;
     public string storeName;
+    public string des; // Ό³Έν.
 }

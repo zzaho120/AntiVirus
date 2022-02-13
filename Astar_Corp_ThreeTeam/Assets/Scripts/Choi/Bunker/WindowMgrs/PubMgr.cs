@@ -209,7 +209,8 @@ public class PubMgr : MonoBehaviour
                 List<string> mainWeapons = new List<string>();
                 foreach (var mainWeapon in playerDataMgr.equippableList)
                 {
-                    if (mainWeapon.Value.kind.Equals("1") || mainWeapon.Value.kind.Equals("7")) continue;
+                    if (mainWeapon.Value.kind.Equals("1") || mainWeapon.Value.kind.Equals("7")
+                        || mainWeapon.Value.kind.Equals("8")) continue;
                     if (!stat.character.weapons.Contains(mainWeapon.Value.kind)) continue;
                     mainWeapons.Add(mainWeapon.Key);
                 }

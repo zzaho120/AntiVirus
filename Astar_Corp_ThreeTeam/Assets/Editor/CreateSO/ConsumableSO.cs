@@ -55,6 +55,7 @@ public class ConsumableSO
                     consumable.itemQuantity  = int.Parse(splitData[14]);
                     consumable.img = Resources.Load($"Choi/Sprites/Images/Items/Consumables/{splitData[15]}", typeof(Sprite)) as Sprite;
                     consumable.storeName = splitData[16];
+                    consumable.des = splitData[17];
 
                     AssetDatabase.CreateAsset(consumable, $"Assets//Resources/Choi/Datas/Consumables/{consumable.name}.asset");
                     itemNum++;

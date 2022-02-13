@@ -53,6 +53,13 @@ public class TrunkMgr : MonoBehaviour
     public Text itemNumTxt;
     public Slider slider;
 
+    public string trunkWeight;
+    public int trunkBullet5;
+    public int trunkBullet7;
+    public int trunkBullet9;
+    public int trunkBullet45;
+    public int trunkBullet12;
+
     Dictionary<string, GameObject> truckList = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> storageList = new Dictionary<string,  GameObject>();
 
@@ -343,12 +350,19 @@ public class TrunkMgr : MonoBehaviour
         var key = playerDataMgr.saveData.currentCar;
         trunkTotalWeight = playerDataMgr.truckList[key].weight;
         trunkWeightTxt.text = $"{trunkCurrentWeight}/{trunkTotalWeight}";
+        trunkWeight = trunkWeightTxt.text;
 
         trunkBullet5Txt.text = $"{bullet5Num}";
         trunkBullet7Txt.text = $"{bullet7Num}";
         trunkBullet9Txt.text = $"{bullet9Num}";
         trunkBullet45Txt.text = $"{bullet45Num}";
         trunkBullet12Txt.text = $"{bullet12Num}";
+        trunkBullet5 = bullet5Num;
+        trunkBullet7 = bullet7Num;
+        trunkBullet9 = bullet9Num;
+        trunkBullet45 = bullet45Num;
+        trunkBullet12 = bullet12Num;
+        garageMgr.UpdateInfo();
 
         if (trunkCurrentWeight > trunkTotalWeight)
         {
@@ -619,12 +633,13 @@ public class TrunkMgr : MonoBehaviour
         }
 
         slider.value = 0;
-        itemNumTxt.text = $"(선택 개수) nnnn개";
+        itemNumTxt.text = $"(선택 개수) 0개";
         OpenPopup();
     }
 
     public void Move()
     {
+        if (slider.value == 0) return;
         if (currentInvenKind == InvenKind.Storage)
             MoveToTrunk(Mathf.FloorToInt(slider.value));
         else if(currentInvenKind == InvenKind.Truck)

@@ -80,7 +80,8 @@ public class WeaponSO
                     equippable.continuousShootingPenalty = int.Parse(splitData[29]);
                     equippable.battleID = int.Parse(splitData[30]);
                     equippable.storeName = splitData[31];
-
+                    equippable.des = splitData[32];
+                    
                     //// Item 정보 담고 있는 List
                     //List<string> itemInfo = new List<string>();
                     //itemInfo.Add(splitData[20]);    // Grade            // 등급

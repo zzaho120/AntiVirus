@@ -37,6 +37,7 @@ public class PlayerSaveLoadSystem
     public static void Save(PlayerSaveData data)
     {
         FilePath = $"PlayerData.json";
+        Debug.Log($"{FilePath}");
         switch (CurrentMode)
         {
             case Modes.Text:

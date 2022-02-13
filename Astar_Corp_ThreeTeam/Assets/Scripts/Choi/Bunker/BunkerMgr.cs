@@ -240,6 +240,7 @@ public class BunkerMgr : MonoBehaviour
             case BunkerKinds.Garage:
                 nameTxt.text = "Â÷°í";
                 garageMgr.Init();
+                garageMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.GarageWindow - 1;
                 break;
             case BunkerKinds.CarCenter:
@@ -498,6 +499,7 @@ public class BunkerMgr : MonoBehaviour
 
                 playerDataMgr.saveData.storeLevel++;
                 playerDataMgr.saveData.money -= upgradeCost;
+                playerDataMgr.saveData.storeReset = true;
                 PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
                 moneyTxt.text = playerDataMgr.saveData.money.ToString();
 

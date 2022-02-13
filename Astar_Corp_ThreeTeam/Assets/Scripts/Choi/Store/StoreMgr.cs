@@ -224,6 +224,7 @@ public class StoreMgr : MonoBehaviour
             grade3TotalVal = 0;
             foreach (var element in playerDataMgr.equippableList)
             {
+                if (element.Key.Equals("WEP_0024")) continue;
                 switch (element.Value.grade)
                 {
                     case 1:
@@ -280,6 +281,7 @@ public class StoreMgr : MonoBehaviour
 
                 foreach (var element in playerDataMgr.equippableList)
                 {
+                    if (element.Key.Equals("WEP_0024")) continue;
                     if (storeLevel == 1 && element.Value.grade != 1) continue;
                     else if (storeLevel == 2 && element.Value.grade == 3) continue;
                     
@@ -405,6 +407,7 @@ public class StoreMgr : MonoBehaviour
         {
             foreach (var element in storeWeaponInfo)
             {
+                if (element.Value.Equals("WEP_0024")) continue;
                 var go = Instantiate(storePrefab, storeContents.transform);
                 string key = element.Value;
 

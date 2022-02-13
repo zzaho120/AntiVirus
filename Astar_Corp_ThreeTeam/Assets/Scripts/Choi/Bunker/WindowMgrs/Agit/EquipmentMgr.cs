@@ -49,6 +49,7 @@ public class EquipmentMgr : MonoBehaviour
     public Text accuracyTxt;
     public Text continuousShotTxt;
     public Text recoilTxt;
+    public Text detailTxt;
 
     public Text weaponName;
     public Text typeNameTxt;
@@ -418,6 +419,7 @@ public class EquipmentMgr : MonoBehaviour
             var child = itemObjs[currentKey].transform.GetChild(7).gameObject;
             child.GetComponent<Button>().enabled = true;
             child.GetComponent<Image>().color = Color.white;
+            child.GetComponent<Image>().raycastTarget = true;
 
             child = itemObjs[currentKey].transform.GetChild(6).gameObject;
             child.SetActive(false);
@@ -426,10 +428,14 @@ public class EquipmentMgr : MonoBehaviour
         currentKey = key;
         var childObj = itemObjs[currentKey].transform.GetChild(7).gameObject;
         childObj.GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255);
+        childObj.GetComponent<Image>().raycastTarget = false;
+        var button = childObj.GetComponent<Button>();
+        button.enabled = false;
 
         childObj = itemObjs[currentKey].transform.GetChild(6).gameObject;
         childObj.SetActive(true);
-        var button = childObj.GetComponent<Button>();
+        button = childObj.GetComponent<Button>();
+        //button.enabled = true;
 
         var weapon = playerDataMgr.equippableList[currentKey];
         bool isEquip = false;
@@ -452,7 +458,7 @@ public class EquipmentMgr : MonoBehaviour
             childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text = "¿Â¬¯ «ÿ¡¶";
 
             childObj = itemObjs[currentKey].transform.GetChild(6).gameObject;
-            childObj.GetComponent<Button>().enabled = false;
+            childObj.GetComponent<Button>().enabled = true;
             button.onClick.AddListener(() => { Disarm(); });
             OpenWeaponInfo(isEquip);
         }
@@ -461,7 +467,7 @@ public class EquipmentMgr : MonoBehaviour
             childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text = "¿Â¬¯";
 
             childObj = itemObjs[currentKey].transform.GetChild(6).gameObject;
-            childObj.GetComponent<Button>().enabled = false;
+            childObj.GetComponent<Button>().enabled = true;
             button.onClick.AddListener(() => { Equip(); });
             OpenWeaponInfo(isEquip);
         }
@@ -592,6 +598,8 @@ public class EquipmentMgr : MonoBehaviour
                 recoilTxt.color = Color.white;
                 recoilTxt.text = $"{weapon.continuousShootingPenalty}%(-)";
             }
+
+            detailTxt.text = $"{weapon.des}";
         }
         else
         {
@@ -625,6 +633,8 @@ public class EquipmentMgr : MonoBehaviour
 
             recoilTxt.color = Color.white;
             recoilTxt.text = $"{weapon.continuousShootingPenalty}%";
+
+            detailTxt.text = $"{weapon.des}";
         }
 
 

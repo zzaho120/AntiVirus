@@ -17,4 +17,5 @@ public class OtherItem : ScriptableObject
     public string dropRate;     // ¾ê floatÇüÀ¸·Î ½á¾ßµÊ
     public string itemQuantity;
     public string storeName;
+    public string des; // ¼³¸í.
 }

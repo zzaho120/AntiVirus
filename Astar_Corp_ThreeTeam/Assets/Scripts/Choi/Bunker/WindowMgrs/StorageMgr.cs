@@ -319,24 +319,24 @@ public class StorageMgr : MonoBehaviour
 
             if (storageWeaponInfo.ContainsKey(currentKey))
             {
-                itemNameTxt.text = storageWeaponInfo[currentKey].name;
+                itemNameTxt.text = storageWeaponInfo[currentKey].storeName;
                 itemTypeTxt.text = $"{ GetTypeStr( storageWeaponInfo[currentKey].kind)}";
                 itemImg.sprite = storageWeaponInfo[currentKey].img;
-                //detailTxt.text = "";
+                detailTxt.text = $"{ storageWeaponInfo[currentKey].des}";
             }
             else if (storageConsumableInfo.ContainsKey(currentKey))
             {
-                itemNameTxt.text = storageConsumableInfo[currentKey].name;
+                itemNameTxt.text = storageConsumableInfo[currentKey].storeName;
                 itemTypeTxt.text = $"{ GetTypeStr(storageWeaponInfo[currentKey].kind)}";
                 itemImg.sprite = storageConsumableInfo[currentKey].img;
-                //detailTxt.text = "";
+                detailTxt.text = $"{storageConsumableInfo[currentKey].des}";
             }
             else if (storageOtherItemInfo.ContainsKey(currentKey))
             {
-                itemNameTxt.text = storageOtherItemInfo[currentKey].name;
+                itemNameTxt.text = storageOtherItemInfo[currentKey].storeName;
                 itemImg.sprite = (storageOtherItemInfo[currentKey].img == null)? null : storageOtherItemInfo[currentKey].img;
                 //itemTypeTxt.text = $"{ storageOtherItemNumInfo[currentKey]}°³";
-                //detailTxt.text = "";
+                detailTxt.text = $"{storageOtherItemInfo[currentKey].des}";
             }
         }
        

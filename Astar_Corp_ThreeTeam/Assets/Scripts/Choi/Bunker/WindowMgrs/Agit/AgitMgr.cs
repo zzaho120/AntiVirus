@@ -24,6 +24,7 @@ public class AgitMgr : MonoBehaviour
 
     [Header("CharacterList Win")]
     public List<GameObject> chracterListMenus;
+    public List<GameObject> menuObjs;
     public GameObject statePrefab;
     public GameObject equipPrefab;
     public GameObject abilityPrefab;
@@ -162,8 +163,6 @@ public class AgitMgr : MonoBehaviour
                 maxMember = agitLevelInfo.level5;
                 break;
         }
-       
-        RefreshCharacterList();
 
         currentIndex = -1;
         skillWinMgr.currentIndex = currentIndex;
@@ -211,15 +210,23 @@ public class AgitMgr : MonoBehaviour
     {
         if (characterListMenu != -1)
         {
-            chracterListMenus[characterListMenu].GetComponent<Image>().color = Color.white;
+            chracterListMenus[characterListMenu].GetComponent<Image>().color = new Color(225f/255, 225f/255, 225f/255);
+            menuObjs[characterListMenu].SetActive(false);
         }
 
         characterListMenu = index;
         chracterListMenus[characterListMenu].GetComponent<Image>().color = new Color(255f / 255, 192f / 255, 0f / 255);
+        menuObjs[characterListMenu].SetActive(true);
+
+        RefreshCharacterList(index);
     }
 
-    public void RefreshCharacterList()
+    public void RefreshCharacterList(int index)
     {
+        //0.상태
+        //1.장비
+        //2.능력
+
         //이전 정보 삭제.
         if (characterObjs.Count != 0)
         {
@@ -233,76 +240,250 @@ public class AgitMgr : MonoBehaviour
         }
         if (characterInfo.Count != 0) characterInfo.Clear();
 
-        //생성.
-        int i = 0;
-        foreach (var element in playerDataMgr.currentSquad)
+        if (index == 0)
         {
-            var go = Instantiate(statePrefab, characterListContent.transform);
-
-            var child = go.transform.GetChild(0).gameObject;
-            child.transform.GetChild(1).gameObject.GetComponent<Text>().text
-                 = $"LV{element.Value.level}";
-
-            var expSlider = child.transform.GetChild(3).gameObject.GetComponent<Slider>();
-            expSlider.maxValue = element.Value.totalExp;
-            expSlider.value = element.Value.currentExp;
-
-            child.transform.GetChild(4).gameObject.GetComponent<Text>().text
-                = $"{element.Value.currentExp}/{element.Value.totalExp}";
-
-            child = go.transform.GetChild(1).gameObject;
-            child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite
-                = element.Value.character.icon;
-            child.transform.GetChild(1).gameObject.GetComponent<Text>().text
-                 = element.Value.character.name;
-
-            child = go.transform.GetChild(2).gameObject;
-            child.transform.GetChild(0).gameObject.GetComponent<Text>().text
-                 = element.Value.characterName;
-
-            child = go.transform.GetChild(3).gameObject;
-            child.transform.GetChild(0).gameObject.GetComponent<Text>().text
-                 = $"{element.Value.currentHp}/{element.Value.MaxHp}";
-
-            var slider = child.transform.GetChild(1).gameObject.GetComponent<Slider>();
-            slider.maxValue = element.Value.MaxHp;
-            slider.value = element.Value.currentHp;
-
-            var virusGroup = child.transform.GetChild(2).gameObject;
-            string[] virusName = new string[5];
-            virusName[0] = "E";
-            virusName[1] = "B";
-            virusName[2] = "P";
-            virusName[3] = "I";
-            virusName[4] = "T";
-
-            for (int j = 0; j < virusName.Length; j++)
+            //생성.
+            int i = 0;
+            foreach (var element in playerDataMgr.currentSquad)
             {
-                if (element.Value.virusPenalty[virusName[j]].penaltyLevel >= 1)
-                    virusGroup.transform.GetChild(j).gameObject.SetActive(true);
-                else virusGroup.transform.GetChild(j).gameObject.SetActive(false);
-            }
+                var go = Instantiate(statePrefab, characterListContent.transform);
 
-            child = go.transform.GetChild(4).gameObject;
-            var toleranceGroup = child.transform.GetChild(0).gameObject;
-            for (int j = 0; j < virusName.Length; j++)
-            {
-                child = toleranceGroup.transform.GetChild(j).gameObject;
+                var child = go.transform.GetChild(0).gameObject;
                 child.transform.GetChild(1).gameObject.GetComponent<Text>().text
-                    = $"Lv {element.Value.virusPenalty[virusName[j]].resistLevel}";
+                     = $"LV{element.Value.level}";
+
+                var expSlider = child.transform.GetChild(3).gameObject.GetComponent<Slider>();
+                expSlider.maxValue = element.Value.totalExp;
+                expSlider.value = element.Value.currentExp;
+
+                child.transform.GetChild(4).gameObject.GetComponent<Text>().text
+                    = $"{element.Value.currentExp}/{element.Value.totalExp}";
+
+                child = go.transform.GetChild(1).gameObject;
+                child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite
+                    = element.Value.character.icon;
+                child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                     = element.Value.character.name;
+
+                child = go.transform.GetChild(2).gameObject;
+                child.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                     = element.Value.characterName;
+
+                child = go.transform.GetChild(3).gameObject;
+                child.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                     = $"{element.Value.currentHp}/{element.Value.MaxHp}";
+
+                var slider = child.transform.GetChild(1).gameObject.GetComponent<Slider>();
+                slider.maxValue = element.Value.MaxHp;
+                slider.value = element.Value.currentHp;
+
+                var virusGroup = child.transform.GetChild(2).gameObject;
+                string[] virusName = new string[5];
+                virusName[0] = "E";
+                virusName[1] = "B";
+                virusName[2] = "P";
+                virusName[3] = "I";
+                virusName[4] = "T";
+
+                for (int j = 0; j < virusName.Length; j++)
+                {
+                    if (element.Value.virusPenalty[virusName[j]].penaltyLevel >= 1)
+                        virusGroup.transform.GetChild(j).gameObject.SetActive(true);
+                    else virusGroup.transform.GetChild(j).gameObject.SetActive(false);
+                }
+
+                child = go.transform.GetChild(4).gameObject;
+                var toleranceGroup = child.transform.GetChild(0).gameObject;
+                for (int j = 0; j < virusName.Length; j++)
+                {
+                    child = toleranceGroup.transform.GetChild(j).gameObject;
+                    child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                        = $"Lv {element.Value.virusPenalty[virusName[j]].resistLevel}";
+                }
+
+                int num = i;
+                var button = go.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectCharacter(num); });
+                characterObjs.Add(go);
+
+                characterInfo.Add(num, element.Key);
+
+                i++;
             }
-
-            int num = i;
-            var button = go.AddComponent<Button>();
-            button.onClick.AddListener(delegate { SelectCharacter(num); });
-            characterObjs.Add(go);
-
-            characterInfo.Add(num, element.Key);
-
-            i++;
         }
+        else if (index == 1)
+        {
+            //생성.
+            int i = 0;
+            foreach (var element in playerDataMgr.currentSquad)
+            {
+                var go = Instantiate(equipPrefab, characterListContent.transform);
+
+                var child = go.transform.GetChild(0).gameObject;
+                child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                     = $"LV{element.Value.level}";
+
+                var expSlider = child.transform.GetChild(3).gameObject.GetComponent<Slider>();
+                expSlider.maxValue = element.Value.totalExp;
+                expSlider.value = element.Value.currentExp;
+
+                child = go.transform.GetChild(1).gameObject;
+                child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite
+                    = element.Value.character.icon;
+                child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                     = element.Value.character.name;
+
+                child = go.transform.GetChild(2).gameObject;
+                child.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                     = element.Value.characterName;
+
+                child = go.transform.GetChild(3).gameObject;
+                child = child.transform.GetChild(0).gameObject;
+                var childObj = child.transform.GetChild(0).gameObject;
+                var color = childObj.GetComponent<Image>().color;
+                if (element.Value.weapon.mainWeapon != null)
+                {
+                    childObj.GetComponent<Image>().color
+                        = new Color(color.r, color.g, color.b, 1);
+                    childObj.GetComponent<Image>().sprite
+                        = element.Value.weapon.mainWeapon.img;
+                    childObj = child.transform.GetChild(1).gameObject;
+                    childObj.SetActive(true);
+                    childObj.transform.GetChild(0).GetComponent<Text>().text
+                        = $"{GetTypeStr(element.Value.weapon.mainWeapon.kind)}";
+                }
+                else
+                {
+                    childObj.GetComponent<Image>().color
+                      = new Color(color.r, color.g, color.b, 0);
+                    childObj = child.transform.GetChild(1).gameObject;
+                    childObj.SetActive(false);
+                }
+
+                child = go.transform.GetChild(4).gameObject;
+                child = child.transform.GetChild(0).gameObject;
+                childObj = child.transform.GetChild(0).gameObject;
+                color = childObj.GetComponent<Image>().color;
+                if (element.Value.weapon.subWeapon != null)
+                {
+                    childObj.GetComponent<Image>().color
+                        = new Color(color.r, color.g, color.b, 1);
+                    childObj.GetComponent<Image>().sprite
+                        = element.Value.weapon.subWeapon.img;
+                    childObj = child.transform.GetChild(1).gameObject;
+                    childObj.SetActive(true);
+                    childObj.transform.GetChild(0).GetComponent<Text>().text
+                        = $"{GetTypeStr(element.Value.weapon.subWeapon.kind)}";
+                }
+                else
+                {
+                    childObj.GetComponent<Image>().color
+                      = new Color(color.r, color.g, color.b, 0);
+                    childObj = child.transform.GetChild(1).gameObject;
+                    childObj.SetActive(false);
+                }
+
+                int num = i;
+                var button = go.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectCharacter(num); });
+                characterObjs.Add(go);
+
+                characterInfo.Add(num, element.Key);
+
+                i++;
+            }
+        }
+        else if (index == 2)
+        {
+            //생성.
+            int i = 0;
+            foreach (var element in playerDataMgr.currentSquad)
+            {
+                var go = Instantiate(abilityPrefab, characterListContent.transform);
+
+                var child = go.transform.GetChild(0).gameObject;
+                child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                     = $"LV{element.Value.level}";
+
+                var expSlider = child.transform.GetChild(3).gameObject.GetComponent<Slider>();
+                expSlider.maxValue = element.Value.totalExp;
+                expSlider.value = element.Value.currentExp;
+
+                child = go.transform.GetChild(1).gameObject;
+                child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite
+                    = element.Value.character.icon;
+                child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                     = element.Value.character.name;
+
+                child = go.transform.GetChild(2).gameObject;
+                child.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                     = element.Value.characterName;
+
+                child = go.transform.GetChild(3).gameObject;
+                child = child.transform.GetChild(0).gameObject;
+                var childObj = child.transform.GetChild(0).gameObject;
+                childObj = childObj.transform.GetChild(1).gameObject;
+                childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                    = $"{element.Value.currentHp}";
+
+                childObj = child.transform.GetChild(1).gameObject;
+                childObj = childObj.transform.GetChild(1).gameObject;
+                childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                    = $"{element.Value.concentration}";
+
+                childObj = child.transform.GetChild(2).gameObject;
+                childObj = childObj.transform.GetChild(1).gameObject;
+                childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                    = $"{element.Value.sensivity}";
+
+                childObj = child.transform.GetChild(3).gameObject;
+                childObj = childObj.transform.GetChild(1).gameObject;
+                childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                    = $"{element.Value.willpower}";
+
+                int num = i;
+                var button = go.AddComponent<Button>();
+                button.onClick.AddListener(delegate { SelectCharacter(num); });
+                characterObjs.Add(go);
+
+                characterInfo.Add(num, element.Key);
+
+                i++;
+            }
+        }
+
         int currentMemberNum = playerDataMgr.currentSquad.Count;
         memberNumTxt.text = $"최대 용병 수용량 {currentMemberNum} / {maxMember}";
+    }
+
+    string GetTypeStr(string kind)
+    {
+        string type = string.Empty;
+        switch (kind)
+        {
+            case "1":
+                type = "Handgun";
+                break;
+            case "2":
+                type = "SG";
+                break;
+            case "3":
+                type = "SMG";
+                break;
+            case "4":
+                type = "AR";
+                break;
+            case "5":
+                type = "LMG";
+                break;
+            case "6":
+                type = "SR";
+                break;
+            case "7":
+                type = "근접무기";
+                break;
+        }
+        return type;
     }
 
     public void SelectCharacter(int index)
@@ -361,7 +542,7 @@ public class AgitMgr : MonoBehaviour
             }
         }
         playerDataMgr.RefreshCurrentSquad();
-        RefreshCharacterList();
+        RefreshCharacterList(characterListMenu);
     }
 
     public void FireAll()
@@ -375,7 +556,7 @@ public class AgitMgr : MonoBehaviour
             playerDataMgr.RemoveCharacter(i);
         }
         playerDataMgr.RefreshCurrentSquad();
-        RefreshCharacterList();
+        RefreshCharacterList(characterListMenu);
     }
 
     bool isAnythingChecked()
@@ -396,8 +577,9 @@ public class AgitMgr : MonoBehaviour
 
         playerDataMgr.RemoveCharacter(currentIndex);    
         playerDataMgr.RefreshCurrentSquad();
-        RefreshCharacterList();
+        RefreshCharacterList(characterListMenu);
 
+        if (equipmentMgr.equipmentWin1.activeSelf) CloseEquipmentWin();
         CloseCharacterInfo();
     }
 
@@ -577,8 +759,21 @@ public class AgitMgr : MonoBehaviour
     {
         mainWin.SetActive(false);
         characterListUpperUI.SetActive(true);
-        characterListMenu = -1;
+        characterListMenu = 0;
+        RefreshCharacterList(characterListMenu);
         charcterListWin.SetActive(true);
+
+        foreach (var element in chracterListMenus)
+        { 
+            element.GetComponent<Image>().color = new Color(225f / 255, 225f / 255, 225f / 255);
+        }
+        foreach (var element in menuObjs)
+        {
+            element.SetActive(false);
+        }
+
+        characterListMenu = -1;
+        SelectMenu(0);
     }
 
     public void CloseCharacterListWin()
