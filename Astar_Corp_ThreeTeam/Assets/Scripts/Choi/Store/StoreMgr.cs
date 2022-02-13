@@ -768,17 +768,23 @@ public class StoreMgr : MonoBehaviour
 
         if (storageWeaponInfo.ContainsKey(currentStorageKey))
         {
-            itemNameTxt.text = storageWeaponInfo[currentStorageKey].storeName;
+            itemNameTxt.text = playerDataMgr.equippableList[currentStorageKey].name;
+            itemImg.sprite = playerDataMgr.equippableList[currentStorageKey].img;
+            itemTypeTxt.text = "전투";
             slider.maxValue = storageWeaponNumInfo[currentStorageKey];
         }
         else if (storageConsumableInfo.ContainsKey(currentStorageKey))
         {
-            itemNameTxt.text = storageConsumableInfo[currentStorageKey].storeName;
+            itemNameTxt.text = playerDataMgr.consumableList[currentStorageKey].name;
+            itemImg.sprite = playerDataMgr.consumableList[currentStorageKey].img;
+            itemTypeTxt.text = "소모";
             slider.maxValue = storageConsumableNumInfo[currentStorageKey];
         }
         else if (storageOtherItemInfo.ContainsKey(currentStorageKey))
         {
-            itemNameTxt.text = storageOtherItemInfo[currentStorageKey].storeName;
+            itemNameTxt.text = playerDataMgr.otherItemList[currentStorageKey].name;
+            itemImg.sprite = playerDataMgr.otherItemList[currentStorageKey].img;
+            itemTypeTxt.text = "기타";
             slider.maxValue = storageOtherItemNumInfo[currentStorageKey];
         }
 
@@ -790,6 +796,7 @@ public class StoreMgr : MonoBehaviour
         slider.value = 0;
         itemNumTxt.text = $"(선택 개수) 0개";
         itemCostTxt.text = "0";
+        itemWeightTxt.text = "0";
         OpenPopup();
     }
 
@@ -812,7 +819,7 @@ public class StoreMgr : MonoBehaviour
         {
             var currentKey = storeWeaponInfo[currentStoreKey];
             var cost = playerDataMgr.equippableList[currentKey].price;
-            if (playerDataMgr.saveData.money - cost < 0) return;
+            if (playerDataMgr.saveData.money - cost*itemNum < 0) return;
 
             var weight = playerDataMgr.equippableList[currentKey].weight;
             if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
@@ -847,13 +854,13 @@ public class StoreMgr : MonoBehaviour
                 storageWeaponNumInfo.Add(currentKey, itemNum);
             }
 
-            playerDataMgr.saveData.money -= cost;
+            playerDataMgr.saveData.money -= cost* itemNum;
         }
         else if (storeConsumableInfo.ContainsKey(currentStoreKey))
         {
             var currentKey = storeConsumableInfo[currentStoreKey];
             var cost = playerDataMgr.consumableList[currentKey].price;
-            if (playerDataMgr.saveData.money - cost < 0) return;
+            if (playerDataMgr.saveData.money - cost * itemNum < 0) return;
 
             var weight = playerDataMgr.consumableList[currentKey].weight;
             if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
@@ -888,13 +895,13 @@ public class StoreMgr : MonoBehaviour
                 storageConsumableNumInfo.Add(currentKey, itemNum);
             }
 
-            playerDataMgr.saveData.money -= cost;
+            playerDataMgr.saveData.money -= cost * itemNum;
         }
         else if (storeOtherItemInfo.ContainsKey(currentStoreKey))
         {
             var currentKey = storeOtherItemInfo[currentStoreKey];
             var cost = int.Parse(playerDataMgr.otherItemList[currentKey].price);
-            if (playerDataMgr.saveData.money - cost < 0) return;
+            if (playerDataMgr.saveData.money - cost * itemNum < 0) return;
 
             var weight = int.Parse(playerDataMgr.otherItemList[currentKey].weight);
             if (storageCurrentWeight + weight * itemNum > maxStorageCapacity) return;
@@ -929,7 +936,7 @@ public class StoreMgr : MonoBehaviour
                 storageOtherItemNumInfo.Add(currentKey, itemNum);
             }
 
-            playerDataMgr.saveData.money -= cost;
+            playerDataMgr.saveData.money -= cost * itemNum;
         }
 
         if (playerDataMgr.saveData.storeItemNum[currentStoreKey] - itemNum == 0)
@@ -954,6 +961,7 @@ public class StoreMgr : MonoBehaviour
 
         var currentMode = (int)storageMode;
         DisplayStorageItem(currentMode);
+
         currentMode = (int)storeMode;
         DisplayStoreItem(currentMode);
 
@@ -1072,11 +1080,12 @@ public class StoreMgr : MonoBehaviour
                 storageOtherItemNumInfo.Remove(currentKey);
             }
         }
+        
+        playerDataMgr.saveData.money += cost*itemNum;
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+
         var currentMode = (int)storageMode;
         DisplayStorageItem(currentMode);
-
-        playerDataMgr.saveData.money += cost;
-        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
 
         currentStorageKey = null;
     }

@@ -52,7 +52,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public bool isMonsterAtk;
     private void Start()
     {
-        //PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
@@ -170,7 +170,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.storeReset = true;
                 saveData.pubReset = true;
 
-                saveData.money = 1000000;
+                saveData.money = 2022;
                 saveData.bunkerExitNum = 0;
                
                 saveData.agitLevel = 1;
@@ -180,11 +180,54 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.storeLevel = 1;
                 saveData.pubLevel = 1;
 
+                AddCharacter(3);
+
                 saveData.cars.Add("TRU_0004");
                 saveData.currentCar = "TRU_0004";
                 saveData.speedLv.Add(1);
                 saveData.sightLv.Add(1);
                 saveData.weightLv.Add(1);
+
+                saveData.consumableList.Add("CON_0017");
+                saveData.consumableNumList.Add(1);
+                saveData.consumableList.Add("CON_0011");
+                saveData.consumableNumList.Add(1);
+                saveData.consumableList.Add("CON_0003");
+                saveData.consumableNumList.Add(1);
+                int k = 0;
+                foreach (var element in saveData.consumableList)
+                {
+                    currentConsumables.Add(element, consumableList[element]);
+                    int num = k;
+                    currentConsumablesNum.Add(element, saveData.consumableNumList[num]);
+                    k++;
+                }
+
+                saveData.otherItemList.Add("BUL_0001");
+                saveData.otherItemNumList.Add(50);
+                saveData.otherItemList.Add("BUL_0002");
+                saveData.otherItemNumList.Add(50);
+                saveData.otherItemList.Add("BUL_0003");
+                saveData.otherItemNumList.Add(50);
+                saveData.otherItemList.Add("BUL_0004");
+                saveData.otherItemNumList.Add(50);
+                saveData.otherItemList.Add("BUL_0005");
+                saveData.otherItemNumList.Add(50);
+
+                saveData.otherItemList.Add("DROP_0001");
+                saveData.otherItemNumList.Add(1);
+                saveData.otherItemList.Add("DROP_0002");
+                saveData.otherItemNumList.Add(1);
+                saveData.otherItemList.Add("DROP_0003");
+                saveData.otherItemNumList.Add(1);
+                k = 0;
+                foreach (var element in saveData.otherItemList)
+                {
+                    currentOtherItems.Add(element, otherItemList[element]);
+                    int num = k;
+                    currentOtherItemsNum.Add(element, saveData.otherItemNumList[num]);
+                    k++;
+                }
             }
             //이어하기.
             else
@@ -486,6 +529,126 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             stat.saveId = num;
             stat.Setting();
             currentSquad.Add(num, stat);
+        }
+        PlayerSaveLoadSystem.Save(saveData);
+    }
+
+    public void AddCharacter(int number)
+    {
+        List<string> randomCharacter = new List<string>();
+        List<string> randomName = new List<string>();
+        //랜덤 용병 생성.
+        foreach (var element in characterList)
+        {
+            randomCharacter.Add(element.Key);
+        }
+        //캐릭터 이름.
+        foreach (var element in nameList)
+        {
+            randomName.Add(element.Key);
+        }
+
+        for (int j = 0; j < number; j++)
+        {
+            int randomIndex = Random.Range(0, characterList.Count);
+            var key = randomCharacter[randomIndex];
+
+            CharacterStats stat = new CharacterStats();
+            var character = characterList[key];
+            stat.character = character;
+            stat.Init();
+
+            randomIndex = Random.Range(0, nameList.Count);
+            var nameKey = randomName[randomIndex];
+            stat.characterName = nameList[nameKey].name;
+
+            stat.bagLevel = 1;
+
+            //랜덤 주무기 장착.
+            List<string> mainWeapons = new List<string>();
+            foreach (var mainWeapon in equippableList)
+            {
+                if (mainWeapon.Value.kind.Equals("1") || mainWeapon.Value.kind.Equals("7")
+                    || mainWeapon.Value.kind.Equals("8")) continue;
+                if (!stat.character.weapons.Contains(mainWeapon.Value.kind)) continue;
+                mainWeapons.Add(mainWeapon.Key);
+            }
+            randomIndex = Random.Range(0, mainWeapons.Count);
+            var mainWeaponKey = mainWeapons[randomIndex];
+
+            stat.weapon = new WeaponStats();
+            stat.weapon.mainWeapon = equippableList[mainWeaponKey];
+
+            saveData.boarding.Add(-1);
+            saveData.id.Add(stat.character.id);
+            saveData.name.Add(stat.character.name);
+            saveData.characterName.Add(stat.characterName);
+            saveData.hp.Add(stat.currentHp);
+            saveData.maxHp.Add(stat.MaxHp);
+            saveData.sensitivity.Add(stat.sensivity);
+            saveData.avoidRate.Add(stat.avoidRate);
+            saveData.concentration.Add(stat.concentration);
+            saveData.willPower.Add(stat.willpower);
+            saveData.level.Add(stat.level);
+            saveData.currentExp.Add(stat.currentExp);
+            saveData.sightDistance.Add(stat.sightDistance);
+            saveData.weight.Add(stat.Weight);
+
+            saveData.gaugeE.Add(stat.virusPenalty["E"].penaltyGauge);
+            saveData.gaugeB.Add(stat.virusPenalty["B"].penaltyGauge);
+            saveData.gaugeP.Add(stat.virusPenalty["P"].penaltyGauge);
+            saveData.gaugeI.Add(stat.virusPenalty["I"].penaltyGauge);
+            saveData.gaugeT.Add(stat.virusPenalty["T"].penaltyGauge);
+
+            saveData.levelE.Add(stat.virusPenalty["E"].penaltyLevel);
+            saveData.levelB.Add(stat.virusPenalty["B"].penaltyLevel);
+            saveData.levelP.Add(stat.virusPenalty["P"].penaltyLevel);
+            saveData.levelI.Add(stat.virusPenalty["I"].penaltyLevel);
+            saveData.levelT.Add(stat.virusPenalty["T"].penaltyLevel);
+
+            saveData.bagLevel.Add(1);
+
+            string mainWeaponStr = (stat.weapon.mainWeapon != null) ? stat.weapon.mainWeapon.id : null;
+            saveData.mainWeapon.Add(mainWeaponStr);
+            string subWeaponStr = (stat.weapon.subWeapon != null) ? stat.weapon.subWeapon.id : null;
+            saveData.subWeapon.Add(subWeaponStr);
+            //for (int k = 0; k < 5; k++) 
+            //{
+            //    string activeSkillStr = (stat.skillMgr.activeSkills[k] != null) ? stat.skillMgr.activeSkills[k].id : null;
+            //    saveData.activeSkillList.Add(activeSkillStr); 
+            //}
+            //for (int k = 0; k < 5; k++) 
+            //{
+            //    string passiveSkillStr = (stat.skillMgr.passiveSkills[k] != null) ? stat.skillMgr.passiveSkills[k].id : null;
+            //    saveData.passiveSkillList.Add(passiveSkillStr); 
+            //}
+
+            //if (num == 0)
+            //{
+            //    saveData.bagEquippableFirstIndex.Add(0);
+            //    saveData.bagEquippableLastIndex.Add(0);
+            //    saveData.bagConsumableFirstIndex.Add(0);
+            //    saveData.bagConsumableLastIndex.Add(0);
+            //    saveData.bagOtherItemFirstIndex.Add(0);
+            //    saveData.bagOtherItemLastIndex.Add(0);
+            //}
+            //else
+            //{
+            //    int preFirstIndex = saveData.bagEquippableFirstIndex[num - 1];
+            //    saveData.bagEquippableFirstIndex.Add(preFirstIndex);
+            //    saveData.bagEquippableLastIndex.Add(preFirstIndex);
+            //    preFirstIndex = saveData.bagConsumableFirstIndex[num - 1];
+            //    saveData.bagConsumableFirstIndex.Add(preFirstIndex);
+            //    saveData.bagConsumableLastIndex.Add(preFirstIndex);
+            //    preFirstIndex = saveData.bagOtherItemFirstIndex[num - 1];
+            //    saveData.bagOtherItemFirstIndex.Add(preFirstIndex);
+            //    saveData.bagOtherItemLastIndex.Add(preFirstIndex);
+            //}
+
+            int index= currentSquad.Count;
+            stat.saveId = index;
+            stat.Setting();
+            currentSquad.Add(index, stat);
         }
         PlayerSaveLoadSystem.Save(saveData);
     }

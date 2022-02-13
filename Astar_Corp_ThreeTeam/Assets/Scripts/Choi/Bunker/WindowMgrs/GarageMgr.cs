@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class GarageMgr : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class GarageMgr : MonoBehaviour
     public Text bullet9Txt;
     public Text bullet45Txt;
     public Text bullet12Txt;
+    public GameObject boardingButton;
+    public GameObject trunkButton;
 
     public TrunkMgr trunkMgr;
     public BoardingMgr boardingMgr;
@@ -70,7 +73,13 @@ public class GarageMgr : MonoBehaviour
 
     public void Display()
     {
-        var truck = boardingMgr.carOrder[boardingMgr.currentKey];
+        Debug.Log($"currentCar : {playerDataMgr.saveData.currentCar}");
+        var myKey = boardingMgr.carOrder.FirstOrDefault(x => x.Value.id == playerDataMgr.saveData.currentCar).Key;
+        Debug.Log($"myKey : {myKey}");
+        boardingMgr.currentKey = myKey;
+        var truck = boardingMgr.carOrder[myKey];
+        Debug.Log($"id : {boardingMgr.carOrder[myKey].id}");
+
         carImg.sprite = truck.img;
         var capacity = truck.capacity;
 
@@ -115,13 +124,21 @@ public class GarageMgr : MonoBehaviour
         boardingMgr.PreviousButton();
         trunkMgr.DisplayTruckItem(0);
         Display();
+
+        boardingButton.transform.GetChild(1).gameObject.SetActive(true);
     }
 
     public void NextButton()
     {
+        Debug.Log($"{boardingMgr.currentKey}");
+        Debug.Log($"{boardingMgr.carOrder[boardingMgr.currentKey].id}");
         boardingMgr.NextButton();
+        Debug.Log($"{boardingMgr.currentKey}");
+        Debug.Log($"{boardingMgr.carOrder[boardingMgr.currentKey].id}");
         trunkMgr.DisplayTruckItem(0);
         Display();
+
+        boardingButton.transform.GetChild(1).gameObject.SetActive(true);
     }
 
     //Ã¢ °ü·Ã.
@@ -134,6 +151,16 @@ public class GarageMgr : MonoBehaviour
         if (trunkWin.activeSelf) trunkWin.SetActive(false);
         
         Display();
+
+        if (playerDataMgr.boardingSquad.Count == 0)
+            boardingButton.transform.GetChild(1).gameObject.SetActive(true);
+        else boardingButton.transform.GetChild(1).gameObject.SetActive(false);
+
+        if (playerDataMgr.truckEquippables.Count == 0
+            && playerDataMgr.truckConsumables.Count == 0
+            && playerDataMgr.truckOtherItems.Count == 0)
+            trunkButton.transform.GetChild(1).gameObject.SetActive(true);
+        else trunkButton.transform.GetChild(1).gameObject.SetActive(false);
     }
 
     public void CloseMainWin()
@@ -171,7 +198,7 @@ public class GarageMgr : MonoBehaviour
     public void CloseCarBoardingWin()
     {
         carBoardingWin.SetActive(false);
-        mainWin.SetActive(true);
+        OpenMainWin();
     }
 
     public void OpenTrunkWin()
@@ -183,6 +210,6 @@ public class GarageMgr : MonoBehaviour
     public void CloseTrunkWin()
     {
         trunkWin.SetActive(false);
-        mainWin.SetActive(true);
+        OpenMainWin();
     }
 }

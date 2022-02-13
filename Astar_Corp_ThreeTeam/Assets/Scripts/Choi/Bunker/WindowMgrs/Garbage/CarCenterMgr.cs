@@ -32,6 +32,10 @@ public class CarCenterMgr : MonoBehaviour
     public Button left;
     public Button right;
 
+    [Header("Popup")]
+    public Text popupTitle;
+    public Text popupContents;
+
     private string truckKey;
     private int keyNum;
 
@@ -540,9 +544,26 @@ public class CarCenterMgr : MonoBehaviour
         mainWin.SetActive(true);
     }
 
-    public void OpenPopup()
+    public void OpenPopup(int index)
     {
         isPopupOpen = true;
+
+        switch (index)
+        {
+            case 0:
+                popupTitle.text = $"트렁크";
+                popupContents.text = $"차량 트렁크의 최대 무게에 영향을 줍니다.";
+                break;
+            case 1:
+                popupTitle.text = $"시야범위";
+                popupContents.text = $"차량 시야의 크기에 영향을 줍니다.";
+                break;
+            case 2:
+                popupTitle.text = $"엔진";
+                popupContents.text = $"차량 이동속도에 영향을 줍니다.";
+                break;
+        }
+
         popup.SetActive(true);
     }
 

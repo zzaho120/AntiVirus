@@ -48,6 +48,8 @@ public class AgitMgr : MonoBehaviour
     public List<Text> virusLevelTxt;
     public Text hpGaugeTxt;
     public Text expGaugeTxt;
+    public Image skillImg;
+    public List<Sprite> skillSprites;
 
     [Header("Ability Win")]
     public GameObject abilityButton;
@@ -441,6 +443,31 @@ public class AgitMgr : MonoBehaviour
                 childObj.transform.GetChild(0).gameObject.GetComponent<Text>().text
                     = $"{element.Value.willpower}";
 
+                child = go.transform.GetChild(4).gameObject;
+                childObj = child.transform.GetChild(0).gameObject;
+                childObj = childObj.transform.GetChild(0).gameObject;
+
+                Sprite skillSprite = null;
+                switch (element.Value.character.name)
+                {
+                    case "Tanker":
+                        skillSprite = skillSprites[0];
+                        break;
+                    case "Healer":
+                        skillSprite = skillSprites[1];
+                        break;
+                    case "Sniper":
+                        skillSprite = skillSprites[2];
+                        break;
+                    case "Scout":
+                        skillSprite = skillSprites[3];
+                        break;
+                    case "Bombardier":
+                        skillSprite = skillSprites[4];
+                        break;
+                }
+                childObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = skillSprite;
+
                 int num = i;
                 var button = go.AddComponent<Button>();
                 button.onClick.AddListener(delegate { SelectCharacter(num); });
@@ -818,6 +845,25 @@ public class AgitMgr : MonoBehaviour
         subWeaponImg.sprite = (character.weapon.subWeapon != null) ? 
             character.weapon.subWeapon.img : nullImg.sprite;
         bagNameTxt.text = $"Lv{character.bagLevel} °¡¹æ";
+
+        switch (character.character.name)
+        {
+            case "Tanker":
+                skillImg.sprite = skillSprites[0];
+                break;
+            case "Healer":
+                skillImg.sprite = skillSprites[1];
+                break;
+            case "Sniper":
+                skillImg.sprite = skillSprites[2];
+                break;
+            case "Scout":
+                skillImg.sprite = skillSprites[3];
+                break;
+            case "Bombardier":
+                skillImg.sprite = skillSprites[4];
+                break;
+        }
 
         virusLevelTxt[0].text = $"{character.virusPenalty["E"].penaltyLevel}";
         virusLevelTxt[1].text = $"{character.virusPenalty["B"].penaltyLevel}";

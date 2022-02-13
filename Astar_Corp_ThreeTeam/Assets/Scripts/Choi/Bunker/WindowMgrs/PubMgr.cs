@@ -199,7 +199,7 @@ public class PubMgr : MonoBehaviour
                 stat.character = character;
                 stat.Init();
 
-                randomIndex = Random.Range(0, playerDataMgr.characterList.Count);
+                randomIndex = Random.Range(0, playerDataMgr.nameList.Count);
                 var nameKey = characterNameList[randomIndex];
                 stat.characterName = playerDataMgr.nameList[nameKey].name;
                 
