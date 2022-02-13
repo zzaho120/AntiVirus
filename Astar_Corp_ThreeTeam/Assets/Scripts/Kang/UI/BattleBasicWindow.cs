@@ -96,6 +96,8 @@ public class BattleBasicWindow : GenericWindow
     public GameObject skillPanel;
     public GameObject skillConfirmBtn;
 
+    [Header("Name")]
+    public List<string> names;
     public bool isTurn
     {
         get => BattleMgr.Instance.turn == BattleTurn.Player;
@@ -156,11 +158,19 @@ public class BattleBasicWindow : GenericWindow
         if (info != null)
             info.isSelected = infoPanel.activeSelf;
 
+        var players = BattleMgr.Instance.playerMgr.playerableChars;
+        var playerIdx = -1;
+        for (var idx = 0; idx < players.Count; ++idx)
+        {
+            if (player == players[idx])
+                playerIdx = idx;
+        }
+
         state = CharacterState.Wait;
         var stats = selectedChar.characterStats;
         hpText.text = $"{stats.currentHp}/{stats.MaxHp}";
         levelText.text = $"Lv{stats.level}";
-        nameText.text = $"{stats.characterName}";
+        nameText.text = $"{names[playerIdx]}";
         classImage.sprite = stats.character.icon;
         selectedChar.DisplaySightTile();
         UpdateUI();
@@ -273,6 +283,7 @@ public class BattleBasicWindow : GenericWindow
             OnClickAlert();
 
         selectedChar.ChangeWeaponObject();
+        SetActionBtn();
     }
     private void SetActionBtn()
     {
@@ -667,6 +678,7 @@ public class BattleBasicWindow : GenericWindow
             selectedChar.ReloadWeapon();
             SetWeaponUI(selectedChar);
             SetActionBtn();
+            UpdateUI();
         }
     }
 

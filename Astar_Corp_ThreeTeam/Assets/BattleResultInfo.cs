@@ -15,7 +15,7 @@ public class BattleResultInfo : MonoBehaviour
     public Slider hpBar;
     public List<GameObject> virusList;
     public List<Text> resistList;
-    public void Init(PlayerableChar player)
+    public void Init(PlayerableChar player, string name)
     {
         var stats = player.characterStats;
         levelText.text = $"LV{stats.level}";
@@ -46,7 +46,7 @@ public class BattleResultInfo : MonoBehaviour
 
 
         className.text = classStr;
-        characterName.text = stats.characterName;
+        characterName.text = name;
         hp.text = $"{stats.currentHp}/{stats.MaxHp}";
         hpBar.maxValue = stats.MaxHp;
         hpBar.value = stats.currentHp;

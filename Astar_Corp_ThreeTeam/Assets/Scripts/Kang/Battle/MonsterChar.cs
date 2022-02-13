@@ -247,6 +247,9 @@ public class MonsterChar : BattleTile
             destTile = tileIdx + new Vector3(randomX, 0, randomZ);
             if (tileDics.ContainsKey(destTile))
             {
+                if (destTile == currentTile.tileIdx)
+                    continue;
+
                 BattleMgr.Instance.pathMgr.InitAStar(tileIdx, destTile);
                 break;
             }
@@ -279,25 +282,22 @@ public class MonsterChar : BattleTile
         var idx = 1;
         var moveIdx = 0;
         var compareIdx = Mathf.Abs(destTile.x) + Mathf.Abs(destTile.z);
-        var prevIdx = tileIdx;
         while (Mathf.Abs(tileIdx.x) + Mathf.Abs(tileIdx.z) + monsterStats.AtkRange != compareIdx)
         {
-            idx++;
-            if (idx >= printIdx)
-            {
-                idx = 0;
-                CreateHint(HintType.Footprint, prevIdx);
-            }
-
-            var isInSight = BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile);
-            currentTile.EnableDisplay(isInSight);
-            info.gameObject.SetActive(isInSight);
-
             AStarTile nextTile = null;
             if (pathMgr.pathList.Count > 0)
                 nextTile = pathMgr.pathList.Pop();
             else
                 break;
+
+            idx++;
+            if (idx >= printIdx)
+            {
+                idx = 0;
+                CreateHint(HintType.Footprint, nextTile.tileBase.tileIdx);
+                var footPrintIsInSight = BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile);
+                currentTile.EnableDisplay(footPrintIsInSight);
+            }
 
             if (moveIdx == 0)
                 monsterStats.currentAp--;
@@ -308,11 +308,10 @@ public class MonsterChar : BattleTile
                 break;
 
             var sightMgr = BattleMgr.Instance.sightMgr;
-            sightMgr.InitMonsterSight(monsterIdx);
+            sightMgr.InitMonsterSight(this);
             if (target == null)
                 SetTarget(sightMgr.GetPlayerInMonsterSight(monsterIdx));
 
-            prevIdx = tileIdx;
             yield return MoveTile(nextTile.tileBase.tileIdx);
         }
 
@@ -333,8 +332,6 @@ public class MonsterChar : BattleTile
 
     public IEnumerator MoveTile(Vector3 nextIdx)
     {
-        var isInSight = BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile);
-        currentTile.EnableDisplay(isInSight);
 
         foreach (var tile in currentTile.adjNodes)
         {
@@ -362,6 +359,9 @@ public class MonsterChar : BattleTile
                 yield return StartCoroutine(CoMoveChar(nextIdx + new Vector3(0f, 0.5f, 0f)));
             }
         }
+        var isInSight = BattleMgr.Instance.sightMgr.GetSightDisplay(currentTile);
+        currentTile.EnableDisplay(isInSight);
+        info.gameObject.SetActive(isInSight);
 
         var boolList = CheckFrontSight();
         foreach (var elem in boolList)
@@ -386,7 +386,7 @@ public class MonsterChar : BattleTile
     }
     private void CreateHint(HintType hintType, Vector3 nextIdx)
     {
-        var directionIdx = nextIdx - currentTile.tileIdx;
+        var directionIdx =  currentTile.tileIdx - nextIdx;
         var hintMgr = BattleMgr.Instance.hintMgr;
         var directionType = DirectionType.None;
         if (directionIdx.x != 0)

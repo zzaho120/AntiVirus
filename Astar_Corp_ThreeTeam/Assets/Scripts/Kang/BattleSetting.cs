@@ -128,7 +128,7 @@ public class BattleSetting : MonoBehaviour
                 }
 
                 var zeroStr = string.Empty;
-                if ((int)mainWeaponName[idx] > 9)
+                if ((int)mainWeaponName[idx] > 8)
                     zeroStr = "00";
                 else
                     zeroStr = "000";
@@ -137,7 +137,7 @@ public class BattleSetting : MonoBehaviour
                 playerableChar.characterStats.weapon = new WeaponStats();
                 playerableChar.characterStats.weapon.mainWeapon = ScriptableMgr.Instance.GetEquippable($"WEP_{zeroStr}{(int)mainWeaponName[idx] + 1}");
 
-                if ((int)subWeaponName[idx] > 9)
+                if ((int)subWeaponName[idx] > 8)
                     zeroStr = "00";
                 else
                     zeroStr = "000";

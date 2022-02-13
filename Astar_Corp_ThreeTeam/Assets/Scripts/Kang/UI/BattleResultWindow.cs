@@ -21,7 +21,9 @@ public class BattleResultWindow : GenericWindow
             var sqaud = Instantiate(squadListPrefab, squadContent);
             var resultInfo = sqaud.GetComponent<BattleResultInfo>();
 
-            resultInfo.Init(players[idx]);
+            var window = BattleMgr.Instance.battleWindowMgr.GetWindow(0) as BattleBasicWindow;
+            
+            resultInfo.Init(players[idx], window.names[idx]);
             
         }
 

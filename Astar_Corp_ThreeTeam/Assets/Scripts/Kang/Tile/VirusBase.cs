@@ -14,6 +14,6 @@ public class VirusBase : MonoBehaviour
         parent = tile;
         virusName = name;
         virusLevel = level;
-        increase = increasePerTic;
+        increasePerTic = increase;
     }
 }

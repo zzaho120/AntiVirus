@@ -45,7 +45,23 @@ public class BattleInfoPanel : MonoBehaviour
         switch (hint.type)
         {
             case HintType.Footprint:
-                sb.Append($"\n방향 정보 : {hint.direction}");
+                var str = string.Empty;
+                switch (hint.direction)
+                {
+                    case DirectionType.Top:
+                        str = "북";
+                        break;
+                    case DirectionType.Bot:
+                        str = "남";
+                        break;
+                    case DirectionType.Left:
+                        str = "서";
+                        break;
+                    case DirectionType.Right:
+                        str = "동";
+                        break;
+                }
+                sb.Append($"\n방향 정보 : {str}");
                 break;
             case HintType.Bloodprint:
                 break;

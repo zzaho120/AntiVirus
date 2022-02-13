@@ -77,7 +77,7 @@ public class SightMgr : MonoBehaviour
 
         for (var idx = 0; idx < monsters.Count; ++idx)
         {
-            InitMonsterSight(idx);
+            InitMonsterSight(monsters[idx]);
         }
     }
 
@@ -680,10 +680,10 @@ public class SightMgr : MonoBehaviour
         return null;
     }
 
-    public void InitMonsterSight(int monsterIdx)
+    public void InitMonsterSight(MonsterChar monster)
     {
+        var monsterIdx = monsters.FindIndex(check => check == monster);
         var monsterSight = monsterSightList[monsterIdx];
-        var monster = monsters[monsterIdx];
         var sightDistance = monster.monsterStats.monster.sightRange;
         var curTileIdx = new Vector2(monster.tileIdx.x, monster.tileIdx.z);
 

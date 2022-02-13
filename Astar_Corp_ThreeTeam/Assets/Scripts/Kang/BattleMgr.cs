@@ -115,23 +115,25 @@ public class BattleMgr : MonoBehaviour
 
     public void OnChangeTurn(object empty)
     {
-        Invoke("ChangeTurn", 0.01f);
+        Invoke("ChangeTurn", 0.001f);
     }
 
     private void ChangeTurn()
     {
+        var window = battleWindowMgr.Open(0) as BattleBasicWindow;
         switch (turn)
         {
             case BattleTurn.Player:
                 turn = BattleTurn.Enemy;
+                window.turnEndBtn.SetActive(false);
                 EventBusMgr.Publish(EventType.StartEnemy);
                 break;
             case BattleTurn.Enemy:
                 turn = BattleTurn.Player;
-                var window = battleWindowMgr.Open(0) as BattleBasicWindow;
+                EventBusMgr.Publish(EventType.StartPlayer);
+                window.turnEndBtn.SetActive(true);
                 window.SetSelectedChar(playerMgr.playerableChars[0]);
                 window.UpdateUI();
-                EventBusMgr.Publish(EventType.StartPlayer);
                 break;
         }
         if (startTurn == turn)

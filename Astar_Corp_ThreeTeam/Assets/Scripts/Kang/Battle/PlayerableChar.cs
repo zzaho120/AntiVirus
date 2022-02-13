@@ -434,14 +434,15 @@ public class PlayerableChar : BattleTile
                 if (!isFullApMove || !isHMGA1Skill)
                     AP -= weapon.GetWeaponAP();
 
-                var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
-                window.UpdateUI();
 
                 if (monster.IsNullTarget)
                     monster.SetTarget(this);
 
                 weapon.fireCount++;
                 weapon.WeaponBullet--;
+
+                var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
+                window.UpdateUI();
 
                 var time = 0f;
                 if (isHit)

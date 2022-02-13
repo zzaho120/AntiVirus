@@ -59,7 +59,7 @@ public class BattleMonsterPanel : MonoBehaviour
             }
         }
 
-        accuracyText.text = $"{weapon.GetAttackAccuracy(monster.currentTile.accuracy) + stats.accuracy + buffValue}%";
+        accuracyText.text = $"{Mathf.Clamp(weapon.GetAttackAccuracy(monster.currentTile.accuracy) + stats.accuracy + buffValue, 0, 100)}%";
     }
 
     public void OnClickMonsterPanel()

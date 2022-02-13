@@ -98,9 +98,6 @@ public class HintMgr : MonoBehaviour
         var min = (-1, 10000);
         for (var idx = 0; idx < playerableChar.Count; ++idx)
         {
-            if (sightMgr.GetMonsterInPlayerSight(monster.gameObject))
-                return;
-
             var vector = playerableChar[idx].tileIdx - monster.tileIdx;
             var absSum = (int)(Mathf.Abs(vector.x) + Mathf.Abs(vector.z));
 
