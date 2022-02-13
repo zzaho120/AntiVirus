@@ -86,6 +86,12 @@ public class BattleBasicWindow : GenericWindow
     public GameObject CharacterUI;
     private List<BattleFloatingInfo> battleFloatingInfoList = new List<BattleFloatingInfo>();
 
+    [Header("Item")]
+    public GameObject itemPanel;
+    public List<BattleItem> itemBtns;
+    public BattleItem curItem;
+    public GameObject itemConfirmBtn;
+    public GameObject itemCancelBtn;
 
     public bool isTurn
     {
@@ -152,7 +158,6 @@ public class BattleBasicWindow : GenericWindow
         classImage.sprite = stats.character.icon;
         selectedChar.DisplaySightTile();
         UpdateUI();
-        
     }
 
     public void UpdateMemberUI()
@@ -381,7 +386,7 @@ public class BattleBasicWindow : GenericWindow
             var go = Instantiate(battleFloatingInfoPrefab, CharacterUI.transform);
             var info = go.GetComponent<BattleFloatingInfo>();
             info.Init(monster);
-
+            monster.info = info;
             battleFloatingInfoList.Add(info);
         }
     }
@@ -711,5 +716,28 @@ public class BattleBasicWindow : GenericWindow
                 battleinfoPanel.SetVirusInfo(gameObject.GetComponent<VirusBase>(), sprite);
                 break;
         }
+    }
+
+    public void CheckRemoveUI()
+    {
+        for (var idx = 0; idx  < battleFloatingInfoList.Count; ++idx)
+        {
+            if (battleFloatingInfoList[idx].CheckDestroy())
+            {
+                Destroy(battleFloatingInfoList[idx].gameObject);
+                battleFloatingInfoList.RemoveAt(idx);
+            }
+        }
+    }
+
+    public void OnClickItem()
+    {
+        actionPanel.SetActive(false);
+        moveBtn.SetActive(false);
+    }
+    public void OnClickItemCancel()
+    {
+        actionPanel.SetActive(true);
+        moveBtn.SetActive(false);
     }
 }

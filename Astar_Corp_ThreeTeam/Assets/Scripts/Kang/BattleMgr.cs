@@ -61,14 +61,13 @@ public class BattleMgr : MonoBehaviour
         tileMgr.Init();
         playerMgr.Init();
         monsterMgr.Init();
+        var window = battleWindowMgr.Open(0) as BattleBasicWindow;
+        window.Init();
         sightMgr.Init();
         pathMgr.Init();
         hintMgr.Init();
 
         turn = startTurn;
-        var window = battleWindowMgr.Open(0) as BattleBasicWindow;
-        window.Init();
-
         EventBusMgr.Subscribe(EventType.ChangeTurn, OnChangeTurn);
         EventBusMgr.Subscribe(EventType.DestroyChar, DestroyChar);
 
@@ -131,6 +130,7 @@ public class BattleMgr : MonoBehaviour
                 turn = BattleTurn.Player;
                 var window = battleWindowMgr.Open(0) as BattleBasicWindow;
                 window.SetSelectedChar(playerMgr.playerableChars[0]);
+                window.UpdateUI();
                 EventBusMgr.Publish(EventType.StartPlayer);
                 break;
         }
@@ -141,6 +141,8 @@ public class BattleMgr : MonoBehaviour
     public void DestroyChar(object[] param)
     {
         var tempType = (int)param[1];
+        var window = battleWindowMgr.GetWindow(0) as BattleBasicWindow;
+        window.CheckRemoveUI();
         switch (tempType)
         {
             case 0:

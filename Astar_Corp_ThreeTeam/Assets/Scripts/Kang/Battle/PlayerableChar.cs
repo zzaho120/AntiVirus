@@ -419,6 +419,9 @@ public class PlayerableChar : BattleTile
                     if (!isFullApMove)
                         AP -= weapon.GetWeaponAP();
 
+                    var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
+                    window.UpdateUI();
+
                     if (monster.IsNullTarget)
                         monster.SetTarget(this);
 

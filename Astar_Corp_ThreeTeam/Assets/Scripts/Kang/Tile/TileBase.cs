@@ -60,6 +60,7 @@ public class TileBase : MonoBehaviour
                 {
                     renElem.SetActive(isEnabled);
                 }
+                monster.info.gameObject.SetActive(isEnabled);
             }
         }
         foreach (var hint in hintObj)

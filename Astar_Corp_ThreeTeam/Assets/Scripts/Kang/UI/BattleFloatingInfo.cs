@@ -52,7 +52,7 @@ public class BattleFloatingInfo : MonoBehaviour
             var stats = player.characterStats;
             var virusPenalty = stats.virusPenalty;
 
-            hpBar.value = stats.currentHp / stats.MaxHp;
+            hpBar.value = (float)stats.currentHp / stats.MaxHp;
             foreach (var pair in virusPenalty)
             {
                 var virus = pair.Value;
@@ -87,27 +87,27 @@ public class BattleFloatingInfo : MonoBehaviour
                         case "E":
                             virusImageList[0].gameObject.SetActive(false);
                             virusDetailList[0].gameObject.SetActive(true);
-                            virusBarList[0].value = virus.penaltyGauge / virus.GetMaxGauge();
+                            virusBarList[0].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
                             break;
                         case "B":
                             virusImageList[1].gameObject.SetActive(false);
                             virusDetailList[1].gameObject.SetActive(true);
-                            virusBarList[1].value = virus.penaltyGauge / virus.GetMaxGauge();
+                            virusBarList[1].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
                             break;
                         case "P":
                             virusImageList[2].gameObject.SetActive(false);
                             virusDetailList[2].gameObject.SetActive(true);
-                            virusBarList[2].value = virus.penaltyGauge / virus.GetMaxGauge();
+                            virusBarList[2].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
                             break;
                         case "I":
                             virusImageList[3].gameObject.SetActive(false);
                             virusDetailList[3].gameObject.SetActive(true);
-                            virusBarList[3].value = virus.penaltyGauge / virus.GetMaxGauge();
+                            virusBarList[3].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
                             break;
                         case "T":
                             virusImageList[4].gameObject.SetActive(false);
                             virusDetailList[4].gameObject.SetActive(true);
-                            virusBarList[4].value = virus.penaltyGauge / virus.GetMaxGauge();
+                            virusBarList[4].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
                             break;
                     }
                 }
@@ -116,7 +116,7 @@ public class BattleFloatingInfo : MonoBehaviour
         else if (monster != null)
         {
             var stats = monster.monsterStats;
-            hpBar.value = stats.currentHp / stats.originMaxHp;
+            hpBar.value = (float)stats.currentHp / stats.originMaxHp;
             virusBarObj.SetActive(false);
             virusDetalObj.SetActive(false);
         }
@@ -130,5 +130,21 @@ public class BattleFloatingInfo : MonoBehaviour
             transform.position = Camera.main.WorldToScreenPoint(monster.transform.position + new Vector3(1f, 1f, 0));
 
         UpdateInfo();
+    }
+
+    public bool CheckDestroy()
+    {
+        if (player != null)
+        {
+            if (player.characterStats.currentHp <= 0)
+                return true;
+        }    
+        else if (monster != null)
+        {
+            if (monster.monsterStats.currentHp <= 0)
+                return true;
+        }
+
+        return false;
     }
 }
