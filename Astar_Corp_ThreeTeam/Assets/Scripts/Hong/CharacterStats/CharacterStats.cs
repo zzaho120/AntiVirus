@@ -105,7 +105,7 @@ public class CharacterStats
     public Dictionary<string, VirusPenalty> virusPenalty = new Dictionary<string, VirusPenalty>();
 
     //°¡¹æ.
-    public Dictionary<string, int> bag = new Dictionary<string, int>();
+    public Dictionary<string, int> bag = new Dictionary<string, int>(); //ÅÛid, °¹¼ö
     public int bagLevel;
     public int currentWeight;
 

@@ -23,31 +23,33 @@ public class SquadStatusMgr : MonoBehaviour
         playerDataMgr = PlayerDataMgr.Instance;
         soMgr = ScriptableMgr.Instance;
 
-        // 임시 Sqaud 데이타 넣기
-        //===================================================
-        CharacterStats temp1 = new CharacterStats();
-        temp1.character = soMgr.GetCharacter("CHAR_0001");
-        CharacterStats temp2 = new CharacterStats();
-        temp2.character = soMgr.GetCharacter("CHAR_0003");
-
-        if (!playerDataMgr.currentSquad.ContainsKey(1))
-            playerDataMgr.currentSquad.Add(1, temp1);
-
-        if (!playerDataMgr.currentSquad.ContainsKey(2))
-            playerDataMgr.currentSquad.Add(2, temp2);
-
-        playerDataMgr.currentSquad[1].Init();
-        playerDataMgr.currentSquad[1].level = 3;
-        playerDataMgr.currentSquad[2].Init();
-        playerDataMgr.currentSquad[2].level = 5;
-        playerDataMgr.currentSquad[2].currentHp = 10;
-
-        if (!playerDataMgr.boardingSquad.ContainsKey(0))
-            playerDataMgr.boardingSquad.Add(0, 1);
-
-        if (!playerDataMgr.boardingSquad.ContainsKey(1))
-            playerDataMgr.boardingSquad.Add(1, 2);
-        //===================================================
+        //// 임시 Sqaud 데이타 넣기
+        ////===================================================
+        //CharacterStats temp1 = new CharacterStats();
+        //temp1.character = soMgr.GetCharacter("CHAR_0001");
+        //CharacterStats temp2 = new CharacterStats();
+        //temp2.character = soMgr.GetCharacter("CHAR_0003");
+        //
+        //if (!playerDataMgr.currentSquad.ContainsKey(1))
+        //    playerDataMgr.currentSquad.Add(1, temp1);
+        //
+        //if (!playerDataMgr.currentSquad.ContainsKey(2))
+        //    playerDataMgr.currentSquad.Add(2, temp2);
+        //
+        //playerDataMgr.currentSquad[1].Init();
+        //playerDataMgr.currentSquad[1].level = 3;
+        //playerDataMgr.currentSquad[2].Init();
+        //playerDataMgr.currentSquad[2].level = 5;
+        //playerDataMgr.currentSquad[2].currentHp = 10;
+        //
+        ////playerDataMgr.currentSquad[1].weapon.subWeapon = soMgr.GetEquippable("WEP_0005"); 
+        //
+        //if (!playerDataMgr.boardingSquad.ContainsKey(0))
+        //    playerDataMgr.boardingSquad.Add(0, 1);
+        //
+        //if (!playerDataMgr.boardingSquad.ContainsKey(1))
+        //    playerDataMgr.boardingSquad.Add(1, 2);
+        ////===================================================
 
         Init();
     }

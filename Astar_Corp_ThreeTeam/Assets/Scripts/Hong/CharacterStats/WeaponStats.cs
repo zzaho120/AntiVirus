@@ -61,8 +61,8 @@ public class WeaponStats
     }
 
     // 데미지
-    [HideInInspector] 
-    public int Damage { get => SetWeaponDamage(); }
+   [HideInInspector] 
+   public int Damage { get => SetWeaponDamage(); }
 
     // 크리티컬 데미지
     [HideInInspector]

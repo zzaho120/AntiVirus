@@ -22,7 +22,7 @@ public class TruckMgr : MonoBehaviour
     public GameObject Contents;
     public GameObject TruckUnitPrefab;
     public Text RemainingNum;
-    [HideInInspector]
+
     public Dictionary<int, GameObject> TruckUnitGOs = new Dictionary<int, GameObject>();
     public Dictionary<int, GameObject> BattleSqudeObj = new Dictionary<int, GameObject>();
 

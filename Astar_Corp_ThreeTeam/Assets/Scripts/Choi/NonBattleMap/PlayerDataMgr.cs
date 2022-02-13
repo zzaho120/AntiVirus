@@ -46,7 +46,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public Dictionary<int, CharacterStats> currentSquad = new Dictionary<int, CharacterStats>();
     public Dictionary<int, int> boardingSquad = new Dictionary<int, int>();//트럭에 있는 캐릭터들.(좌석 번호/ 인덱스)
     public Dictionary<int, CharacterStats> battleSquad = new Dictionary<int, CharacterStats>();//전투에 나갈 캐릭터들.
-
+    
     public bool ableToExit;//벙커 밖으로 나갈 수 있는지.
     public bool isFirst;
     public bool isMonsterAtk;
