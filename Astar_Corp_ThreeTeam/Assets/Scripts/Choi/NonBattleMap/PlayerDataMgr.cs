@@ -454,7 +454,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public void AddCharacter(int num, CharacterStats stat)
     {
         string str = "SquadNum";
-        int totalSquadNum = (PlayerPrefs.HasKey(str)) ? PlayerPrefs.GetInt(str) : 3;
+        int totalSquadNum = (PlayerPrefs.HasKey(str)) ? PlayerPrefs.GetInt(str) : 0;
 
         //인원 추가.
         if (num > totalSquadNum - 1)
