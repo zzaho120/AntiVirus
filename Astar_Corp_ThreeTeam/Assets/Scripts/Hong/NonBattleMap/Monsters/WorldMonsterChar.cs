@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(MonsterStats))]
 public class WorldMonsterChar : MonoBehaviour
 {
     public MonsterStats monsterStat;
     public WorldMonsterFSM fsm;
+    public Sprite monsterImg;
 
     //여기서 몹영역 크기 설정해줘야 될듯
     //public void Init()

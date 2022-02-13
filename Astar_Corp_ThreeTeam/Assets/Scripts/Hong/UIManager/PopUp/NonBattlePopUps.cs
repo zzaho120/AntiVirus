@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NonBattlePopUps : GenericWindow
 {
+
 	// [수정] 시간 남으면.. 버튼 눌렸을 때 맵 정지되도록
 	//TimeController timeController;
 	//

@@ -77,10 +77,11 @@ public class SetMonsterStat : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(center, radius, areaMask);
         for (int i = 0; i < hitColliders.Length; i++)
         {
-            if (hitColliders[i].GetComponent<LaboratoryInfo>())
+            //Debug.Log(hitColliders.Length);
+            if (hitColliders[i].GetComponentInParent<LaboratoryInfo>())
             {
                 // 바이러스 타입 설정
-                var labInfo = hitColliders[i].GetComponent<LaboratoryInfo>();
+                var labInfo = hitColliders[i].GetComponentInParent<LaboratoryInfo>();
                 monsterStats.virus = scriptableMgr.GetVirus(labInfo.virusType);
             }
          }

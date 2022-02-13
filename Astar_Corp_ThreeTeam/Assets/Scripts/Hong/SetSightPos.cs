@@ -16,7 +16,6 @@ public class SetSightPos : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Player");
-        playerSights = GameObject.Find("PlayerSights");
     }
 
     void LateUpdate()
@@ -24,14 +23,20 @@ public class SetSightPos : MonoBehaviour
         int layer = LayerMask.GetMask("Mask");
 
         // ∏Ò«• ∫§≈Õ - Ω√¿€ ∫§≈Õ
-      //  var dir = (playerSights.transform.localPosition - Camera.main.transform.position);//.normalized;
         var dir = (player.transform.position - Camera.main.transform.position);//.normalized;
-
         RaycastHit hitInfo;
         if (Physics.Raycast(Camera.main.transform.position, dir, out hitInfo, 1000f, layer))
         {
             //Debug.Log(hitInfo.collider.name);
             transform.position = hitInfo.point;
         }
+
+        //var dir = (transform.localPosition - Camera.main.transform.position).normalized;
+        //RaycastHit hitInfo;
+        //if (Physics.Raycast(Camera.main.transform.position, dir, out hitInfo, 1000f, layer))
+        //{
+        //    //Debug.Log(hitInfo.collider.name);
+        //    transform.localPosition = hitInfo.point;
+        //}
     }
 }
