@@ -179,11 +179,11 @@ public class AgitMgr : MonoBehaviour
         equipmentMgr.agitMgr = this;
         equipmentMgr.Init();
 
-        toleranceMgr.playerDataMgr = playerDataMgr;
-        
-        bagMgr.playerDataMgr = playerDataMgr;
-        bagMgr.agitMgr = this;
-        bagMgr.Init();
+        //toleranceMgr.playerDataMgr = playerDataMgr;
+        //
+        //bagMgr.playerDataMgr = playerDataMgr;
+        //bagMgr.agitMgr = this;
+        //bagMgr.Init();
 
         if (characterInfoWin.activeSelf) characterInfoWin.SetActive(false);
         if (skillWinMgr.skillPage.activeSelf) skillWinMgr.skillPage.SetActive(false);

@@ -24,7 +24,7 @@ public class StartBattle : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
+        //Debug.Log(other.name);
 
         if (other.gameObject.CompareTag("Enemy"))
         {
@@ -50,24 +50,21 @@ public class StartBattle : MonoBehaviour
                 }
                 PlayerDataMgr.Instance.isMonsterAtk = isMonsterAtk;
 
-                if (isTestMode)
-                {
-                    // 전체맵 일시정지
-                    timeController.Pause();
-                    timeController.isPause = true;
+                // 전체맵 일시정지
+                timeController.Pause();
+                timeController.isPause = true;
 
-                    SetMonsterInfo(other.GetComponent<WorldMonsterChar>());
+                SetMonsterInfo(other.GetComponent<WorldMonsterChar>());
 
-                    //StringBuilder info = new StringBuilder();
-                    //info.Append(monsterChar.monsterStat.monster.name);
-                    //info.Append(monsterChar.monsterStat.nonBattleMonster.battleMinNum);
-                    //info.Append(monsterChar.monsterStat.nonBattleMonster.battleMaxNum);
-                    //info.Append(monsterChar.monsterStat.virus);
+                //StringBuilder info = new StringBuilder();
+                //info.Append(monsterChar.monsterStat.monster.name);
+                //info.Append(monsterChar.monsterStat.nonBattleMonster.battleMinNum);
+                //info.Append(monsterChar.monsterStat.nonBattleMonster.battleMaxNum);
+                //info.Append(monsterChar.monsterStat.virus);
 
-                    // / 전투 팝업창 띄우기
-                    var windowId = (int)Windows.MonsterWindow - 1;
-                    var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
-                }
+                // / 전투 팝업창 띄우기
+                var windowId = (int)Windows.MonsterWindow - 1;
+                var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
             }
         }
     }
