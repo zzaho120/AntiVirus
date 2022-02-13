@@ -133,13 +133,12 @@ public class VirusPenalty
     public void ReductionCalculation(int gauge)
     {
         penaltyGauge -= gauge;
-        var previousMax = expGauge * penaltyLevel;
         if (penaltyGauge < 0)
         {
             if (penaltyLevel != 1)
             {
-                penaltyGauge += previousMax;
                 penaltyLevel--;
+                penaltyGauge += MaxResistGauge;
             }
             else if (penaltyLevel == 1)
             {

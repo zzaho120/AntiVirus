@@ -25,7 +25,8 @@ public enum BattlePoolName
     SightTile,
     MonsterSightTile,
     ScrollingText,
-    UseItemFx
+    UseItemFx,
+    Bullet
 }
 
 [System.Serializable]

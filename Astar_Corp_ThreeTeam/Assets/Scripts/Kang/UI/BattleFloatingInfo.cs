@@ -60,55 +60,61 @@ public class BattleFloatingInfo : MonoBehaviour
                 if (!isSelected)
                 {
                     virusDetalObj.SetActive(true);
-                    switch (virus.virus.name)
+                    if (virus.penaltyLevel > 0)
                     {
-                        case "E":
-                            virusImageList[0].gameObject.SetActive(true);
-                            break;
-                        case "B":
-                            virusImageList[1].gameObject.SetActive(true);
-                            break;
-                        case "P":
-                            virusImageList[2].gameObject.SetActive(true);
-                            break;
-                        case "I":
-                            virusImageList[3].gameObject.SetActive(true);
-                            break;
-                        case "T":
-                            virusImageList[4].gameObject.SetActive(true);
-                            break;
+                        switch (virus.virus.name)
+                        {
+                            case "E":
+                                virusImageList[0].gameObject.SetActive(true);
+                                break;
+                            case "B":
+                                virusImageList[1].gameObject.SetActive(true);
+                                break;
+                            case "P":
+                                virusImageList[2].gameObject.SetActive(true);
+                                break;
+                            case "I":
+                                virusImageList[3].gameObject.SetActive(true);
+                                break;
+                            case "T":
+                                virusImageList[4].gameObject.SetActive(true);
+                                break;
+                        }
                     }
                 }
                 else
                 {
                     virusDetalObj.SetActive(false);
-                    switch (virus.virus.name)
+                    if (virus.penaltyLevel > 0)
                     {
-                        case "E":
-                            virusImageList[0].gameObject.SetActive(false);
-                            virusDetailList[0].gameObject.SetActive(true);
-                            virusBarList[0].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
-                            break;
-                        case "B":
-                            virusImageList[1].gameObject.SetActive(false);
-                            virusDetailList[1].gameObject.SetActive(true);
-                            virusBarList[1].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
-                            break;
-                        case "P":
-                            virusImageList[2].gameObject.SetActive(false);
-                            virusDetailList[2].gameObject.SetActive(true);
-                            virusBarList[2].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
-                            break;
-                        case "I":
-                            virusImageList[3].gameObject.SetActive(false);
-                            virusDetailList[3].gameObject.SetActive(true);
-                            virusBarList[3].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
-                            break;
-                        case "T":
-                            virusImageList[4].gameObject.SetActive(false);
-                            virusDetailList[4].gameObject.SetActive(true);
-                            virusBarList[4].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
-                            break;
+                        switch (virus.virus.name)
+                        {
+                            case "E":
+                                virusImageList[0].gameObject.SetActive(false);
+                                virusDetailList[0].gameObject.SetActive(true);
+                                virusBarList[0].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
+                                break;
+                            case "B":
+                                virusImageList[1].gameObject.SetActive(false);
+                                virusDetailList[1].gameObject.SetActive(true);
+                                virusBarList[1].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
+                                break;
+                            case "P":
+                                virusImageList[2].gameObject.SetActive(false);
+                                virusDetailList[2].gameObject.SetActive(true);
+                                virusBarList[2].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
+                                break;
+                            case "I":
+                                virusImageList[3].gameObject.SetActive(false);
+                                virusDetailList[3].gameObject.SetActive(true);
+                                virusBarList[3].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
+                                break;
+                            case "T":
+                                virusImageList[4].gameObject.SetActive(false);
+                                virusDetailList[4].gameObject.SetActive(true);
+                                virusBarList[4].value = (float)virus.penaltyGauge / virus.GetMaxGauge();
+                                break;
+                        }
                     }
                 }
             }

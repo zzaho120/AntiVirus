@@ -26,6 +26,13 @@ public class ScrollingText : MonoBehaviour
         StartCoroutine(CoScrolling());
     }
 
+    public void SetRecovery(int recovery, Color color)
+    {
+        scrollingText.color = color;
+        scrollingText.text = $"{recovery}";
+        target = Camera.main.transform;
+        StartCoroutine(CoScrolling());
+    }
     public void SetMiss()
     {
         scrollingText.color = Color.red;

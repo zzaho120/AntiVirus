@@ -287,6 +287,19 @@ public class PlayerableChar : BattleTile
         }
     }
 
+    private IEnumerator CoReturnParticle(GameObject particle, float time)
+    {
+        var timer = 0f;
+
+        while (timer < time)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        var returnToPool = particle.GetComponent<ReturnToPool>();
+        returnToPool.Return();
+    }
+
     public void MoveMode()
     {
         if (status == CharacterState.Wait)
@@ -539,8 +552,7 @@ public class PlayerableChar : BattleTile
         blood.transform.position = transform.position;
         StartCoroutine(CoReturnParticle(blood));
 
-        var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
-        window.UpdateUI();
+        
 
 
         if (monsterStats.virus != null)
@@ -572,6 +584,9 @@ public class PlayerableChar : BattleTile
             }
 
             characterStats.virusPenalty[virusType].Calculation(monsterStats.virusLevel, result);
+
+            var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
+            window.UpdateUI();
         }
 
         // 맞음 메세지
@@ -755,23 +770,29 @@ public class PlayerableChar : BattleTile
         }
     }
 
-
     public void FireAnimation()
     {
         var poolMgr = BattleMgr.Instance.battlePoolMgr;
         var gunOneShot = poolMgr.CreateGunOneShot().GetComponent<ParticleSystem>();
         var bulletEjection = poolMgr.CreateBulletEjection().GetComponent<ParticleSystem>();
 
-
         gunOneShot.transform.position = currentWeapon.GetComponent<BattleWeapon>().fireTr.position;
         bulletEjection.transform.position = currentWeapon.GetComponent<BattleWeapon>().fireTr.position;
         gunOneShot.Play();
         bulletEjection.Play();
+
+        var bullet = poolMgr.CreateBullet();
+        var weapon = currentWeapon.GetComponent<BattleWeapon>();
+        bullet.transform.position = transform.position + new Vector3(0f, 1f);
+        bullet.transform.LookAt(targetMonster.transform.position);
+        bullet.GetComponent<Bullet>().Init(targetMonster.transform);
         
         StartCoroutine(CoReturnParticle(gunOneShot.gameObject));
         StartCoroutine(CoReturnParticle(bulletEjection.gameObject));
         ActionAttack(targetMonster);
     }
+
+    
 
     public void ChangeWeaponObject()
     {
@@ -792,10 +813,50 @@ public class PlayerableChar : BattleTile
 
     public void UseConsumeItemForHp(int recovery)
     {
-        characterStats.
+        var poolMgr = BattleMgr.Instance.battlePoolMgr;
+        var go = poolMgr.CreateUseItemFx();
+        var particle = go.GetComponent<ParticleSystem>();
+        go.transform.position = transform.position;
+        particle.Play();
+        var main = particle.main;
+        main.startColor = Color.green;
+
+        characterStats.currentHp += recovery;
+
+        characterStats.currentHp = Mathf.Clamp(characterStats.currentHp, 0, characterStats.MaxHp);
+
+        
+
+        var scrollGo = BattleMgr.Instance.battlePoolMgr.CreateScrollingText();
+        var scrollingText = scrollGo.GetComponent<ScrollingText>();
+        scrollGo.transform.position = transform.position;
+        scrollingText.SetRecovery(recovery, Color.green);
+
+        StartCoroutine(CoReturnParticle(go));
     }
     public void UseConsumeItemForVirus(int recovery)
     {
+        var poolMgr = BattleMgr.Instance.battlePoolMgr;
+        var go = poolMgr.CreateUseItemFx();
+        var particle = go.GetComponent<ParticleSystem>();
+        go.transform.position = transform.position;
+        particle.Play();
+        var main = particle.main;
+        main.startColor = Color.blue;
 
+        var scrollGo = BattleMgr.Instance.battlePoolMgr.CreateScrollingText();
+        var scrollingText = scrollGo.GetComponent<ScrollingText>();
+        scrollGo.transform.position = transform.position;
+        scrollingText.SetRecovery(recovery, Color.blue);
+
+        var virusPenalty = characterStats.virusPenalty;
+
+        foreach (var pair in virusPenalty)
+        {
+            var virus = pair.Value;
+            virus.ReductionCalculation(recovery);
+        }
+
+        StartCoroutine(CoReturnParticle(go));
     }
 }

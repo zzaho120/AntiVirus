@@ -90,4 +90,11 @@ public class BattlePoolMgr : PoolManager
         particle.transform.SetParent(particlePool);
         return particle;
     }
+
+    public GameObject CreateBullet()
+    {
+        var particle = pools[(int)BattlePoolName.Bullet].Pool.Get();
+        particle.transform.SetParent(particlePool);
+        return particle;
+    }
 }

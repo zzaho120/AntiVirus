@@ -126,6 +126,7 @@ public class BattleBasicWindow : GenericWindow
         alertConfirmBtn.SetActive(false);
         skillPanel.SetActive(false);
         skillConfirmBtn.SetActive(false);
+        itemCancelBtn.SetActive(false);
         InitSquad();
         InitFloatingInfo();
 
@@ -170,6 +171,12 @@ public class BattleBasicWindow : GenericWindow
         for (var idx = 0; idx < memberList.Count; ++idx)
         {
             memberList[idx].UpdateUI();
+        }
+
+        var players = BattleMgr.Instance.playerMgr.playerableChars;
+        foreach (var player in players)
+        {
+            UpdateExtraInfo(player);
         }
     }
     public void SetWeaponUI(PlayerableChar player)

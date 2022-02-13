@@ -40,13 +40,18 @@ public class BattleItem : MonoBehaviour
         }
         else
         {
-            window.OnClickItemCancel();
             var player = window.selectedChar;
+            if (item.ap <= player.AP)
+            {
+                window.OnClickItemCancel();
+                player.AP -= item.ap;
+                if (item.hpRecovery > 0)
+                    player.UseConsumeItemForHp(item.hpRecovery);
+                else if (item.virusGaugeDec > 0)
+                    player.UseConsumeItemForVirus(item.virusGaugeDec);
 
-            if (item.hpRecovery > 0)
-                player.UseConsumeItemForHp(item.hpRecovery);
-            else if (item.virusGaugeDec > 0)
-                player.UseConsumeItemForVirus(item.virusGaugeDec);
+                window.UpdateUI();
+            }
         }
     }
 }
