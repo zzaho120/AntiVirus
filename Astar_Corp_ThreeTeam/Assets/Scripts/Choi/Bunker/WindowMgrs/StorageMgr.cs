@@ -327,7 +327,6 @@ public class StorageMgr : MonoBehaviour
             else if (storageConsumableInfo.ContainsKey(currentKey))
             {
                 itemNameTxt.text = storageConsumableInfo[currentKey].storeName;
-                itemTypeTxt.text = $"{ GetTypeStr(storageWeaponInfo[currentKey].kind)}";
                 itemImg.sprite = storageConsumableInfo[currentKey].img;
                 detailTxt.text = $"{storageConsumableInfo[currentKey].des}";
             }

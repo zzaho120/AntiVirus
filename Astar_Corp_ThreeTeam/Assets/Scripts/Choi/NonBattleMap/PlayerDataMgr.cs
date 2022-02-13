@@ -170,7 +170,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.storeReset = true;
                 saveData.pubReset = true;
 
-                saveData.money = 2022;
+                saveData.money = 10000;
                 saveData.bunkerExitNum = 0;
                
                 saveData.agitLevel = 1;
@@ -180,7 +180,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.storeLevel = 1;
                 saveData.pubLevel = 1;
 
-                AddCharacter(3);
+                //AddCharacter(3);
 
                 saveData.cars.Add("TRU_0004");
                 saveData.currentCar = "TRU_0004";
@@ -535,6 +535,12 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
     public void AddCharacter(int number)
     {
+        string str = "SquadNum";
+        PlayerPrefs.SetInt(str, number-1);
+
+        //string str = "SquadNum";
+        //int totalSquadNum = (PlayerPrefs.HasKey(str)) ? PlayerPrefs.GetInt(str) : 0;
+
         List<string> randomCharacter = new List<string>();
         List<string> randomName = new List<string>();
         //랜덤 용병 생성.

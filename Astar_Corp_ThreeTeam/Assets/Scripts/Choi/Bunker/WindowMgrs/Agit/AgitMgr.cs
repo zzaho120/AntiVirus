@@ -543,7 +543,7 @@ public class AgitMgr : MonoBehaviour
 
         equipmentMgr.RefreshEquipList();
         //toleranceMgr.Refresh();
-        bagMgr.Init();
+        //bagMgr.Init();
     }
 
     public void Fire()

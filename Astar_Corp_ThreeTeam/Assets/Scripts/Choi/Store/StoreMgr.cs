@@ -222,6 +222,25 @@ public class StoreMgr : MonoBehaviour
             grade1TotalVal = 0;
             grade2TotalVal = 0;
             grade3TotalVal = 0;
+
+            ////json.
+            //var item1 = playerDataMgr.consumableList["CON_0017"];
+            //playerDataMgr.saveData.storeItem.Add("CON_0017");
+            //playerDataMgr.saveData.storeItemNum.Add(item1.itemQuantity);
+
+            ////현재데이터.
+            //storeConsumableInfo.Add(0, "CON_0017");
+            //storeConsumableNumInfo.Add(0, item1.itemQuantity);
+
+            ////json.
+            //var item2 = playerDataMgr.otherItemList["BUL_0004"];
+            //playerDataMgr.saveData.otherItemList.Add("BUL_0004");
+            //playerDataMgr.saveData.otherItemNumList.Add(int.Parse(item2.itemQuantity));
+
+            ////현재데이터.
+            //storeOtherItemInfo.Add(1, "BUL_0004");
+            //storeOtherItemNumInfo.Add(1, int.Parse(item2.itemQuantity));
+
             foreach (var element in playerDataMgr.equippableList)
             {
                 if (element.Key.Equals("WEP_0024")) continue;
