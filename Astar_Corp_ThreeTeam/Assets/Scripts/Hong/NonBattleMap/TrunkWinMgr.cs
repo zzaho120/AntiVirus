@@ -24,6 +24,7 @@ public class TrunkWinMgr : ModalWindowManager
     public GameObject itemImg;
     string currentKey;
     int currentIndex;
+    int bulletNum;
 
     // Weight
     public TextMeshProUGUI totalWeight;
@@ -156,7 +157,10 @@ public class TrunkWinMgr : ModalWindowManager
             var weight = character.transform.GetChild(3).GetComponentInChildren<TextMeshProUGUI>();
             //weight.text = $"{bagCurrentWeight} / {playerDataMgr.currentSquad[element.Key].MaxHp}";
             // 4-2. 탄창
-            //var bullet = character.transform.GetChild(3).transform.GetChild(1).gameObject;
+            var bullet = character.transform.GetChild(3).transform.GetChild(1).gameObject;
+            var mainBullet = bullet.transform.GetChild(0);
+            mainBullet.GetChild(0).GetComponent<TextMeshProUGUI>().text = playerDataMgr.currentSquad[element.Value].weapon.MainWeaponBullet.ToString();
+
             //if (playerDataMgr.currentSquad[element.Value].weapon != null)
             //{
             //    var mainBulletImg = bullet.transform.GetChild(0).GetComponent<Image>();
@@ -282,9 +286,9 @@ public class TrunkWinMgr : ModalWindowManager
         // 3. 기타템
         foreach (var element in playerDataMgr.truckOtherItems)
         {
+            //var mainBullet = 
             var go = Instantiate(truckItemPrefab, truckItemList.transform);
-            //var button = go.AddComponent<Button>();
-
+            
             if (isBattlePopup)
             {
                 var button = go.AddComponent<Button>();
@@ -335,7 +339,9 @@ public class TrunkWinMgr : ModalWindowManager
     {
         if (currentKey == null) return;
         //if (bagCurrentWeight > playerDataMgr.currentSquad[value].MaxHp) return;
+        truckItemObj[currentKey].GetComponent<Image>().color = Color.white;
 
+        if (playerDataMgr.currentSquad[key].bag.Count > 3) return;
         currentIndex = key;
         // 1. Weapon
         if (truckWeaponInfo.ContainsKey(currentKey))
@@ -522,101 +528,128 @@ public class TrunkWinMgr : ModalWindowManager
             var weight = int.Parse(truckOtherItemInfo[currentKey].weight);
             //if (bagCurrentWeight + weight * itemNum > bagTotalWeight) return;
 
-            string[] bulletType = new string[5];
-            bulletType[1] = "Ammo_12G";
-            bulletType[0] = "Ammo_9mm_01";
-            bulletType[2] = "Ammo_45_01";
-            bulletType[3] = "Ammo_556_01";
-            bulletType[4] = "Ammo_762_01";
-            Debug.Log(truckOtherItemInfo[currentKey].name);
-            //if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.bulletType == truckOtherItemInfo[currentKey].name)
-            //{
+            //string[] bulletType = new string[5];
+            //bulletType[1] = "Ammo_12G";
+            //bulletType[0] = "Ammo_9mm_01";
+            //bulletType[2] = "Ammo_45_01";
+            //bulletType[3] = "Ammo_556_01";
+            //bulletType[4] = "Ammo_762_01";
+
+            int bulletType = 0;
+            switch (truckOtherItemInfo[currentKey].name)
+            {
+                case "Ammo_12G":
+                    bulletType = 1;
+                    break;
+                case "Ammo_9mm_01":
+                    bulletType = 2;
+                    break;
+                case "Ammo_45_01":
+                    bulletType = 3;
+                    break;
+                case "Ammo_556_01":
+                    bulletType = 4;
+                    break;
+                case "Ammo_762_01":
+                    bulletType = 5;
+                    break;
+            }
+
+            //Debug.Log(truckOtherItemInfo[currentKey].name);
+            if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon.bulletType == bulletType)
+            {
+                Debug.Log("불릿타입 일치");
+                playerDataMgr.currentSquad[currentIndex].weapon.MainWeaponBullet += 1;
+                playerDataMgr.truckOtherItemsNum[currentKey] -= 1;
+            }
+            else
+            {
+                return;
+            }
+            
+
+            ////json.
+            //int index = 0;
+            //var id = truckOtherItemInfo[currentKey].id;
             //
+            //index = playerDataMgr.currentSquad[currentIndex].saveId;
+            //int firstIndex = playerDataMgr.saveData.bagOtherItemFirstIndex[index];
+            //int lastIndex = playerDataMgr.saveData.bagOtherItemLastIndex[index];
+            //
+            //bool contain = false;
+            //int containIndex = -1;
+            //for (int i = firstIndex; i < lastIndex; i++)
+            //{
+            //    if (playerDataMgr.saveData.bagOtherItemList[i] != id) continue;
+            //
+            //    contain = true;
+            //    containIndex = i;
             //}
             //
-
-            //json.
-            int index = 0;
-            var id = truckOtherItemInfo[currentKey].id;
-
-            index = playerDataMgr.currentSquad[currentIndex].saveId;
-            int firstIndex = playerDataMgr.saveData.bagOtherItemFirstIndex[index];
-            int lastIndex = playerDataMgr.saveData.bagOtherItemLastIndex[index];
-
-            bool contain = false;
-            int containIndex = -1;
-            for (int i = firstIndex; i < lastIndex; i++)
-            {
-                if (playerDataMgr.saveData.bagOtherItemList[i] != id) continue;
-
-                contain = true;
-                containIndex = i;
-            }
-
-            if (!contain)
-            {
-                playerDataMgr.saveData.bagOtherItemList.Insert(lastIndex, id);
-                playerDataMgr.saveData.bagOtherItemNumList.Insert(lastIndex, itemNum);
-                playerDataMgr.saveData.bagOtherItemLastIndex[index]++;
-
-                for (int i = index + 1; i < playerDataMgr.saveData.id.Count; i++)
-                {
-                    playerDataMgr.saveData.bagOtherItemFirstIndex[i]++;
-                    playerDataMgr.saveData.bagOtherItemLastIndex[i]++;
-                }
-            }
-            else
-            {
-                playerDataMgr.saveData.bagOtherItemNumList[containIndex] += itemNum;
-            }
-
-            index = playerDataMgr.saveData.truckOtherItemList.IndexOf(id);
-            if (playerDataMgr.saveData.truckOtherItemNumList[index] - itemNum == 0)
-            {
-                playerDataMgr.saveData.truckOtherItemList.Remove(id);
-                playerDataMgr.saveData.truckOtherItemNumList.RemoveAt(index);
-            }
-            else playerDataMgr.saveData.truckOtherItemNumList[index] -= itemNum;
-
-            PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
-
-            //playerDataMgr.
-            if (!playerDataMgr.currentSquad[currentIndex].bag.ContainsKey(id))
-            {
-                //현재데이터 관련.
-                bagOtherItemInfo.Add(currentKey, truckOtherItemInfo[currentKey]);
-                bagOtherItemNumInfo.Add(currentKey, itemNum);
-
-                //플레이어 데이터 매니저 관련.
-                playerDataMgr.currentSquad[currentIndex].bag.Add(id, itemNum);
-            }
-            else
-            {
-                //현재데이터 관련.
-                bagOtherItemNumInfo[currentKey] += itemNum;
-
-                //플레이어 데이터 매니저 관련.
-                playerDataMgr.currentSquad[currentIndex].bag[id] += itemNum;
-            }
-
-            if (playerDataMgr.truckOtherItemsNum[id] - itemNum == 0)
-            {
-                //현재 데이터.
-                truckOtherItemInfo.Remove(currentKey);
-                truckOtherItemNumInfo.Remove(currentKey);
-
-                //플레이어 데이터 매니저 관련.
-                playerDataMgr.truckOtherItems.Remove(id);
-                playerDataMgr.truckOtherItemsNum.Remove(id);
-            }
-            else
-            {
-                //현재 데이터.
-                truckOtherItemNumInfo[currentKey] -= itemNum;
-
-                //플레이어 데이터 매니저 관련.
-                playerDataMgr.truckOtherItemsNum[id] -= itemNum;
-            }
+            //if (!contain)
+            //{
+            //    playerDataMgr.saveData.bagOtherItemList.Insert(lastIndex, id);
+            //    playerDataMgr.saveData.bagOtherItemNumList.Insert(lastIndex, itemNum);
+            //    playerDataMgr.saveData.bagOtherItemLastIndex[index]++;
+            //
+            //    for (int i = index + 1; i < playerDataMgr.saveData.id.Count; i++)
+            //    {
+            //        playerDataMgr.saveData.bagOtherItemFirstIndex[i]++;
+            //        playerDataMgr.saveData.bagOtherItemLastIndex[i]++;
+            //    }
+            //}
+            //else
+            //{
+            //    playerDataMgr.saveData.bagOtherItemNumList[containIndex] += itemNum;
+            //}
+            //
+            //index = playerDataMgr.saveData.truckOtherItemList.IndexOf(id);
+            //if (playerDataMgr.saveData.truckOtherItemNumList[index] - itemNum == 0)
+            //{
+            //    playerDataMgr.saveData.truckOtherItemList.Remove(id);
+            //    playerDataMgr.saveData.truckOtherItemNumList.RemoveAt(index);
+            //}
+            //else playerDataMgr.saveData.truckOtherItemNumList[index] -= itemNum;
+            //
+            //PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+            //
+            ////playerDataMgr.
+            //if (!playerDataMgr.currentSquad[currentIndex].bag.ContainsKey(id))
+            //{
+            //    //현재데이터 관련.
+            //    bagOtherItemInfo.Add(currentKey, truckOtherItemInfo[currentKey]);
+            //    bagOtherItemNumInfo.Add(currentKey, itemNum);
+            //
+            //    //플레이어 데이터 매니저 관련.
+            //    playerDataMgr.currentSquad[currentIndex].bag.Add(id, itemNum);
+            //}
+            //else
+            //{
+            //    //현재데이터 관련.
+            //    bagOtherItemNumInfo[currentKey] += itemNum;
+            //
+            //    //플레이어 데이터 매니저 관련.
+            //    playerDataMgr.currentSquad[currentIndex].bag[id] += itemNum;
+            //}
+            //
+            //if (playerDataMgr.truckOtherItemsNum[id] - itemNum == 0)
+            //{
+            //    //현재 데이터.
+            //    truckOtherItemInfo.Remove(currentKey);
+            //    truckOtherItemNumInfo.Remove(currentKey);
+            //
+            //    //플레이어 데이터 매니저 관련.
+            //    playerDataMgr.truckOtherItems.Remove(id);
+            //    playerDataMgr.truckOtherItemsNum.Remove(id);
+            //}
+            //else
+            //{
+            //    //현재 데이터.
+            //    truckOtherItemNumInfo[currentKey] -= itemNum;
+            //
+            //    //플레이어 데이터 매니저 관련.
+            //    playerDataMgr.truckOtherItemsNum[id] -= itemNum;
+            //}
         }
         PrintTrunkItems();
         PrintCharInventory();
