@@ -64,6 +64,28 @@ public class BattleInfoPanel : MonoBehaviour
         explainText.text = sb.ToString();
     }
 
+    public void SetItemInfo(Consumable item)
+    {
+        infoImage.gameObject.SetActive(true);
+        infoImage.sprite = item.img;
+        infoImageTitle.text = string.Empty;
+        var sb = new StringBuilder();
+        sb.Append($"아이템 이름 : {item.storeName}\n");
+
+        if (item.hpRecovery > 0)
+        {
+            sb.Append($"기능 : 체력 회복\n");
+            sb.Append($"체력 회복량 : {item.hpRecovery}");
+        }
+        else if (item.virusGaugeDec > 0)
+        {
+            sb.Append($"기능 : 전체 감염 게이지 감소\n");
+            sb.Append($"감염 게이지 감소량 : {item.virusGaugeDec}");
+        }
+
+        explainText.text = sb.ToString();
+    }
+
     public void Init()
     {
         infoImage.sprite = null;

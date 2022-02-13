@@ -73,7 +73,6 @@ public class PlayerableChar : BattleTile
         base.Init();
         characterStats.Init();
         direction = DirectionType.None;
-        characterStats.StartGame();
 
         animator = GetComponent<Animator>();
 
@@ -82,24 +81,31 @@ public class PlayerableChar : BattleTile
             case "Tanker":
                 foreach (var cos in tankerCos)
                     cos.SetActive(true);
+                characterStats.skillMgr.passiveSkills.Add(ScriptableMgr.Instance.GetPassiveSkill("PRO_0001"));
                 break;
             case "Healer":
                 foreach (var cos in healerCos)
                     cos.SetActive(true);
+                characterStats.skillMgr.passiveSkills.Add(ScriptableMgr.Instance.GetPassiveSkill("MED_0002"));
                 break;
             case "Scout":
                 foreach (var cos in scoutCos)
                     cos.SetActive(true);
+                characterStats.skillMgr.passiveSkills.Add(ScriptableMgr.Instance.GetPassiveSkill("SER_0001"));
                 break;
             case "Bombardier":
                 foreach (var cos in bombardierCos)
                     cos.SetActive(true);
+                characterStats.skillMgr.activeSkills.Add(ScriptableMgr.Instance.GetActiveSkill("HMG_0001"));
                 break;
             case "Sniper":
                 foreach (var cos in sniperCos)
                     cos.SetActive(true);
+                characterStats.skillMgr.passiveSkills.Add(ScriptableMgr.Instance.GetPassiveSkill("SNP_0003"));
                 break;
         }
+
+        characterStats.StartGame();
     }
 
 
@@ -381,109 +387,99 @@ public class PlayerableChar : BattleTile
 
     public void PlayAttackAnim(MonsterChar monster)
     {
-        animator.SetTrigger("Fire");
-        currentWeapon.transform.localRotation = Quaternion.Euler(fireRot);
-        targetMonster = monster;
+        var repeat = 1;
+        if (isHMGA1Skill)
+            repeat = characterStats.weapon.WeaponBullet;
+
+        StartCoroutine(CoAttack(repeat, monster));
     }
 
     private Quaternion originRot;
     public void ActionAttack(MonsterChar monster)
     {
         var weapon = characterStats.weapon;
-
         var fullAPMoveList = characterStats.buffMgr.GetBuffList(Stat.FullApMove);
         var isFullApMove = fullAPMoveList.Count > 0;
-        var repeat = 1;
-        if (isHMGA1Skill)
-            repeat = AP / weapon.GetWeaponAP();
         currentWeapon.transform.localRotation = Quaternion.Euler(weaponRot);
 
-        for (var idx = 0; idx < repeat; ++idx)
+        if (weapon.CheckAvailBullet)
         {
-            if (weapon.CheckAvailBullet)
+            if (weapon.CheckAvailShot(AP, CharacterState.Attack) || isFullApMove || isHMGA1Skill)
             {
-                if (weapon.CheckAvailShot(AP, CharacterState.Attack) || isFullApMove)
+                var buffValue = 0;
+                if (weapon.curWeapon.kind == "6")
                 {
-                    var buffValue = 0;
-                    if (weapon.curWeapon.kind == "6")
+                    var moveSRList = characterStats.buffMgr.GetBuffList(Stat.MoveSRAccuracy);
+                    foreach (var buff in moveSRList)
                     {
-                        var moveSRList = characterStats.buffMgr.GetBuffList(Stat.MoveSRAccuracy);
-                        foreach (var buff in moveSRList)
-                        {
-                            buffValue += (int)buff.GetAmount();
-                        }
+                        buffValue += (int)buff.GetAmount();
+                    }
+                }
+
+                var isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(monster.currentTile.accuracy) + characterStats.accuracy + buffValue;
+
+                if (!isFullApMove || !isHMGA1Skill)
+                    AP -= weapon.GetWeaponAP();
+
+                var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
+                window.UpdateUI();
+
+                if (monster.IsNullTarget)
+                    monster.SetTarget(this);
+
+                weapon.fireCount++;
+                weapon.WeaponBullet--;
+
+                var time = 0f;
+                if (isHit)
+                {
+                    var isCrit = Random.Range(0, 100) < weapon.CritRate + characterStats.critRate - monster.monsterStats.critResist;
+                    time = monster.GetDamage(this, isCrit);
+
+                    var buffMgr = characterStats.buffMgr;
+                    var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.Hit);
+                    foreach (var skill in skillList)
+                    {
+                        skill.Invoke(buffMgr);
                     }
 
-                    var isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(monster.currentTile.accuracy) + characterStats.accuracy + buffValue;
-
-                    if (!isFullApMove)
-                        AP -= weapon.GetWeaponAP();
-
-                    var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
-                    window.UpdateUI();
-
-                    if (monster.IsNullTarget)
+                    var buffList = buffMgr.GetBuffList(Stat.Aggro);
+                    if (buffList.Count > 0)
                         monster.SetTarget(this);
-
-                    weapon.fireCount++;
-                    weapon.WeaponBullet--;
-
-                    var time = 0f;
-                    if (isHit)
-                    {
-                        var isCrit = Random.Range(0, 100) < weapon.CritRate + characterStats.critRate - monster.monsterStats.critResist;
-                        time = monster.GetDamage(this, isCrit);
-
-                        var buffMgr = characterStats.buffMgr;
-                        var skillList = characterStats.skillMgr.GetPassiveSkills(PassiveCase.Hit);
-                        foreach (var skill in skillList)
-                        {
-                            skill.Invoke(buffMgr);
-                        }
-
-                        var buffList = buffMgr.GetBuffList(Stat.Aggro);
-                        if (buffList.Count > 0)
-                            monster.SetTarget(this);
-                    }
-                    else
-                    {
-                        var go = BattleMgr.Instance.battlePoolMgr.CreateScrollingText();
-                        var scrollingText = go.GetComponent<ScrollingText>();
-                        go.transform.position = monster.transform.position;
-                        scrollingText.SetMiss();
-                    }
-
-                    characterStats.buffMgr.RemoveBuff(fullAPMoveList);
-                    monster.currentTile.EnableDisplay(true);
-
-                    if (AP <= 0 && time != 0)
-                        EndPlayer();
-                    else
-                    {
-                        WaitPlayer();
-                        SetNonSelected();
-                    }
                 }
                 else
                 {
-                    var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-                    window.SetMsgText($"Not enough Action Point for Attack");
+                    var go = BattleMgr.Instance.battlePoolMgr.CreateScrollingText();
+                    var scrollingText = go.GetComponent<ScrollingText>();
+                    go.transform.position = monster.transform.position;
+                    scrollingText.SetMiss();
+                }
+
+                characterStats.buffMgr.RemoveBuff(fullAPMoveList);
+                monster.currentTile.EnableDisplay(true);
+
+                if (AP <= 0 && time != 0)
+                    EndPlayer();
+                else
+                {
+                    WaitPlayer();
                     SetNonSelected();
                 }
             }
-            else
-            {
-                var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-                window.SetMsgText($"Not enough Bullet for Attack");
-                SetNonSelected();
-            }
         }
+    }
 
-        if (isHMGA1Skill)
+    public IEnumerator CoAttack(int repeat, MonsterChar monster)
+    {
+        targetMonster = monster;
+        for (var idx = 0; idx < repeat; ++idx)
         {
-            AP = 0;
-            EndPlayer();
-            isHMGA1Skill = false;
+            if (targetMonster.monsterStats.currentHp <= 0)
+                yield break;
+            animator.SetTrigger("Fire");
+            currentWeapon.transform.localRotation = Quaternion.Euler(fireRot);
+
+            yield return new WaitForSeconds(1.5f);
         }
     }
 
@@ -653,7 +649,6 @@ public class PlayerableChar : BattleTile
     public void SetNonSelected()
     {
         BattleMgr.Instance.playerMgr.selectChar = null;
-        isHMGA1Skill = false;
         isTankB1Skill = false;
         status = CharacterState.Wait;
     }
@@ -724,6 +719,12 @@ public class PlayerableChar : BattleTile
         status = CharacterState.Attack;
     }
 
+    public void HMG_A1_SkillCancel()
+    {
+        isHMGA1Skill = false;
+        status = CharacterState.Wait;
+    }
+
     public void DisplaySightTile()
     {
         var frontSightList = BattleMgr.Instance.sightMgr.GetFrontSight(this);
@@ -787,5 +788,14 @@ public class PlayerableChar : BattleTile
         }
 
         currentWeapon.transform.rotation = Quaternion.Euler(fireRot);
+    }
+
+    public void UseConsumeItemForHp(int recovery)
+    {
+        characterStats.
+    }
+    public void UseConsumeItemForVirus(int recovery)
+    {
+
     }
 }

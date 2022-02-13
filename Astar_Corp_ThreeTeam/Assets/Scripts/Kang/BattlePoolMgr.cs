@@ -83,4 +83,11 @@ public class BattlePoolMgr : PoolManager
         particle.transform.SetParent(scrollingTextPool);
         return particle;
     }
+
+    public GameObject CreateUseItemFx()
+    {
+        var particle = pools[(int)BattlePoolName.UseItemFx].Pool.Get();
+        particle.transform.SetParent(particlePool);
+        return particle;
+    }
 }

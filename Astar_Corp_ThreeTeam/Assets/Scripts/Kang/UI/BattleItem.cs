@@ -13,6 +13,7 @@ public class BattleItem : MonoBehaviour
     {
         this.item = item;
         btnText.text = item.storeName;
+        SetAP();
     }
 
     public void SetAP()
@@ -26,6 +27,26 @@ public class BattleItem : MonoBehaviour
         for (var idx = 0; idx < item.ap; ++idx)
         {
             apObj.transform.GetChild(idx).gameObject.SetActive(true);
+        }
+    }
+
+    public void OnClickItemConfirm()
+    {
+        var window = BattleMgr.Instance.battleWindowMgr.GetWindow(0) as BattleBasicWindow;
+
+        if (window.infoPanel.activeSelf)
+        {
+            window.battleinfoPanel.SetItemInfo(item);
+        }
+        else
+        {
+            window.OnClickItemCancel();
+            var player = window.selectedChar;
+
+            if (item.hpRecovery > 0)
+                player.UseConsumeItemForHp(item.hpRecovery);
+            else if (item.virusGaugeDec > 0)
+                player.UseConsumeItemForVirus(item.virusGaugeDec);
         }
     }
 }

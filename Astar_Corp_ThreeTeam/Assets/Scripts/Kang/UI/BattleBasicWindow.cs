@@ -87,11 +87,14 @@ public class BattleBasicWindow : GenericWindow
     private List<BattleFloatingInfo> battleFloatingInfoList = new List<BattleFloatingInfo>();
 
     [Header("Item")]
-    public GameObject itemPanel;
+    public BattleItemPanel itemPanel;
     public List<BattleItem> itemBtns;
     public BattleItem curItem;
-    public GameObject itemConfirmBtn;
     public GameObject itemCancelBtn;
+
+    [Header("Skill")]
+    public GameObject skillPanel;
+    public GameObject skillConfirmBtn;
 
     public bool isTurn
     {
@@ -121,6 +124,8 @@ public class BattleBasicWindow : GenericWindow
         leftDirectionPanel.SetActive(false);
         alertPanel.SetActive(false);
         alertConfirmBtn.SetActive(false);
+        skillPanel.SetActive(false);
+        skillConfirmBtn.SetActive(false);
         InitSquad();
         InitFloatingInfo();
 
@@ -148,7 +153,7 @@ public class BattleBasicWindow : GenericWindow
         selectedChar = player;
         info = GetFlotingInfo(selectedChar);
         if (info != null)
-            info.isSelected = true;
+            info.isSelected = infoPanel.activeSelf;
 
         state = CharacterState.Wait;
         var stats = selectedChar.characterStats;
@@ -341,9 +346,12 @@ public class BattleBasicWindow : GenericWindow
                 var actionBtn = go.GetComponent<BattleActionBtn>();
                 genActionBtns.Add(actionBtn);
 
-                actionBtn.btnText.text = activeSkill[idx].skillName;
-                Debug.Log($"text : {actionBtn.btnText.text}");
+                actionBtn.btnText.text = "ÇÑ³ð¸¸\n½ð´Ù";
                 actionBtn.SetAP(activeSkill[idx].AP);
+
+                var btn = actionBtn.GetComponent<Button>();
+
+                btn.onClick.AddListener(OnClickSkill);
             }
         }
     }
@@ -395,12 +403,16 @@ public class BattleBasicWindow : GenericWindow
     {
         return battleFloatingInfoList.Find(info => info.player == player);
     }
+
     public void OnClickInfo()
     {
         if (state == CharacterState.Wait)
         {
             SetInfoPanel(!infoPanel.activeSelf);
             BattleMgr.Instance.ChangeUIMode(infoPanel.activeSelf);
+            var info = GetFlotingInfo(selectedChar);
+            if (info != null)
+                info.isSelected = infoPanel.activeSelf;
         }
     }
 
@@ -734,10 +746,82 @@ public class BattleBasicWindow : GenericWindow
     {
         actionPanel.SetActive(false);
         moveBtn.SetActive(false);
+        itemCancelBtn.SetActive(true);
+        itemPanel.gameObject.SetActive(true);
+        itemPanel.Init(selectedChar);
     }
     public void OnClickItemCancel()
     {
         actionPanel.SetActive(true);
+        moveBtn.SetActive(true);
+        itemCancelBtn.SetActive(false);
+        itemPanel.gameObject.SetActive(false);
+    }
+
+    public void OnClickItemConfirm()
+    {
+        OnClickItemCancel();
+    }
+
+    public void OnClickSkill()
+    {
+        state = CharacterState.Attack;
+        selectedChar.HMG_A1_Skill();
+        actionPanel.SetActive(false);
         moveBtn.SetActive(false);
+        skillPanel.SetActive(true);
+        skillConfirmBtn.SetActive(true);
+
+        for (var idx = 0; idx < monsterPanels.Count; ++idx)
+        {
+            Destroy(monsterPanels[idx].gameObject);
+        }
+        monsterPanels.Clear();
+        var monsterList = BattleMgr.Instance.sightMgr.GetMonsterInPlayerSight(selectedChar);
+        if (monsterList.Count == 0)
+        {
+            notMonsterPanel.SetActive(true);
+        }
+        else
+        {
+            monsterListPanel.SetActive(true);
+            for (var idx = 0; idx < monsterList.Count; ++idx)
+            {
+                var go = Instantiate(monsterPanelPrefab, monsterListPanel.transform);
+                var monsterPanel = go.GetComponent<BattleMonsterPanel>();
+
+                monsterPanel.Init(selectedChar, monsterList[idx], monsterSprite, this);
+
+                monsterPanels.Add(monsterPanel);
+            }
+            targetMonster = monsterList[0];
+            CameraController.Instance.SetCameraTrs(targetMonster.transform);
+        }
+    }
+
+    public void OnClickSkillCancel()
+    {
+        state = CharacterState.Wait;
+        //selectedChar.HMG_A1_SkillCancel();
+        actionPanel.SetActive(true);
+        moveBtn.SetActive(true);
+        skillPanel.SetActive(false);
+        monsterListPanel.SetActive(false);
+        notMonsterPanel.SetActive(false);
+        skillConfirmBtn.SetActive(false);
+        SetInfoPanel(false);
+    }
+
+    public void OnClickSkillConfirm()
+    {
+        if (state == CharacterState.Attack)
+        {
+            selectedChar.PlayAttackAnim(targetMonster);
+            targetMonster = null;
+            state = CharacterState.Wait;
+            OnClickSkillCancel();
+            SetActionBtn();
+            UpdateUI();
+        }
     }
 }

@@ -216,6 +216,9 @@ public class CharacterStats
 
         VirusPenaltyInit();
 
+        bag.Add("CON_0003", 2);
+        bag.Add("CON_0011", 1);
+        bag.Add("CON_0017", 2);
     }
 
     public void Setting()
@@ -237,6 +240,7 @@ public class CharacterStats
     {
         // 무기 스탯 초기화
         weapon.Init();
+
 
 
         var skillList = skillMgr.GetPassiveSkills(PassiveCase.Ready);
