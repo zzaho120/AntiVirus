@@ -99,6 +99,10 @@ public class BattleBasicWindow : GenericWindow
 
     [Header("Name")]
     public List<string> names;
+
+    [Header("Turn Notice")]
+    public GameObject turnNotice;
+    public TextMeshProUGUI turnNoticeText;
     public bool isTurn
     {
         get => BattleMgr.Instance.turn == BattleTurn.Player;
@@ -848,5 +852,35 @@ public class BattleBasicWindow : GenericWindow
             SetActionBtn();
             UpdateUI();
         }
+    }
+
+    public void StartTurn(BattleTurn turn)
+    {
+        turnNotice.SetActive(true);
+        switch (turn)
+        {
+            case BattleTurn.Player:
+                turnNoticeText.text = "플레이어 턴";
+                actionPanel.SetActive(true);
+                break;
+            case BattleTurn.Enemy:
+                turnNoticeText.text = "적 턴";
+                actionPanel.SetActive(false);
+                break;
+        }
+        StartCoroutine(CoTurnNoticeOff());
+    }
+
+    private IEnumerator CoTurnNoticeOff()
+    {
+        var timer = 0f;
+
+        while (timer < 1f)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        turnNotice.SetActive(false);
     }
 }

@@ -82,7 +82,7 @@ public class BattleMgr : MonoBehaviour
                 EventBusMgr.Publish(EventType.StartEnemy);
                 break;
         }
-
+        window.StartTurn(turn);
         sightMgr.UpdateFog();
     }
 
@@ -136,6 +136,7 @@ public class BattleMgr : MonoBehaviour
                 window.UpdateUI();
                 break;
         }
+        window.StartTurn(turn);
         if (startTurn == turn)
             turnCount++;
     }

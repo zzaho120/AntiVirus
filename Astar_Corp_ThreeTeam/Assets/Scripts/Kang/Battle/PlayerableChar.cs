@@ -164,6 +164,8 @@ public class PlayerableChar : BattleTile
         AP = 6; 
         attackCount = 0;
         alertList.Clear();
+        animator.SetBool("Idle", true);
+        currentWeapon.transform.localRotation = Quaternion.Euler(weaponRot);
         characterStats.StartTurn();
     }
 
@@ -502,6 +504,9 @@ public class PlayerableChar : BattleTile
         status = CharacterState.Alert;
         attackCount = AP / characterStats.weapon.curWeapon.firstShotAp;
         AP = 0;
+        animator.SetTrigger("Alert");
+        animator.SetBool("Idle", false);
+        currentWeapon.transform.localRotation = Quaternion.Euler(fireRot);
     }
 
     public void EndPlayer()

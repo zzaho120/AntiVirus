@@ -178,7 +178,7 @@ public class GetVirusPenalty : MonoBehaviour
             virusData.currentVirus[$"{labInfo.virusType}"] = step;
             virusData.Change();
             Debug.Log("플레이어가 구역1에 들어왔습니다.");
-
+            playerDataMgr.virusLevel = 1;
             timer = 0;
             turnTimer = 0;
         }
@@ -216,6 +216,7 @@ public class GetVirusPenalty : MonoBehaviour
             virusData.currentVirus[$"{labInfo.virusType}"] = step;
             virusData.Change();
             Debug.Log("플레이어가 구역2에 들어왔습니다.");
+            playerDataMgr.virusLevel = 2;
 
             timer = 0;
             turnTimer = 0;
@@ -254,6 +255,7 @@ public class GetVirusPenalty : MonoBehaviour
             virusData.currentVirus[$"{labInfo.virusType}"] = step;
             virusData.Change();
             Debug.Log("플레이어가 구역3에 들어왔습니다.");
+            playerDataMgr.virusLevel = 3;
 
             timer = 0;
             turnTimer = 0;
@@ -266,6 +268,7 @@ public class GetVirusPenalty : MonoBehaviour
         if (!executeOnce)
         {
             Debug.Log("플레이어가 나갔습니다.");
+            playerDataMgr.virusLevel = 0;
             player = null;
 
             virusData.currentVirus[$"{labInfo.virusType}"] = 0;
