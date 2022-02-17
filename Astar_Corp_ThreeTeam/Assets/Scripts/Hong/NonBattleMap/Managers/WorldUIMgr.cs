@@ -81,12 +81,18 @@ public class WorldUIMgr : MonoBehaviour
 
         // TrunkWinMGr
         trunkWinMgr = screen.GetComponentInChildren<TrunkWinMgr>();
-        trunkWinMgr.Init();
+        StartCoroutine(CoTrunkWinInit());
     }
 
     public void UpdateUI()
     {
         // SquadStatusMgr
         squadStatusMgr.SquadUpdate();
+    }
+
+    private IEnumerator CoTrunkWinInit()
+    {
+        yield return new WaitForSeconds(0.5f);
+        trunkWinMgr.Init();
     }
 }
