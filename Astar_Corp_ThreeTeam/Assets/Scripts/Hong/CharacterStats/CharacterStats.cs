@@ -215,10 +215,6 @@ public class CharacterStats
         skillMgr = new SkillMgr();
 
         VirusPenaltyInit();
-
-        bag.Add("CON_0003", 2);
-        bag.Add("CON_0011", 1);
-        bag.Add("CON_0017", 2);
     }
 
     public void Setting()
