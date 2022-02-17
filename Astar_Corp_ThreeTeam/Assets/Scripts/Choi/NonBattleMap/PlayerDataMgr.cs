@@ -170,7 +170,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.storeReset = true;
                 saveData.pubReset = true;
 
-                saveData.money = 10000;
+                saveData.money = 100000;
                 saveData.bunkerExitNum = 0;
                
                 saveData.agitLevel = 1;

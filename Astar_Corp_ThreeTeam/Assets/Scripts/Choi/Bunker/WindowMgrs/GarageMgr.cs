@@ -69,17 +69,22 @@ public class GarageMgr : MonoBehaviour
         isMenuOpen = true;
         arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
         //OpenMainWin();
+
+        int i = 0;
+        foreach (var element in boardingMgr.carOrder)
+        {
+            Debug.Log($"i : {i}");
+            Debug.Log($"{element.Value.name}");
+            i++;
+        }
     }
 
     public void Display()
     {
-        Debug.Log($"currentCar : {playerDataMgr.saveData.currentCar}");
         var myKey = boardingMgr.carOrder.FirstOrDefault(x => x.Value.id == playerDataMgr.saveData.currentCar).Key;
-        Debug.Log($"myKey : {myKey}");
         boardingMgr.currentKey = myKey;
         var truck = boardingMgr.carOrder[myKey];
-        Debug.Log($"id : {boardingMgr.carOrder[myKey].id}");
-
+        
         carImg.sprite = truck.img;
         var capacity = truck.capacity;
 
@@ -122,7 +127,7 @@ public class GarageMgr : MonoBehaviour
     public void PreviousButton()
     {
         boardingMgr.PreviousButton();
-        trunkMgr.DisplayTruckItem(0);
+        //trunkMgr.DisplayTruckItem(0);
         Display();
 
         boardingButton.transform.GetChild(1).gameObject.SetActive(true);
@@ -130,12 +135,8 @@ public class GarageMgr : MonoBehaviour
 
     public void NextButton()
     {
-        Debug.Log($"{boardingMgr.currentKey}");
-        Debug.Log($"{boardingMgr.carOrder[boardingMgr.currentKey].id}");
         boardingMgr.NextButton();
-        Debug.Log($"{boardingMgr.currentKey}");
-        Debug.Log($"{boardingMgr.carOrder[boardingMgr.currentKey].id}");
-        trunkMgr.DisplayTruckItem(0);
+        //trunkMgr.DisplayTruckItem(0);
         Display();
 
         boardingButton.transform.GetChild(1).gameObject.SetActive(true);
@@ -204,6 +205,8 @@ public class GarageMgr : MonoBehaviour
     public void OpenTrunkWin()
     {
         mainWin.SetActive(false);
+        trunkMgr.Init();
+        Debug.Log($"currentCar : {playerDataMgr.saveData.currentCar}");
         trunkWin.SetActive(true);
     }
 
