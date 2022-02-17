@@ -93,8 +93,6 @@ public class BattleSetting : MonoBehaviour
                 BattleMgr.Instance.startTurn = BattleTurn.Enemy;
             else
                 BattleMgr.Instance.startTurn = BattleTurn.Player;
-
-
         }
         else
         {

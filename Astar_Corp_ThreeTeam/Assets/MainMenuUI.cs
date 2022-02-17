@@ -9,4 +9,9 @@ public class MainMenuUI : MonoBehaviour
     {
         SceneManager.LoadScene("Bunker");
     }
+
+    public void OnClickGameExit()
+    {
+        Application.Quit();
+    }
 }

@@ -26,6 +26,7 @@ public class BattleBasicWindow : GenericWindow
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI nameText;
     public Image classImage;
+    public GameObject changeWeaponBtn;
 
     [Header("Selected Character Action")]
     public GameObject actionBtnPrefab;
@@ -157,6 +158,11 @@ public class BattleBasicWindow : GenericWindow
         info = GetFlotingInfo(selectedChar);
         if (info != null)
             info.isSelected = infoPanel.activeSelf;
+
+        if (selectedChar.subWeapon == null)
+            changeWeaponBtn.SetActive(false);
+        else
+            changeWeaponBtn.SetActive(true);
 
         var players = BattleMgr.Instance.playerMgr.playerableChars;
         var playerIdx = -1;

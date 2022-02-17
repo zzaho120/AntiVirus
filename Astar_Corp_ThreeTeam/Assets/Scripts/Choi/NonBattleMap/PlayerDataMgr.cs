@@ -52,7 +52,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public bool isMonsterAtk;
     private void Start()
     {
-        //PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
