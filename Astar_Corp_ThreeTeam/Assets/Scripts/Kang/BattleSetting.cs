@@ -72,7 +72,7 @@ public class BattleSetting : MonoBehaviour
         {
             var playerPrefab = BattleMgr.Instance.playerPrefab;
             playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
-
+            BattleMgr.Instance.fieldVirusLevel = playerDataMgr.virusLevel;
             for (var idx = 0; idx < playerDataMgr.battleSquad.Count; ++idx)
             {
                 var player = Instantiate(playerPrefab, new Vector3(playerPos[idx].x, .5f, playerPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
@@ -87,6 +87,25 @@ public class BattleSetting : MonoBehaviour
                 var weaponGo = Instantiate(playerableChar.mainWeapon, playerableChar.rightHandTr);
                 playerableChar.currentWeapon = weaponGo;
                 weaponGo.transform.localRotation = Quaternion.Euler(playerableChar.weaponRot);
+            }
+            var worldMonster = playerDataMgr.worldMonster;
+            var nonBattleMonster = worldMonster.monsterStat.nonBattleMonster;
+            var monsterCount = Random.Range(nonBattleMonster.battleMinNum, nonBattleMonster.battleMaxNum + 1);
+
+
+
+
+            for (var idx = 0; idx < monsterCount; ++idx)
+            {
+                var monsterPrefab = monsterPrefabs[(int)monsters[idx]];
+                var monster = Instantiate(monsterPrefab, new Vector3(monsterPos[idx].x, .5f, monsterPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
+                monster.transform.SetParent(BattleMgr.Instance.monsterMgr.transform);
+
+                var monsterChar = monster.GetComponentInChildren<MonsterChar>();
+
+                monsterChar.monsterStats = monster.GetComponentInChildren<MonsterStats>();
+                monsterChar.monsterStats.virus = worldMonster.monsterStat.virus;
+                monsterChar.monsterStats.virusLevel = Random.Range(1, playerDataMgr.virusLevel + 1);
             }
 
             if (playerDataMgr.isMonsterAtk)

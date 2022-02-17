@@ -50,6 +50,9 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public bool ableToExit;//벙커 밖으로 나갈 수 있는지.
     public bool isFirst;
     public bool isMonsterAtk;
+
+    public WorldMonsterChar worldMonster;
+    public int virusLevel;
     private void Start()
     {
         PlayerPrefs.DeleteAll();

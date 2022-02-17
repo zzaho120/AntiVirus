@@ -28,7 +28,7 @@ public class StartBattle : MonoBehaviour
 
         if (other.gameObject.CompareTag("Enemy"))
         {
-            //monsterChar = other.GetComponent<WorldMonsterChar>();
+           
 
             // 렌더러가 활성화 되어있을때만 유효하게 // 해당조건 잠깐 Off
             if (other.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
@@ -49,7 +49,7 @@ public class StartBattle : MonoBehaviour
                     isMonsterAtk = true;
                 }
                 PlayerDataMgr.Instance.isMonsterAtk = isMonsterAtk;
-
+                PlayerDataMgr.Instance.worldMonster = other.GetComponent<WorldMonsterChar>();
                 // 전체맵 일시정지
                 timeController.Pause();
                 timeController.isPause = true;
