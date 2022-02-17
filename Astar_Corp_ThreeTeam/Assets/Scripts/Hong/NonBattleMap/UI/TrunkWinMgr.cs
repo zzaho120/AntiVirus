@@ -49,17 +49,11 @@ public class TrunkWinMgr : ModalWindowManager
     Dictionary<string, int> bagWeaponNumInfo = new Dictionary<string, int>();
     Dictionary<string, Consumable> bagConsumableInfo = new Dictionary<string, Consumable>();
     Dictionary<string, int> bagConsumableNumInfo = new Dictionary<string, int>();
-    Dictionary<string, OtherItem> bagOtherItemInfo = new Dictionary<string, OtherItem>();
-    Dictionary<string, int> bagOtherItemNumInfo = new Dictionary<string, int>();
-
-    Dictionary<string, GameObject> bagObjs = new Dictionary<string, GameObject>();
 
     public void Init()
     {
         playerDataMgr = PlayerDataMgr.Instance;
         soMgr = ScriptableMgr.Instance;
-
-        Debug.Log("TruckConsumables : " + playerDataMgr.truckConsumables.Count);
 
         foreach (var element in playerDataMgr.truckEquippables)
         {
@@ -83,11 +77,14 @@ public class TrunkWinMgr : ModalWindowManager
             trunkCurrentWeight += (int.Parse(element.Value.weight) * playerDataMgr.truckOtherItemsNum[element.Key]);
         }
 
-        // Update Trunk weight
-        NonBattleMgr.Instance.worldUIMgr.printTruckUI.truckCurWeight = trunkCurrentWeight;
-        NonBattleMgr.Instance.worldUIMgr.printTruckUI.Init();
+        //// Update Trunk weight
+        //NonBattleMgr.Instance.worldUIMgr.printTruckUI.truckCurWeight = trunkCurrentWeight;
+        //NonBattleMgr.Instance.worldUIMgr.printTruckUI.Init();
+        PrintTrunkItems();
     }
 
+
+    // 캐릭터
     private void PrintCharInventory()
     {
         // 이전 정보 삭제
@@ -129,8 +126,6 @@ public class TrunkWinMgr : ModalWindowManager
             // 4-2. 탄창
             var bullet = character.transform.GetChild(3).transform.GetChild(1).gameObject;
             var mainBullet = bullet.transform.GetChild(0);
-            //if (currentKey != null)
-            //    mainBullet.GetComponent<Image>().sprite = bagOtherItemInfo[currentKey].img;
             mainBullet.GetChild(0).GetComponent<TextMeshProUGUI>().text = 
                 playerDataMgr.currentSquad[element.Value].weapon.MainWeaponBullet.ToString();
             var subBullet = bullet.transform.GetChild(1);
@@ -145,7 +140,7 @@ public class TrunkWinMgr : ModalWindowManager
                 var button = itemGo.AddComponent<Button>();
                 //Debug.Log(item.Key);
                 button.onClick.AddListener(delegate { ReturnItem(item.Key); });
-                var bagWeight = TruckMemberGo[element.Key].transform.GetChild(3).GetComponentInChildren<TextMeshProUGUI>();
+                //var bagWeight = TruckMemberGo[element.Key].transform.GetChild(3).GetComponentInChildren<TextMeshProUGUI>();
 
                 // 장비(무기)
                 if (playerDataMgr.equippableList.ContainsKey(item.Key))
@@ -154,6 +149,7 @@ public class TrunkWinMgr : ModalWindowManager
                     itemGo.transform.GetChild(0).GetComponent<Image>().sprite = playerDataMgr.equippableList[item.Key].img;
                     itemGo.GetComponentInChildren<Text>().text = $"{item.Value}";
                     bagCurrentWeight += (playerDataMgr.equippableList[item.Key].weight * item.Value);
+                    TruckMemberGo.Add(element.Key, character);
                     //bagObjs.Add(item.Key, itemGo);
                 }
                 // 소모품
@@ -163,6 +159,7 @@ public class TrunkWinMgr : ModalWindowManager
                     itemGo.transform.GetChild(0).GetComponent<Image>().sprite = playerDataMgr.consumableList[item.Key].img;
                     itemGo.GetComponentInChildren<Text>().text = $"{item.Value}";
                     bagCurrentWeight += (playerDataMgr.consumableList[item.Key].weight * item.Value);
+                    TruckMemberGo.Add(element.Key, character);
                     //bagObjs.Add(item.Key, itemGo);
                 }
                 // 기타
@@ -172,12 +169,11 @@ public class TrunkWinMgr : ModalWindowManager
                     itemGo.transform.GetChild(0).GetComponent<Image>().sprite = playerDataMgr.otherItemList[item.Key].img;
                     itemGo.GetComponentInChildren<Text>().text = $"{item.Value}";
                     bagCurrentWeight += (int.Parse(playerDataMgr.otherItemList[item.Key].weight) * item.Value);
+                    TruckMemberGo.Add(element.Key, character);
                     //bagObjs.Add(item.Key, itemGo);
                 }
                 //weight.text = $"{bagCurrentWeight} / {playerDataMgr.currentSquad[element.Key].MaxHp}";
             }
-
-            TruckMemberGo.Add(element.Key, character);
             i++;
         }
     }
@@ -192,6 +188,12 @@ public class TrunkWinMgr : ModalWindowManager
                 Destroy(element.Value);
             }
             truckItemObj.Clear();
+        }
+
+        if (isBattlePopup)
+        {
+            var trunkUI = transform.GetChild(1).transform.GetChild(1);
+            trunkUI.GetComponentInChildren<Text>().text = $"{trunkCurrentWeight} / {PlayerDataMgr.Instance.truckList[PlayerDataMgr.Instance.saveData.currentCar].weight}";
         }
 
         // 생성
@@ -218,7 +220,6 @@ public class TrunkWinMgr : ModalWindowManager
         foreach (var element in playerDataMgr.truckConsumables)
         {
             var go = Instantiate(truckItemPrefab, truckItemList.transform);
-            //var button = go.AddComponent<Button>();
 
             if (isBattlePopup)
             {
@@ -243,7 +244,6 @@ public class TrunkWinMgr : ModalWindowManager
         // 3. 기타템
         foreach (var element in playerDataMgr.truckOtherItems)
         {
-            //var mainBullet = 
             var go = Instantiate(truckItemPrefab, truckItemList.transform);
             
             if (isBattlePopup)
@@ -269,6 +269,7 @@ public class TrunkWinMgr : ModalWindowManager
 
         if (isBattlePopup)
         {
+
             PrintCharInventory();
         }
     }
@@ -403,7 +404,6 @@ public class TrunkWinMgr : ModalWindowManager
         if (truckOtherItemInfo.ContainsKey(currentKey))
         {
             var weight = int.Parse(truckOtherItemInfo[currentKey].weight);
-            //if (bagCurrentWeight + weight * itemNum > bagTotalWeight) return;
 
             int bulletType = 0;
             switch (truckOtherItemInfo[currentKey].name)
@@ -632,8 +632,8 @@ public class TrunkWinMgr : ModalWindowManager
     public override void OpenWindow()
     {
         base.OpenWindow();
-        PrintTrunkItems();
-        //Init();
+        //PrintTrunkItems();
+        Init();
     }
 
     public override void CloseWindow()
