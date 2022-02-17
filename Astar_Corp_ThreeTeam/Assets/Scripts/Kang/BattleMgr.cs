@@ -56,8 +56,8 @@ public class BattleMgr : MonoBehaviour
     public void Start()
     {
         Time.timeScale = 1f;
-        var battleTest = GetComponent<BattleSetting>();
-        battleTest.Init();
+        var battleSetting = GetComponent<BattleSetting>();
+        battleSetting.Init();
         tileMgr.Init();
         playerMgr.Init();
         monsterMgr.Init();

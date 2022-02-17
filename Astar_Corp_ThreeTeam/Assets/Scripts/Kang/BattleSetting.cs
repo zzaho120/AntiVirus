@@ -92,12 +92,33 @@ public class BattleSetting : MonoBehaviour
             var nonBattleMonster = worldMonster.monsterStat.nonBattleMonster;
             var monsterCount = Random.Range(nonBattleMonster.battleMinNum, nonBattleMonster.battleMaxNum + 1);
 
-
-
-
             for (var idx = 0; idx < monsterCount; ++idx)
             {
-                var monsterPrefab = monsterPrefabs[(int)monsters[idx]];
+                GameObject monsterPrefab = null;
+                switch (nonBattleMonster.name)
+                {
+                    case "Bear":
+                        monsterPrefab = monsterPrefabs[0];
+                        break;
+                    case "Boar":
+                        monsterPrefab = monsterPrefabs[1];
+                        break;
+                    case "Fox":
+                        monsterPrefab = monsterPrefabs[2];
+                        break;
+                    case "Jaguar":
+                        monsterPrefab = monsterPrefabs[3];
+                        break;
+                    case "Spider":
+                        monsterPrefab = monsterPrefabs[4];
+                        break;
+                    case "Tiger":
+                        monsterPrefab = monsterPrefabs[5];
+                        break;
+                    case "Wolf":
+                        monsterPrefab = monsterPrefabs[6];
+                        break;
+                }
                 var monster = Instantiate(monsterPrefab, new Vector3(monsterPos[idx].x, .5f, monsterPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
                 monster.transform.SetParent(BattleMgr.Instance.monsterMgr.transform);
 
@@ -167,40 +188,40 @@ public class BattleSetting : MonoBehaviour
 
                 weaponGo.transform.localRotation = Quaternion.Euler(playerableChar.weaponRot);
             }
-        }
 
-        for (var idx = 0; idx < monsterPos.Count; ++idx)
-        {
-            var monsterPrefab = monsterPrefabs[(int)monsters[idx]];
-            var monster = Instantiate(monsterPrefab, new Vector3(monsterPos[idx].x, .5f, monsterPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
-            monster.transform.SetParent(BattleMgr.Instance.monsterMgr.transform);
-
-            var monsterChar = monster.GetComponentInChildren<MonsterChar>();
-
-            string virus = null;
-            switch (monsterVirus[idx])
+            for (var idx = 0; idx < monsterPos.Count; ++idx)
             {
-                case VirusType.None:
-                    break;
-                case VirusType.E:
-                    virus = "E";
-                    break;
-                case VirusType.B:
-                    virus = "B";
-                    break;
-                case VirusType.P:
-                    virus = "P";
-                    break;
-                case VirusType.I:
-                    virus = "I";
-                    break;
-                case VirusType.T:
-                    virus = "T";
-                    break;
+                var monsterPrefab = monsterPrefabs[(int)monsters[idx]];
+                var monster = Instantiate(monsterPrefab, new Vector3(monsterPos[idx].x, .5f, monsterPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
+                monster.transform.SetParent(BattleMgr.Instance.monsterMgr.transform);
+
+                var monsterChar = monster.GetComponentInChildren<MonsterChar>();
+
+                string virus = null;
+                switch (monsterVirus[idx])
+                {
+                    case VirusType.None:
+                        break;
+                    case VirusType.E:
+                        virus = "E";
+                        break;
+                    case VirusType.B:
+                        virus = "B";
+                        break;
+                    case VirusType.P:
+                        virus = "P";
+                        break;
+                    case VirusType.I:
+                        virus = "I";
+                        break;
+                    case VirusType.T:
+                        virus = "T";
+                        break;
+                }
+                monsterChar.monsterStats = monster.GetComponentInChildren<MonsterStats>();
+                monsterChar.monsterStats.virus = ScriptableMgr.Instance.GetVirus(virus);
+                monsterChar.monsterStats.virusLevel = monsterVirusLevel[idx];
             }
-            monsterChar.monsterStats = monster.GetComponentInChildren<MonsterStats>();
-            monsterChar.monsterStats.virus = ScriptableMgr.Instance.GetVirus(virus);
-            monsterChar.monsterStats.virusLevel = monsterVirusLevel[idx];
         }
     }
 }
