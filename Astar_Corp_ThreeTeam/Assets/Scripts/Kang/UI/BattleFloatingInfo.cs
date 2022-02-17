@@ -7,6 +7,7 @@ public class BattleFloatingInfo : MonoBehaviour
 {
     public Slider hpBar;
     public List<Image> virusImageList;
+    public GameObject apList;
     public List<GameObject> virusDetailList;
     public GameObject virusDetalObj;
     public List<Slider> virusBarList;
@@ -51,6 +52,16 @@ public class BattleFloatingInfo : MonoBehaviour
         {
             var stats = player.characterStats;
             var virusPenalty = stats.virusPenalty;
+
+            var apCount = apList.transform.childCount;
+            for (var idx = 0; idx < apCount; ++idx)
+            {
+                var apObj = apList.transform.GetChild(idx);
+                if (idx < player.AP)
+                    apObj.gameObject.SetActive(true);
+                else
+                    apObj.gameObject.SetActive(false);
+            }
 
             hpBar.value = (float)stats.currentHp / stats.MaxHp;
             foreach (var pair in virusPenalty)
@@ -125,6 +136,13 @@ public class BattleFloatingInfo : MonoBehaviour
             hpBar.value = (float)stats.currentHp / stats.originMaxHp;
             virusBarObj.SetActive(false);
             virusDetalObj.SetActive(false);
+
+            var apCount = apList.transform.childCount;
+            for (var idx = 0; idx < apCount; ++idx)
+            {
+                var apObj = apList.transform.GetChild(idx);
+                apObj.gameObject.SetActive(false);
+            }
         }
     }
 
