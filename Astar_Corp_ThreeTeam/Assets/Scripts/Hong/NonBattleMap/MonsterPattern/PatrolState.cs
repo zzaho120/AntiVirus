@@ -49,7 +49,7 @@ public class PatrolState : StateBase
             distance = monster.monsterStat.nonBattleMonster.sightRange;
             atkChance = monster.monsterStat.nonBattleMonster.suddenAtkRate / 10;
 
-            // 영역 크기 설정
+            //// 영역 크기 설정
             if (monsterZone.transform.lossyScale.x != moveRange* 2)
             {
                 monsterZone.transform.localScale = new Vector3(moveRange * 2, monsterZone.transform.localScale.y, moveRange * 2);

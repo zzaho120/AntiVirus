@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d87eb3021328c784eb4edbdfb9a5464c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerData: {fileID: 393838283}
+  playerData: {fileID: 0}
 --- !u!1 &385824657
 GameObject:
   m_ObjectHideFlags: 0
@@ -225,6 +225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 385824659}
   - component: {fileID: 385824658}
+  - component: {fileID: 385824660}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -309,6 +310,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &385824660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385824657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &393838275
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,9 +342,6 @@ GameObject:
   - component: {fileID: 393838278}
   - component: {fileID: 393838277}
   - component: {fileID: 393838276}
-  - component: {fileID: 393838281}
-  - component: {fileID: 393838283}
-  - component: {fileID: 393838284}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -410,75 +428,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &393838281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 393838275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e341a79c6ba0684b8cbce492a84bac7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyStats: {fileID: 634642846}
---- !u!114 &393838283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 393838275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9eafcc6dc9b9e845a22e3924a8454c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterStats: {fileID: 0}
---- !u!114 &393838284
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 393838275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22f41aed4eb818c418a8f27b08318d4c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  character: {fileID: 11400000, guid: f85d6f67eb0a3b445b5f1b7af507ec8b, type: 2}
-  antibody:
-  - {fileID: 0}
-  weapon:
-    type: 1
-    mainWeapon: {fileID: 11400000, guid: 656d0a63a2afd0b44b9a2bbaf04315ee, type: 2}
-    subWeapon: {fileID: 11400000, guid: cca79446b5e9b024ebae34042c1a4c27, type: 2}
-    accurRate_base: 0
-    accurRate_alert: 0
-    mainWeaponBullet: 0
-    subWeaponBullet: 0
-    recoil: 0
-    accurRateDec: 0
-    weight: 0
-    firstAp: 0
-    nextAp: 0
-    loadAp: 0
-    range: 0
-    overRange_penalty: 0
-    underRange_penalty: 0
-  skills:
-    activeSkills: []
-    passiveSkills: []
-  maxHp: 0
-  currentHp: 0
-  sensivity: 0
-  avoidRate: 0
-  concentration: 0
-  willpower: 0
-  critRate: 0
-  level: 0
 --- !u!1001 &518885314
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -725,8 +674,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monster: {fileID: 11400000, guid: a266528184c0bd44299fd8b4503fc915, type: 2}
   virus: {fileID: 11400000, guid: 5b278970ae74223418fcdbf4c8efffa3, type: 2}
+  nonBattleMonster: {fileID: 0}
   virusLevel: 3
+  originMaxHp: 0
   currentHp: 0
+  currentAp: 0
 --- !u!1001 &942986787
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1151,8 +1103,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monster: {fileID: 0}
   virus: {fileID: 11400000, guid: e7e5b650038fe3d4aa74c636e8659177, type: 2}
+  nonBattleMonster: {fileID: 0}
   virusLevel: 0
+  originMaxHp: 0
   currentHp: 0
+  currentAp: 0
 --- !u!65 &1523210465
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1394,8 +1349,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monster: {fileID: 0}
   virus: {fileID: 11400000, guid: 379e491a28b97604d934351330aa7081, type: 2}
+  nonBattleMonster: {fileID: 0}
   virusLevel: 0
+  originMaxHp: 0
   currentHp: 0
+  currentAp: 0
 --- !u!65 &2017348327
 BoxCollider:
   m_ObjectHideFlags: 0
