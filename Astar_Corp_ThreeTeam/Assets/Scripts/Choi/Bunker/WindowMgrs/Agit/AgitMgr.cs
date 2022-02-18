@@ -515,6 +515,7 @@ public class AgitMgr : MonoBehaviour
 
     public void SelectCharacter(int index)
     {
+        bunkerMgr.PlayClickSound();
         ChangeCharacter(index);
         OpenCharacterInfo();
     }

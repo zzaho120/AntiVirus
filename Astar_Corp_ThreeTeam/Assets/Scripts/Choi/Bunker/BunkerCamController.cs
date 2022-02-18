@@ -126,6 +126,8 @@ public class BunkerCamController : MonoBehaviour
                     {
                         if (hit.collider.gameObject.GetComponent<BunkerBase>() != null)
                         {
+                            bunkerMgr.PlayClickSound();
+
                             SetBunkerKind(currentMode, hit.collider.gameObject);
                             if (hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None")) isCurrentEmpty = true;
                             else isCurrentEmpty = false;
@@ -151,6 +153,8 @@ public class BunkerCamController : MonoBehaviour
                         if (bunkerBase != null && bunkerBase.bunkerName.Equals("Locked")) lockMgr.OpenConditionPopup();
                         else if (bunkerBase != null)
                         {
+                            bunkerMgr.PlayClickSound();
+
                             SetBunkerKind(currentMode, hit.collider.gameObject);
                             if (hit.collider.gameObject.GetComponent<BunkerBase>().bunkerName.Equals("None")) isCurrentEmpty = true;
                             else isCurrentEmpty = false;

@@ -47,6 +47,9 @@ public class BunkerMgr : MonoBehaviour
     bool isBunkerMenuOpen;
     public GameObject arrowImg;
 
+    [Header("家府包访")]
+    public AudioSource clickSound;
+
     [Header("芒包访")]
     public GameObject pauseWin;
     public GameObject optionWin;
@@ -666,5 +669,12 @@ public class BunkerMgr : MonoBehaviour
     public void CloseMapWin()
     {
         mapWin.SetActive(false);
+    }
+
+    //家府包访.
+    public void PlayClickSound()
+    {
+        if (clickSound.isPlaying) clickSound.Stop();
+        clickSound.Play();
     }
 }
