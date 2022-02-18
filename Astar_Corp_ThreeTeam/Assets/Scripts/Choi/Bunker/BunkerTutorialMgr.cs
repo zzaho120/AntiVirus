@@ -1,18 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BunkerTutorialMgr : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("StoryWin")]
+    public GameObject storyWin;
+
+    public Text detailTxt;
+    int index;
+
+    public void OpenStoryWin()
     {
-        
+        if (!storyWin.activeSelf) storyWin.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CloseStoryWin()
     {
-        
+        if (storyWin.activeSelf) storyWin.SetActive(false);
+    }
+
+    public void Tutorial()
+    {
+        switch (index)
+        {
+            case 0:
+
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+        }
     }
 }

@@ -53,6 +53,12 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
     public WorldMonsterChar worldMonster;
     public int virusLevel;
+
+    //튜토리얼.
+    public bool bunkerTutorial;
+    public bool nonBattleTutorial;
+    public bool battleTutorial;
+
     private void Start()
     {
         PlayerPrefs.DeleteAll();
@@ -165,7 +171,10 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             if (!PlayerPrefs.HasKey("Continue"))
             {
                 isFirst = true;
-                
+                bunkerTutorial = true;
+                nonBattleTutorial = true;
+                battleTutorial = true;
+
                 string str = "Continue";
                 PlayerPrefs.SetInt(str, 1);
 
@@ -235,6 +244,10 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             //이어하기.
             else
             {
+                bunkerTutorial = false;
+                nonBattleTutorial = false;
+                battleTutorial = false;
+
                 saveData = PlayerSaveLoadSystem.Load(filePath);
 
                 //아이템 설정.

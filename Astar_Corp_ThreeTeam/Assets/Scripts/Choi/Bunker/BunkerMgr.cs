@@ -22,6 +22,7 @@ public class BunkerMgr : MonoBehaviour
     public MultiTouch multiTouch;
     public BunkerCamController camController;
     public WindowManager windowManager;
+    public BunkerTutorialMgr bunkerTutorialMgr;
     
     public AgitMgr agitMgr;
     public PubMgr pubMgr;
@@ -134,6 +135,8 @@ public class BunkerMgr : MonoBehaviour
 
     private void Start()
     {
+        if (playerDataMgr.bunkerTutorial) bunkerTutorialMgr.OpenStoryWin();
+
         if (pauseWin.activeSelf) pauseWin.SetActive(false);
         if (optionWin.activeSelf) optionWin.SetActive(false);
         if (questWin.activeSelf) questWin.SetActive(false);
@@ -212,6 +215,7 @@ public class BunkerMgr : MonoBehaviour
         isWinOpen = true;
         if (mapButton.activeSelf) mapButton.SetActive(false);
         if (alarmButton.activeSelf) alarmButton.SetActive(false);
+
         switch (currentBunkerKind)
         {
             case BunkerKinds.Agit:
