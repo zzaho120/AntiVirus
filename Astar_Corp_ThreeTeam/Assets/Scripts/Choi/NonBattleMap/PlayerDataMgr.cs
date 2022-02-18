@@ -62,7 +62,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
     private void Start()
     {
-        PlayerPrefs.DeleteAll();
+        //PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
