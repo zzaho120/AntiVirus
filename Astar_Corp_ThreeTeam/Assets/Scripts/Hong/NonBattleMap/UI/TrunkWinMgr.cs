@@ -304,7 +304,8 @@ public class TrunkWinMgr : ModalWindowManager
             if (!playerDataMgr.currentSquad[currentIndex].bag.ContainsKey(currentKey))
             {
                 // ÇÃµ¥¸Þ
-                playerDataMgr.currentSquad[currentIndex].bag.Add(currentKey, key);
+                playerDataMgr.currentSquad[currentIndex].bag.Add(currentKey, 1);
+                //playerDataMgr.currentSquad[currentIndex].bag[currentKey] += 1;  // 0 -> 1
             }
             else
             {
