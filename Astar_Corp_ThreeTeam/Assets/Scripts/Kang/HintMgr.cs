@@ -133,7 +133,9 @@ public class HintMgr : MonoBehaviour
 
         var arrow = Instantiate(arrowPrefab, player.transform.position, Quaternion.identity);
         var rot = Quaternion.FromToRotation(arrow.transform.forward, newPos);
-
+        var soundObj = BattleMgr.Instance.battlePoolMgr.CreateRaderSound();
+        var sound = soundObj.GetComponent<AudioSource>();
+        sound.Play();
         rot.x = 0;
         rot.z = 0;
 
@@ -147,6 +149,9 @@ public class HintMgr : MonoBehaviour
             arrow.transform.GetChild(0).gameObject.SetActive(false);
 
         Destroy(arrow, maxDelayTime);
+
+        var returnToPool = soundObj.GetComponent<ReturnToPool>();
+        returnToPool.Return(maxDelayTime);
     }
 
     public void UpdateInfo(GameObject hitObject)

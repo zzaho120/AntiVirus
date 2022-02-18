@@ -26,7 +26,12 @@ public enum BattlePoolName
     MonsterSightTile,
     ScrollingText,
     UseItemFx,
-    Bullet
+    Bullet,
+    RaderSound,
+    PlayerHit,
+    PlayerDeath,
+    DetectSound,
+    MonsterHit,
 }
 
 [System.Serializable]

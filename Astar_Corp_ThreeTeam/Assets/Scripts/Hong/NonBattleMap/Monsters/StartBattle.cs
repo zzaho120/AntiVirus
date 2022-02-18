@@ -49,7 +49,6 @@ public class StartBattle : MonoBehaviour
                     isMonsterAtk = true;
                 }
                 PlayerDataMgr.Instance.isMonsterAtk = isMonsterAtk;
-                PlayerDataMgr.Instance.worldMonster = other.GetComponent<WorldMonsterChar>();
                 // 전체맵 일시정지
                 timeController.Pause();
                 timeController.isPause = true;
@@ -76,5 +75,6 @@ public class StartBattle : MonoBehaviour
         monsterInfo.transform.GetChild(2).GetComponent<Text>().text =
             $"{monsterChar.monsterStat.nonBattleMonster.battleMinNum} ~ {monsterChar.monsterStat.nonBattleMonster.battleMaxNum}";
         monsterInfo.transform.GetChild(3).GetComponent<Text>().text = monsterChar.monsterStat.virus.name;
+        PlayerDataMgr.Instance.worldMonster = monsterChar;
     }
 }

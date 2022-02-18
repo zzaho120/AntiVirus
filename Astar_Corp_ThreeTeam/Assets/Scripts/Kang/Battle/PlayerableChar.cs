@@ -592,12 +592,15 @@ public class PlayerableChar : BattleTile
         go.transform.position = transform.position;
         scrollingText.SetDamage(dmg, false);
 
+        var soundObj = BattleMgr.Instance.battlePoolMgr.CreatePlayerHit();
+        var sound = soundObj.GetComponent<AudioSource>();
+        sound.Play();
+        var returnToPool = soundObj.GetComponent<ReturnToPool>();
+        returnToPool.Return(1f);
+
         var blood = BattleMgr.Instance.battlePoolMgr.CreateBloodSplat();
         blood.transform.position = transform.position;
-        StartCoroutine(CoReturnParticle(blood));
-
-        
-
+        StartCoroutine(CoReturnParticle(blood));  
 
         if (monsterStats.virus != null)
         {
@@ -632,8 +635,6 @@ public class PlayerableChar : BattleTile
             var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
             window.UpdateUI();
         }
-
-        // 맞음 메세지
 
         if (characterStats.currentHp == 0)
         {
@@ -674,6 +675,12 @@ public class PlayerableChar : BattleTile
         var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
         window.UpdateUI();
         window.UpdateExtraInfo(this);
+
+        var soundObj = BattleMgr.Instance.battlePoolMgr.CreatePlayerHit();
+        var sound = soundObj.GetComponent<AudioSource>();
+        sound.Play();
+        var returnToPool = soundObj.GetComponent<ReturnToPool>();
+        returnToPool.Return(1f);
         if (characterStats.currentHp == 0)
         {
             animator.SetTrigger("Death");
@@ -685,6 +692,13 @@ public class PlayerableChar : BattleTile
                     time = ac.animationClips[idx].length;
             }
             StartCoroutine(CoDeath(time));
+
+            var deathObj = BattleMgr.Instance.battlePoolMgr.CreatePlayerDeath();
+            var deathSound = deathObj.GetComponent<AudioSource>();
+            deathSound.Play();
+            var deathReturnToPool = soundObj.GetComponent<ReturnToPool>();
+            deathReturnToPool.Return(1f);
+
             return true;
         }
 

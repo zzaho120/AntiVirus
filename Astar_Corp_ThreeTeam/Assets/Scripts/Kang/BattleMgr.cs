@@ -72,10 +72,10 @@ public class BattleMgr : MonoBehaviour
         EventBusMgr.Subscribe(EventType.DestroyChar, DestroyChar);
 
 
+        window.SetSelectedChar(playerMgr.playerableChars[0]);
         switch (turn)
         {
             case BattleTurn.Player:
-                window.SetSelectedChar(playerMgr.playerableChars[0]);
                 EventBusMgr.Publish(EventType.StartPlayer);
                 break;
             case BattleTurn.Enemy:

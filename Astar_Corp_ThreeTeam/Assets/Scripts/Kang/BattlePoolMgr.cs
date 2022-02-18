@@ -9,6 +9,7 @@ public class BattlePoolMgr : PoolManager
     public Transform particlePool;
     public Transform sightPool;
     public Transform scrollingTextPool;
+    public Transform soundPool;
 
     public override void CreatePoolsTr()
     {
@@ -95,6 +96,38 @@ public class BattlePoolMgr : PoolManager
     {
         var particle = pools[(int)BattlePoolName.Bullet].Pool.Get();
         particle.transform.SetParent(particlePool);
+        return particle;
+    }
+    public GameObject CreateRaderSound()
+    {
+        var particle = pools[(int)BattlePoolName.RaderSound].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+    public GameObject CreatePlayerHit()
+    {
+        var particle = pools[(int)BattlePoolName.PlayerHit].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+    public GameObject CreatePlayerDeath()
+    {
+        var particle = pools[(int)BattlePoolName.PlayerDeath].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+
+    public GameObject CreateDetectSound()
+    {
+        var particle = pools[(int)BattlePoolName.DetectSound].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+
+    public GameObject CreateMonsterHitSound()
+    {
+        var particle = pools[(int)BattlePoolName.MonsterHit].Pool.Get();
+        particle.transform.SetParent(soundPool);
         return particle;
     }
 }

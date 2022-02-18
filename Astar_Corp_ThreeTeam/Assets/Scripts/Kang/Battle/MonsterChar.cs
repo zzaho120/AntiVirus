@@ -56,14 +56,12 @@ public class MonsterChar : BattleTile
             case "Boar":
                 ownerName = "¸äµÅÁö";
                 break;
-
             case "Fox":
                 ownerName = "¿©¿ì";
                 break;
             case "Wolf":
                 ownerName = "´Á´ë";
                 break;
-
             case "Jaguar":
                 ownerName = "Àç±Ô¾î";
                 break;
@@ -100,6 +98,13 @@ public class MonsterChar : BattleTile
         var scrollingText = go.GetComponent<ScrollingText>();
         go.transform.position = transform.position;
         scrollingText.SetDamage(dmg, false);
+
+        var hitSoundObj = BattleMgr.Instance.battlePoolMgr.CreateMonsterHitSound();
+        var hitSound = go.GetComponent<AudioSource>();
+        hitSound.Play();
+
+        var returnToPool = hitSoundObj.GetComponent<ReturnToPool>();
+        returnToPool.Return(3f);
 
         var blood = BattleMgr.Instance.battlePoolMgr.CreateBloodSplat();
         blood.transform.position = transform.position;
@@ -162,6 +167,12 @@ public class MonsterChar : BattleTile
             particle.transform.rotation = Quaternion.Euler(40f, 0f, 0f);
             var returnToPool = particle.GetComponent<ReturnToPool>();
             returnToPool.Return(1f);
+
+            var detectObj = BattleMgr.Instance.battlePoolMgr.CreateDetectSound();
+            var detectSound = detectObj.GetComponent<AudioSource>();
+            detectSound.Play();
+            var detectReturnToPool = detectSound.GetComponent<ReturnToPool>();
+            detectReturnToPool.Return(3f);
         }
         target = player;
     }
