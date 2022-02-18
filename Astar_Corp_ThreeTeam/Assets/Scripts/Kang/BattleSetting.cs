@@ -88,6 +88,7 @@ public class BattleSetting : MonoBehaviour
                 playerableChar.currentWeapon = weaponGo;
                 weaponGo.transform.localRotation = Quaternion.Euler(playerableChar.weaponRot);
             }
+
             var worldMonster = playerDataMgr.worldMonster;
             var nonBattleMonster = worldMonster.monsterStat.nonBattleMonster;
             var monsterCount = Random.Range(nonBattleMonster.battleMinNum, nonBattleMonster.battleMaxNum + 1);

@@ -914,4 +914,10 @@ public class BattleBasicWindow : GenericWindow
             isTutorial = false;
         }
     }
+
+    public void OnClickTutorialCancel()
+    {
+        battleTutorial.gameObject.SetActive(false);
+        isTutorial = false;
+    }
 }

@@ -178,7 +178,7 @@ public class WeaponStats
     // 데미지 구하기
     public int SetWeaponDamage()
     {
-        if (mainWeapon != null && subWeapon != null)
+        if (mainWeapon != null || subWeapon != null)
         {
             // 무기 잘못 장착 시
             //if (mainWeapon.type != "1") Debug.LogError("주무기 잘못 장착");
