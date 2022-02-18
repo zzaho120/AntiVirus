@@ -40,6 +40,11 @@ public class BoardingMgr : MonoBehaviour
         var child = seats[0].transform.GetChild(1).gameObject;
         nullImg = child.GetComponent<Image>().sprite;
 
+        foreach (var element in seats)
+        {
+            element.GetComponent<Image>().color = Color.white;
+        }
+
         //ªË¡¶.
         if (characters.Count != 0)
         {
