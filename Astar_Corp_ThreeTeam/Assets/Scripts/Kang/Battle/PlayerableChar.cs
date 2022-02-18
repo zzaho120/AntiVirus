@@ -68,6 +68,8 @@ public class PlayerableChar : BattleTile
 
     private bool isOnSightTile;
 
+    private MultiTouch multiTouch;
+
     public override void Init()
     {
         base.Init();
@@ -105,6 +107,7 @@ public class PlayerableChar : BattleTile
                 break;
         }
 
+        multiTouch = BattleMgr.Instance.touchMgr;
         characterStats.StartGame();
     }
 
@@ -149,6 +152,41 @@ public class PlayerableChar : BattleTile
                             case CharacterState.Alert:
                                 break;
                         }
+                    }
+                }
+            }
+            if (multiTouch.Tap)
+            {
+                RaycastHit hit;
+                var ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
+                if (Physics.Raycast(ray, out hit))
+                {
+                    switch (status)
+                    {
+                        case CharacterState.Wait:
+                            break;
+                        case CharacterState.Move:
+                            if (hit.collider.tag == "MoveTile")
+                            {
+                                var tileBase = hit.collider.GetComponent<MoveTile>().parent;
+                                if (moveDics.ContainsKey(tileBase))
+                                {
+                                    if (tileBase.charObj == null)
+                                    {
+                                        ActionMove(tileBase);
+                                        ReturnMoveTile();
+                                        ReturnSightTile();
+                                        var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
+                                        window.cancelBtn.SetActive(false);
+                                        window.moveBtn.SetActive(true);
+                                    }
+                                }
+                            }
+                            break;
+                        case CharacterState.Attack:
+                            break;
+                        case CharacterState.Alert:
+                            break;
                     }
                 }
             }

@@ -8,7 +8,7 @@ using static UnityEngine.InputSystem.InputAction;
 public class MultiTouch : MonoBehaviour
 {
     private float touchTime;                // use swipe
-    private float swipeDelayTime = 1f;      // use swipe
+    private float swipeDelayTime = 0.1f;      // use swipe
     public Vector2 touchStartPos;
     public Vector2 curTouchPos;
     public Vector2 primaryDeltaPos;
@@ -118,20 +118,22 @@ public class MultiTouch : MonoBehaviour
                 touchStartPos = curTouchPos;
                 break;
             case InputActionPhase.Canceled:
-                if (touchTime + swipeDelayTime > Time.time)
+                if (touchTime + swipeDelayTime < Time.time)
                 {
                     var curTouch = curTouchPos;
                     var touchVector = curTouch - touchStartPos;
-                    if (Mathf.Abs(touchVector.x) > Mathf.Abs(touchVector.y))
-                    {
-                        var newX = (touchVector.x > 0) ? 1f : -1f;
-                        SwipeDirection = new Vector2(newX, 0f);
-                    }
-                    else
-                    {
-                        var newY = (touchVector.y > 0) ? 1f : -1f;
-                        SwipeDirection = new Vector2(0f, newY);
-                    }
+                    Debug.Log(touchVector.normalized);
+                    SwipeDirection = touchVector.normalized;
+                    //if (Mathf.Abs(touchVector.x) > Mathf.Abs(touchVector.y))
+                    //{
+                    //    var newX = (touchVector.x > 0) ? 1f : -1f;
+                    //    SwipeDirection = new Vector2(newX, 0f);
+                    //}
+                    //else
+                    //{
+                    //    var newY = (touchVector.y > 0) ? 1f : -1f;
+                    //    SwipeDirection = new Vector2(0f, newY);
+                    //}
                 }
                 break;
         }

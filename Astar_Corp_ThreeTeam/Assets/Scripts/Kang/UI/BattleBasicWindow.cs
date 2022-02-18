@@ -103,6 +103,11 @@ public class BattleBasicWindow : GenericWindow
     [Header("Turn Notice")]
     public GameObject turnNotice;
     public TextMeshProUGUI turnNoticeText;
+
+    [Header("Tutorial")]
+    public bool isTutorial;
+    public BattleTutorial battleTutorial;
+
     public bool isTurn
     {
         get => BattleMgr.Instance.turn == BattleTurn.Player;
@@ -134,6 +139,17 @@ public class BattleBasicWindow : GenericWindow
         skillPanel.SetActive(false);
         skillConfirmBtn.SetActive(false);
         itemCancelBtn.SetActive(false);
+        var playerDataMgr = BattleMgr.Instance.playerDataMgr;
+        if (playerDataMgr != null && !playerDataMgr.isBattleTutorial)
+        {
+            battleTutorial.gameObject.SetActive(true);
+            playerDataMgr.isBattleTutorial = true;
+        }
+        else
+        {
+            battleTutorial.gameObject.SetActive(false);
+        }
+
         InitSquad();
         InitFloatingInfo();
 
@@ -882,5 +898,20 @@ public class BattleBasicWindow : GenericWindow
         }
 
         turnNotice.SetActive(false);
+    }
+
+    public void OnClickTutorial()
+    {
+        if (!isTutorial)
+        {
+            battleTutorial.gameObject.SetActive(true);
+            battleTutorial.Init();
+            isTutorial = true;
+        }
+        else
+        {
+            battleTutorial.gameObject.SetActive(false);
+            isTutorial = false;
+        }
     }
 }

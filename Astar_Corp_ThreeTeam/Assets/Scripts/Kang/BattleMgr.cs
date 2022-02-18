@@ -105,6 +105,18 @@ public class BattleMgr : MonoBehaviour
                             hintMgr.UpdateInfo(obj);
                         }
                     }
+
+                    if (touchMgr.Tap)
+                    {
+                        RaycastHit hit;
+                        var ray = Camera.main.ScreenPointToRay(touchMgr.curTouchPos);
+                        if (Physics.Raycast(ray, out hit))
+                        {
+                            var obj = hit.collider.gameObject;
+                            monsterMgr.UpdateInfo(obj);
+                            hintMgr.UpdateInfo(obj);
+                        }
+                    }
                 }
                 break;
             case BattleTurn.Enemy:

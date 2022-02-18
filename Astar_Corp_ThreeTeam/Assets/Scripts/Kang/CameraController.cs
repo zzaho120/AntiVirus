@@ -47,7 +47,7 @@ public class CameraController : MonoBehaviour
             MoveKeyboardInput();
             RotateKeyboardInput();
             ZoominOutKeyboardInput();
-            //TouchInput();
+            TouchInput();
         }
         FollowObject();
     }
@@ -67,8 +67,6 @@ public class CameraController : MonoBehaviour
     private void TouchInput()
     {
         var touch = -touchMgr.SwipeDirection;
-        var horizontal = Input.GetAxisRaw("Horizontal");
-        var vertical = Input.GetAxisRaw("Vertical");
 
         var newX = Mathf.Clamp(destPosition.x + touch.x * touchSpeed, 0, TileMgr.MAX_X_IDX);
         var newZ = Mathf.Clamp(destPosition.z + touch.y * touchSpeed, 0, TileMgr.MAX_Z_IDX);
