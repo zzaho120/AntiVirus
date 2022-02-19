@@ -438,6 +438,8 @@ public class EquipmentMgr : MonoBehaviour
 
     public void SelectItem(string key, bool isEquip)
     {
+        agitMgr.bunkerMgr.PlayClickSound();
+
         if (currentKey != null && itemObjs.ContainsKey(currentKey))
         {
             var child = itemObjs[currentKey].transform.GetChild(7).gameObject;
@@ -890,6 +892,8 @@ public class EquipmentMgr : MonoBehaviour
 
     public void Disarm()
     {
+        agitMgr.bunkerMgr.PlayClickSound();
+
         if (playerDataMgr.currentSquad[currentIndex].weapon.mainWeapon != null && currentKind == EquipKind.MainWeapon)
         {
             var id = playerDataMgr.saveData.mainWeapon[currentIndex];

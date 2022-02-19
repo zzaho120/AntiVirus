@@ -369,6 +369,8 @@ public class PubMgr : MonoBehaviour
 
     public void SelectCharacter(int index)
     {
+        bunkerMgr.PlayClickSound();
+
         if (currentIndex != -1)
             characterObjs[currentIndex].GetComponent<Image>().color = originColor;
 

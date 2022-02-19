@@ -561,6 +561,8 @@ public class TrunkMgr : MonoBehaviour
 
     public void SelectItem(string key, InvenKind kind)
     {
+        garageMgr.bunkerMgr.PlayClickSound();
+
         if (currentKey != null)
         {
             if (currentInvenKind == InvenKind.Storage && storageList.ContainsKey(currentKey))
