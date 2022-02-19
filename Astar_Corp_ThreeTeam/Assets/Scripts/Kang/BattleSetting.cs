@@ -73,12 +73,14 @@ public class BattleSetting : MonoBehaviour
             var playerPrefab = BattleMgr.Instance.playerPrefab;
             playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
             BattleMgr.Instance.fieldVirusLevel = playerDataMgr.virusLevel;
-            for (var idx = 0; idx < playerDataMgr.battleSquad.Count; ++idx)
+
+            var playerIdx = 0;
+            foreach (var memberPair in playerDataMgr.battleSquad)
             {
-                var player = Instantiate(playerPrefab, new Vector3(playerPos[idx].x, .5f, playerPos[idx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
+                var player = Instantiate(playerPrefab, new Vector3(playerPos[playerIdx].x, .5f, playerPos[playerIdx].y), Quaternion.Euler(new Vector3(0, 180, 0)));
                 player.transform.SetParent(BattleMgr.Instance.playerMgr.transform);
                 var playerableChar = player.GetComponent<PlayerableChar>();
-                playerableChar.characterStats = playerDataMgr.battleSquad[idx];
+                playerableChar.characterStats = memberPair.Value;
 
                 var weapon = playerableChar.characterStats.weapon;
                 playerableChar.mainWeapon = weaponPrefabs[weapon.mainWeapon.battleID];
@@ -87,6 +89,8 @@ public class BattleSetting : MonoBehaviour
                 var weaponGo = Instantiate(playerableChar.mainWeapon, playerableChar.rightHandTr);
                 playerableChar.currentWeapon = weaponGo;
                 weaponGo.transform.localRotation = Quaternion.Euler(playerableChar.weaponRot);
+
+                playerIdx++;
             }
 
             var worldMonster = playerDataMgr.worldMonster;
