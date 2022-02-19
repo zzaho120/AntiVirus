@@ -8,7 +8,7 @@ public class NonBattleMgr : MonoBehaviour
     public static NonBattleMgr Instance;
 
     // Bunker Position
-    public Transform bunkerPos;
+    public Transform playerStartPos;
     // Monster Area
     public CreateMonsterAreas[] createMonsterArea;
 

@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            transform.position = nonBattleMgr.bunkerPos.position;
+            transform.position = nonBattleMgr.playerStartPos.position;
         }
         saveMode = true;
 
