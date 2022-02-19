@@ -136,6 +136,8 @@ public class HospitalMgr : MonoBehaviour
                 = $"{element.Value.currentExp}/{element.Value.totalExp}";
 
             childObj = go.transform.GetChild(1).gameObject;
+            childObj.transform.GetChild(0).gameObject.GetComponent<Image>().sprite
+                = element.Value.character.icon;
             childObj.transform.GetChild(1).gameObject.GetComponent<Text>().text
                 = $"{element.Value.character.name}";
 
@@ -204,6 +206,8 @@ public class HospitalMgr : MonoBehaviour
         currentKey = -1;
         //originColor = characterPrefab.GetComponent<Image>().color;
         isMenuOpen = true;
+        moneyText.text = $"보유 금액 G {playerDataMgr.saveData.money}";
+
         arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
@@ -307,6 +311,7 @@ public class HospitalMgr : MonoBehaviour
         playerDataMgr.saveData.money -= 100;
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         bunkerMgr.moneyTxt.text = playerDataMgr.saveData.money.ToString();
+        moneyText.text = $"보유 금액 G {playerDataMgr.saveData.money}";
 
         //체력 UI변경.
         sliders[0].maxValue = playerDataMgr.currentSquad[key].MaxHp;
@@ -475,6 +480,8 @@ public class HospitalMgr : MonoBehaviour
 
     public void CauculateTotal()
     {
+        bunkerMgr.PlayClickSound();
+
         int sum = 0;
         int i = 0;
         foreach (var element in characterObjs)

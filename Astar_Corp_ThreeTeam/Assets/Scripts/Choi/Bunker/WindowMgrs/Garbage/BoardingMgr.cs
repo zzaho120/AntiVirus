@@ -260,6 +260,7 @@ public class BoardingMgr : MonoBehaviour
     public void SelectCharacter(int i)
     {
         if (currentSeatNum == -1) return;
+        garageMgr.bunkerMgr.PlayClickSound();
 
         if (currentIndex != -1 && characters.ContainsKey(currentIndex))
             characters[currentIndex].GetComponent<Image>().color = originColor;
@@ -270,6 +271,8 @@ public class BoardingMgr : MonoBehaviour
 
     public void SelectSeat(int i)
     {
+        garageMgr.bunkerMgr.PlayClickSound();
+
         if (currentSeatNum != -1)
         {
             seats[currentSeatNum].GetComponent<Image>().color = Color.white;

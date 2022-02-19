@@ -301,6 +301,8 @@ public class StorageMgr : MonoBehaviour
 
     public void SelectItem(string key, InvenKind kind)
     {
+        bunkerMgr.PlayClickSound();
+
         if (currentKey != null)
         {
             if (currentInvenKind == InvenKind.Storage && storageList.ContainsKey(currentKey))

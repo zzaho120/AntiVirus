@@ -48,6 +48,7 @@ public class BunkerMgr : MonoBehaviour
     public GameObject arrowImg;
 
     [Header("소리관련")]
+    public AudioSource bgm;
     public AudioSource clickSound;
 
     [Header("창관련")]
@@ -134,6 +135,8 @@ public class BunkerMgr : MonoBehaviour
         upgradeMgr.playerDataMgr = playerDataMgr;
         upgradeMgr.bunkerMgr = this;
         upgradeMgr.CloseWindow = CloseWindow;
+
+        bunkerTutorialMgr.bunkerMgr = this;
     }
 
     private void Start()
@@ -178,6 +181,8 @@ public class BunkerMgr : MonoBehaviour
 
         if (!belowUI.activeSelf) belowUI.SetActive(true);
         if (destroyButton.activeSelf) destroyButton.SetActive(false);
+
+        if (playerDataMgr.bunkerTutorial) bunkerTutorialMgr.OpenStoryWin();
     }
 
     public void SetBunkerKind(Mode currentMode, GameObject bunker)
@@ -222,41 +227,90 @@ public class BunkerMgr : MonoBehaviour
         switch (currentBunkerKind)
         {
             case BunkerKinds.Agit:
-                nameTxt.text = "아지트"; 
+                if (playerDataMgr.isAgitFirst)
+                {
+                    playerDataMgr.isAgitFirst = false;
+                    bunkerTutorialMgr.Setting(1);
+                    bunkerTutorialMgr.Open();
+                }
+
+                nameTxt.text = "아지트";
                 agitMgr.Init();
                 agitMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.AgitWindow - 1;
                 break;
             case BunkerKinds.Pub:
+                if (playerDataMgr.isPubFirst)
+                {
+                    playerDataMgr.isPubFirst = false;
+                    bunkerTutorialMgr.Setting(5);
+                    bunkerTutorialMgr.Open();
+                }
+
                 nameTxt.text = "선술집";
                 pubMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.PubWindow - 1;
                 break;
             case BunkerKinds.Store:
+                if (playerDataMgr.isStoreFirst)
+                {
+                    playerDataMgr.isStoreFirst = false;
+                    bunkerTutorialMgr.Setting(6);
+                    bunkerTutorialMgr.Open();
+                }
+
                 nameTxt.text = "상점";
                 storeMgr.Init();
                 storeMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.StoreWindow - 1;
                 break;
             case BunkerKinds.Hospital:
+                if (playerDataMgr.isHospitalFirst)
+                {
+                    playerDataMgr.isHospitalFirst = false;
+                    bunkerTutorialMgr.Setting(4);
+                    bunkerTutorialMgr.Open();
+                }
+
                 nameTxt.text = "병원";
                 hospitalMgr.Init();
                 hospitalMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.HospitalWindow - 1;
                 break;
             case BunkerKinds.Garage:
+                if (playerDataMgr.isGarageFirst)
+                {
+                    playerDataMgr.isGarageFirst = false;
+                    bunkerTutorialMgr.Setting(7);
+                    bunkerTutorialMgr.Open();
+                }
+
                 nameTxt.text = "차고";
                 garageMgr.Init();
                 garageMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.GarageWindow - 1;
                 break;
             case BunkerKinds.CarCenter:
+                if (playerDataMgr.isCarCenterFirst)
+                {
+                    playerDataMgr.isCarCenterFirst = false;
+                    bunkerTutorialMgr.Setting(3);
+                    bunkerTutorialMgr.Open();
+                }
+
                 nameTxt.text = "정비소";
                 carCenterMgr.Init();
                 carCenterMgr.OpenMainWin();
                 currentWinId = (int)BunkerWindows.CarCenterWindow - 1;
                 break;
             case BunkerKinds.Storage:
+                if (playerDataMgr.isStorageFirst)
+                {
+                    playerDataMgr.isStorageFirst = false;
+                    bunkerTutorialMgr.Setting(2);
+                    bunkerTutorialMgr.Open();
+                }
+
                 nameTxt.text = "창고";
                 storageMgr.Init();
                 storageMgr.OpenMainWin();

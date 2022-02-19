@@ -59,10 +59,17 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
     public bool bunkerTutorial;
     public bool nonBattleTutorial;
     public bool battleTutorial;
+    public bool isAgitFirst;
+    public bool isStorageFirst;
+    public bool isHospitalFirst;
+    public bool isStoreFirst;
+    public bool isGarageFirst;
+    public bool isPubFirst;
+    public bool isCarCenterFirst;
 
     private void Start()
     {
-        //PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
@@ -175,6 +182,13 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 bunkerTutorial = true;
                 nonBattleTutorial = true;
                 battleTutorial = true;
+                isAgitFirst = true;
+                isStorageFirst = true;
+                isHospitalFirst = true;
+                isStoreFirst = true;
+                isGarageFirst = true;
+                isPubFirst = true;
+                isCarCenterFirst = true;
 
                 string str = "Continue";
                 PlayerPrefs.SetInt(str, 1);
