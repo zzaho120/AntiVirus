@@ -116,13 +116,12 @@ public class PlayerableChar : BattleTile
     {
         if (status != CharacterState.TurnEnd)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (multiTouch.DoubleTap)
             {
                 if (BattleMgr.Instance.playerMgr.selectChar == null || BattleMgr.Instance.playerMgr.selectChar == this)
                 {
                     RaycastHit hit;
-                    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
+                    var ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
                     if (Physics.Raycast(ray, out hit))
                     {
                         switch (status)
@@ -152,41 +151,6 @@ public class PlayerableChar : BattleTile
                             case CharacterState.Alert:
                                 break;
                         }
-                    }
-                }
-            }
-            if (multiTouch.Tap)
-            {
-                RaycastHit hit;
-                var ray = Camera.main.ScreenPointToRay(multiTouch.curTouchPos);
-                if (Physics.Raycast(ray, out hit))
-                {
-                    switch (status)
-                    {
-                        case CharacterState.Wait:
-                            break;
-                        case CharacterState.Move:
-                            if (hit.collider.tag == "MoveTile")
-                            {
-                                var tileBase = hit.collider.GetComponent<MoveTile>().parent;
-                                if (moveDics.ContainsKey(tileBase))
-                                {
-                                    if (tileBase.charObj == null)
-                                    {
-                                        ActionMove(tileBase);
-                                        ReturnMoveTile();
-                                        ReturnSightTile();
-                                        var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
-                                        window.cancelBtn.SetActive(false);
-                                        window.moveBtn.SetActive(true);
-                                    }
-                                }
-                            }
-                            break;
-                        case CharacterState.Attack:
-                            break;
-                        case CharacterState.Alert:
-                            break;
                     }
                 }
             }
@@ -259,6 +223,8 @@ public class PlayerableChar : BattleTile
                 skill.Invoke(characterStats.buffMgr);
             }
         }
+
+        CameraController.Instance.SetFollowObject(null);
     }
 
     private IEnumerator MoveTile(Vector3 nextIdx)
@@ -430,6 +396,7 @@ public class PlayerableChar : BattleTile
         isMoved = true;
         BattleMgr.Instance.pathMgr.InitAStar(currentTile.tileIdx, tileBase.tileIdx);
         MoveMode();
+        CameraController.Instance.SetFollowObject(transform);
         StartCoroutine(CoMove());
     }
 

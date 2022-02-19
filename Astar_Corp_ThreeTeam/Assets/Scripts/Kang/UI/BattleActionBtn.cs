@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Michsky.UI.ModernUIPack;
+using UnityEngine.UI;
 
 public class BattleActionBtn : MonoBehaviour
 {
     public GameObject apObj;
     public TextMeshProUGUI btnText;
+    public Image image;
 
     public void SetAP(int ap)
     {

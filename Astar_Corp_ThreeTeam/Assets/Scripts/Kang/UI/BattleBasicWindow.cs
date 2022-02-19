@@ -96,6 +96,7 @@ public class BattleBasicWindow : GenericWindow
     [Header("Skill")]
     public GameObject skillPanel;
     public GameObject skillConfirmBtn;
+    public Sprite skillSprite;
 
     [Header("Name")]
     public List<string> names;
@@ -108,6 +109,12 @@ public class BattleBasicWindow : GenericWindow
     public bool isTutorial;
     public BattleTutorial battleTutorial;
 
+    [Header("When Turn Ends")]
+    public GameObject bottomBtns;
+    public GameObject weaponPanel;
+
+    [Header("Enemy Turn")]
+    public GameObject enemyTurn;
     public bool isTurn
     {
         get => BattleMgr.Instance.turn == BattleTurn.Player;
@@ -139,6 +146,7 @@ public class BattleBasicWindow : GenericWindow
         skillPanel.SetActive(false);
         skillConfirmBtn.SetActive(false);
         itemCancelBtn.SetActive(false);
+        enemyTurn.SetActive(false);
         var playerDataMgr = BattleMgr.Instance.playerDataMgr;
         if (playerDataMgr != null && !playerDataMgr.isBattleTutorial)
         {
@@ -152,8 +160,6 @@ public class BattleBasicWindow : GenericWindow
 
         InitSquad();
         InitFloatingInfo();
-
-        EventBusMgr.Subscribe(EventType.StartPlayer, StartTurn);
     }
 
     public void UpdateUI()
@@ -220,7 +226,15 @@ public class BattleBasicWindow : GenericWindow
         var stats = player.characterStats;
         weaponImages[0].sprite = stats.weapon.curWeapon.img;
         if (stats.weapon.otherWeapon != null)
+        {
+            weaponImages[1].gameObject.SetActive(true);
             weaponImages[1].sprite = stats.weapon.otherWeapon.img;
+        }
+        else
+        {
+            weaponImages[1].gameObject.SetActive(false);
+        }
+
 
         for (var i = 0; i < 2; ++i)
         {
@@ -390,7 +404,7 @@ public class BattleBasicWindow : GenericWindow
                 var actionBtn = go.GetComponent<BattleActionBtn>();
                 genActionBtns.Add(actionBtn);
 
-                actionBtn.btnText.text = "한놈만\n쏜다";
+                actionBtn.image.sprite = skillSprite;
                 actionBtn.SetAP(activeSkill[idx].AP);
 
                 var btn = actionBtn.GetComponent<Button>();
@@ -489,6 +503,13 @@ public class BattleBasicWindow : GenericWindow
             actionPanel.SetActive(false);
             cancelBtn.SetActive(true);
         }
+        else
+        {
+            var poolMgr = BattleMgr.Instance.battlePoolMgr;
+            var go = poolMgr.CreateScrollingText();
+            var scrolling = go.GetComponent<ScrollingText>();
+            scrolling.SetText("AP 부족!");
+        }
     }
 
     public void OnClickMoveCancel()
@@ -552,6 +573,13 @@ public class BattleBasicWindow : GenericWindow
                 targetMonster = monsterList[0];
                 CameraController.Instance.SetCameraTrs(targetMonster.transform);
             }
+        }
+        else
+        {
+            var poolMgr = BattleMgr.Instance.battlePoolMgr;
+            var go = poolMgr.CreateScrollingText();
+            var scrolling = go.GetComponent<ScrollingText>();
+            scrolling.SetText("AP 부족!");
         }
     }
 
@@ -638,12 +666,8 @@ public class BattleBasicWindow : GenericWindow
     {
         SetInfoPanel(false);
         turnEndBtn.SetActive(false);
+        selectedChar.ReturnSightTile();
         BattleMgr.Instance.OnChangeTurn(null);
-    }
-
-    public void StartTurn(object[] empty)
-    {
-        turnEndBtn.SetActive(true);
     }
 
     public void OnClickAlert()
@@ -877,17 +901,24 @@ public class BattleBasicWindow : GenericWindow
         {
             case BattleTurn.Player:
                 turnNoticeText.text = "플레이어 턴";
+                turnEndBtn.SetActive(true);
                 actionPanel.SetActive(true);
+                weaponPanel.SetActive(true);
+                bottomBtns.SetActive(true);
+                enemyTurn.SetActive(false);
                 break;
             case BattleTurn.Enemy:
                 turnNoticeText.text = "적 턴";
+                turnEndBtn.SetActive(false);
                 actionPanel.SetActive(false);
+                weaponPanel.SetActive(false);
+                bottomBtns.SetActive(false);
                 break;
         }
-        StartCoroutine(CoTurnNoticeOff());
+        StartCoroutine(CoTurnNoticeOff(turn));
     }
 
-    private IEnumerator CoTurnNoticeOff()
+    private IEnumerator CoTurnNoticeOff(BattleTurn turn)
     {
         var timer = 0f;
 
@@ -898,6 +929,8 @@ public class BattleBasicWindow : GenericWindow
         }
 
         turnNotice.SetActive(false);
+        if (turn == BattleTurn.Enemy)
+            enemyTurn.SetActive(true);
     }
 
     public void OnClickTutorial()

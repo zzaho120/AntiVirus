@@ -14,7 +14,7 @@ public class MultiTouch : MonoBehaviour
     public Vector2 primaryDeltaPos;
     public Vector2 curSecTouchPos;
     public Vector2 secondDeltaPos;
-
+    public InputActionPhase phase;
     public bool Tap { private set; get; }
     public bool DoubleTap { private set; get; }
     public bool LongTap { private set; get; }
@@ -75,6 +75,7 @@ public class MultiTouch : MonoBehaviour
                 }
                 break;
             case InputActionPhase.Canceled:
+                curTouchPos = Vector2.zero;
                 break;
         }
     }
@@ -86,6 +87,7 @@ public class MultiTouch : MonoBehaviour
 
     public void OnDelta_Primary(CallbackContext ctx)
     {
+        phase = ctx.phase;
         switch (ctx.phase)
         {
             case InputActionPhase.Performed:
@@ -117,7 +119,7 @@ public class MultiTouch : MonoBehaviour
                 touchTime = Time.time;
                 touchStartPos = curTouchPos;
                 break;
-            case InputActionPhase.Canceled:
+            case InputActionPhase.Performed:
                 if (touchTime + swipeDelayTime < Time.time)
                 {
                     var curTouch = curTouchPos;

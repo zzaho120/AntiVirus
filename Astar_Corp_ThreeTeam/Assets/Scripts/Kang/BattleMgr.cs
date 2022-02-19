@@ -136,19 +136,19 @@ public class BattleMgr : MonoBehaviour
         switch (turn)
         {
             case BattleTurn.Player:
-                turn = BattleTurn.Enemy;
-                window.turnEndBtn.SetActive(false);
+                turn = BattleTurn.Enemy; 
+                window.StartTurn(turn);
                 EventBusMgr.Publish(EventType.StartEnemy);
                 break;
             case BattleTurn.Enemy:
-                turn = BattleTurn.Player;
+                turn = BattleTurn.Player; 
+                window.StartTurn(turn);
                 EventBusMgr.Publish(EventType.StartPlayer);
-                window.turnEndBtn.SetActive(true);
                 window.SetSelectedChar(playerMgr.playerableChars[0]);
                 window.UpdateUI();
                 break;
         }
-        window.StartTurn(turn);
+        
         if (startTurn == turn)
             turnCount++;
     }
@@ -169,7 +169,6 @@ public class BattleMgr : MonoBehaviour
                 monsterMgr.RemoveMonster(monster);
                 break;
         }
-
         CheckGameover();
     }
 

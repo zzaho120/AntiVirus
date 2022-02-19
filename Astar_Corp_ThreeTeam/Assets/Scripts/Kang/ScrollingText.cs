@@ -33,6 +33,7 @@ public class ScrollingText : MonoBehaviour
         target = Camera.main.transform;
         StartCoroutine(CoScrolling());
     }
+
     public void SetMiss()
     {
         scrollingText.color = Color.red;
@@ -57,5 +58,13 @@ public class ScrollingText : MonoBehaviour
 
         var returnToPool = GetComponent<ReturnToPool>();
         returnToPool.Return();
+    }
+
+    public void SetText(string str)
+    {
+        scrollingText.color = Color.red;
+        scrollingText.text = str;
+        target = Camera.main.transform;
+        StartCoroutine(CoScrolling());
     }
 }

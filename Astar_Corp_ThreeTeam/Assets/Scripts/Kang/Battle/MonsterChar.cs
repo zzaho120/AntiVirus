@@ -168,11 +168,16 @@ public class MonsterChar : BattleTile
             var returnToPool = particle.GetComponent<ReturnToPool>();
             returnToPool.Return(1f);
 
-            var detectObj = BattleMgr.Instance.battlePoolMgr.CreateDetectSound();
-            var detectSound = detectObj.GetComponent<AudioSource>();
-            detectSound.Play();
-            var detectReturnToPool = detectSound.GetComponent<ReturnToPool>();
-            detectReturnToPool.Return(3f);
+            var isInSight = BattleMgr.Instance.sightMgr.GetMonsterInPlayerSight(this.gameObject);
+
+            if (isInSight)
+            {
+                var detectObj = BattleMgr.Instance.battlePoolMgr.CreateDetectSound();
+                var detectSound = detectObj.GetComponent<AudioSource>();
+                detectSound.Play();
+                var detectReturnToPool = detectSound.GetComponent<ReturnToPool>();
+                detectReturnToPool.Return(1f);
+            }
         }
         target = player;
     }

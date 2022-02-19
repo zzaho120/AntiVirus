@@ -28,6 +28,7 @@ public class CameraController : MonoBehaviour
     public Vector2 zoomInOut;
 
     private MultiTouch touchMgr;
+    private BattleBasicWindow basicWindow;
     private bool isSmoothMove;
     void Start()
     {
@@ -37,12 +38,13 @@ public class CameraController : MonoBehaviour
         destRotate = transform.rotation;
         destZoomInOut = mainCamera.localPosition;
         touchMgr = BattleMgr.Instance.touchMgr;
+        basicWindow = BattleMgr.Instance.battleWindowMgr.GetWindow(0) as BattleBasicWindow;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (followTransform == null || !isSmoothMove)
+        if ((followTransform == null || !isSmoothMove) && !basicWindow.isTutorial)
         {
             MoveKeyboardInput();
             RotateKeyboardInput();
@@ -66,13 +68,15 @@ public class CameraController : MonoBehaviour
 
     private void TouchInput()
     {
-        var touch = -touchMgr.SwipeDirection;
+        if(touchMgr.phase == UnityEngine.InputSystem.InputActionPhase.Performed)
+        {
+            var delta = -touchMgr.primaryDeltaPos.normalized / 4;
 
-        var newX = Mathf.Clamp(destPosition.x + touch.x * touchSpeed, 0, TileMgr.MAX_X_IDX);
-        var newZ = Mathf.Clamp(destPosition.z + touch.y * touchSpeed, 0, TileMgr.MAX_Z_IDX);
-        destPosition = new Vector3(newX, 0, newZ);
-
-        transform.position = Vector3.Lerp(transform.position, destPosition, moveTime * Time.deltaTime);
+            var newX = Mathf.Clamp(destPosition.x + delta.x, 0, TileMgr.MAX_X_IDX);
+            var newZ = Mathf.Clamp(destPosition.z + delta.y, 0, TileMgr.MAX_Z_IDX);
+            destPosition = new Vector3(newX, 0, newZ);
+            transform.position = destPosition;
+        }
     }
 
     private void RotateKeyboardInput()
