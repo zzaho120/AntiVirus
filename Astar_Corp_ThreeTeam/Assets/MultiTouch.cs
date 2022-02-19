@@ -75,7 +75,6 @@ public class MultiTouch : MonoBehaviour
                 }
                 break;
             case InputActionPhase.Canceled:
-                curTouchPos = Vector2.zero;
                 break;
         }
     }
@@ -126,16 +125,6 @@ public class MultiTouch : MonoBehaviour
                     var touchVector = curTouch - touchStartPos;
                     Debug.Log(touchVector.normalized);
                     SwipeDirection = touchVector.normalized;
-                    //if (Mathf.Abs(touchVector.x) > Mathf.Abs(touchVector.y))
-                    //{
-                    //    var newX = (touchVector.x > 0) ? 1f : -1f;
-                    //    SwipeDirection = new Vector2(newX, 0f);
-                    //}
-                    //else
-                    //{
-                    //    var newY = (touchVector.y > 0) ? 1f : -1f;
-                    //    SwipeDirection = new Vector2(0f, newY);
-                    //}
                 }
                 break;
         }
