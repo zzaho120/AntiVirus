@@ -45,13 +45,13 @@ public class GenericWindow : MonoBehaviour
 		Close();
 	}
 
-	public void OnNextWindow()
+	public virtual void OnNextWindow()
 	{
 		//Debug.Log("NextWindow Clicked");
 		manager.Open((int)nextWindow - 1);
 	}
 
-	public void OnPreviousWindow()
+	public virtual void OnPreviousWindow()
 	{
 		manager.Open((int)previousWindow - 1);
 	}

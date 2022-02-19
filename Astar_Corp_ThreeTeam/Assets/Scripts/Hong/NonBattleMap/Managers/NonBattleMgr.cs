@@ -18,6 +18,7 @@ public class NonBattleMgr : MonoBehaviour
     public PlayerController playerController;
     public GetVirusPenalty getVirusPenalty;
     public WorldMonsterMgr worldMonsterMgr;
+    public WorldAudioMgr worldAudioMgr;
 
     [Header("UI")]
     public WorldUIMgr worldUIMgr;
@@ -34,6 +35,7 @@ public class NonBattleMgr : MonoBehaviour
         getVirusPenalty = player.GetComponentInChildren<GetVirusPenalty>();
         playerController = player.GetComponent<PlayerController>();
         worldUIMgr = GetComponent<WorldUIMgr>();
+        worldAudioMgr = GameObject.Find("AudioMgr").GetComponent<WorldAudioMgr>();
     }
 
     private void Start()
@@ -54,6 +56,7 @@ public class NonBattleMgr : MonoBehaviour
         monsterPool.Init();
         playerController.Init();
         worldUIMgr.Init();
+        worldAudioMgr.Init();
     }
 
     private void Update()
@@ -61,6 +64,7 @@ public class NonBattleMgr : MonoBehaviour
         getVirusPenalty.VirusUpdate();
         playerController.PlayerControllerUpdate();
         worldMonsterMgr.MonsterUpdate();
+        worldAudioMgr.AudioUpdate();
     }
 
     // PlayerPrefs 삭제 테스터
