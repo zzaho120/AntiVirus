@@ -66,7 +66,8 @@ namespace Michsky.UI.ModernUIPack
 
         public void UpdateUI()
         {
-            normalText.text = buttonText;
+            if (normalText != null)
+             normalText.text = buttonText;
         }
 
         public void CreateRipple(Vector2 pos)

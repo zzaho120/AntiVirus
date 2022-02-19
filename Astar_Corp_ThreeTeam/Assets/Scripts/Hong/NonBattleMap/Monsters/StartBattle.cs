@@ -28,8 +28,6 @@ public class StartBattle : MonoBehaviour
 
         if (other.gameObject.CompareTag("Enemy"))
         {
-           
-
             // 렌더러가 활성화 되어있을때만 유효하게 // 해당조건 잠깐 Off
             if (other.GetComponentInChildren<SkinnedMeshRenderer>().enabled)
             {
@@ -39,13 +37,13 @@ public class StartBattle : MonoBehaviour
                 // 플레이어 앞
                 if (Vector3.Dot(transform.forward, dirToTarget) > 0) 
                 {
-                    Debug.Log("앞");
+                    //Debug.Log("앞");
                     isMonsterAtk = false;
                 }
                 // 플레이어 뒤
                 else 
                 {
-                    Debug.Log("뒤");
+                    //Debug.Log("뒤");
                     isMonsterAtk = true;
                 }
                 PlayerDataMgr.Instance.isMonsterAtk = isMonsterAtk;
@@ -54,22 +52,16 @@ public class StartBattle : MonoBehaviour
                 timeController.Pause();
                 timeController.isPause = true;
 
-                SetMonsterInfo(other.GetComponent<WorldMonsterChar>());
+                PrintMonsterInfo(other.GetComponent<WorldMonsterChar>());
 
-                //StringBuilder info = new StringBuilder();
-                //info.Append(monsterChar.monsterStat.monster.name);
-                //info.Append(monsterChar.monsterStat.nonBattleMonster.battleMinNum);
-                //info.Append(monsterChar.monsterStat.nonBattleMonster.battleMaxNum);
-                //info.Append(monsterChar.monsterStat.virus);
-
-                // / 전투 팝업창 띄우기
+                // 전투 팝업창 띄우기
                 var windowId = (int)Windows.MonsterWindow - 1;
                 var nonBattlePopUps = windowManager.Open(windowId, false) as NonBattlePopUps;
             }
         }
     }
 
-    public void SetMonsterInfo(WorldMonsterChar monsterChar)
+    public void PrintMonsterInfo(WorldMonsterChar monsterChar)
     {
         monsterInfo.transform.GetChild(0).GetComponent<Text>().text = monsterChar.monsterStat.monster.name;
         monsterInfo.transform.GetChild(1).GetComponent<Image>().sprite = monsterChar.monsterImg;

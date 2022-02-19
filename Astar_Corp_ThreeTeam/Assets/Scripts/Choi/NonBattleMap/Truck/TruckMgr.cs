@@ -174,8 +174,8 @@ public class TruckMgr : MonoBehaviour
 
     public void Open()
     {
-        var currentWinId = (int)Windows.MemberSelectPopup - 1;
-        windowManager.Open(currentWinId);
+        //var currentWinId = (int)Windows.MemberSelectPopup - 1;
+        //windowManager.Open(currentWinId);
 
         Init();
 
@@ -1785,20 +1785,20 @@ public class TruckMgr : MonoBehaviour
 
     public void OpenInventoryWin()
     {
-        var currentWinId = (int)Windows.MemberSelectPopup - 1;
-        windowManager.windows[currentWinId].Close();
+        //var currentWinId = (int)Windows.MemberSelectPopup - 1;
+        //windowManager.windows[currentWinId].Close();
 
-        if (!InventoryWin.activeSelf) InventoryWin.SetActive(true);
-        currentWinId = (int)Windows.TruckPopup - 1;
-        windowManager.Open(currentWinId);
+        //if (!InventoryWin.activeSelf) InventoryWin.SetActive(true);
+        //currentWinId = (int)Windows.TruckPopup - 1;
+        //windowManager.Open(currentWinId);
     }
 
     public void CloseInventoryWin()
     {
-        var currentWinId = (int)Windows.TruckPopup - 1;
-        windowManager.windows[currentWinId].Close();
-
-        currentWinId = (int)Windows.MemberSelectPopup - 1;
-        windowManager.Open(currentWinId);
+       // var currentWinId = (int)Windows.TruckPopup - 1;
+       // windowManager.windows[currentWinId].Close();
+       //
+       // currentWinId = (int)Windows.MemberSelectPopup - 1;
+       // windowManager.Open(currentWinId);
     }
 }

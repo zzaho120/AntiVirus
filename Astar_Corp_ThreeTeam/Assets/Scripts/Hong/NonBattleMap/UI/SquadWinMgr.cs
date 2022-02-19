@@ -27,7 +27,7 @@ public class SquadWinMgr : UIManagerWindowManager
 
     public void Init()
     {
-        Debug.Log("Init");
+        //Debug.Log("Init");
 
         playerDataMgr = PlayerDataMgr.Instance;
         soMgr = ScriptableMgr.Instance;
@@ -141,7 +141,6 @@ public class SquadWinMgr : UIManagerWindowManager
     {
         // 선택된 오브젝트 가져오기
         var selectedObj = characterList[num];
-
 
         // 토글키 On
         Toggle toggle = selectedObj.GetComponentInChildren<Toggle>();

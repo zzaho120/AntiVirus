@@ -17,7 +17,6 @@ public class PlayerController : MonoBehaviour
     // Managers
     private NonBattleMgr nonBattleMgr;
     private PopUpMgr popUpMgr;
-    private GameObject footprintUI;
 
     // Time Controller
     [HideInInspector]
@@ -27,9 +26,10 @@ public class PlayerController : MonoBehaviour
 
     // Get NavMesh
     private PlayerMove playerMove;
-    private NavMeshAgent agent;
-    private CameraDrag cameraMovement;
+    public NavMeshAgent agent;
 
+    private GameObject footprintUI;
+    private CameraDrag cameraMovement;
     private StartBattle startBattle;
 
     // Sight
@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
                         timeController.isPause = true;
 
                         // 몬스터 정보 출력
-                        startBattle.SetMonsterInfo(raycastHit.collider.GetComponent<WorldMonsterChar>());
+                        startBattle.PrintMonsterInfo(raycastHit.collider.GetComponent<WorldMonsterChar>());
                     }
                 }
                 //// 발자국 클릭 시
@@ -167,7 +167,7 @@ public class PlayerController : MonoBehaviour
                         timeController.isPause = true;
 
                     // 몬스터 정보 출력
-                    startBattle.SetMonsterInfo(raycastHit.collider.GetComponent<WorldMonsterChar>());
+                    startBattle.PrintMonsterInfo(raycastHit.collider.GetComponent<WorldMonsterChar>());
                     }
                 }
                 // 발자국 클릭 시
@@ -280,6 +280,9 @@ public class PlayerController : MonoBehaviour
 
     public void ChangeBattleScene()
     {
+        Debug.Log("Battle Squad : " + PlayerDataMgr.Instance.battleSquad.Count);
+        if (PlayerDataMgr.Instance.battleSquad.Count < 1) return;
+        
         timeController.Pause();
         SceneManager.LoadScene("BattleMap_Origin");
     }
