@@ -371,24 +371,24 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                     //    stat.skills.passiveSkills.Add(passiveSkillList[element]);
                     //}
 
-                    for (int j = saveData.bagEquippableFirstIndex[i]; j < saveData.bagEquippableLastIndex[i]; j++)
-                    {
-                        var key = saveData.bagEquippableList[j];
-                        var weapon = equippableList[key];
+                    //for (int j = saveData.bagEquippableFirstIndex[i]; j < saveData.bagEquippableLastIndex[i]; j++)
+                    //{
+                    //    var key = saveData.bagEquippableList[j];
+                    //    var weapon = equippableList[key];
                         
-                        stat.bag.Add(saveData.bagEquippableList[j], saveData.bagEquippableNumList[j]);
+                    //    stat.bag.Add(saveData.bagEquippableList[j], saveData.bagEquippableNumList[j]);
 
-                    }
+                    //}
 
-                    for (int j = saveData.bagConsumableFirstIndex[i]; j < saveData.bagConsumableLastIndex[i]; j++)
-                    {
-                        stat.bag.Add(saveData.bagConsumableList[j], saveData.bagConsumableNumList[j]);
-                    }
+                    //for (int j = saveData.bagConsumableFirstIndex[i]; j < saveData.bagConsumableLastIndex[i]; j++)
+                    //{
+                    //    stat.bag.Add(saveData.bagConsumableList[j], saveData.bagConsumableNumList[j]);
+                    //}
 
-                    for (int j = saveData.bagOtherItemFirstIndex[i]; j < saveData.bagOtherItemLastIndex[i]; j++)
-                    {
-                        stat.bag.Add(saveData.bagOtherItemList[j], saveData.bagOtherItemNumList[j]);
-                    }
+                    //for (int j = saveData.bagOtherItemFirstIndex[i]; j < saveData.bagOtherItemLastIndex[i]; j++)
+                    //{
+                    //    stat.bag.Add(saveData.bagOtherItemList[j], saveData.bagOtherItemNumList[j]);
+                    //}
 
                     currentSquad.Add(i, stat);
 
