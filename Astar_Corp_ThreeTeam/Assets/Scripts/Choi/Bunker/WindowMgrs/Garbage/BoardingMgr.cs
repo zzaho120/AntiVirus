@@ -82,6 +82,10 @@ public class BoardingMgr : MonoBehaviour
             int num = i;
 
             var go = Instantiate(characterPrefab, ListContent.transform);
+
+            go.GetComponent<DragDrop>().characterNum = num;
+            go.GetComponent<DragDrop>().boardingMgr = this;
+
             var button = go.AddComponent<Button>();
             button.onClick.AddListener(delegate { SelectCharacter(num); });
 
@@ -259,7 +263,7 @@ public class BoardingMgr : MonoBehaviour
 
     public void SelectCharacter(int i)
     {
-        if (currentSeatNum == -1) return;
+        //if (currentSeatNum == -1) return;
         garageMgr.bunkerMgr.PlayClickSound();
 
         if (currentIndex != -1 && characters.ContainsKey(currentIndex))
@@ -371,6 +375,10 @@ public class BoardingMgr : MonoBehaviour
         int index = currentIndex;
 
         var go = Instantiate(characterPrefab, ListContent.transform);
+        
+        go.GetComponent<DragDrop>().characterNum = index;
+        go.GetComponent<DragDrop>().boardingMgr = this;
+
         var button = go.AddComponent<Button>();
         button.onClick.AddListener(delegate { SelectCharacter(index); });
 
