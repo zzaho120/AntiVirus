@@ -193,7 +193,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -91.712, y: -0.0000047088}
+  m_AnchoredPosition: {x: -91.712, y: 0}
   m_SizeDelta: {x: 57.5855, y: 45.8531}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1841740581439147749
@@ -272,7 +272,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 27.9073, y: -0.000051498}
+  m_AnchoredPosition: {x: 27.9073, y: -0.000061035156}
   m_SizeDelta: {x: 176.4146, y: 45.853}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4920618307861909088
@@ -324,6 +324,8 @@ GameObject:
   - component: {fileID: 5542491375132251027}
   - component: {fileID: 3965249354909088483}
   - component: {fileID: 1609658072741142063}
+  - component: {fileID: 4536510560834260661}
+  - component: {fileID: 7554216514686626825}
   m_Layer: 0
   m_Name: New Garage Soldier
   m_TagString: Untagged
@@ -348,9 +350,9 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -1520, y: -1440}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3965249354909088483
@@ -391,6 +393,33 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 25
+--- !u!225 &4536510560834260661
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7998728876575465411}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &7554216514686626825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7998728876575465411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e80678a11687e1b4bb9ac26bcdfbb690, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterNum: 0
+  boardingMgr: {fileID: 0}
+  canvas: {fileID: 0}
 --- !u!1 &8436259958185914824
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,8 +496,8 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "\uBD84\uACFC/\uB808\uBCA8/\uCC29\uC6A9 \uC911\uC778 \uC8FC\uBB34\uAE30"
 --- !u!1 &9110032039948960764
@@ -547,8 +576,8 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "\uCE90\uB9AD\uD130 \uC774\uB984/\uC131\uBCC4"
 --- !u!1001 &1439893030238066839

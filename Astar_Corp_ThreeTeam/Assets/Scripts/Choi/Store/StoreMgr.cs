@@ -718,6 +718,8 @@ public class StoreMgr : MonoBehaviour
 
     public void SelectStoreItem(int key)
     {
+        bunkerMgr.PlayClickSound();
+
         Image image;
         if (currentStoreKey != -1 && storeObjs.ContainsKey(currentStoreKey))
         {
@@ -773,6 +775,8 @@ public class StoreMgr : MonoBehaviour
 
     public void SelectStorageItem(string key)
     {
+        bunkerMgr.PlayClickSound();
+
         Image image;
         if (currentStorageKey != null && storageObjs.ContainsKey(currentStorageKey))
         {

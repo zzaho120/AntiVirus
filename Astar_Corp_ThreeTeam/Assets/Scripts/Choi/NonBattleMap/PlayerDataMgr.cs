@@ -461,20 +461,20 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             //    stat.skillMgr.passiveSkills.Add(passiveSkillList[element]);
             //}
 
-            for (int j = saveData.bagEquippableFirstIndex[i]; j < saveData.bagEquippableLastIndex[i]; j++)
-            {
-                stat.bag.Add(saveData.bagEquippableList[j], saveData.bagEquippableNumList[j]);
-            }
+            //for (int j = saveData.bagEquippableFirstIndex[i]; j < saveData.bagEquippableLastIndex[i]; j++)
+            //{
+            //    stat.bag.Add(saveData.bagEquippableList[j], saveData.bagEquippableNumList[j]);
+            //}
 
-            for (int j = saveData.bagConsumableFirstIndex[i]; j < saveData.bagConsumableLastIndex[i]; j++)
-            {
-                stat.bag.Add(saveData.bagConsumableList[j], saveData.bagConsumableNumList[j]);
-            }
+            //for (int j = saveData.bagConsumableFirstIndex[i]; j < saveData.bagConsumableLastIndex[i]; j++)
+            //{
+            //    stat.bag.Add(saveData.bagConsumableList[j], saveData.bagConsumableNumList[j]);
+            //}
 
-            for (int j = saveData.bagOtherItemFirstIndex[i]; j < saveData.bagOtherItemLastIndex[i]; j++)
-            {
-                stat.bag.Add(saveData.bagOtherItemList[j], saveData.bagOtherItemNumList[j]);
-            }
+            //for (int j = saveData.bagOtherItemFirstIndex[i]; j < saveData.bagOtherItemLastIndex[i]; j++)
+            //{
+            //    stat.bag.Add(saveData.bagOtherItemList[j], saveData.bagOtherItemNumList[j]);
+            //}
 
             currentSquad.Add(i, stat);
 
@@ -535,27 +535,27 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
             //    saveData.passiveSkillList.Add(passiveSkillStr); 
             //}
 
-            if (num == 0)
-            {
-                saveData.bagEquippableFirstIndex.Add(0);
-                saveData.bagEquippableLastIndex.Add(0);
-                saveData.bagConsumableFirstIndex.Add(0);
-                saveData.bagConsumableLastIndex.Add(0);
-                saveData.bagOtherItemFirstIndex.Add(0);
-                saveData.bagOtherItemLastIndex.Add(0);
-            }
-            else
-            {
-                int preFirstIndex = saveData.bagEquippableFirstIndex[num - 1];
-                saveData.bagEquippableFirstIndex.Add(preFirstIndex);
-                saveData.bagEquippableLastIndex.Add(preFirstIndex);
-                preFirstIndex = saveData.bagConsumableFirstIndex[num - 1];
-                saveData.bagConsumableFirstIndex.Add(preFirstIndex);
-                saveData.bagConsumableLastIndex.Add(preFirstIndex);
-                preFirstIndex = saveData.bagOtherItemFirstIndex[num - 1];
-                saveData.bagOtherItemFirstIndex.Add(preFirstIndex);
-                saveData.bagOtherItemLastIndex.Add(preFirstIndex);
-            }
+            //if (num == 0)
+            //{
+            //    saveData.bagEquippableFirstIndex.Add(0);
+            //    saveData.bagEquippableLastIndex.Add(0);
+            //    saveData.bagConsumableFirstIndex.Add(0);
+            //    saveData.bagConsumableLastIndex.Add(0);
+            //    saveData.bagOtherItemFirstIndex.Add(0);
+            //    saveData.bagOtherItemLastIndex.Add(0);
+            //}
+            //else
+            //{
+            //    int preFirstIndex = saveData.bagEquippableFirstIndex[num - 1];
+            //    saveData.bagEquippableFirstIndex.Add(preFirstIndex);
+            //    saveData.bagEquippableLastIndex.Add(preFirstIndex);
+            //    preFirstIndex = saveData.bagConsumableFirstIndex[num - 1];
+            //    saveData.bagConsumableFirstIndex.Add(preFirstIndex);
+            //    saveData.bagConsumableLastIndex.Add(preFirstIndex);
+            //    preFirstIndex = saveData.bagOtherItemFirstIndex[num - 1];
+            //    saveData.bagOtherItemFirstIndex.Add(preFirstIndex);
+            //    saveData.bagOtherItemLastIndex.Add(preFirstIndex);
+            //}
 
             stat.saveId = num;
             stat.Setting();
@@ -736,56 +736,56 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
         //    saveData.passiveSkillList.RemoveAt(i * passiveSkillNum + j);
         //}
 
-        int firstIndex = saveData.bagEquippableFirstIndex[i];
-        int lastIndex = saveData.bagEquippableLastIndex[i];
-        int difference = lastIndex - firstIndex;
-        for (int j = i; j < saveData.bagEquippableFirstIndex.Count; j++)
-        {
-            saveData.bagEquippableFirstIndex[j] -= difference;
-            saveData.bagEquippableLastIndex[j] -= difference;
-        }
+        //int firstIndex = saveData.bagEquippableFirstIndex[i];
+        //int lastIndex = saveData.bagEquippableLastIndex[i];
+        //int difference = lastIndex - firstIndex;
+        //for (int j = i; j < saveData.bagEquippableFirstIndex.Count; j++)
+        //{
+        //    saveData.bagEquippableFirstIndex[j] -= difference;
+        //    saveData.bagEquippableLastIndex[j] -= difference;
+        //}
 
-        for (int j = firstIndex; j < lastIndex; j++)
-        {
-            saveData.bagEquippableList.RemoveAt(i);
-            saveData.bagEquippableNumList.RemoveAt(i);
-        }
-        saveData.bagEquippableFirstIndex.RemoveAt(i);
-        saveData.bagEquippableLastIndex.RemoveAt(i);
+        //for (int j = firstIndex; j < lastIndex; j++)
+        //{
+        //    saveData.bagEquippableList.RemoveAt(i);
+        //    saveData.bagEquippableNumList.RemoveAt(i);
+        //}
+        //saveData.bagEquippableFirstIndex.RemoveAt(i);
+        //saveData.bagEquippableLastIndex.RemoveAt(i);
 
-        firstIndex = saveData.bagConsumableFirstIndex[i];
-        lastIndex = saveData.bagConsumableLastIndex[i];
-        difference = lastIndex - firstIndex;
-        for (int j = i; j < saveData.bagConsumableFirstIndex.Count; j++)
-        {
-            saveData.bagConsumableFirstIndex[j] -= difference;
-            saveData.bagConsumableLastIndex[j] -= difference;
-        }
+        //firstIndex = saveData.bagConsumableFirstIndex[i];
+        //lastIndex = saveData.bagConsumableLastIndex[i];
+        //difference = lastIndex - firstIndex;
+        //for (int j = i; j < saveData.bagConsumableFirstIndex.Count; j++)
+        //{
+        //    saveData.bagConsumableFirstIndex[j] -= difference;
+        //    saveData.bagConsumableLastIndex[j] -= difference;
+        //}
 
-        for (int j = firstIndex; j < lastIndex; j++)
-        {
-            saveData.bagConsumableList.RemoveAt(i);
-            saveData.bagConsumableNumList.RemoveAt(i);
-        }
-        saveData.bagConsumableFirstIndex.RemoveAt(i);
-        saveData.bagConsumableLastIndex.RemoveAt(i);
+        //for (int j = firstIndex; j < lastIndex; j++)
+        //{
+        //    saveData.bagConsumableList.RemoveAt(i);
+        //    saveData.bagConsumableNumList.RemoveAt(i);
+        //}
+        //saveData.bagConsumableFirstIndex.RemoveAt(i);
+        //saveData.bagConsumableLastIndex.RemoveAt(i);
 
-        firstIndex = saveData.bagOtherItemFirstIndex[i];
-        lastIndex = saveData.bagOtherItemLastIndex[i];
-        difference = lastIndex - firstIndex;
-        for (int j = i; j < saveData.bagOtherItemFirstIndex.Count; j++)
-        {
-            saveData.bagOtherItemFirstIndex[j] -= difference;
-            saveData.bagOtherItemLastIndex[j] -= difference;
-        }
+        //firstIndex = saveData.bagOtherItemFirstIndex[i];
+        //lastIndex = saveData.bagOtherItemLastIndex[i];
+        //difference = lastIndex - firstIndex;
+        //for (int j = i; j < saveData.bagOtherItemFirstIndex.Count; j++)
+        //{
+        //    saveData.bagOtherItemFirstIndex[j] -= difference;
+        //    saveData.bagOtherItemLastIndex[j] -= difference;
+        //}
 
-        for (int j = firstIndex; j < lastIndex; j++)
-        {
-            saveData.bagOtherItemList.RemoveAt(i);
-            saveData.bagOtherItemNumList.RemoveAt(i);
-        }
-        saveData.bagOtherItemFirstIndex.RemoveAt(i);
-        saveData.bagOtherItemLastIndex.RemoveAt(i);
+        //for (int j = firstIndex; j < lastIndex; j++)
+        //{
+        //    saveData.bagOtherItemList.RemoveAt(i);
+        //    saveData.bagOtherItemNumList.RemoveAt(i);
+        //}
+        //saveData.bagOtherItemFirstIndex.RemoveAt(i);
+        //saveData.bagOtherItemLastIndex.RemoveAt(i);
 
         currentSquad.Remove(i);
 
