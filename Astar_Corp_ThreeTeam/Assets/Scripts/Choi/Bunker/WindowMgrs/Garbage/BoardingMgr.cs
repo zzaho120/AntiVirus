@@ -184,7 +184,7 @@ public class BoardingMgr : MonoBehaviour
     public void PreviousButton()
     {
         if (currentKey - 1 < 0) return;
-        
+
         currentKey--;
        
         CarReset();
@@ -192,12 +192,13 @@ public class BoardingMgr : MonoBehaviour
         playerDataMgr.saveData.currentCar = selectedCar;
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         CarDisplay(selectedCar);
+        garageMgr.PreviousButton();
     }
 
     public void NextButton()
     {
         if (currentKey + 1 >= carOrder.Count) return;
-        
+
         currentKey++;
 
         CarReset();
@@ -205,6 +206,7 @@ public class BoardingMgr : MonoBehaviour
         playerDataMgr.saveData.currentCar = selectedCar;
         PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
         CarDisplay(selectedCar);
+        garageMgr.NextButton();
     }
 
     public void CarReset()

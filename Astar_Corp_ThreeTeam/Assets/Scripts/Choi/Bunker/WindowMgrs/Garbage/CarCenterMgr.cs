@@ -117,7 +117,7 @@ public class CarCenterMgr : MonoBehaviour
 
         Refresh();
 
-        originColor = buttonList[0].GetComponent<Image>().color;
+        originColor = new Color(45 / 255f, 65 / 255f, 85 / 255f);
         selectedColor = new Color(56/255f, 87/255f, 35/255f);
         currentStat = TruckStat.None;
         
@@ -323,6 +323,11 @@ public class CarCenterMgr : MonoBehaviour
         }
 
         //초기화.
+        foreach (var element in buttonList)
+        { 
+            element.GetComponent<Image>().color = originColor;
+        }
+       
         var speedObj = gaugeList[0];
         var trunkObj = gaugeList[1];
         var sightObj = gaugeList[2];
@@ -534,6 +539,12 @@ public class CarCenterMgr : MonoBehaviour
     {
         mainWin.SetActive(false);
         if (popup.activeSelf) popup.SetActive(false);
+        
+        //초기화.
+        foreach (var element in buttonList)
+        {
+            element.GetComponent<Image>().color = originColor;
+        }
         ownedMoneyTxt.text = $"보유 금액 G {playerDataMgr.saveData.money}";
         buyWin.SetActive(true);
     }
