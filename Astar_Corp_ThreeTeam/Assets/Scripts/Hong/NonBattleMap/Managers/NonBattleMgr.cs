@@ -12,6 +12,9 @@ public class NonBattleMgr : MonoBehaviour
     // Monster Area
     public CreateMonsterAreas[] createMonsterArea;
 
+    // Player Object
+    private GameObject player;
+
     [Header("Public Class")]
     public CreateLabArea createLabArea;
     public MonsterPool monsterPool;
@@ -19,6 +22,7 @@ public class NonBattleMgr : MonoBehaviour
     public GetVirusPenalty getVirusPenalty;
     public WorldMonsterMgr worldMonsterMgr;
     public WorldAudioMgr worldAudioMgr;
+    public SetTruck setTruck;
 
     [Header("UI")]
     public WorldUIMgr worldUIMgr;
@@ -28,11 +32,11 @@ public class NonBattleMgr : MonoBehaviour
         Instance = this;
 
         // 클래스 찾기
-        var player = GameObject.Find("Player");
+        player = GameObject.Find("Player");
         createLabArea = Instance.GetComponent<CreateLabArea>();
         monsterPool = GameObject.Find("MonsterPool").GetComponent<MonsterPool>();
+        setTruck = GameObject.Find("Trucks").GetComponent<SetTruck>();
         worldMonsterMgr = GetComponent<WorldMonsterMgr>();
-        getVirusPenalty = player.GetComponentInChildren<GetVirusPenalty>();
         playerController = player.GetComponent<PlayerController>();
         worldUIMgr = GetComponent<WorldUIMgr>();
         worldAudioMgr = GameObject.Find("AudioMgr").GetComponent<WorldAudioMgr>();
@@ -54,6 +58,7 @@ public class NonBattleMgr : MonoBehaviour
             createMonsterArea[i].GetComponent<CreateMonsterAreas>().Init();
         }
         monsterPool.Init();
+        getVirusPenalty = player.GetComponentInChildren<GetVirusPenalty>();
         playerController.Init();
         worldUIMgr.Init();
         worldAudioMgr.Init();
@@ -65,11 +70,5 @@ public class NonBattleMgr : MonoBehaviour
         playerController.PlayerControllerUpdate();
         worldMonsterMgr.MonsterUpdate();
         worldAudioMgr.AudioUpdate();
-    }
-
-    // PlayerPrefs 삭제 테스터
-    public void Restart()
-    {
-        PlayerPrefs.DeleteAll();
     }
 }

@@ -291,4 +291,9 @@ public class PlayerController : MonoBehaviour
     {
         time = 0;
     }
+
+    public void SetPlayerPos()
+    {
+        agent.SetDestination(transform.position);
+    }
 }

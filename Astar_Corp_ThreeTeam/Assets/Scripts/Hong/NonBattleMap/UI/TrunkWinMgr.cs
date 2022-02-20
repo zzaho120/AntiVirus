@@ -37,18 +37,6 @@ public class TrunkWinMgr : ModalWindowManager
     public Dictionary<int, GameObject> bagObjs = new Dictionary<int, GameObject>();
     public Dictionary<int, GameObject> truckMemberGo = new Dictionary<int, GameObject>();
 
-    //// Truck item Data
-    //Dictionary<string, Weapon> truckWeaponInfo = new Dictionary<string, Weapon>();
-    //Dictionary<string, int> truckWeaponNumInfo = new Dictionary<string, int>();
-    //Dictionary<string, Consumable> truckConsumableInfo = new Dictionary<string, Consumable>();
-    //Dictionary<string, int> truckConsumableNumInfo = new Dictionary<string, int>();
-    //Dictionary<string, OtherItem> truckOtherItemInfo = new Dictionary<string, OtherItem>();
-    //Dictionary<string, int> truckOtherItemNumInfo = new Dictionary<string, int>();
-
-    // Character item Data
-    //Dictionary<string, Consumable> bagConsumableInfo = new Dictionary<string, Consumable>();
-    //Dictionary<string, int> bagConsumableNumInfo = new Dictionary<string, int>();
-    
     public void Init()
     {
         playerDataMgr = PlayerDataMgr.Instance;
@@ -66,6 +54,12 @@ public class TrunkWinMgr : ModalWindowManager
 
         trunkCurrentWeight = 0;
 
+        int bullet5Num = 0;
+        int bullet7Num = 0;
+        int bullet9Num = 0;
+        int bullet45Num = 0;
+        int bullet12Num = 0;
+
         // 트럭 인벤토리 무게 계산
         //if (!isInit)
         //{
@@ -80,11 +74,61 @@ public class TrunkWinMgr : ModalWindowManager
         foreach (var element in playerDataMgr.truckOtherItems)
         {
             trunkCurrentWeight += (int.Parse(element.Value.weight) * playerDataMgr.truckOtherItemsNum[element.Key]);
+
+            switch (element.Key)
+            {
+                case "BUL_0004":
+                    bullet5Num += playerDataMgr.truckOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0005":
+                    bullet7Num += playerDataMgr.truckOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0002":
+                    bullet9Num += playerDataMgr.truckOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0003":
+                    bullet45Num += playerDataMgr.truckOtherItemsNum[element.Key];
+                    break;
+                case "BUL_0001":
+                    bullet12Num += playerDataMgr.truckOtherItemsNum[element.Key];
+                    break;
+            }
         }
 
         //// Update Trunk weight
         NonBattleMgr.Instance.worldUIMgr.printTruckUI.truckCurWeight = trunkCurrentWeight;
         NonBattleMgr.Instance.worldUIMgr.printTruckUI.Init();
+
+        // 탄알 무게 계산
+        if (isBattlePopup)
+        {
+            var bulletGroup = transform.GetChild(2).transform.GetChild(2).gameObject;
+            var bullet5 = bulletGroup.transform.GetChild(0).GetComponentInChildren<Text>();
+            bullet5.text = bullet5Num.ToString();
+            var bullet7 = bulletGroup.transform.GetChild(1).GetComponentInChildren<Text>();
+            bullet7.text = bullet7Num.ToString();
+            var bullet9 = bulletGroup.transform.GetChild(2).GetComponentInChildren<Text>();
+            bullet9.text = bullet9Num.ToString();
+            var bullet45 = bulletGroup.transform.GetChild(3).GetComponentInChildren<Text>();
+            bullet45.text = bullet45Num.ToString();
+            var bullet12 = bulletGroup.transform.GetChild(4).GetComponentInChildren<Text>();
+            bullet12.text = bullet12Num.ToString();
+        }
+        else
+        {
+            var bulletGroup = transform.GetChild(0).transform.GetChild(3).gameObject;
+            var bullet5 = bulletGroup.transform.GetChild(0).GetComponentInChildren<Text>();
+            bullet5.text = bullet5Num.ToString();
+            var bullet7 = bulletGroup.transform.GetChild(1).GetComponentInChildren<Text>();
+            bullet7.text = bullet7Num.ToString();
+            var bullet9 = bulletGroup.transform.GetChild(2).GetComponentInChildren<Text>();
+            bullet9.text = bullet9Num.ToString();
+            var bullet45 = bulletGroup.transform.GetChild(3).GetComponentInChildren<Text>();
+            bullet45.text = bullet45Num.ToString();
+            var bullet12 = bulletGroup.transform.GetChild(4).GetComponentInChildren<Text>();
+            bullet12.text = bullet12Num.ToString();
+        }
+
 
         PrintTrunkItems();
     }
@@ -171,7 +215,7 @@ public class TrunkWinMgr : ModalWindowManager
         if (isBattlePopup)
         {
             // 무게 표시
-            var trunkUI = transform.GetChild(1).transform.GetChild(1);
+            var trunkUI = transform.GetChild(2).transform.GetChild(1);
             trunkUI.GetComponentInChildren<Text>().text = $"{trunkCurrentWeight} / {PlayerDataMgr.Instance.truckList[PlayerDataMgr.Instance.saveData.currentCar].weight}";
             
             // 캐릭터 인벤토리 표시
@@ -179,7 +223,7 @@ public class TrunkWinMgr : ModalWindowManager
         }
         else
         {
-            // 캐릭터 인벤토리 표시
+            // 무게 표시
             var trunkUI = transform.GetChild(0).transform.GetChild(2);
             trunkUI.GetComponentInChildren<Text>().text = $"{trunkCurrentWeight} / {PlayerDataMgr.Instance.truckList[PlayerDataMgr.Instance.saveData.currentCar].weight}";
         }
