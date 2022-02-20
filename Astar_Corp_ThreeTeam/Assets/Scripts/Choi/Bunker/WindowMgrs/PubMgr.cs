@@ -33,6 +33,7 @@ public class PubMgr : MonoBehaviour
     public Text costTxt;
 
     [Header("Detail Win")]
+    public GameObject alarmWin;
     public Image characterImg;
     public Text nameTxt;
     public Image vocationImg;
@@ -474,7 +475,11 @@ public class PubMgr : MonoBehaviour
         if (playerDataMgr.saveData.money - costs[currentIndex] < 0) return;
 
         int currentMemberNum = playerDataMgr.currentSquad.Count;
-        if (currentMemberNum + 1 > maxMember) return;
+        if (currentMemberNum + 1 > maxMember)
+        {
+            OpenAlarmWin();
+            return;
+        }
 
         //json.
         playerDataMgr.saveData.soldierName.RemoveAt(currentIndex);
@@ -523,7 +528,11 @@ public class PubMgr : MonoBehaviour
         if (playerDataMgr.saveData.money - totalCost < 0) return;
 
         int currentMemberNum = playerDataMgr.currentSquad.Count;
-        if (currentMemberNum + totalNum > maxMember) return;
+        if (currentMemberNum + totalNum > maxMember)
+        {
+            OpenAlarmWin();
+            return;
+        }
 
         int count = characterObjs.Count;
         for (int i = count - 1; i > -1; --i)
@@ -622,6 +631,8 @@ public class PubMgr : MonoBehaviour
             bunkerMgr.quickButtons[3].transform.GetChild(1).gameObject.SetActive(false);
         }
 
+        CloseAlarmWin();
+
         if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
         
         if (recruitmentWin.activeSelf) recruitmentWin.SetActive(false);
@@ -650,6 +661,16 @@ public class PubMgr : MonoBehaviour
     {
         mainWin.SetActive(false);
         recruitmentWin.SetActive(true);
+    }
+
+    public void OpenAlarmWin()
+    {
+        if (!alarmWin.activeSelf) alarmWin.SetActive(true);
+    }
+
+    public void CloseAlarmWin()
+    {
+        if (alarmWin.activeSelf) alarmWin.SetActive(false);
     }
 
     public void OpenPopup()

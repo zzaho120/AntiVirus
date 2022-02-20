@@ -36,6 +36,10 @@ public class AgitMgr : MonoBehaviour
     public Text materialTxt;
 
     [Header("CharacterInfo Win")]
+    public GameObject skillInfoWin;
+    public Text skillNameTxt;
+    public Text skillDetailTxt;
+    public GameObject fireWin;
     public Text characterName;
     public Image characterImg;
     public Image mainWeaponImg;
@@ -759,6 +763,9 @@ public class AgitMgr : MonoBehaviour
             bunkerMgr.quickButtons[0].transform.GetChild(1).gameObject.SetActive(false);
         }
 
+        CloseSkillWin();
+        CloseFireWin();
+
         if (bunkerMgr.belowUI.activeSelf) bunkerMgr.belowUI.SetActive(false);
         if (!upperUI.activeSelf) upperUI.SetActive(true);
         if (!belowUI.activeSelf) belowUI.SetActive(true);
@@ -974,6 +981,7 @@ public class AgitMgr : MonoBehaviour
 
     public void OpenEquipmentWin()
     {
+        CloseSkillWin();
         characterInfoWin.SetActive(false);
         equipmentMgr.equipmentWin.SetActive(true);
         equipmentMgr.OpenEquipWin1();
@@ -1107,5 +1115,49 @@ public class AgitMgr : MonoBehaviour
     {
         isVirusPopupOpen = !isVirusPopupOpen;
         virusPopup.SetActive(isVirusPopupOpen);
+    }
+
+    public void OpenSkillWin()
+    {
+        if (!skillInfoWin.activeSelf) skillInfoWin.SetActive(true);
+        var character = playerDataMgr.currentSquad[currentIndex];
+        switch (character.character.name)
+        {
+            case "Bombardier":
+                skillNameTxt.text = "한놈만 쏜다 (액티브 스킬)";
+                skillDetailTxt.text = "6ap를 소모해서 이번턴에 하나의 적에게 탄약을 올인해서 공격 (쿨타임 4턴)";
+                break;
+            case "Healer":
+                skillNameTxt.text = "강력한면역체계 (패시브 스킬)";
+                skillDetailTxt.text = "현재 받는 바이러스 패널티 증가량의 80%만 받음.";
+                break;
+            case "Scout":
+                skillNameTxt.text = "철저한 감시 (패시브 스킬)";
+                skillDetailTxt.text = "캐릭터 주위 동그란 시야가 1칸 더 넓어진다.";
+                break;
+            case "Sniper":
+                skillNameTxt.text = "침착한 사격 (패시브 스킬)";
+                skillDetailTxt.text = "이전 턴에 이동을 하지 않았다면, 이번 턴 SR 명중률 5%상승";
+                break;
+            case "Tanker":
+                skillNameTxt.text = "마지막 발악 (패시브 스킬)";
+                skillDetailTxt.text = "캐릭터의 첫 플레이시 이동할 수 있는 최대거리를 이동 했다면, ap 소모 없이 조준 사격 1회 가능";
+                break;
+        }
+    }
+
+    public void CloseSkillWin()
+    {
+        if (skillInfoWin.activeSelf) skillInfoWin.SetActive(false);
+    }
+
+    public void OpenFireWin()
+    {
+        if (!fireWin.activeSelf) fireWin.SetActive(true);
+    }
+
+    public void CloseFireWin()
+    {
+        if (fireWin.activeSelf) fireWin.SetActive(false);
     }
 }
