@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class TimeController : MonoBehaviour
@@ -10,6 +11,8 @@ public class TimeController : MonoBehaviour
 
     [SerializeField]
     private Image[] image;
+
+    public GameObject player;
 
     // 0 Play
     // 1 Pause
@@ -32,7 +35,8 @@ public class TimeController : MonoBehaviour
 
     public void Play()
     {
-        isPause = false;
+        //isPause = false;
+        StartCoroutine(SetPause());
         Time.timeScale = 1f;
 
         image[0].color = Color.yellow;
@@ -48,6 +52,12 @@ public class TimeController : MonoBehaviour
         image[0].color = Color.white;
         image[1].color = Color.white;
         image[2].color = Color.yellow;
+    }
+
+    private IEnumerator SetPause()
+    {
+        yield return new WaitForSeconds(0.5f);
+        isPause = false;
     }
 
     //public void PauseTime()

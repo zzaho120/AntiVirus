@@ -7,7 +7,7 @@ public class WorldUIMgr : MonoBehaviour
     private GameObject screen;
 
     [Header("UI")]
-    public SquadStatusMgr squadStatusMgr;
+    // public SquadStatusMgr squadStatusMgr;
     public PrintTruckUI printTruckUI;
     public TrunkWinMgr trunkWinMgr;
 
@@ -72,8 +72,8 @@ public class WorldUIMgr : MonoBehaviour
         screen = GameObject.Find("Screen");
 
         // SquadStatusMgr
-        squadStatusMgr = screen.GetComponentInChildren<SquadStatusMgr>();
-        squadStatusMgr.Init();
+        //squadStatusMgr = screen.GetComponentInChildren<SquadStatusMgr>();
+        //squadStatusMgr.Init();
 
         // PrintTruckUI
         printTruckUI = screen.GetComponentInChildren<PrintTruckUI>();
@@ -87,12 +87,12 @@ public class WorldUIMgr : MonoBehaviour
     public void UpdateUI()
     {
         // SquadStatusMgr
-        squadStatusMgr.SquadUpdate();
+        //squadStatusMgr.SquadUpdate();
     }
 
     private IEnumerator CoTrunkWinInit()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
         trunkWinMgr.Init();
     }
 }

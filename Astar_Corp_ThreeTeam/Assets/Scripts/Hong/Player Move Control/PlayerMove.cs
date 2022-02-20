@@ -48,6 +48,9 @@ public class PlayerMove : MonoBehaviour
         int facilitiesLayer = LayerMask.GetMask("Facilities");
         int monsterLayer = LayerMask.GetMask("EliteMonster");
 
+        //Debug.Log("isPause : " + playerController.timeController.isPause);
+        if (playerController.timeController.isPause) return;
+
         // Mouse Click
         if (Input.GetMouseButtonDown(0) && terms) 
         {

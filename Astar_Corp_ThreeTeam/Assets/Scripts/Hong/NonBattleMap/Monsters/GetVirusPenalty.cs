@@ -81,8 +81,14 @@ public class GetVirusPenalty : MonoBehaviour
         if (isPlayerIn)
         {
             // 플레이어, 바이러스 영역간 거리
-            distance = Vector2.Distance(new Vector2(virusZone.transform.position.x, virusZone.transform.position.z), new Vector2(player.transform.position.x, player.transform.position.z));
-            //distance = 5;
+            distance = Vector2.Distance(
+                new Vector2(virusZone.transform.position.x, virusZone.transform.position.z), 
+                new Vector2(player.transform.position.x, player.transform.position.z));
+
+            // VirusZone 위치 확인용
+            //var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            //cube.transform.position = new Vector2(virusZone.transform.position.x, virusZone.transform.position.z);
+            //cube.transform.localScale = new Vector3(5f, 5f, 5f);
 
             // 최대 레벨 3
             if (labInfo.isActiveZone3)
@@ -142,7 +148,8 @@ public class GetVirusPenalty : MonoBehaviour
         if (player == null)
             player = transform.parent.gameObject;
 
-        virusData = player.GetComponent<VirusData>();
+        //virusData = player.GetComponentInParent<VirusData>();
+        virusData = GetComponentInParent<VirusData>();
 
         executeOnce = false;
         isPenaltyInit = true;

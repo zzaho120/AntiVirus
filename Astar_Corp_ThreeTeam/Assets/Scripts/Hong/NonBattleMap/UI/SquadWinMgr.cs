@@ -1,4 +1,5 @@
 using Michsky.UI.ModernUIPack;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,8 @@ public class SquadWinMgr : UIManagerWindowManager
     private TimeController timeController;
 
     public GameObject statePrefab;
+    public GameObject equipPrefab;
+    public GameObject skillPrefab;
     public GameObject characterListContent;
 
     // 선택된 캐릭터 개수
@@ -32,11 +35,125 @@ public class SquadWinMgr : UIManagerWindowManager
         playerDataMgr = PlayerDataMgr.Instance;
         soMgr = ScriptableMgr.Instance;
 
-        timeController.isPause = true;
         timeController.Pause();
-        
+
+        var button = GetComponentInChildren<Button>();
+        button.Select();
         PrintCharacterList();
     }
+
+    public void SelectMenu(int index)
+    {
+        //Debug.Log(index);
+
+        if (index == 0)
+            PrintCharacterList();
+        if (index == 1)
+            PrintEquipList();
+        if (index == 2)
+            PrintSkillList();
+    }
+
+    private void PrintSkillList()
+    {
+
+    }
+
+    private void PrintEquipList()
+    {
+        //이전 정보 삭제.
+        if (characterList.Count != 0)
+        {
+            foreach (var character in characterList)
+            {
+                Destroy(character.Value);
+            }
+            characterList.Clear();
+            //characterListContent.transform.DetachChildren();
+        }
+        if (charKeyList.Count != 0) charKeyList.Clear();
+
+        //생성.
+        int i = 0;
+        foreach (var element in playerDataMgr.boardingSquad)
+        {
+            var charEquip = Instantiate(equipPrefab, characterListContent.transform);
+
+            var child = charEquip.transform.GetChild(0).gameObject;
+            child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                 = $"LV{playerDataMgr.currentSquad[element.Value].level}";
+
+            var expSlider = child.transform.GetChild(3).gameObject.GetComponent<Slider>();
+            expSlider.maxValue = playerDataMgr.currentSquad[element.Value].totalExp;
+            expSlider.value = playerDataMgr.currentSquad[element.Value].currentExp;
+
+            child = charEquip.transform.GetChild(1).gameObject;
+            child.transform.GetChild(0).gameObject.GetComponent<Image>().sprite
+                = playerDataMgr.currentSquad[element.Value].character.icon;
+            child.transform.GetChild(1).gameObject.GetComponent<Text>().text
+                 = playerDataMgr.currentSquad[element.Value].character.name;
+
+            child = charEquip.transform.GetChild(2).gameObject;
+            child.transform.GetChild(0).gameObject.GetComponent<Text>().text
+                 = playerDataMgr.currentSquad[element.Value].characterName;
+
+            child = charEquip.transform.GetChild(3).gameObject;
+            child = child.transform.GetChild(0).gameObject;
+            var childObj = child.transform.GetChild(0).gameObject;
+            var color = childObj.GetComponent<Image>().color;
+            if (playerDataMgr.currentSquad[element.Value].weapon.mainWeapon != null)
+            {
+                childObj.GetComponent<Image>().color
+                    = new Color(color.r, color.g, color.b, 1);
+                childObj.GetComponent<Image>().sprite
+                    = playerDataMgr.currentSquad[element.Value].weapon.mainWeapon.img;
+                childObj = child.transform.GetChild(1).gameObject;
+                childObj.SetActive(true);
+                childObj.transform.GetChild(0).GetComponent<Text>().text
+                    = $"{GetTypeStr(playerDataMgr.currentSquad[element.Value].weapon.mainWeapon.kind)}";
+            }
+            else
+            {
+                childObj.GetComponent<Image>().color
+                  = new Color(color.r, color.g, color.b, 0);
+                childObj = child.transform.GetChild(1).gameObject;
+                childObj.SetActive(false);
+            }
+
+            child = charEquip.transform.GetChild(4).gameObject;
+            child = child.transform.GetChild(0).gameObject;
+            childObj = child.transform.GetChild(0).gameObject;
+            color = childObj.GetComponent<Image>().color;
+            if (playerDataMgr.currentSquad[element.Value].weapon.subWeapon != null)
+            {
+                childObj.GetComponent<Image>().color
+                    = new Color(color.r, color.g, color.b, 1);
+                childObj.GetComponent<Image>().sprite
+                    = playerDataMgr.currentSquad[element.Value].weapon.subWeapon.img;
+                childObj = child.transform.GetChild(1).gameObject;
+                childObj.SetActive(true);
+                childObj.transform.GetChild(0).GetComponent<Text>().text
+                    = $"{GetTypeStr(playerDataMgr.currentSquad[element.Value].weapon.subWeapon.kind)}";
+            }
+            else
+            {
+                childObj.GetComponent<Image>().color
+                  = new Color(color.r, color.g, color.b, 0);
+                childObj = child.transform.GetChild(1).gameObject;
+                childObj.SetActive(false);
+            }
+
+            int num = i;
+            //var button = go.AddComponent<Button>();
+            //button.onClick.AddListener(delegate { SelectCharacter(num); });
+
+            characterList.Add(element.Value, charEquip);
+            charKeyList.Add(num, element.Key);
+
+            i++;
+        }
+    }
+
 
     private void PrintCharacterList()
     {
@@ -118,14 +235,14 @@ public class SquadWinMgr : UIManagerWindowManager
                 var button = character.AddComponent<Button>();
                 button.onClick.AddListener(delegate { SelectCharacter(element.Value); });
 
-                character.transform.GetChild(0).GetComponentInChildren<Toggle>().interactable = true;
+                //character.transform.GetChild(0).GetComponentInChildren<Toggle>().interactable = true;
 
                 foreach (var go in battleButtons)
                     go.SetActive(true);
             }
             else
             {
-                character.transform.GetChild(0).GetComponentInChildren<Toggle>().interactable = false;
+                //character.transform.GetChild(0).GetComponentInChildren<Toggle>().interactable = false;
                 foreach (var go in battleButtons)
                     go.SetActive(false);
             }
@@ -143,8 +260,8 @@ public class SquadWinMgr : UIManagerWindowManager
         var selectedObj = characterList[num];
 
         // 토글키 On
-        Toggle toggle = selectedObj.GetComponentInChildren<Toggle>();
-        toggle.interactable = true;
+        //Toggle toggle = selectedObj.GetComponentInChildren<Toggle>();
+        //toggle.interactable = true;
         Image image = selectedObj.transform.GetComponent<Image>();
 
         // 중복 선택 시
@@ -155,7 +272,7 @@ public class SquadWinMgr : UIManagerWindowManager
             playerDataMgr.battleSquad.Remove(num);
 
             // 토글키 및 색상 값 변경
-            toggle.isOn = false;
+            //toggle.isOn = false;
             image.color = orginColor;
 
             // 전투 참여 인원 표시
@@ -172,11 +289,41 @@ public class SquadWinMgr : UIManagerWindowManager
         Debug.Log(playerDataMgr.battleSquad[num].Name + " Added");
 
         // 토글키 및 색상 값 변경
-        toggle.isOn = true;
+        //toggle.isOn = true;
         image.color = selectedColor;
 
         // 전투 참여 인원 표시
         memberNumTxt.text = $"전투 참여 {playerDataMgr.battleSquad.Count} / 4";
+    }
+
+    string GetTypeStr(string kind)
+    {
+        string type = string.Empty;
+        switch (kind)
+        {
+            case "1":
+                type = "Handgun";
+                break;
+            case "2":
+                type = "SG";
+                break;
+            case "3":
+                type = "SMG";
+                break;
+            case "4":
+                type = "AR";
+                break;
+            case "5":
+                type = "LMG";
+                break;
+            case "6":
+                type = "SR";
+                break;
+            case "7":
+                type = "근접무기";
+                break;
+        }
+        return type;
     }
 
     public override void Open()

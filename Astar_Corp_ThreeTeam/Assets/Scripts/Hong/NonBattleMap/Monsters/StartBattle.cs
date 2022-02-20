@@ -49,7 +49,6 @@ public class StartBattle : MonoBehaviour
                 PlayerDataMgr.Instance.isMonsterAtk = isMonsterAtk;
                 // 전체맵 일시정지
                 timeController.Pause();
-                timeController.isPause = true;
 
                 PrintMonsterInfo(other.GetComponent<WorldMonsterChar>());
 
