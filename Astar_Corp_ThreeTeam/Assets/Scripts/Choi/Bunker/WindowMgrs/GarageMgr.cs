@@ -18,6 +18,8 @@ public class GarageMgr : MonoBehaviour
     public GameObject arrowImg;
 
     [Header("Main Win")]
+    public GameObject leftArrow;
+    public GameObject rightArrow;
     public List<GameObject> characters;
     public Image carImg;
     public Text weightTxt;
@@ -32,8 +34,12 @@ public class GarageMgr : MonoBehaviour
     public TrunkMgr trunkMgr;
     public BoardingMgr boardingMgr;
 
+    List<string> owned = new List<string>();
+    public Dictionary<int, Truck> carOrder = new Dictionary<int, Truck>();
     int carCenterLevel;
     int maxCarCapacity;
+    public int currentKey;
+
     public void Init()
     {
         carCenterLevel = playerDataMgr.saveData.carCenterLevel;
@@ -58,6 +64,33 @@ public class GarageMgr : MonoBehaviour
         }
         int currentCarNum = playerDataMgr.saveData.cars.Count;
 
+        if (owned.Count != 0) owned.Clear();
+        if (carOrder.Count != 0) carOrder.Clear();
+
+        //소유차량.
+        foreach (var element in playerDataMgr.truckList)
+        {
+            if (playerDataMgr.saveData.cars.Contains(element.Key))
+                owned.Add(element.Key);
+        }
+
+        int i = 0;
+        foreach (var element in owned)
+        {
+            var truck = playerDataMgr.truckList[element];
+            int num = i;
+            carOrder.Add(num, truck);
+            i++;
+        }
+        if (playerDataMgr.saveData.currentCar == null)
+        {
+            currentKey = 0;
+        }
+        else
+        {
+            currentKey = carOrder.FirstOrDefault(x => x.Value.id.Equals(playerDataMgr.saveData.currentCar)).Key;
+        }
+
         trunkMgr.playerDataMgr = playerDataMgr;
         trunkMgr.garageMgr = this;
         trunkMgr.Init();
@@ -68,22 +101,11 @@ public class GarageMgr : MonoBehaviour
 
         isMenuOpen = true;
         arrowImg.GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, 0f);
-        //OpenMainWin();
-
-        int i = 0;
-        foreach (var element in boardingMgr.carOrder)
-        {
-            Debug.Log($"i : {i}");
-            Debug.Log($"{element.Value.name}");
-            i++;
-        }
     }
 
     public void Display()
     {
-        var myKey = boardingMgr.carOrder.FirstOrDefault(x => x.Value.id == playerDataMgr.saveData.currentCar).Key;
-        boardingMgr.currentKey = myKey;
-        var truck = boardingMgr.carOrder[myKey];
+        var truck = carOrder[currentKey];
         
         carImg.sprite = truck.img;
         var capacity = truck.capacity;
@@ -126,7 +148,15 @@ public class GarageMgr : MonoBehaviour
 
     public void PreviousButton()
     {
-        boardingMgr.PreviousButton();
+        if (currentKey - 1 < 0) return;
+
+        currentKey--;
+
+        boardingMgr.CarReset();
+        playerDataMgr.saveData.currentCar = carOrder[currentKey].id;
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+        boardingMgr.Init();
+        trunkMgr.Init();
         //trunkMgr.DisplayTruckItem(0);
         Display();
 
@@ -135,7 +165,15 @@ public class GarageMgr : MonoBehaviour
 
     public void NextButton()
     {
-        boardingMgr.NextButton();
+        if (currentKey + 1 >= carOrder.Count) return;
+
+        currentKey++;
+
+        boardingMgr.CarReset();
+        playerDataMgr.saveData.currentCar = carOrder[currentKey].id;
+        PlayerSaveLoadSystem.Save(playerDataMgr.saveData);
+        boardingMgr.Init();
+        trunkMgr.Init();
         //trunkMgr.DisplayTruckItem(0);
         Display();
 
