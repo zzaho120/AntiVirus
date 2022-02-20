@@ -15,12 +15,15 @@ public class MultiTouch : MonoBehaviour
     public Vector2 curSecTouchPos;
     public Vector2 secondDeltaPos;
     public InputActionPhase phase;
+    public float pressTime;
     public bool Tap { private set; get; }
     public bool DoubleTap { private set; get; }
     public bool LongTap { private set; get; }
     public float ZoomInOut { private set; get; }
     public Vector2 SwipeDirection { private set; get; }
     public float RotateAngle { private set; get; }
+
+    public bool isPress { get => pressTime != 0; }
 
     void Update()
     {
@@ -61,7 +64,7 @@ public class MultiTouch : MonoBehaviour
             case InputActionPhase.Started:
                 break;
             case InputActionPhase.Performed:
-                switch(ctx.interaction)
+                switch (ctx.interaction)
                 {
                     case TapInteraction:
                         Tap = true;
@@ -89,7 +92,11 @@ public class MultiTouch : MonoBehaviour
         phase = ctx.phase;
         switch (ctx.phase)
         {
+            case InputActionPhase.Canceled:
+                pressTime = 0f;
+                break;
             case InputActionPhase.Performed:
+                pressTime += Time.deltaTime;
                 primaryDeltaPos = ctx.ReadValue<Vector2>();
                 break;
         }

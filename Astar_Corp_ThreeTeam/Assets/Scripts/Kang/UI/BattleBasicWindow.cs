@@ -58,7 +58,7 @@ public class BattleBasicWindow : GenericWindow
 
     [Header("Move")]
     public GameObject moveBtn;
-    public GameObject cancelBtn;
+    public GameObject moveCancelBtn;
 
     [Header("Fire")]
     public GameObject monsterPanelPrefab;
@@ -139,7 +139,7 @@ public class BattleBasicWindow : GenericWindow
     public void Init()
     {
         state = CharacterState.Wait;
-        cancelBtn.SetActive(false);
+        moveCancelBtn.SetActive(false);
         notMonsterPanel.SetActive(false);
         firePanel.SetActive(false);
         fireConfirmBtn.SetActive(false);
@@ -184,6 +184,10 @@ public class BattleBasicWindow : GenericWindow
         if (selectedChar != null)
         {
             selectedChar.ReturnSightTile();
+            selectedChar.ReturnMoveTile();
+            moveBtn.SetActive(true);
+            moveCancelBtn.SetActive(false);
+            actionPanel.SetActive(true);
             info = GetFlotingInfo(selectedChar);
             if (info != null)
                 info.isSelected = false;
@@ -510,7 +514,7 @@ public class BattleBasicWindow : GenericWindow
             directionBtns.SetActive(false);
             moveBtn.SetActive(false);
             actionPanel.SetActive(false);
-            cancelBtn.SetActive(true);
+            moveCancelBtn.SetActive(true);
         }
         else
         {
@@ -528,7 +532,7 @@ public class BattleBasicWindow : GenericWindow
         selectedChar.ReturnMoveTile();
         moveBtn.SetActive(true);
         actionPanel.SetActive(true);
-        cancelBtn.SetActive(false);
+        moveCancelBtn.SetActive(false);
         selectedChar.DisplaySightTile();
     }
 

@@ -140,7 +140,7 @@ public class PlayerableChar : BattleTile
                                             ReturnMoveTile();
                                             ReturnSightTile();
                                             var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
-                                            window.cancelBtn.SetActive(false);
+                                            window.moveCancelBtn.SetActive(false);
                                             window.moveBtn.SetActive(true);
                                         }
                                     }

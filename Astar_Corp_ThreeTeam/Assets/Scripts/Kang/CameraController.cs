@@ -68,7 +68,7 @@ public class CameraController : MonoBehaviour
 
     private void TouchInput()
     {
-        if(touchMgr.phase == UnityEngine.InputSystem.InputActionPhase.Performed)
+        if(touchMgr.phase == UnityEngine.InputSystem.InputActionPhase.Performed && touchMgr.isPress)
         {
             var delta = -touchMgr.primaryDeltaPos.normalized / 4;
 

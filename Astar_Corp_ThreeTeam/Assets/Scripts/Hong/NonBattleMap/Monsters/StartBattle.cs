@@ -44,7 +44,7 @@ public class StartBattle : MonoBehaviour
                 else 
                 {
                     //Debug.Log("뒤");
-                    isMonsterAtk = true;
+                    isMonsterAtk = false;
                 }
                 PlayerDataMgr.Instance.isMonsterAtk = isMonsterAtk;
                 // 전체맵 일시정지
