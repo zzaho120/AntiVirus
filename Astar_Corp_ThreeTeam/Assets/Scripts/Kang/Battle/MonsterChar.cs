@@ -99,12 +99,9 @@ public class MonsterChar : BattleTile
         go.transform.position = transform.position;
         scrollingText.SetDamage(dmg, false);
 
-        var hitSoundObj = BattleMgr.Instance.battlePoolMgr.CreateMonsterHitSound();
-        var hitSound = go.GetComponent<AudioSource>();
-        hitSound.Play();
+        
 
-        var returnToPool = hitSoundObj.GetComponent<ReturnToPool>();
-        returnToPool.Return(3f);
+       
 
         var blood = BattleMgr.Instance.battlePoolMgr.CreateBloodSplat();
         blood.transform.position = transform.position;
@@ -113,6 +110,11 @@ public class MonsterChar : BattleTile
         if (monsterStats.currentHp == 0)
         {
             animator.SetTrigger("Death");
+            var dieSoundObj = BattleMgr.Instance.battlePoolMgr.CreateMonsterDieSound();
+            var dieSound = dieSoundObj.GetComponent<AudioSource>();
+            dieSound.Play();
+            var returnToPool = dieSoundObj.GetComponent<ReturnToPool>();
+            returnToPool.Return(3f);
             RuntimeAnimatorController ac = animator.runtimeAnimatorController;
             var time = 0f;
             for (var idx = 0; idx < ac.animationClips.Length; ++idx)
@@ -124,7 +126,14 @@ public class MonsterChar : BattleTile
             return time;
         }
         else
+        {
             animator.SetTrigger("Damaged");
+            var hitSoundObj = BattleMgr.Instance.battlePoolMgr.CreateMonsterHitSound();
+            var hitSound = hitSoundObj.GetComponent<AudioSource>();
+            hitSound.Play(); 
+            var returnToPool = hitSoundObj.GetComponent<ReturnToPool>();
+            returnToPool.Return(3f);
+        }
 
         return 0;
     }
@@ -149,7 +158,8 @@ public class MonsterChar : BattleTile
     private IEnumerator CoDeath(PlayerableChar player, float time)
     {
         player.characterStats.GetExp(monsterStats.monster.exp);
-
+        if (time <= 0f)
+            time = 1.5f;
         yield return new WaitForSeconds(time);
 
         EventBusMgr.Publish(EventType.DestroyChar, new object[] { this, 1 });
@@ -326,7 +336,7 @@ public class MonsterChar : BattleTile
             var sightMgr = BattleMgr.Instance.sightMgr;
             sightMgr.InitMonsterSight(this);
             if (target == null)
-                SetTarget(sightMgr.GetPlayerInMonsterSight(monsterIdx));
+                SetTarget(sightMgr.GetPlayerInMonsterSight(this));
 
             yield return MoveTile(nextTile.tileBase.tileIdx);
         }
@@ -354,7 +364,10 @@ public class MonsterChar : BattleTile
             if (tile.tileIdx.x == nextIdx.x && tile.tileIdx.z == nextIdx.z)
             {
                 if (tile.charObj != null && tile.charObj.CompareTag("BattlePlayer"))
+                {
+                    EventBusMgr.Publish(EventType.EndEnemy);
                     yield break;
+                }
                 var dir = (currentTile.tileIdx - nextIdx).normalized;
 
                 var rotY = 0;

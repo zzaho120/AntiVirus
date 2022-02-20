@@ -51,6 +51,7 @@ public class BattleMgr : MonoBehaviour
         hintMgr = GameObject.FindWithTag("HintMgr").GetComponent<HintMgr>();
         touchMgr = GameObject.FindWithTag("TouchMgr").GetComponent<MultiTouch>();
         battlePoolMgr = GameObject.FindWithTag("BattlePoolMgr").GetComponent<BattlePoolMgr>();
+        playerDataMgr = GameObject.FindWithTag("PlayerDataMgr").GetComponent<PlayerDataMgr>();
     }
 
     public void Start()
@@ -162,6 +163,27 @@ public class BattleMgr : MonoBehaviour
         {
             case 0:
                 var player = (PlayerableChar)param[0];
+                if (playerDataMgr != null)
+                {
+                    var currentSquad = playerDataMgr.currentSquad;
+                    var boardingSquad = playerDataMgr.boardingSquad;
+                    foreach (var pair in currentSquad)
+                    {
+                        if (pair.Value == player.characterStats)
+                        {
+                            foreach (var boardPair in boardingSquad)
+                            {
+                                if (boardPair.Value == pair.Key)
+                                {
+                                    boardingSquad.Remove(pair.Key);
+                                    currentSquad.Remove(pair.Key);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
                 playerMgr.RemovePlayer(player);
                 break;
             case 1:

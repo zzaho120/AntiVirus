@@ -9,6 +9,7 @@ public class BattleResultWindow : GenericWindow
     public GameObject squadPanel;
     public Transform squadContent;
     public GameObject squadListPrefab;
+    public bool isEscape;
     public override void Open()
     {
         base.Open();
@@ -32,8 +33,15 @@ public class BattleResultWindow : GenericWindow
 
     public void OnClickSquadNextBtn()
     {
-        squadPanel.SetActive(false);
-        lootPanel.SetActive(true);
+        if (!isEscape)
+        {
+            squadPanel.SetActive(false);
+            lootPanel.SetActive(true);
+        }
+        else
+        {
+            SceneManager.LoadScene("WorldMap_Asset");
+        }
     }
 
     public void OnClickLootNextBtn()

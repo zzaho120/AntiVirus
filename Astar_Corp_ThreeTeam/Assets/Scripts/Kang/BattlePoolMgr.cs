@@ -130,4 +130,58 @@ public class BattlePoolMgr : PoolManager
         particle.transform.SetParent(soundPool);
         return particle;
     }
+
+    public GameObject CreateRunningSound()
+    {
+        var particle = pools[(int)BattlePoolName.RunningSound].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+
+    public GameObject CreateDieSound()
+    {
+        var particle = pools[(int)BattlePoolName.DieSound].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+
+    public GameObject CreateReloadSound()
+    {
+        var particle = pools[(int)BattlePoolName.ReloadSound].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+
+    public GameObject CreateSRSound()
+    {
+        var particle = pools[(int)BattlePoolName.SRSound].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+    public GameObject CreateRocketSound()
+    {
+        var particle = pools[(int)BattlePoolName.RocketSound].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+
+    public GameObject CreatePistolSound()
+    {
+        var particle = pools[(int)BattlePoolName.PistolSound].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+    public GameObject CreateSGSound()
+    {
+        var particle = pools[(int)BattlePoolName.SGSound].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
+
+    public GameObject CreateMonsterDieSound()
+    {
+        var particle = pools[(int)BattlePoolName.MonsterDieSound].Pool.Get();
+        particle.transform.SetParent(soundPool);
+        return particle;
+    }
 }

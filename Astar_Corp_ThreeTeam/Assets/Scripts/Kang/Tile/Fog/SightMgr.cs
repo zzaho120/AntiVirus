@@ -660,11 +660,19 @@ public class SightMgr : MonoBehaviour
         return monsterList;
     }
 
-    public PlayerableChar GetPlayerInMonsterSight(int idx)
+    public PlayerableChar GetPlayerInMonsterSight(MonsterChar monster)
     {
-        var monster = monsters[idx];
-        var monsterSight = monsterSightList[idx];
-
+        var monsterIdx = 0;
+        for (var idx = 0; idx < monsters.Count; ++idx)
+        {
+            if (monsters[idx] == monster)
+            {
+                monsterIdx = idx;
+                break;
+            }
+        }
+        var monsterSight = monsterSightList[monsterIdx];
+        PlayerableChar minPlayer = null;
         foreach (var sight in monsterSight)
         {
             if (sight.isInMonsterSight && sight.tileBase.charObj != null)
@@ -672,12 +680,17 @@ public class SightMgr : MonoBehaviour
                 foreach (var player in playerableChars)
                 {
                     if (sight.tileBase.charObj == player.gameObject)
-                        return player;
+                    {
+                        if (minPlayer == null || 
+                            Vector3.Distance(monster.tileIdx, minPlayer.tileIdx) 
+                            > Vector3.Distance(monster.tileIdx, player.tileIdx))
+                                minPlayer = player;
+                    }
                 }
             }
         }
 
-        return null;
+        return minPlayer;
     }
 
     public void InitMonsterSight(MonsterChar monster)

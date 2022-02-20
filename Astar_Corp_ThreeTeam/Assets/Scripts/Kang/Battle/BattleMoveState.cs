@@ -25,21 +25,25 @@ public class BattleMoveState : StateBase
 
     public override void Update()
     {
+        var range = monster.CheckAttackRange();
+        var ap = monster.monsterStats.CheckAttackAp();
         if (player == null)
         {
-            if (!isActing)
+            if (range != null && ap)
+                fsm.ChangeState((int)BattleMonState.Attack);
+            else if (!isActing && range == null)
             {
                 isActing = true;
                 monster.Move(monster.target);
             }
-            else if (monster.isMoved && monster.CheckAttackRange() == null)
+            else if (monster.isMoved && range == null)
                 EventBusMgr.Publish(EventType.EndEnemy);
-            else if (monster.CheckAttackRange() != null && monster.monsterStats.CheckAttackAp())
-                fsm.ChangeState((int)BattleMonState.Attack);
+            else if (range == null)
+                EventBusMgr.Publish(EventType.EndEnemy);
         }
         else
         {
-            if (monster.monsterStats.CheckAttackAp())
+            if (ap)
                 fsm.ChangeState((int)BattleMonState.Attack);
             else
                 EventBusMgr.Publish(EventType.EndEnemy);

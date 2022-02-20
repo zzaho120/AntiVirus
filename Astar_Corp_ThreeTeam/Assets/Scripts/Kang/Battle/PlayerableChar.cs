@@ -184,6 +184,9 @@ public class PlayerableChar : BattleTile
     private IEnumerator CoMove()
     {
         var path = BattleMgr.Instance.pathMgr.pathList;
+        var poolMgr = BattleMgr.Instance.battlePoolMgr;
+        var running = poolMgr.CreateRunningSound().GetComponent<AudioSource>();
+        running.Play();
         while (path.Count > 0)
         {
             if (path.Count == 2 || path.Count == 1)
@@ -209,6 +212,9 @@ public class PlayerableChar : BattleTile
             yield return MoveTile(aStarTile.tileBase.tileIdx);
             BattleMgr.Instance.sightMgr.UpdateFog(this);
         }
+        running.Stop();
+        var returnToPool = running.GetComponent<ReturnToPool>();
+        returnToPool.Return();
         AP -= currentTile.moveAP;
         var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
         window.UpdateUI();
@@ -451,6 +457,30 @@ public class PlayerableChar : BattleTile
                 var window = BattleMgr.Instance.battleWindowMgr.Open(0) as BattleBasicWindow;
                 window.UpdateUI();
 
+
+                GameObject soundObj = null;
+                switch (weapon.curWeapon.kind)
+                {
+                    case "2":
+                        soundObj = BattleMgr.Instance.battlePoolMgr.CreateSGSound();
+                        break;
+                    case "6":
+                        soundObj = BattleMgr.Instance.battlePoolMgr.CreateSRSound();
+                        break;
+                    case "1":
+                    case "3":
+                    case "4":
+                    case "5":
+                    case "7":
+                        soundObj = BattleMgr.Instance.battlePoolMgr.CreatePistolSound();
+                        break;
+                }
+                
+                var sound = soundObj.GetComponent<AudioSource>();
+                sound.Play();
+                var returnToPool = soundObj.GetComponent<ReturnToPool>();
+                returnToPool.Return(1f);
+
                 var time = 0f;
                 if (isHit)
                 {
@@ -606,6 +636,10 @@ public class PlayerableChar : BattleTile
         if (characterStats.currentHp == 0)
         {
             animator.SetTrigger("Death");
+            var dieSound = BattleMgr.Instance.battlePoolMgr.CreateDieSound().GetComponent<AudioSource>();
+            dieSound.Play();
+            var soundReturn = dieSound.GetComponent<ReturnToPool>();
+            soundReturn.Return(1f);
             RuntimeAnimatorController ac = animator.runtimeAnimatorController;
             var time = 0f;
             for (var idx = 0; idx < ac.animationClips.Length; ++idx)
@@ -678,7 +712,11 @@ public class PlayerableChar : BattleTile
 
         if (weapon.CheckReloadAP(AP))
         {
-            AP -= weapon.Reload();
+            AP -= weapon.Reload(); 
+            var reloadSound = BattleMgr.Instance.battlePoolMgr.CreateReloadSound().GetComponent<AudioSource>();
+            reloadSound.Play();
+            var soundReturn = reloadSound.GetComponent<ReturnToPool>();
+            soundReturn.Return(1f);
         }
         else
         {

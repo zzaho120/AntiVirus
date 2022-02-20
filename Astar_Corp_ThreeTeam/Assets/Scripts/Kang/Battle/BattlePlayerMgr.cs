@@ -69,28 +69,7 @@ public class BattlePlayerMgr : MonoBehaviour
                         player.attackCount--;
                         var window = BattleMgr.Instance.battleWindowMgr.GetWindow(0) as BattleBasicWindow;
                         window.UpdateExtraInfo(player);
-
-                        var isHit = false;
-                        if (player.isTankB1Skill)
-                        {
-                            isHit = true;
-                            player.isTankB1Skill = false;
-                        }
-                        else
-                            isHit = Random.Range(0, 100) < weapon.GetAttackAccuracy(curMonster.currentTile.accuracy) + player.characterStats.alertAccuracy;
-
-                        player.AP -= weapon.GetWeaponAP();
-
-                        if (isHit)
-                        {
-                            var isCrit = Random.Range(0, 100) < player.characterStats.weapon.CritRate + player.characterStats.critRate - curMonster.monsterStats.critResist;
-                            curMonster.GetDamage(player, isCrit);
-                        }
-                        else
-                        {
-                            //ºø¸ÂÀ½
-
-                        }
+                        player.PlayAttackAnim(curMonster);
                     }
                     else
                     {
@@ -105,9 +84,10 @@ public class BattlePlayerMgr : MonoBehaviour
             {
                 if (alertList.Exists(checkMonster => checkMonster == curMonster))
                 {
-                    var window = BattleMgr.Instance.battleWindowMgr.Open((int)BattleWindows.Msg - 1, false).GetComponent<MsgWindow>();
-                    window.SetMsgText($"You missed {curMonster.name}");
-                    alertList.Remove(curMonster);
+                    var go = BattleMgr.Instance.battlePoolMgr.CreateScrollingText();
+                    var scrollingText = go.GetComponent<ScrollingText>();
+                    go.transform.position = curMonster.transform.position;
+                    scrollingText.SetMiss();
                 }
             }
         }

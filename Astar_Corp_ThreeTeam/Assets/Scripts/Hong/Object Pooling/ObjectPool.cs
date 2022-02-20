@@ -32,6 +32,14 @@ public enum BattlePoolName
     PlayerDeath,
     DetectSound,
     MonsterHit,
+    RunningSound,
+    DieSound,
+    ReloadSound,
+    PistolSound,
+    SGSound,
+    SRSound,
+    RocketSound,
+    MonsterDieSound,
 }
 
 [System.Serializable]

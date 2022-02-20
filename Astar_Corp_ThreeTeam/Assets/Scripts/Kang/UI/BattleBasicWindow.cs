@@ -115,6 +115,12 @@ public class BattleBasicWindow : GenericWindow
 
     [Header("Enemy Turn")]
     public GameObject enemyTurn;
+    public GameObject rightBtn1;
+    public GameObject rightBtn2;
+
+    [Header("Escape")]
+    public GameObject escapePanel;
+
     public bool isTurn
     {
         get => BattleMgr.Instance.turn == BattleTurn.Player;
@@ -147,10 +153,13 @@ public class BattleBasicWindow : GenericWindow
         skillConfirmBtn.SetActive(false);
         itemCancelBtn.SetActive(false);
         enemyTurn.SetActive(false);
+        escapePanel.SetActive(false);
+        itemPanel.gameObject.SetActive(false);
         var playerDataMgr = BattleMgr.Instance.playerDataMgr;
         if (playerDataMgr != null && !playerDataMgr.isBattleTutorial)
         {
             battleTutorial.gameObject.SetActive(true);
+            battleTutorial.Init();
             playerDataMgr.isBattleTutorial = true;
         }
         else
@@ -904,7 +913,9 @@ public class BattleBasicWindow : GenericWindow
                 turnEndBtn.SetActive(true);
                 actionPanel.SetActive(true);
                 weaponPanel.SetActive(true);
-                bottomBtns.SetActive(true);
+                bottomBtns.SetActive(true); 
+                rightBtn1.SetActive(true);
+                rightBtn2.SetActive(true);
                 enemyTurn.SetActive(false);
                 break;
             case BattleTurn.Enemy:
@@ -913,6 +924,8 @@ public class BattleBasicWindow : GenericWindow
                 actionPanel.SetActive(false);
                 weaponPanel.SetActive(false);
                 bottomBtns.SetActive(false);
+                rightBtn1.SetActive(false);
+                rightBtn2.SetActive(false);
                 break;
         }
         StartCoroutine(CoTurnNoticeOff(turn));
@@ -920,17 +933,11 @@ public class BattleBasicWindow : GenericWindow
 
     private IEnumerator CoTurnNoticeOff(BattleTurn turn)
     {
-        var timer = 0f;
+        yield return new WaitForSeconds(1f);
 
-        while (timer < 1f)
-        {
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        turnNotice.SetActive(false);
         if (turn == BattleTurn.Enemy)
             enemyTurn.SetActive(true);
+        turnNotice.SetActive(false);
     }
 
     public void OnClickTutorial()
@@ -952,5 +959,20 @@ public class BattleBasicWindow : GenericWindow
     {
         battleTutorial.gameObject.SetActive(false);
         isTutorial = false;
+    }
+
+    public void OnClickEsacpe()
+    {
+        escapePanel.SetActive(!escapePanel.activeSelf);
+    }
+
+    public void OnClickEscapeConfirm()
+    {
+        var window = BattleMgr.Instance.battleWindowMgr.Open(1) as BattleResultWindow;
+        window.isEscape = true;
+    }
+    public void OnClickEscapeCancel()
+    {
+        escapePanel.SetActive(false);
     }
 }

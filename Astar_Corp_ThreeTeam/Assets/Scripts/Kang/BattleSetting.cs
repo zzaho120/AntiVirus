@@ -65,13 +65,10 @@ public class BattleSetting : MonoBehaviour
     public GameObject player;
     public void Init()
     {
-        var playerDataMgrObj = GameObject.FindWithTag("PlayerDataMgr");
-        var isExistDataMgr = playerDataMgrObj != null;
-        PlayerDataMgr playerDataMgr = null;
-        if (isExistDataMgr)
+        var playerDataMgr = BattleMgr.Instance.playerDataMgr;
+        if (playerDataMgr != null)
         {
             var playerPrefab = BattleMgr.Instance.playerPrefab;
-            playerDataMgr = playerDataMgrObj.GetComponent<PlayerDataMgr>();
             BattleMgr.Instance.fieldVirusLevel = playerDataMgr.virusLevel;
 
             var playerIdx = 0;

@@ -42,7 +42,7 @@ public class BattleMonsterMgr : MonoBehaviour
             
             monster.StartTurn();
             if (monster.target == null)
-                monster.SetTarget(sightMgr.GetPlayerInMonsterSight(idx));
+                monster.SetTarget(sightMgr.GetPlayerInMonsterSight(monster));
             
         }
 
