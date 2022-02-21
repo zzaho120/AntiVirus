@@ -241,12 +241,12 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.otherItemList.Add("BUL_0005");
                 saveData.otherItemNumList.Add(50);
 
-                saveData.otherItemList.Add("DROP_0001");
-                saveData.otherItemNumList.Add(1);
-                saveData.otherItemList.Add("DROP_0002");
-                saveData.otherItemNumList.Add(1);
-                saveData.otherItemList.Add("DROP_0003");
-                saveData.otherItemNumList.Add(1);
+                //saveData.otherItemList.Add("DROP_0001");
+                //saveData.otherItemNumList.Add(1);
+                //saveData.otherItemList.Add("DROP_0002");
+                //saveData.otherItemNumList.Add(1);
+                //saveData.otherItemList.Add("DROP_0003");
+                //saveData.otherItemNumList.Add(1);
                 k = 0;
                 foreach (var element in saveData.otherItemList)
                 {

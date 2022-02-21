@@ -176,6 +176,7 @@ public class TrunkMgr : MonoBehaviour
             storageOtherItemNumInfo.Add(element.Key, itemNum);
         }
 
+        if(playerDataMgr.saveData.currentCar == null) playerDataMgr.saveData.currentCar = "TRU_0004";
         DisplayTruckItem(0);
         DisplayStorageItem(0);
         originColor = trunkPrefab.GetComponent<Image>().color;
@@ -348,6 +349,7 @@ public class TrunkMgr : MonoBehaviour
         }
 
         var key = playerDataMgr.saveData.currentCar;
+        Debug.Log($"{key}");
         trunkTotalWeight = playerDataMgr.truckList[key].weight;
         trunkWeightTxt.text = $"{trunkCurrentWeight}/{trunkTotalWeight}";
         trunkWeight = trunkWeightTxt.text;
