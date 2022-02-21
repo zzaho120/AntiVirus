@@ -939,8 +939,16 @@ public class BattleBasicWindow : GenericWindow
     {
         yield return new WaitForSeconds(1f);
 
-        if (turn == BattleTurn.Enemy)
-            enemyTurn.SetActive(true);
+        switch (turn)
+        {
+            case BattleTurn.Player:
+                EventBusMgr.Publish(EventType.StartPlayer);
+                break;
+            case BattleTurn.Enemy:
+                enemyTurn.SetActive(true);
+                EventBusMgr.Publish(EventType.StartEnemy);
+                break;
+        }
         turnNotice.SetActive(false);
     }
 

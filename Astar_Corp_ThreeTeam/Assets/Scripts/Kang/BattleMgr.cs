@@ -74,15 +74,7 @@ public class BattleMgr : MonoBehaviour
 
 
         window.SetSelectedChar(playerMgr.playerableChars[0]);
-        switch (turn)
-        {
-            case BattleTurn.Player:
-                EventBusMgr.Publish(EventType.StartPlayer);
-                break;
-            case BattleTurn.Enemy:
-                EventBusMgr.Publish(EventType.StartEnemy);
-                break;
-        }
+        
         window.StartTurn(turn);
         sightMgr.UpdateFog();
     }
@@ -139,12 +131,10 @@ public class BattleMgr : MonoBehaviour
             case BattleTurn.Player:
                 turn = BattleTurn.Enemy; 
                 window.StartTurn(turn);
-                EventBusMgr.Publish(EventType.StartEnemy);
                 break;
             case BattleTurn.Enemy:
                 turn = BattleTurn.Player; 
                 window.StartTurn(turn);
-                EventBusMgr.Publish(EventType.StartPlayer);
                 window.SetSelectedChar(playerMgr.playerableChars[0]);
                 window.UpdateUI();
                 break;
