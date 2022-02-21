@@ -175,7 +175,10 @@ public class TrunkMgr : MonoBehaviour
             storageOtherItemInfo.Add(element.Key, element.Value);
             storageOtherItemNumInfo.Add(element.Key, itemNum);
         }
-
+        if (playerDataMgr.saveData.currentCar == null)
+        {
+            playerDataMgr.saveData.currentCar = "TRU_0004";
+        }
         DisplayTruckItem(0);
         DisplayStorageItem(0);
         originColor = trunkPrefab.GetComponent<Image>().color;
