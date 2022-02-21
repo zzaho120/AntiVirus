@@ -69,7 +69,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
 
     private void Start()
     {
-        PlayerPrefs.DeleteAll();
+        //PlayerPrefs.DeleteAll();
         scriptableMgr = ScriptableMgr.Instance;
 
         characterList = scriptableMgr.characterList;
@@ -197,7 +197,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.storeReset = true;
                 saveData.pubReset = true;
 
-                saveData.money = 100000;
+                saveData.money = 2022;
                 saveData.bunkerExitNum = 0;
                
                 saveData.agitLevel = 1;

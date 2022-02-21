@@ -178,7 +178,7 @@ public class BoardingMgr : MonoBehaviour
         CarDisplay(selectedCar);
 
         ButtonInteractable();
-        originColor = new Color(255, 192, 0);
+        originColor = new Color(45f/255, 65f/255, 85f/255);
     }
 
     public void PreviousButton()
