@@ -8,7 +8,10 @@ public class SquadWinMgr : UIManagerWindowManager
 {
     private PlayerDataMgr playerDataMgr;
     private ScriptableMgr soMgr;
-    private TimeController timeController;
+    public TimeController timeController;
+    public bool isTimerOff;
+
+    public TrunkWinMgr trunkWinMgr;
 
     public GameObject statePrefab;
     public GameObject equipPrefab;
@@ -50,13 +53,6 @@ public class SquadWinMgr : UIManagerWindowManager
             PrintCharacterList();
         if (index == 1)
             PrintEquipList();
-        if (index == 2)
-            PrintSkillList();
-    }
-
-    private void PrintSkillList()
-    {
-
     }
 
     private void PrintEquipList()
@@ -329,7 +325,6 @@ public class SquadWinMgr : UIManagerWindowManager
     public override void Open()
     {
         // 창 열기 + 초기화
-        timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
         base.Open();
         Init();
     }
@@ -337,8 +332,10 @@ public class SquadWinMgr : UIManagerWindowManager
     public override void Close()
     {
         base.Close();
-        timeController.Play();
-        timeController.isPause = false;
+        if (trunkWinMgr.isOpen)
+               Init();
+        //timeController.Play();
+        //timeController.isPause = false;
     }
 
     public void InactiveButton(Button button)
