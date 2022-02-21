@@ -197,7 +197,7 @@ public class PlayerDataMgr : Singleton<PlayerDataMgr>
                 saveData.storeReset = true;
                 saveData.pubReset = true;
 
-                saveData.money = 2022;
+                saveData.money = 50000;
                 saveData.bunkerExitNum = 0;
                
                 saveData.agitLevel = 1;
